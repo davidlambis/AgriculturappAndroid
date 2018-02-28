@@ -1,0 +1,61 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext.kotlin_version = '1.1.51'
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    //Sdk
+    minSdkVersion = 19
+    targetSdkVersion = 27
+    compileSdkVersion = 27
+    supportLibraryVersion = '27.1.0'
+
+    //Spinner
+    library_material_spinner = "1.1.0"
+
+    //Glide
+    glideVersion = '4.4.0'
+
+    //Circle Image View
+    circleImageViewVersion = '2.2.0'
+
+    //Month Year Picker
+    monthYearPickerVersion = '0.0.1'
+
+    //EventBus
+    greenRobotEventBusVersion = '3.1.1'
+
+    //Retrofit
+    retrofit="2.0.2"
+    gson="2.6.2"
+
+    //DBFlow
+    dbflow_version="4.0.3"
+
+}
+
