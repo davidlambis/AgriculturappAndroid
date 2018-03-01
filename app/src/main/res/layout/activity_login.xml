@@ -49,13 +49,14 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
                         android:layout_marginTop="@dimen/margin_global"
+                        android:orientation="vertical"
                         android:paddingTop="10dp">
 
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColorHint="@color/grey_luiyi"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                             <EditText
@@ -65,12 +66,15 @@
                                 android:drawableLeft="@drawable/ic_productor"
                                 android:drawableStart="@drawable/ic_productor"
                                 android:hint="@string/edit_text_cedula"
-                                android:inputType="number" />
+                                android:inputType="number"
+                                android:textColor="@color/grey_luiyi"
+                                android:textColorHint="@color/grey_luiyi" />
                         </android.support.design.widget.TextInputLayout>
 
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColorHint="@color/grey_luiyi"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                             <EditText
@@ -78,6 +82,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:drawableLeft="@drawable/ic_candado"
+                                android:textColor="@color/grey_luiyi"
+                                android:textColorHint="@color/grey_luiyi"
                                 android:drawableStart="@drawable/ic_candado"
                                 android:hint="@string/edit_text_contrasena"
                                 android:inputType="textPassword" />

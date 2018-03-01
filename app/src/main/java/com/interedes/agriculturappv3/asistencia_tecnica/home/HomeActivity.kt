@@ -40,22 +40,22 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     //endregion
 
     //region Métodos
-    private fun ingresar(){
+    private fun ingresar() {
         imageViewIngresar?.setColorFilter(resources.getColor(R.color.colorPrimary))
         startActivity(Intent(this, LoginActivity::class.java))
     }
 
-    private fun registrarse(){
+    private fun registrarse() {
         imageViewRegistrarse?.setColorFilter(resources.getColor(R.color.colorPrimary))
         startActivity(Intent(this, RegisterUserActivity::class.java))
     }
 
-    private fun contactarnos(){
+    private fun contactarnos() {
         imageViewContactanos?.setColorFilter(resources.getColor(R.color.colorPrimary))
         Snackbar.make(container, getString(R.string.title_contactanos), Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun limpiarCambios(){
+    private fun limpiarCambios() {
         imageViewIngresar?.setColorFilter(resources.getColor(R.color.grey_luiyi))
         imageViewRegistrarse?.setColorFilter(resources.getColor(R.color.grey_luiyi))
         imageViewContactanos?.setColorFilter(resources.getColor(R.color.grey_luiyi))
