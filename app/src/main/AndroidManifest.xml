@@ -9,13 +9,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashActivity">
+        <activity
+            android:name=".asistencia_tecnica.splash.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".asistencia_tecnica.home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".asistencia_tecnica.login.LoginActivity"
+            android:configChanges="screenSize|orientation"
+            android:theme="@style/LoginTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".asistencia_tecnica.registration.RegisterUserActivity"
+            android:parentActivityName=".asistencia_tecnica.home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

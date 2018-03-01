@@ -32,13 +32,13 @@ dependencies {
     implementation "com.android.support:cardview-v7:$rootProject.ext.supportLibraryVersion"
     implementation "com.android.support:recyclerview-v7:$rootProject.ext.supportLibraryVersion"
 
-
     //Spinner
     implementation "com.weiwangcn.betterspinner:library-material:$rootProject.ext.library_material_spinner"
 
     //Glide
     implementation "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
     annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.ext.glideVersion"
 
     //Circle Image View
@@ -61,6 +61,12 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofit"
 
+    //Firebase
+    implementation "com.google.firebase:firebase-auth:$rootProject.ext.firebaseVersion"
+    implementation "com.google.firebase:firebase-database:$rootProject.ext.firebaseVersion"
+    implementation "com.google.firebase:firebase-storage:$rootProject.ext.firebaseVersion"
+    implementation "com.google.firebase:firebase-messaging:$rootProject.ext.firebaseVersion"
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
@@ -70,3 +76,12 @@ kapt {
     generateStubs = true
 }
 
+
+
+
+
+
+
+
+
+apply plugin: 'com.google.gms.google-services'

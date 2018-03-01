@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "331486426603",
+    "firebase_url": "https://agriculturapp-f24be.firebaseio.com",
+    "project_id": "agriculturapp-f24be",
+    "storage_bucket": "agriculturapp-f24be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331486426603:android:c51df02cff20ff2e",
+        "android_client_info": {
+          "package_name": "com.interedes.agriculturappv3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331486426603-uk2cl1s8h0jg04ca3dkk1gr1i9072jmi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.interedes.agriculturappv3",
+            "certificate_hash": "993760babbd7904b97100036a6261643f3aef371"
+          }
+        },
+        {
+          "client_id": "331486426603-nuqdbo0f78t4h0npb82d4rkn1rvbpg7s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEGHHIXu9RtDFgvhIev_CD4KzCtgsCUBk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331486426603-nuqdbo0f78t4h0npb82d4rkn1rvbpg7s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

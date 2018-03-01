@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">AgriculturappV3</string>
+    <string name="app_name">AgriculturApp</string>
+
+    <!-- GLOBALES -->
+    <string name="results_global_search">Mostrando %d Resultados</string>
+    <string name="error_field_required">Campo Requerido</string>
+
+    <!-- HOME -->
+    <string name="title_ingresar">Ingresar</string>
+    <string name="title_registrarse">Registrarse</string>
+    <string name="title_contactanos">Contáctanos</string>
+
+    <!-- LOGIN-->
+    <string name="edit_text_cedula">Número de Cédula</string>
+    <string name="edit_text_correo">Correo Electrónico</string>
+    <string name="edit_text_contrasena">Contraseña</string>
+    <string name="snackbar_datos_incorrectos">Usuario o Contraseña Incorrectos</string>
 </resources>

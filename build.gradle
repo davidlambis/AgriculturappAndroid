@@ -12,6 +12,7 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        classpath 'com.google.gms:google-services:3.1.0'
     }
 }
 
@@ -30,7 +31,7 @@ task clean(type: Delete) {
 
 ext {
     //Sdk
-    minSdkVersion = 19
+    minSdkVersion = 16
     targetSdkVersion = 27
     compileSdkVersion = 27
     supportLibraryVersion = '27.1.0'
@@ -56,6 +57,9 @@ ext {
 
     //DBFlow
     dbflow_version="4.0.3"
+
+    //Firebase
+    firebaseVersion = '11.8.0'
 
 }
 
