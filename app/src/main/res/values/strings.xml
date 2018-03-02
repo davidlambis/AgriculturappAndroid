@@ -52,4 +52,7 @@
     <string name="spinner_metodo_pago">Método de Pago</string>
     <string name="spinner_banco">Seleccionar Banco</string>
     <string name="edit_text_numero_cuenta">Número de Cuenta</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

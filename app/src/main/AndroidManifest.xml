@@ -38,7 +38,7 @@
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateHidden" />
 
-        <activity  android:theme="@style/AppTheme.NoActionBar" android:name=".asistencia_tecnica.activities.MenuMainActivity"></activity>
+        <activity  android:theme="@style/AppTheme.NoActionBar" android:name=".asistencia_tecnica.modules.MenuMainActivity"></activity>
     </application>
 
 </manifest>

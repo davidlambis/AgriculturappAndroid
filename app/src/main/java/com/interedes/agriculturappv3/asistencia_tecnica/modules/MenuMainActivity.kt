@@ -1,19 +1,20 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.activities
+package com.interedes.agriculturappv3.asistencia_tecnica.modules
 
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MainMenuFragment
 import kotlinx.android.synthetic.main.activity_menu_main.*
+import com.interedes.agriculturappv3.asistencia_tecnica.services.AdapterFragmet
 
 
 class MenuMainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSelectedListener  {
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +22,21 @@ class MenuMainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSe
 
         setToolbarInjection()
         setNavDrawerInjection()
+        setAdapterFragment()
+
+        //fragmentManager.beginTransaction().add(R.id.container, Accounting_Fragment()).commit()
     }
+
+    private fun setAdapterFragment() {
+        val MainMenuFragment = MainMenuFragment()
+        val ft = getSupportFragmentManager().beginTransaction()
+        AdapterFragmet(MainMenuFragment,ft)
+
+
+    }
+
+
+    //region ADAPTER FRAGMENTS
 
 
     //region SETUP INJECTION
@@ -77,3 +92,5 @@ class MenuMainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSe
     //endregion
 
 }
+
+
