@@ -7,7 +7,7 @@ import android.support.design.widget.Snackbar
 import android.view.View
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.login.LoginActivity
-import com.interedes.agriculturappv3.asistencia_tecnica.registration.RegisterUserActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.registration.register_user.RegisterUserActivity
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity(), View.OnClickListener {
@@ -51,7 +51,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun contactarnos() {
-        imageViewContactanos?.setColorFilter(resources.getColor(R.color.colorPrimary))
+        imageViewContactanos?.setColorFilter(resources.getColor(R.color.colorPrimary ))
         Snackbar.make(container, getString(R.string.title_contactanos), Snackbar.LENGTH_SHORT).show()
     }
 

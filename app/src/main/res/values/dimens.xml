@@ -4,4 +4,6 @@
     <dimen name="margin_24">24dp</dimen>
     <dimen name="icon_productor_size">162dp</dimen>
     <dimen name="text_size">22sp</dimen>
+    <dimen name="text_size_16">16dp</dimen>
+    <dimen name="text_size_18">18sp</dimen>
 </resources>

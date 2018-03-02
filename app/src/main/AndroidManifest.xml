@@ -28,9 +28,15 @@
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".asistencia_tecnica.registration.RegisterUserActivity"
+            android:name=".asistencia_tecnica.registration.register_user.RegisterUserActivity"
             android:parentActivityName=".asistencia_tecnica.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".asistencia_tecnica.registration.RegisterProductorActivity"
+            android:configChanges="screenSize|orientation"
+            android:parentActivityName=".asistencia_tecnica.registration.register_user.RegisterUserActivity"
+            android:theme="@style/LoginTheme"
+            android:windowSoftInputMode="stateHidden" />
     </application>
 
 </manifest>

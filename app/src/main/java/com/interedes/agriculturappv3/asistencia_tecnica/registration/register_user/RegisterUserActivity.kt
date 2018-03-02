@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.registration
+package com.interedes.agriculturappv3.asistencia_tecnica.registration.register_user
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
