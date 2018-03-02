@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">AgriculturApp</string>
 
+    <!--MENU ACTIVITIES-->
+    <string name="title_menu">Menu</string>
+
     <!-- GLOBALES -->
     <string name="results_global_search">Mostrando %d Resultados</string>
     <string name="error_field_required">Campo Requerido</string>
+
 
     <!-- HOME -->
     <string name="title_ingresar">Ingresar</string>
@@ -15,4 +19,10 @@
     <string name="edit_text_correo">Correo Electrónico</string>
     <string name="edit_text_contrasena">Contraseña</string>
     <string name="snackbar_datos_incorrectos">Usuario o Contraseña Incorrectos</string>
+
+
+    <!-- Nav Drawer-->
+    <string name="nav_open">Abierto</string>
+    <string name="nav_close">Cerrado</string>
+    <string name="title_activity_settings">Settings</string>
 </resources>

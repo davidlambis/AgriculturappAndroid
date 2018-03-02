@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:gravity="center"
+android:orientation="vertical"
+android:padding="16dp">
+
+<de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/circleImageView"
+    android:layout_width="96dp"
+    android:layout_height="96dp"
+    android:src="@drawable/ic_registro"
+    app:civ_border_color="@color/white"
+    app:civ_border_width="2dp" />
+
+<TextView
+    android:id="@+id/tvNombreUsuario"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp"
+    android:gravity="center"
+    android:text="Nombre Usuario"
+    android:textColor="@color/light_green_800"
+    android:textSize="20sp" />
+
+<TextView
+    android:id="@+id/tvIdentificacion"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:gravity="center"
+    android:text="C.C. 12234234"
+    android:textStyle="bold"
+    android:textColor="@color/light_green_800"
+    android:textSize="12sp" />
+
+<TextView
+    android:id="@+id/tvTelefono"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:gravity="center"
+    android:textColor="@color/light_green_800"
+    android:textSize="16sp" />
+
+<TextView
+    android:id="@+id/tvProyectoUsuario"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp"
+    android:gravity="center"
+    android:text="AgriculturApp"
+    android:textColor="@color/black"
+    android:textSize="14sp" />
+
+<TextView
+    android:id="@+id/tvCiudadUsuario"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:drawableLeft="@drawable/ic_candado"
+    android:gravity="center"
+    android:textColor="@color/white" />
+
+</LinearLayout>
