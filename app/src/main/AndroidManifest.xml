@@ -37,6 +37,8 @@
             android:parentActivityName=".asistencia_tecnica.registration.register_user.RegisterUserActivity"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateHidden" />
+
+        <activity  android:theme="@style/AppTheme.NoActionBar" android:name=".asistencia_tecnica.activities.MenuMainActivity"></activity>
     </application>
 
 </manifest>
