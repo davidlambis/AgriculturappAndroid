@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" android:src="@drawable/fondo_general"
+        tools:ignore="ContentDescription"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_global">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:src="@drawable/ic_back_button"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                <EditText
+                    android:id="@+id/edtNombreFinca"
+                    style="@style/editText"
+                    android:drawableLeft="@drawable/ic_nombre_finca"
+                    android:drawableStart="@drawable/ic_nombre_finca"
+                    android:hint="@string/edit_text_nombre_finca"
+                    android:inputType="text" />
+
+
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.9"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <EditText
+                        android:id="@+id/edtLocalizacionFinca"
+                        style="@style/editText"
+                        android:drawableLeft="@drawable/ic_localizacion_finca"
+                        android:drawableStart="@drawable/ic_localizacion_finca"
+                        android:enabled="false"
+                        android:hint="@string/edit_text_localizacion_finca"
+                        android:inputType="text"/>
+                </android.support.design.widget.TextInputLayout>
+
+
+                <ImageView
+                    android:id="@+id/imageViewLocalizarFinca"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1"
+                    android:src="@drawable/ic_apuntador" />
+
+            </LinearLayout>
+
+            <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                android:id="@+id/spinnerTipoProducto"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:hint="@string/spinner_tipo_producto"
+                android:textAlignment="center"
+                android:textColorHint="@color/grey_900"
+                app:met_baseColor="@color/white"
+                app:met_floatingLabel="normal"
+                app:met_floatingLabelTextColor="@color/white"
+                app:met_primaryColor="@color/white"
+                app:met_textColor="@color/grey_900"
+                app:met_textColorHint="@color/grey_900" />
+
+        </LinearLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+            <EditText
+                android:id="@+id/edtNumeroHectareas"
+                style="@style/editText"
+                android:hint="@string/edit_text_numero_hectareas"
+                android:inputType="number"
+                android:textAlignment="center" />
+        </android.support.design.widget.TextInputLayout>
+
+    </ScrollView>
+
+</FrameLayout>
