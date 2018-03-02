@@ -21,4 +21,10 @@ class MainMenuFragment : Fragment() {
         return inflater.inflate(R.layout.content_fragment_main_menu, container, false)
     }
 
+
+
+
+
+
+
 }// Required empty public constructor

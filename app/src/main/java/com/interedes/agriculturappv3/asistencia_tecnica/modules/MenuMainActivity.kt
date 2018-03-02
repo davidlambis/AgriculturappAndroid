@@ -28,11 +28,9 @@ class MenuMainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSe
     }
 
     private fun setAdapterFragment() {
+        val fragmentManager = supportFragmentManager
         val MainMenuFragment = MainMenuFragment()
-        val ft = getSupportFragmentManager().beginTransaction()
-        AdapterFragmet(MainMenuFragment,ft)
-
-
+        AdapterFragmet(MainMenuFragment,fragmentManager, R.id.container)
     }
 
 
@@ -87,6 +85,19 @@ class MenuMainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSe
         return true
     }
 
+
+    override fun onBackPressed() {
+
+        val count = fragmentManager.backStackEntryCount
+
+        if (count == 0) {
+            super.onBackPressed()
+            fragmentManager.popBackStack()
+        } else {
+            fragmentManager.popBackStack()//No se porqué puse lo mismo O.o
+        }
+
+    }
 
 
     //endregion
