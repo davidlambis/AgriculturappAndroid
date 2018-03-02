@@ -61,14 +61,11 @@
 
                             <EditText
                                 android:id="@+id/edtCedula"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                style="@style/editText"
                                 android:drawableLeft="@drawable/ic_productor"
                                 android:drawableStart="@drawable/ic_productor"
                                 android:hint="@string/edit_text_cedula"
-                                android:inputType="number"
-                                android:textColor="@color/grey_luiyi"
-                                android:textColorHint="@color/grey_luiyi" />
+                                android:inputType="number" />
                         </android.support.design.widget.TextInputLayout>
 
                         <android.support.design.widget.TextInputLayout
@@ -79,14 +76,12 @@
 
                             <EditText
                                 android:id="@+id/edtContrasena"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                style="@style/editText"
                                 android:drawableLeft="@drawable/ic_candado"
-                                android:textColor="@color/grey_luiyi"
-                                android:textColorHint="@color/grey_luiyi"
                                 android:drawableStart="@drawable/ic_candado"
                                 android:hint="@string/edit_text_contrasena"
-                                android:inputType="textPassword" />
+                                android:inputType="textPassword"
+                                android:textColorHint="@color/grey_luiyi" />
                         </android.support.design.widget.TextInputLayout>
 
                         <android.support.design.widget.FloatingActionButton

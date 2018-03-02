@@ -5,18 +5,17 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/imageViewProductor"
+        android:id="@+id/imageViewRol"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:contentDescription="@null"
-        android:src="@drawable/ic_productor_big" />
+        android:contentDescription="@null" />
 
     <TextView
+        android:id="@+id/textViewRol"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textAlignment="center"
-        android:text="@string/title_productor"
         android:textColor="@color/grey_luiyi"
         android:textSize="20sp"
         android:textStyle="bold" />

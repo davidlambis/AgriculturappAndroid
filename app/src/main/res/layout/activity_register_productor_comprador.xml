@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".asistencia_tecnica.registration.register_productor_comprador.RegisterProductorCompradorActivity">
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".activities.productor.register_productor.RegisterProductorActivity">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/fondo_general"
+            tools:ignore="ContentDescription" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/margin_global">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/ivBackButtonRegisterProductor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_back_button" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_global"
+                        android:gravity="center"
+                        android:text="@string/title_register_productor"
+                        android:textColor="@color/grey_luiyi"
+                        android:textSize="@dimen/text_size"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/margin_global"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_productos" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginEnd="@dimen/margin_global"
+                            android:layout_marginLeft="@dimen/margin_global"
+                            android:layout_marginRight="@dimen/margin_global"
+                            android:layout_marginStart="@dimen/margin_global"
+                            android:src="@drawable/ic_productor_big" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:src="@drawable/ic_productos" />
+
+                    </RelativeLayout>
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/grey_luiyi"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtNombres"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_nombres"
+                            android:drawableStart="@drawable/ic_nombres"
+                            android:hint="@string/edit_text_nombres"
+                            android:inputType="text" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/grey_luiyi"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtApellidos"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_apellidos"
+                            android:drawableStart="@drawable/ic_apellidos"
+                            android:hint="@string/edit_text_apellidos"
+                            android:inputType="text" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/grey_luiyi"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtCedula"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_cedula"
+                            android:drawableStart="@drawable/ic_cedula"
+                            android:hint="@string/edit_text_cedula"
+                            android:inputType="number" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/grey_luiyi"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtCorreo"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_correo"
+                            android:drawableStart="@drawable/ic_correo"
+                            android:hint="@string/edit_text_correo"
+                            android:inputType="textEmailAddress" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/grey_luiyi"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtContrasena"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_candado"
+                            android:drawableStart="@drawable/ic_candado"
+                            android:hint="@string/edit_text_contrasena"
+                            android:inputType="textPassword" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/grey_luiyi"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtConfirmarContrasena"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_confirmar_contrasena"
+                            android:drawableStart="@drawable/ic_confirmar_contrasena"
+                            android:hint="@string/edit_text_confirmar_contrasena"
+                            android:inputType="textPassword" />
+                    </android.support.design.widget.TextInputLayout>
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/grey_luiyi"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtCelular"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_celular"
+                            android:drawableStart="@drawable/ic_celular"
+                            android:hint="@string/edit_text_numero_celular"
+                            android:inputType="number" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <!--
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtNombreFinca"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/ic_nombre_finca"
+                            android:drawablePadding="16dp"
+                            android:drawableStart="@drawable/ic_nombre_finca"
+                            android:hint="@string/edit_text_nombre_finca"
+                            android:inputType="text"
+                            android:padding="8dp"
+                            android:textColor="@color/white" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.9"
+                            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                            <EditText
+                                android:id="@+id/edtLocalizacionFinca"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:drawableLeft="@drawable/ic_localizacion_finca"
+                                android:drawablePadding="16dp"
+                                android:drawableStart="@drawable/ic_localizacion_finca"
+                                android:enabled="false"
+                                android:hint="@string/edit_text_localizacion_finca"
+                                android:inputType="text"
+                                android:padding="8dp"
+                                android:textColor="@color/white" />
+                        </android.support.design.widget.TextInputLayout>
+
+
+                        <ImageView
+                            android:id="@+id/imageViewLocalizarFinca"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.1"
+                            android:src="@drawable/ic_apuntador" />
+
+      -->
+                </LinearLayout>
+
+                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                    android:id="@+id/spinnerMetodoPago"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="0.5"
+                    android:drawableLeft="@drawable/ic_metodo_pago"
+                    android:drawableStart="@drawable/ic_metodo_pago"
+                    android:hint="@string/spinner_metodo_pago"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/grey_luiyi"
+                    app:met_baseColor="@color/grey_luiyi"
+                    app:met_floatingLabel="normal"
+                    app:met_floatingLabelTextColor="@color/grey_luiyi"
+                    app:met_primaryColor="@color/grey_luiyi"
+                    android:textSize="@dimen/text_size"
+                    app:met_textColor="@color/grey_luiyi"
+                    app:met_textColorHint="@color/grey_luiyi" />
+
+                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                    android:id="@+id/spinnerBanco"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="0.5"
+                    android:drawableLeft="@drawable/ic_banco"
+                    android:drawableStart="@drawable/ic_banco"
+                    android:hint="@string/spinner_banco"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/grey_luiyi"
+                    android:visibility="gone"
+                    app:met_baseColor="@color/grey_luiyi"
+                    app:met_floatingLabel="normal"
+                    android:textSize="@dimen/text_size"
+                    app:met_floatingLabelTextColor="@color/grey_luiyi"
+                    app:met_primaryColor="@color/grey_luiyi"
+                    app:met_textColor="@color/grey_luiyi"
+                    app:met_textColorHint="@color/grey_luiyi" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputNumeroCuenta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/grey_luiyi"
+                    android:visibility="gone"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <EditText
+                        android:id="@+id/edtNumeroCuenta"
+                        style="@style/editText"
+                        android:drawableLeft="@drawable/ic_cuenta"
+                        android:drawablePadding="16dp"
+                        android:drawableStart="@drawable/ic_cuenta"
+                        android:hint="@string/edit_text_numero_cuenta"
+                        android:inputType="number"
+                        android:textAlignment="center" />
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btnRegistrarProductor"
+                    style="@style/button"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/margin_global"
+                    android:background="@drawable/custom_button"
+                    android:text="@string/btn_registrar_productor" />
+
+            </LinearLayout>
+
+            <!-- </LinearLayout> -->
+
+        </ScrollView>
+
+    </FrameLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

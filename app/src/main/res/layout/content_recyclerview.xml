@@ -11,45 +11,48 @@
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
+
             <RelativeLayout
+                android:id="@+id/relativeLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/relativeLayout">
+                android:layout_height="wrap_content">
+
                 <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyle"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_alignParentLeft="true"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/txtResults"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginStart="13dp"
+                    android:layout_toEndOf="@+id/progressBar"
+                    android:layout_toRightOf="@+id/progressBar"
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
                     android:text="@string/results_global_search"
-                    android:textColor="@color/black"
-                    android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/progressBar"
-                    android:layout_toEndOf="@+id/progressBar"
-                    android:layout_marginLeft="13dp"
-                    android:layout_marginStart="13dp" />
+                    android:textColor="@color/black" />
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"
-                android:scrollbars="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/relativeLayout"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/relativeLayout"
+                android:scrollbars="vertical" />
         </RelativeLayout>
 
     </android.support.v4.widget.SwipeRefreshLayout>
