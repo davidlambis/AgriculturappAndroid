@@ -18,7 +18,7 @@ class AdapterFragmet {
         */
 
         val fragmentTransaction = ft.beginTransaction()
-        fragmentTransaction.replace(container, fragment, fragment::class.java!!.getName());
+        fragmentTransaction.replace(container, fragment, fragment::class.java.getName());
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction.commit();
 

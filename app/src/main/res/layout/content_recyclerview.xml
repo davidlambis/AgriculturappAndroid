@@ -30,6 +30,7 @@
                     android:layout_alignParentLeft="true"
                     android:visibility="gone" />
 
+                <!--
                 <TextView
                     android:id="@+id/txtResults"
                     android:layout_width="wrap_content"
@@ -42,7 +43,7 @@
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
                     android:text="@string/results_global_search"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black" /> -->
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView

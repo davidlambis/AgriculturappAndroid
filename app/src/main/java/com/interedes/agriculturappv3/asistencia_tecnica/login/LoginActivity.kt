@@ -28,6 +28,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun ingresar() {
+        progressBar.visibility = View.VISIBLE
         startActivity(Intent(this, MenuMainActivity::class.java))
     }
 }

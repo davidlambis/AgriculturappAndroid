@@ -1,7 +1,6 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.registration.register_user
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -11,9 +10,10 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import android.widget.Toast
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Rol
 import com.interedes.agriculturappv3.asistencia_tecnica.registration.register_productor_comprador.RegisterProductorCompradorActivity
-import com.interedes.agriculturappv3.asistencia_tecnica.registration.register_user.adapter.RegisterUserAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.registration.register_user.adapters.RegisterUserAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.services.listas.Listas
 import kotlinx.android.synthetic.main.activity_register_user.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 
@@ -29,9 +29,8 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     //region Métodos Interfaz
     override fun loadRoles() {
         recyclerView?.layoutManager = GridLayoutManager(this, 2)
-        val lista = ArrayList<Rol>()
-        lista.add(Rol("Productor", BitmapFactory.decodeResource(resources, R.drawable.ic_productor_big)))
-        lista.add(Rol("Comprador", BitmapFactory.decodeResource(resources, R.drawable.ic_comprador_big)))
+        val lista = Listas.listaRoles()
+        //Dentro ejecuta la acción del click en base a la position seleccionada
         val adapter = RegisterUserAdapter(lista) { position ->
             if (lista[position].Nombre.equals("Productor")) {
                 startActivity(Intent(this, RegisterProductorCompradorActivity::class.java))

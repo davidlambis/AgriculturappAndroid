@@ -26,6 +26,7 @@ class RegisterProductorCompradorActivity : AppCompatActivity(), RegisterProducto
 
     //region Métodos Interfaz
     override fun loadInfo() {
+        //Carga de Spinners de método de pago y despliegue de spinner dependientes de seleccionar bancco y número de cuenta.
         val itemsMetodoPago = arrayOf("Transferencia Bancaria", "Efectivo", "Otros")
         val metodoPagoList = ArrayList<String>()
         metodoPagoList.addAll(Arrays.asList(*itemsMetodoPago))
@@ -75,7 +76,7 @@ class RegisterProductorCompradorActivity : AppCompatActivity(), RegisterProducto
     }
 
     override fun registerProductor() {
-        Snackbar.make(container, "Productor Registrado exitosamente", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(container, "Registrado exitosamente", Snackbar.LENGTH_SHORT).show()
     }
 
     override fun disableInputs() {
