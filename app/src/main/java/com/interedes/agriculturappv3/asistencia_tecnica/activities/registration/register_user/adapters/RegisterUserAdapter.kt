@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.registration.register_user.adapters
+package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.adapters
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ItemLista
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Rol
 
 

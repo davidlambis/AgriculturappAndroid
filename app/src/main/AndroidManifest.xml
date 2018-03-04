@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".asistencia_tecnica.splash.SplashActivity"
+            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.splash.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -22,25 +22,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".asistencia_tecnica.home.HomeActivity"
+            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".asistencia_tecnica.login.LoginActivity"
+            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.login.LoginActivity"
             android:configChanges="screenSize|orientation"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".asistencia_tecnica.registration.register_user.RegisterUserActivity"
-            android:parentActivityName=".asistencia_tecnica.home.HomeActivity"
+            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.RegisterUserActivity"
+            android:parentActivityName="com.interedes.agriculturappv3.asistencia_tecnica.activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".asistencia_tecnica.registration.register_productor_comprador.RegisterProductorCompradorActivity"
+            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_productor_comprador.RegisterProductorCompradorActivity"
             android:configChanges="screenSize|orientation"
-            android:parentActivityName=".asistencia_tecnica.registration.register_user.RegisterUserActivity"
+            android:parentActivityName="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.RegisterUserActivity"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateHidden" />
 
-        <activity  android:theme="@style/AppTheme.NoActionBar" android:name=".asistencia_tecnica.modules.MenuMainActivity"></activity>
+        <activity  android:theme="@style/AppTheme.NoActionBar" android:name=".asistencia_tecnica.modules.main_menu.MenuMainActivity"></activity>
     </application>
 
 </manifest>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".asistencia_tecnica.registration.register_productor_comprador.RegisterProductorCompradorActivity">
+    tools:context=".asistencia_tecnica.activities.registration.register_productor_comprador.RegisterProductorCompradorActivity">
 
     <FrameLayout
         android:id="@+id/container"

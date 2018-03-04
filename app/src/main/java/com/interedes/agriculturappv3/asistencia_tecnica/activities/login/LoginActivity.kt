@@ -1,11 +1,11 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.login
+package com.interedes.agriculturappv3.asistencia_tecnica.activities.login
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.MenuMainActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MenuMainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {

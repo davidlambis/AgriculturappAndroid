@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".asistencia_tecnica.registration.register_user.RegisterUserActivity">
+    tools:context=".asistencia_tecnica.activities.registration.register_user.RegisterUserActivity">
 
     <FrameLayout
         android:id="@+id/container"

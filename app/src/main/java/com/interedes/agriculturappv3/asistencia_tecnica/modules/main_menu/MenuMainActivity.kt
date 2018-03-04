@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.modules
+package com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -7,9 +7,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MainMenuFragment
 import kotlinx.android.synthetic.main.activity_menu_main.*
-import com.interedes.agriculturappv3.asistencia_tecnica.services.AdapterFragmet
 
 
 class MenuMainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSelectedListener  {
@@ -30,7 +28,7 @@ class MenuMainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSe
     private fun setAdapterFragment() {
         val fragmentManager = supportFragmentManager
         val MainMenuFragment = MainMenuFragment()
-        AdapterFragmet(MainMenuFragment,fragmentManager, R.id.container)
+        AdapterFragmetMenu(MainMenuFragment, fragmentManager, R.id.container)
     }
 
 
@@ -51,7 +49,7 @@ class MenuMainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSe
         mActionBarDrawerToggle.syncState()
         navigationView.setNavigationItemSelectedListener(this)
         drawer_layout.addDrawerListener(mActionBarDrawerToggle)
-        val header = navigationView.getHeaderView(0)
+       // val header = navigationView.getHeaderView(0)
        // val headerViewHolder = HeaderViewHolder(header)
        // headerViewHolder.tvNombreUsuario.setText(usuarioLogued.getNombre() + " " + usuarioLogued.getApellido())
        // headerViewHolder.tvCCUsuario.setText("C.C " + usuarioLogued.getCedula())

@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.home
+package com.interedes.agriculturappv3.asistencia_tecnica.activities.home
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.view.View
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.login.LoginActivity
-import com.interedes.agriculturappv3.asistencia_tecnica.registration.register_user.RegisterUserActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.LoginActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.RegisterUserActivity
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity(), View.OnClickListener {

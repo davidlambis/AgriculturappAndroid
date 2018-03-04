@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.services
+package com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentTransaction
 /**
  * Created by EnuarMunoz on 2/03/18.
  */
-class AdapterFragmet {
+class AdapterFragmetMenu {
 
     constructor(fragment: Fragment, ft: FragmentManager, container: Int)  {
 /*
@@ -19,7 +19,7 @@ class AdapterFragmet {
 
         val fragmentTransaction = ft.beginTransaction()
         fragmentTransaction.replace(container, fragment, fragment::class.java.getName());
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.commit();
 
         //ft?.beginTransaction()

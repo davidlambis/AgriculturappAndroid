@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.registration.register_productor_comprador
+package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_productor_comprador
 
 import android.content.Intent
 import android.os.Build

@@ -1,10 +1,12 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.services.listas
 
-import android.graphics.Bitmap
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.ItemLista
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Rol
 
+/**
+ * Created by EnuarMunoz on 3/03/18.
+ */
 
 class Listas {
 
@@ -24,9 +26,5 @@ class Listas {
             lista_menu_productor.add(ItemLista("Salir", Imagen = R.drawable.ic_salir_500, Identificador = "salir"))
             return lista_menu_productor
         }
-
-
-
-
     }
 }
