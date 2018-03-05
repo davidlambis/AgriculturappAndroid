@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
+    android:focusable="true"
     android:focusableInTouchMode="true"
     tools:context=".asistencia_tecnica.modules.main_menu.MenuMainActivity">
 
@@ -34,14 +35,22 @@
         <!-- <include layout="@layout/content_main_menu" />
          app:layout_behavior="@string/appbar_scrolling_view_behavior"
         -->
-        <FrameLayout
-            android:id="@+id/container"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:touchscreenBlocksFocus="false"
+            android:background="@drawable/fondo_general"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        </FrameLayout>
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+
+            </android.support.v4.widget.NestedScrollView>
+
+        </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 

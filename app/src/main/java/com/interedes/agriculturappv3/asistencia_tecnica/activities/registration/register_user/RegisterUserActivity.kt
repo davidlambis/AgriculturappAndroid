@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_productor_comprador.RegisterProductorCompradorActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.adapters.RegisterUserAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.services.listas.Listas
 import kotlinx.android.synthetic.main.activity_register_user.*
 import kotlinx.android.synthetic.main.content_recyclerview.*

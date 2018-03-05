@@ -4,10 +4,6 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.ItemLista
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Rol
 
-/**
- * Created by EnuarMunoz on 3/03/18.
- */
-
 class Listas {
 
     companion object {
@@ -26,5 +22,13 @@ class Listas {
             lista_menu_productor.add(ItemLista("Salir", Imagen = R.drawable.ic_salir_500, Identificador = "salir"))
             return lista_menu_productor
         }
+
+        /* fun listaAsistenciaTecnicaProductor(): ArrayList<ItemLista> {
+             val lista_asistencia_tecnica_productor = ArrayList<ItemLista>()
+             lista_asistencia_tecnica_productor.add(ItemLista("Mis Unidades Productivas", Imagen =, Identificador = "mis_unidades_productivas"))
+             lista_asistencia_tecnica_productor.add(ItemLista("Mis Unidades Productivas", Imagen =, Identificador = "mis_unidades_productivas"))
+             lista_asistencia_tecnica_productor.add(ItemLista("Mis Unidades Productivas", Imagen =, Identificador = "mis_unidades_productivas"))
+             return lista_asistencia_tecnica_productor
+         }*/
     }
 }

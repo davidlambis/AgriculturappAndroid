@@ -10,8 +10,10 @@ import android.view.ViewGroup
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.AccountingFragment
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.services.listas.Listas
-import kotlinx.android.synthetic.main.content_recyclerview.*
+import kotlinx.android.synthetic.main.fragment_main_menu.*
 
 
 /**
@@ -22,7 +24,7 @@ class MainMenuFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.content_fragment_main_menu, container, false)
+        return inflater.inflate(R.layout.fragment_main_menu, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,7 +36,12 @@ class MainMenuFragment : Fragment() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
         val lista = Listas.listaMenuProductor()
         val adapter = SingleAdapter(lista) { position ->
-
+            if (lista[position].Identificador.equals("asistencia_tecnica")) {
+                (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())
+            }
+            /*else if (lista[position].Identificador.equals("contabilidad")) {
+                (activity as MenuMainActivity).replaceFragment(AccountingFragment())
+            }*/
         }
         recyclerView?.adapter = adapter
 
