@@ -7,6 +7,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.util.FragmentMap
 import kotlinx.android.synthetic.main.activity_menu_main.*
 
 
@@ -27,8 +28,9 @@ class MenuMainActivity : AppCompatActivity(),  NavigationView.OnNavigationItemSe
 
     private fun setAdapterFragment() {
         val fragmentManager = supportFragmentManager
-        val MainMenuFragment = MainMenuFragment()
-        AdapterFragmetMenu(MainMenuFragment, fragmentManager, R.id.container)
+        //val MainMenuFragment = MainMenuFragment()
+        val fragmentMap = FragmentMap()
+        AdapterFragmetMenu(fragmentMap, fragmentManager, R.id.container)
     }
 
 

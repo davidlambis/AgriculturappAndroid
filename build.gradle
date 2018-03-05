@@ -61,5 +61,8 @@ ext {
     //Firebase
     firebaseVersion = '11.8.0'
 
+    //Maps
+    maps="11.8.0"
+
 }
 
