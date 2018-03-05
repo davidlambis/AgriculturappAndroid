@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/fondo_general" />
+    <item android:drawable="@drawable/fondo_splash" />
+
+    <item android:top="@dimen/margin_24">
+        <bitmap
+            android:gravity="top"
+            android:src="@drawable/logo_agr_app_big" />
+    </item>
+
 
     <item>
         <bitmap
             android:gravity="center_vertical"
-            android:src="@drawable/logo_agr_app" />
-    </item>
-
-
-    <item android:bottom="120dp">
-        <bitmap
-            android:gravity="bottom"
-            android:src="@drawable/splash_text_small" />
+            android:src="@drawable/splash_text_mediano" />
     </item>
 
 </layer-list>

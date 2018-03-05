@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import android.widget.Toast
@@ -42,12 +43,12 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     }
 
     override fun navigateToParentActivity() {
-        imageViewBackButton?.setColorFilter(resources.getColor(R.color.colorPrimary))
+        imageViewBackButton?.setColorFilter(ContextCompat.getColor(this.applicationContext, R.color.colorPrimary))
         returnToParentActivity()
     }
 
     override fun limpiarCambios() {
-        imageViewBackButton?.setColorFilter(resources.getColor(R.color.grey_luiyi))
+        imageViewBackButton?.setColorFilter(ContextCompat.getColor(this.applicationContext, R.color.grey_luiyi))
     }
     //endregion
 

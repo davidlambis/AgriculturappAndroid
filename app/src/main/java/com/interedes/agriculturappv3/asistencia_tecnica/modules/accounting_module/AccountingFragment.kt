@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_modu
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -45,7 +46,8 @@ class AccountingFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.ivBackButton -> {
-                ivBackButton?.setColorFilter(resources.getColor(R.color.colorPrimary))
+                //ivBackButton?.setColorFilter(resources.getColor(R.color.colorPrimary))
+                ivBackButton?.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).replaceCleanFragment(MainMenuFragment())
                 //fragmentManager?.popBackStackImmediate()
             }

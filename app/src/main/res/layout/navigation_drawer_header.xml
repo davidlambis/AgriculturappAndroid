@@ -11,7 +11,7 @@
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:src="@drawable/ic_registro"
-        app:civ_border_color="@color/white"
+        app:civ_border_color="@color/grey_luiyi"
         app:civ_border_width="2dp" />
 
     <TextView
@@ -22,7 +22,7 @@
         android:layout_marginTop="5dp"
         android:gravity="center"
         android:text="Nombre Usuario"
-        android:textColor="@color/light_green_800"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 
     <TextView
@@ -32,7 +32,7 @@
         android:layout_marginBottom="5dp"
         android:gravity="center"
         android:text="C.C. 12234234"
-        android:textColor="@color/light_green_800"
+        android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="bold" />
 
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:textColor="@color/light_green_800"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
     <TextView
@@ -53,7 +53,7 @@
         android:layout_marginTop="5dp"
         android:gravity="center"
         android:text="AgriculturApp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="14sp" />
 
     <TextView

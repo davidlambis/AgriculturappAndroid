@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecn
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -35,8 +36,8 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
 
     private fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
-        val lista = Listas.listaRoles()
-        val adapter = RegisterUserAdapter(lista) { position ->
+        val lista = Listas.listaAsistenciaTecnicaProductor()
+        val adapter = SingleAdapter(lista) { position ->
 
         }
         recyclerView?.adapter = adapter
@@ -46,7 +47,7 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.ivBackButton -> {
-                ivBackButton.setColorFilter(resources.getColor(R.color.colorPrimary))
+                ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 /*val mainMenuFragment = MainMenuFragment()
                 (activity as MenuMainActivity).replaceFragment(mainMenuFragment)*/
                 //fragmentManager?.popBackStackImmediate()
@@ -57,7 +58,7 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        ivBackButton?.setColorFilter(resources.getColor(R.color.grey_luiyi))
+        ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.grey_luiyi))
     }
 
 

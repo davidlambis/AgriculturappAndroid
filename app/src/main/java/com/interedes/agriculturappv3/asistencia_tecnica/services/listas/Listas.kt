@@ -23,12 +23,12 @@ class Listas {
             return lista_menu_productor
         }
 
-        /* fun listaAsistenciaTecnicaProductor(): ArrayList<ItemLista> {
-             val lista_asistencia_tecnica_productor = ArrayList<ItemLista>()
-             lista_asistencia_tecnica_productor.add(ItemLista("Mis Unidades Productivas", Imagen =, Identificador = "mis_unidades_productivas"))
-             lista_asistencia_tecnica_productor.add(ItemLista("Mis Unidades Productivas", Imagen =, Identificador = "mis_unidades_productivas"))
-             lista_asistencia_tecnica_productor.add(ItemLista("Mis Unidades Productivas", Imagen =, Identificador = "mis_unidades_productivas"))
-             return lista_asistencia_tecnica_productor
-         }*/
+        fun listaAsistenciaTecnicaProductor(): ArrayList<ItemLista> {
+            val lista_asistencia_tecnica_productor = ArrayList<ItemLista>()
+            lista_asistencia_tecnica_productor.add(ItemLista("Mis Unidades Productivas", Imagen = R.drawable.ic_unidad_productiva, Identificador = "mis_unidades_productivas"))
+            lista_asistencia_tecnica_productor.add(ItemLista("Mis Lotes", Imagen = R.drawable.ic_lote, Identificador = "mis_lotes"))
+            lista_asistencia_tecnica_productor.add(ItemLista("Mis Cultivos", Imagen = R.drawable.ic_cultivos, Identificador = "mis_cultivos"))
+            return lista_asistencia_tecnica_productor
+        }
     }
 }

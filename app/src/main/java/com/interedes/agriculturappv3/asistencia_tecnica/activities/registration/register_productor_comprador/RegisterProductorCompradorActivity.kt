@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
+import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -67,11 +68,11 @@ class RegisterProductorCompradorActivity : AppCompatActivity(), RegisterProducto
     }
 
     override fun limpiarCambios() {
-        ivBackButtonRegisterProductor?.setColorFilter(resources.getColor(R.color.grey_luiyi))
+        ivBackButtonRegisterProductor?.setColorFilter(ContextCompat.getColor(this, R.color.grey_luiyi))
     }
 
     override fun navigateToParentActivity() {
-        ivBackButtonRegisterProductor?.setColorFilter(resources.getColor(R.color.colorPrimary))
+        ivBackButtonRegisterProductor?.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary))
         returnToParentActivity()
     }
 
