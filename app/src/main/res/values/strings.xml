@@ -35,6 +35,8 @@
 
     <!-- REGISTRAR PRODUCTOR -->
     <string name="title_register_productor">¡Te estás registrando como productor!</string>
+    <string name="text_registerUP">Registro Unidad Productiva</string>
+    <string name="edit_text_description">Breve descripción de tu finca</string>
     <string name="edit_text_nombre_finca">Nombre de Unidad Productiva</string>
     <string name="edit_text_localizacion_finca">Localización de Unidad Productiva</string>
     <string name="btn_registrar_productor">Registrar</string>
@@ -55,4 +57,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- MAPS API -->
+    <string name="maps">AIzaSyAyaSYS3ZIQ8BMeT_0P9GQL-n6hlndiqTg</string>
 </resources>
