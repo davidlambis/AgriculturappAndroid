@@ -39,6 +39,10 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
         val lista = Listas.listaAsistenciaTecnicaProductor()
         val adapter = SingleAdapter(lista) { position ->
 
+            if (lista[position].Identificador.equals("mis_lotes")) {
+                (activity as MenuMainActivity).replaceFragment(LotesFragment())
+            }
+
         }
         recyclerView?.adapter = adapter
     }

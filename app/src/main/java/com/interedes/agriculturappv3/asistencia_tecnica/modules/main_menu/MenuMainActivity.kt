@@ -1,5 +1,9 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -7,15 +11,19 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
-import android.view.KeyEvent
 import android.view.MenuItem
+import android.widget.Toast
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Coords
+import com.interedes.agriculturappv3.asistencia_tecnica.services.coords.CoordsService
 import kotlinx.android.synthetic.main.activity_menu_main.*
-import com.raizlabs.android.dbflow.sql.language.Method.count
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+
+    var coordsService: CoordsService? = null
+    var coordsGlobal:Coords?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +32,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         setToolbarInjection()
         setNavDrawerInjection()
         setAdapterFragment()
+
+        this.coordsService = CoordsService(this)
 
         //fragmentManager.beginTransaction().add(R.id.container, AccountingFragment()).commit()
     }
@@ -121,6 +131,42 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         fragmentTransaction?.replace(R.id.container, fragment)
         fragmentTransaction?.addToBackStack(null)
         fragmentTransaction?.commit()
+    }
+
+
+
+
+
+
+    //region BroadcastReceiver LOCALIZACION
+    ///Escucha Los valores enviados por Serial Port desde Menu Activity
+    private val mNotificationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val lat = intent.extras!!.getDouble("latitud");
+            val long = intent.extras!!.getDouble("longitud");
+            coordsGlobal= Coords(lat, long,"");
+            MessageCoordsOk(coordsGlobal);
+        }
+    }
+
+
+    private fun MessageCoordsOk(coords:Coords?) {
+       // Toast.makeText(this,""+coords?.Latitud,Toast.LENGTH_SHORT).show()
+    }
+
+
+
+    fun getLocation(): Coords {
+        val coords= Coords(coordsGlobal?.Latitud, coordsGlobal?.Longitud,"");
+        return coords;
+    }
+
+    /*----------------------------------------------------------------------------------------------------------------------*/
+    public override fun onResume() {
+        super.onResume()
+
+        registerReceiver(mNotificationReceiver, IntentFilter("LOCATION"))
+
     }
 
 

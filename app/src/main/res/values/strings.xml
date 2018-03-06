@@ -59,7 +59,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- MAPS API -->
-    <string name="maps">AIzaSyAyaSYS3ZIQ8BMeT_0P9GQL-n6hlndiqTg</string>
+    <string name="maps">AIzaSyAckGMBmoQKgZeJwEP6bjK5jmHldsubiOA</string>
 
     <!-- Alerts/Errors -->
     <string name="alert">Alerta</string>
@@ -68,4 +68,10 @@
     <string name="GpsOutService">Proveedor fuera de servicio de localización, intenta más
     tarde.</string>
     <string name="GpsTempUnavailable">Temporalmente no disponible el servicio de GPS.</string>
+
+
+    <!--GPS STRINGS-->
+    <string name="gps_disabled">Activar GPS</string>
+    <string name="please_enable_gps">Necesitas habilitar el GPS</string>
+    <string name="confirm">Aceptar</string>
 </resources>
