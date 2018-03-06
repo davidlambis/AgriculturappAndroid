@@ -40,13 +40,13 @@
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.RegisterUserActivity"
+            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_rol.RegisterRolActivity"
             android:parentActivityName="com.interedes.agriculturappv3.asistencia_tecnica.activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_productor_comprador.RegisterProductorCompradorActivity"
+            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.ui.RegisterUserActivity"
             android:configChanges="screenSize|orientation"
-            android:parentActivityName="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.RegisterUserActivity"
+            android:parentActivityName="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_rol.RegisterRolActivity"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateHidden" />
 

@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user
+package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_rol
 
 import android.content.Intent
 import android.os.Build
@@ -9,20 +9,18 @@ import android.support.v4.app.TaskStackBuilder
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
-import android.widget.Toast
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_productor_comprador.RegisterProductorCompradorActivity
-import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.adapters.RegisterUserAdapter
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.ui.RegisterUserActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_rol.adapters.RegisterRolAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.services.listas.Listas
-import kotlinx.android.synthetic.main.activity_register_user.*
+import kotlinx.android.synthetic.main.activity_register_rol.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 
-class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClickListener {
+class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register_user)
+        setContentView(R.layout.activity_register_rol)
         loadRoles()
         imageViewBackButton?.setOnClickListener(this)
     }
@@ -32,11 +30,15 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         recyclerView?.layoutManager = GridLayoutManager(this, 2)
         val lista = Listas.listaRoles()
         //Dentro ejecuta la acción del click en base a la position seleccionada
-        val adapter = RegisterUserAdapter(lista) { position ->
+        val adapter = RegisterRolAdapter(lista) { position ->
             if (lista[position].Nombre.equals("Productor")) {
-                startActivity(Intent(this, RegisterProductorCompradorActivity::class.java))
+                val i = Intent(this, RegisterUserActivity::class.java)
+                i.putExtra("rol", "productor")
+                startActivity(i)
             } else if (lista[position].Nombre.equals("Comprador")) {
-                Toast.makeText(this, "Go to Comprador", Toast.LENGTH_SHORT).show()
+                val j = Intent(this, RegisterUserActivity::class.java)
+                j.putExtra("rol", "comprador")
+                startActivity(j)
             }
         }
         recyclerView?.adapter = adapter

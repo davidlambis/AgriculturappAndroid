@@ -35,6 +35,7 @@
 
     <!-- REGISTRAR PRODUCTOR -->
     <string name="title_register_productor">¡Te estás registrando como productor!</string>
+    <string name="title_register_comprador">¡Te estás registrando como comprador!</string>
     <string name="text_registerUP">Registro Unidad Productiva</string>
     <string name="edit_text_description">Breve descripción de tu finca</string>
     <string name="edit_text_nombre_finca">Nombre de Unidad Productiva</string>
@@ -54,6 +55,7 @@
     <string name="spinner_metodo_pago">Método de Pago</string>
     <string name="spinner_banco">Seleccionar Banco</string>
     <string name="edit_text_numero_cuenta">Número de Cuenta</string>
+    <string name="registro_exitoso">Registrado Éxitosamente</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -68,4 +70,7 @@
     <string name="GpsOutService">Proveedor fuera de servicio de localización, intenta más
     tarde.</string>
     <string name="GpsTempUnavailable">Temporalmente no disponible el servicio de GPS.</string>
+
+
+
 </resources>

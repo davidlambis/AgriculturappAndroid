@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.adapters.RegisterUserAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MainMenuFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MenuMainActivity
