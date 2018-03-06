@@ -77,5 +77,21 @@
     <!--GPS STRINGS-->
     <string name="gps_disabled">Activar GPS</string>
     <string name="please_enable_gps">Necesitas habilitar el GPS</string>
+
+
+    <!--NAMES LOTE-->
+    <string name="add_lote">Agtegar Lote</string>
+    <string name="message_add_lote">Digite los todos lo campos</string>
+
+
+    <!--GLobals-->
+    <string name="coordenadas">Coordenadas</string>
+    <string name="name">Nombre</string>
+    <string name="description">Descripcion</string>
+    <string name="area">Area</string>
     <string name="confirm">Aceptar</string>
+    <string name="close">Cerrar</string>
+
+
+
 </resources>

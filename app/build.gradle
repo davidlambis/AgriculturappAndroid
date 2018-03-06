@@ -69,6 +69,12 @@ dependencies {
     implementation "com.google.firebase:firebase-storage:$rootProject.ext.firebaseVersion"
     implementation "com.google.firebase:firebase-messaging:$rootProject.ext.firebaseVersion"
 
+    compile "com.google.android.gms:play-services:$rootProject.ext.firebaseVersion"
+    compile "com.google.android.gms:play-services-maps:$rootProject.ext.firebaseVersion"
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
+
+
+
     //Maps
     compile 'com.github.bkhezry:MapDrawingTools:1.1.0'
     def SupportLibVersion = '25.4.0'
@@ -87,20 +93,3 @@ kapt {
     generateStubs = true
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-apply plugin: 'com.google.gms.google-services'

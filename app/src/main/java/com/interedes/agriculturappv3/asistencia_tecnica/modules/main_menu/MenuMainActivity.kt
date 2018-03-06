@@ -21,20 +21,15 @@ import kotlinx.android.synthetic.main.activity_menu_main.*
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-
-    var coordsService: CoordsService? = null
-    var coordsGlobal:Coords?=null
-
+    //var coordsService: CoordsService? = null
+    //var coordsGlobal:Coords?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_main)
-
         setToolbarInjection()
         setNavDrawerInjection()
         setAdapterFragment()
-
-        this.coordsService = CoordsService(this)
-
+        //this.coordsService = CoordsService(this)
         //fragmentManager.beginTransaction().add(R.id.container, AccountingFragment()).commit()
     }
 
@@ -134,13 +129,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
 
-
-
-
-
     //region BroadcastReceiver LOCALIZACION
     ///Escucha Los valores enviados por Serial Port desde Menu Activity
-    private val mNotificationReceiver = object : BroadcastReceiver() {
+    /*private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val lat = intent.extras!!.getDouble("latitud");
             val long = intent.extras!!.getDouble("longitud");
@@ -148,26 +139,22 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             MessageCoordsOk(coordsGlobal);
         }
     }
-
-
     private fun MessageCoordsOk(coords:Coords?) {
        // Toast.makeText(this,""+coords?.Latitud,Toast.LENGTH_SHORT).show()
     }
-
-
-
     fun getLocation(): Coords {
         val coords= Coords(coordsGlobal?.Latitud, coordsGlobal?.Longitud,"");
         return coords;
     }
 
-    /*----------------------------------------------------------------------------------------------------------------------*/
-    public override fun onResume() {
+     public override fun onResume() {
         super.onResume()
 
         registerReceiver(mNotificationReceiver, IntentFilter("LOCATION"))
 
     }
+    */
+    /*----------------------------------------------------------------------------------------------------------------------*/
 
 
 }

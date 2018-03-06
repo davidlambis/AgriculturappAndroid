@@ -64,6 +64,7 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
         this.stopSelf()
         if (locationManager != null) {
             locationManager!!.removeUpdates(this)
+            serviceLocalizacionRunBool=false;
         }
     }
 
@@ -125,6 +126,7 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
     }
 
     override fun onProviderDisabled(s: String) {
+        closeService();
         //Toast.makeText(context,"GPS Desactivado",Toast.LENGTH_SHORT).show();
     }
 
