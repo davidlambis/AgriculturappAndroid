@@ -61,6 +61,10 @@
     <!-- MAPS API -->
     <string name="maps">AIzaSyAyaSYS3ZIQ8BMeT_0P9GQL-n6hlndiqTg</string>
 
+    <!-- BUTTONS MAPS -->
+    <string name="draw_polygon">Dibujar Polígono</string>
+    <string name="draw_points">Dibujar Puntos</string>
+
     <!-- Alerts/Errors -->
     <string name="alert">Alerta</string>
     <string name="msgAlertConn">No tienes conexión a Internet, verifica tu conexión!</string>

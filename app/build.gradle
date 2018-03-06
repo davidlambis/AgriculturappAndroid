@@ -68,12 +68,18 @@ dependencies {
     implementation "com.google.firebase:firebase-storage:$rootProject.ext.firebaseVersion"
     implementation "com.google.firebase:firebase-messaging:$rootProject.ext.firebaseVersion"
 
+    //Maps
+    compile 'com.github.bkhezry:MapDrawingTools:1.1.0'
+    def SupportLibVersion = '25.4.0'
+    compile "com.android.support:appcompat-v7:$SupportLibVersion",
+            "com.android.support:design:$SupportLibVersion"
+    compile ('com.github.bkhezry:ExtraMapUtils:v1.2.0'){
+        exclude group: 'com.android.support'
+    }
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
-    //Maps
-    implementation "com.google.android.gms:play-services-maps:$rootProject.ext.maps"
 }
 
 kapt {
