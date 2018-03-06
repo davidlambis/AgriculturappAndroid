@@ -10,8 +10,8 @@
         android:id="@+id/circleImageView"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:src="@drawable/ic_registro"
-        app:civ_border_color="@color/grey_luiyi"
+        android:src="@drawable/ic_registro_nav_drawer"
+        app:civ_border_color="@color/white"
         app:civ_border_width="2dp" />
 
     <TextView
@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:drawableLeft="@drawable/ic_candado"
+        android:drawableLeft="@drawable/ic_candado_nav_drawer"
         android:gravity="center"
         android:textColor="@color/white" />
 

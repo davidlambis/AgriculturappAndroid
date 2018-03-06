@@ -91,6 +91,7 @@
                             android:layout_gravity="end"
                             android:layout_margin="@dimen/margin_global"
                             android:clickable="true"
+                            android:focusable="true"
                             android:src="@drawable/icon_login_white"
                             android:theme="@style/FloatingButton"
                             app:backgroundTint="@color/colorPrimaryDark"

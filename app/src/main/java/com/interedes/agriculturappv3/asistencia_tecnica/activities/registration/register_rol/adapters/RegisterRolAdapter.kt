@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.adapters
+package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_rol.adapters
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.Rol
 
 
 //Recibe directamente la lista y el listener del click
-class RegisterUserAdapter(val lista: ArrayList<Rol>, val listener: (Int) -> Unit) : RecyclerView.Adapter<RegisterUserAdapter.ViewHolder>() {
+class RegisterRolAdapter(val lista: ArrayList<Rol>, val listener: (Int) -> Unit) : RecyclerView.Adapter<RegisterRolAdapter.ViewHolder>() {
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
