@@ -8,7 +8,6 @@
     <com.google.android.gms.maps.MapView android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
     <Button
         android:id="@+id/btnFinMap"
         android:layout_width="wrap_content"
@@ -17,5 +16,4 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:text="Finalizar" />
-
 </RelativeLayout>

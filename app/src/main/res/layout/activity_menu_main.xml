@@ -37,19 +37,12 @@
         -->
 
         <LinearLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/fondo_general"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <android.support.v4.widget.NestedScrollView
-                android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fillViewport="true">
-
-            </android.support.v4.widget.NestedScrollView>
-
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:orientation="vertical">
         </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>

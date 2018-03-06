@@ -35,7 +35,6 @@
 
     <!-- REGISTRAR PRODUCTOR -->
     <string name="title_register_productor">¡Te estás registrando como productor!</string>
-    <string name="title_register_comprador">¡Te estás registrando como comprador!</string>
     <string name="text_registerUP">Registro Unidad Productiva</string>
     <string name="edit_text_description">Breve descripción de tu finca</string>
     <string name="edit_text_nombre_finca">Nombre de Unidad Productiva</string>
@@ -55,13 +54,16 @@
     <string name="spinner_metodo_pago">Método de Pago</string>
     <string name="spinner_banco">Seleccionar Banco</string>
     <string name="edit_text_numero_cuenta">Número de Cuenta</string>
-    <string name="registro_exitoso">Registrado Éxitosamente</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- MAPS API -->
-    <string name="maps">AIzaSyAyaSYS3ZIQ8BMeT_0P9GQL-n6hlndiqTg</string>
+    <string name="maps">AIzaSyAckGMBmoQKgZeJwEP6bjK5jmHldsubiOA</string>
+
+    <!-- BUTTONS MAPS -->
+    <string name="draw_polygon">Dibujar Polígono</string>
+    <string name="draw_points">Dibujar Puntos</string>
 
     <!-- Alerts/Errors -->
     <string name="alert">Alerta</string>
@@ -72,5 +74,8 @@
     <string name="GpsTempUnavailable">Temporalmente no disponible el servicio de GPS.</string>
 
 
-
+    <!--GPS STRINGS-->
+    <string name="gps_disabled">Activar GPS</string>
+    <string name="please_enable_gps">Necesitas habilitar el GPS</string>
+    <string name="confirm">Aceptar</string>
 </resources>
