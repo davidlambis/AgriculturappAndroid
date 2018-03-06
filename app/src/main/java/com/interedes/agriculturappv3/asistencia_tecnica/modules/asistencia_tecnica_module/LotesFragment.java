@@ -117,7 +117,7 @@ public class LotesFragment extends Fragment implements OnMapReadyCallback {
             mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.getUiSettings().setZoomGesturesEnabled(true);
 
-
+/*
             PolygonOptions rectOptions = new PolygonOptions()
                     .add(new LatLng(37.35, -122.0),
                             new LatLng(37.45, -122.0),
@@ -126,7 +126,7 @@ public class LotesFragment extends Fragment implements OnMapReadyCallback {
                             new LatLng(37.35, -122.0));
 
 // Get back the mutable Polygon
-            Polygon polygon = mMap.addPolygon(rectOptions);
+            Polygon polygon = mMap.addPolygon(rectOptions);*/
 
             LatLng positionInitial = new LatLng(4.565473550710278, -74.058837890625);
             /// mMap.addMarker(new MarkerOptions().position(positionInitial).title("Ecuador"));

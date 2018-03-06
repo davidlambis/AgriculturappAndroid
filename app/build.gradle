@@ -63,6 +63,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofit"
 
     //Firebase
+    //noinspection GradleCompatible
     implementation "com.google.firebase:firebase-auth:$rootProject.ext.firebaseVersion"
     implementation "com.google.firebase:firebase-database:$rootProject.ext.firebaseVersion"
     implementation "com.google.firebase:firebase-storage:$rootProject.ext.firebaseVersion"
