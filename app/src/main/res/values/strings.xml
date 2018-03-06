@@ -36,6 +36,8 @@
     <!-- REGISTRAR PRODUCTOR -->
     <string name="title_register_productor">¡Te estás registrando como productor!</string>
     <string name="text_registerUP">Registro Unidad Productiva</string>
+    <string name="title_register_comprador">¡Te estás registrando como comprador!</string>
+    <string name="registro_exitoso">Registrado Éxitosamente</string>
     <string name="edit_text_description">Breve descripción de tu finca</string>
     <string name="edit_text_nombre_finca">Nombre de Unidad Productiva</string>
     <string name="edit_text_localizacion_finca">Localización de Unidad Productiva</string>

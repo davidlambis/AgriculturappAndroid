@@ -43,6 +43,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
         //Presenter
         presenter = RegisterUserPresenterImpl(this)
+        (presenter as RegisterUserPresenterImpl).onCreate()
 
     }
 
@@ -265,6 +266,11 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     override fun onResume() {
         super.onResume()
         limpiarCambios()
+    }
+
+    override fun onDestroy() {
+        presenter?.onDestroy()
+        super.onDestroy()
     }
     //endregion
 }
