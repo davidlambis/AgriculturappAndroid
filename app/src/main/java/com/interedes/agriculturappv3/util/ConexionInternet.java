@@ -4,11 +4,11 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-class ConexionInternet {
+public class ConexionInternet {
 
-    ConexionInternet() {}
+    public ConexionInternet() {}
 
-    boolean conectadoWifi(Context context){
+    public boolean conectadoWifi(Context context){
         ConnectivityManager conexion = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (conexion != null) {
@@ -22,7 +22,7 @@ class ConexionInternet {
         return false;
     }
 
-    boolean conectadoDatos(Context context) {
+    public boolean conectadoDatos(Context context) {
         ConnectivityManager conexion = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (conexion != null) {

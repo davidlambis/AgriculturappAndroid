@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.MapsActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.LoteFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MainMenuFragment
@@ -41,6 +43,9 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
 
             if (lista[position].Identificador.equals("mis_lotes")) {
                 (activity as MenuMainActivity).replaceFragment(LoteFragment())
+            }
+            if (lista[position].Identificador.equals("mis_unidades_productivas")){
+                startActivity(Intent(activity, MapsActivity::class.java))
             }
 
         }

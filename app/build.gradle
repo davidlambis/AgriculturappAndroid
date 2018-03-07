@@ -79,7 +79,7 @@ dependencies {
 
     //Maps
     compile 'com.github.bkhezry:MapDrawingTools:1.1.0'
-    def SupportLibVersion = '25.4.0'
+    def SupportLibVersion = '27.1.0'
     compile "com.android.support:appcompat-v7:$SupportLibVersion",
             "com.android.support:design:$SupportLibVersion"
     compile ('com.github.bkhezry:ExtraMapUtils:v1.2.0'){

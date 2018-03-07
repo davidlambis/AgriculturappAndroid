@@ -1,7 +1,14 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities;
 
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -10,7 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.bkhezry.extramaputils.builder.ExtraMarkerBuilder;
 import com.github.bkhezry.extramaputils.builder.ExtraPolygonBuilder;
@@ -21,12 +30,16 @@ import com.github.bkhezry.extramaputils.utils.MapUtils;
 import com.github.bkhezry.mapdrawingtools.model.DataModel;
 import com.github.bkhezry.mapdrawingtools.model.DrawingOption;
 import com.github.bkhezry.mapdrawingtools.model.DrawingOptionBuilder;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.interedes.agriculturappv3.R;
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Coords;
+import com.interedes.agriculturappv3.asistencia_tecnica.services.coords.CoordsService;
+import com.interedes.agriculturappv3.util.ConexionInternet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,26 +54,54 @@ import static com.github.bkhezry.mapdrawingtools.ui.MapsActivity.POINTS;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final int REQUEST_CODE = 1;
-    private MapView mMap;
     private GoogleMap googleMap;
     private DrawingOption.DrawingType currentDrawingType;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            if (bundle!=null){
+                Coords coords = new Coords(intent.getExtras().getDouble("latitud"),
+                        intent.getExtras().getDouble("longitud"), "");
+                //showLocation(coords);
+                doZoom(coords);
+            }
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_layout);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mMap = findViewById(R.id.mapLite);
+
+        MapView mMap = findViewById(R.id.mapLite);
         mMap.onCreate(savedInstanceState);
         mMap.getMapAsync(this);
-        setUpButtons();
+
+        if (onConnection()){
+            new CoordsService(this);
+            setUpButtons();
+        }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
         MapsInitializer.initialize(this);
+    }
+
+    private void doZoom(Coords coords){
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(coords.getLatitud(),
+                coords.getLongitud()), 3));
+    }
+
+    private void showLocation(Coords coords1){
+        Toast.makeText(this,""+coords1.toString(),Toast.LENGTH_SHORT).show();
     }
 
     private void setUpButtons() {
@@ -104,6 +145,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE && data != null) {
             DataModel dataModel =
@@ -144,5 +186,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             extraMarkers.add(extraMarker);
         }
         return extraMarkers;
+    }
+
+    private boolean onConnection(){
+        ConexionInternet conexionInternet = new ConexionInternet();
+        if (conexionInternet.conectadoDatos(this)){
+            return true;
+        }else if (conexionInternet.conectadoWifi(this)){
+            return true;
+        }else{
+            AlertDialog.Builder builder;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                builder = new AlertDialog.Builder(this,
+                        android.R.style.Theme_Material_Dialog_Alert);
+            }else{
+                builder = new AlertDialog.Builder(this);
+            }
+            builder.setTitle(R.string.alert).setMessage(R.string.msgAlertConn)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    }).show();
+            return false;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(receiver,new IntentFilter("LOCATION"));
     }
 }

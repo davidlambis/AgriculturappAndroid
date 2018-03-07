@@ -12,7 +12,6 @@
         android:required="true" />
 
     <application
-        android:name=".AgriculturApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:hardwareAccelerated="false"
@@ -55,10 +54,11 @@
             android:name=".asistencia_tecnica.modules.main_menu.MenuMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".asistencia_tecnica.activities.MapsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity
-            android:name=".asistencia_tecnica.activities.MapsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name="com.github.bkhezry.mapdrawingtools.ui.MapsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <!-- Maps -->
         <meta-data
