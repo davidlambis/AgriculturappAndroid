@@ -11,11 +11,13 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.location.LocationProvider
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -117,8 +119,12 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
         setLocation(location)
     }
 
-    override fun onStatusChanged(s: String, i: Int, bundle: Bundle) {
-
+    override fun onStatusChanged(s: String, status: Int, bundle: Bundle) {
+        when (status) {
+            LocationProvider.AVAILABLE -> Log.i("GPS", "Disponible")
+            LocationProvider.OUT_OF_SERVICE -> showStatusGPS(getString(R.string.GpsOutService))
+            LocationProvider.TEMPORARILY_UNAVAILABLE -> showStatusGPS(getString(R.string.GpsTempUnavailable))
+        }
     }
 
     override fun onProviderEnabled(s: String) {
@@ -155,6 +161,24 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
         return locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
+    fun isServiceLocalizacionRun(): Boolean? {
+        return serviceLocalizacionRunBool
+    }
+
+    fun setServiceLocalizacionRun(serviceLocalizacionRunBools: Boolean?) {
+        serviceLocalizacionRunBool = serviceLocalizacionRunBools
+    }
+
+
+    fun getLocationCoords(): Coords {
+        val coords= Coords(latitud, longitud,"");
+        return coords;
+    }
+
+
+
+
+    ///UI ALerts
 
     fun showGpsDisabledDialog(): Dialog {
         // Use the Builder class for convenient dialog construction
@@ -170,6 +194,15 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
         return builder!!.show()
     }
 
+
+    private fun showStatusGPS(msg: String) {
+        val dialog = android.app.AlertDialog.Builder(context)
+        dialog.setMessage(msg).setCancelable(false)
+                .setPositiveButton("OK") { dialogInterface, i -> dialogInterface.dismiss() }
+        val alert = dialog.create()
+        alert.show()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         closeService()
@@ -181,17 +214,5 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
         return location
     }*/
 
-    fun isServiceLocalizacionRun(): Boolean? {
-        return serviceLocalizacionRunBool
-    }
 
-    fun setServiceLocalizacionRun(serviceLocalizacionRunBools: Boolean?) {
-        serviceLocalizacionRunBool = serviceLocalizacionRunBools
-    }
-
-
-    fun getLocationCoords(): Coords {
-        val coords= Coords(latitud, longitud,"");
-        return coords;
-    }
 }

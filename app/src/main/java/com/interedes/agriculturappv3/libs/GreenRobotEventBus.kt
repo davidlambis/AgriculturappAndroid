@@ -20,5 +20,4 @@ class GreenRobotEventBus : EventBus {
         eventBus?.post(event)
     }
 
-
 }

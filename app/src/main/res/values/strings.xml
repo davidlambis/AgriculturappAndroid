@@ -1,99 +1,101 @@
 <resources>
-    <string name="app_name">AgriculturApp</string>
+<string name="app_name">AgriculturApp</string>
 
-    <!--MENU ACTIVITIES-->
-    <string name="title_menu">Menu</string>
+<!--MENU ACTIVITIES-->
+<string name="title_menu">Menu</string>
 
-    <!-- GLOBALES -->
-    <string name="results_global_search">Mostrando %d Resultados</string>
-    <string name="error_field_required">Campo Requerido</string>
-
-
-    <!-- HOME -->
-    <string name="title_ingresar">Ingresar</string>
-    <string name="title_registrarse">Registrarse</string>
-    <string name="title_contactanos">Contáctanos</string>
-
-    <!-- LOGIN-->
-    <string name="edit_text_cedula">Número de Cédula</string>
-    <string name="edit_text_correo">Correo Electrónico</string>
-    <string name="edit_text_contrasena">Contraseña</string>
-    <string name="snackbar_datos_incorrectos">Usuario o Contraseña Incorrectos</string>
+<!-- GLOBALES -->
+<string name="results_global_search">Mostrando %d Resultados</string>
+<string name="error_field_required">Campo Requerido</string>
 
 
-    <!-- Nav Drawer-->
-    <string name="nav_open">Abierto</string>
-    <string name="nav_close">Cerrado</string>
-    <string name="title_activity_settings">Settings</string>
+<!-- HOME -->
+<string name="title_ingresar">Ingresar</string>
+<string name="title_registrarse">Registrarse</string>
+<string name="title_contactanos">Contáctanos</string>
+
+<!-- LOGIN-->
+<string name="edit_text_cedula">Número de Cédula</string>
+<string name="edit_text_correo">Correo Electrónico</string>
+<string name="edit_text_contrasena">Contraseña</string>
+<string name="snackbar_datos_incorrectos">Usuario o Contraseña Incorrectos</string>
 
 
-    <!--STRING ACTIVITY REGISTER USER-->
-    <string name="title_productor">Productor</string>
-    <string name="title_comprador">Comprador</string>
-    <string name="title_help_register">Necesito ayuda para registrarme</string>
-    <string name="title_selected_options">Seleccione una de las siguientes opciones</string>
+<!-- Nav Drawer-->
+<string name="nav_open">Abierto</string>
+<string name="nav_close">Cerrado</string>
+<string name="title_activity_settings">Settings</string>
 
-    <!-- REGISTRAR PRODUCTOR -->
-    <string name="title_register_productor">¡Te estás registrando como productor!</string>
-    <string name="text_registerUP">Registro Unidad Productiva</string>
-    <string name="title_register_comprador">¡Te estás registrando como comprador!</string>
-    <string name="registro_exitoso">Registrado Éxitosamente</string>
-    <string name="edit_text_description">Breve descripción de tu finca</string>
-    <string name="edit_text_nombre_finca">Nombre de Unidad Productiva</string>
-    <string name="edit_text_localizacion_finca">Localización de Unidad Productiva</string>
-    <string name="btn_registrar_productor">Registrar</string>
-    <string name="spinner_tipo_producto">Tipo de Producto(Cultivo)</string>
-    <string name="edit_text_numero_hectareas">Número de Hectáreas</string>
-    <string name="edit_text_mes_siembra">Mes de Siembra</string>
-    <string name="edit_text_mes_cosecha">Mes de Cosecha</string>
-    <string name="title_cantidad_calidad">Cantidad por Calidad del producto</string>
-    <string name="title_cantidad_registrar_productor">Cantidad:</string>
-    <string name="edit_text_cantidad_kg">Cantidad(Kg)</string>
-    <string name="edit_text_nombres">Nombres</string>
-    <string name="edit_text_apellidos">Apellidos</string>
-    <string name="edit_text_confirmar_contrasena">Confirmar contraseña</string>
-    <string name="edit_text_numero_celular">Número de Celular</string>
-    <string name="spinner_metodo_pago">Método de Pago</string>
-    <string name="spinner_banco">Seleccionar Banco</string>
-    <string name="edit_text_numero_cuenta">Número de Cuenta</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+<!--STRING ACTIVITY REGISTER USER-->
+<string name="title_productor">Productor</string>
+<string name="title_comprador">Comprador</string>
+<string name="title_help_register">Necesito ayuda para registrarme</string>
+<string name="title_selected_options">Seleccione una de las siguientes opciones</string>
 
-    <!-- MAPS API -->
-    <string name="maps">AIzaSyAckGMBmoQKgZeJwEP6bjK5jmHldsubiOA</string>
+<!-- REGISTRAR PRODUCTOR -->
+<string name="title_register_productor">¡Te estás registrando como productor!</string>
+<string name="text_registerUP">Registro Unidad Productiva</string>
+<string name="title_register_comprador">¡Te estás registrando como comprador!</string>
+<string name="registro_exitoso">Registrado Éxitosamente</string>
+<string name="edit_text_description">Breve descripción de tu finca</string>
+<string name="edit_text_nombre_finca">Nombre de Unidad Productiva</string>
+<string name="edit_text_localizacion_finca">Localización de Unidad Productiva</string>
+<string name="btn_registrar_productor">Registrar</string>
+<string name="spinner_tipo_producto">Tipo de Producto(Cultivo)</string>
+<string name="edit_text_numero_hectareas">Número de Hectáreas</string>
+<string name="edit_text_mes_siembra">Mes de Siembra</string>
+<string name="edit_text_mes_cosecha">Mes de Cosecha</string>
+<string name="title_cantidad_calidad">Cantidad por Calidad del producto</string>
+<string name="title_cantidad_registrar_productor">Cantidad:</string>
+<string name="edit_text_cantidad_kg">Cantidad(Kg)</string>
+<string name="edit_text_nombres">Nombres</string>
+<string name="edit_text_apellidos">Apellidos</string>
+<string name="edit_text_confirmar_contrasena">Confirmar contraseña</string>
+<string name="edit_text_numero_celular">Número de Celular</string>
+<string name="spinner_metodo_pago">Método de Pago</string>
+<string name="spinner_banco">Seleccionar Banco</string>
+<string name="edit_text_numero_cuenta">Número de Cuenta</string>
+<string name="edit_text_error_contrasenas">Las contraseñas no son iguales</string>
+<string name="edit_text_error_contrasena">Contraseña muy corta</string>
 
-    <!-- BUTTONS MAPS -->
-    <string name="draw_polygon">Dibujar Polígono</string>
-    <string name="draw_points">Dibujar Puntos</string>
+<!-- TODO: Remove or change this placeholder text -->
+<string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <!-- Alerts/Errors -->
-    <string name="alert">Alerta</string>
-    <string name="msgAlertConn">No tienes conexión a Internet, verifica tu conexión!</string>
-    <string name="infoGPS">El sistema GPS esta desactivado, ¿Desea activarlo?</string>
-    <string name="GpsOutService">Proveedor fuera de servicio de localización, intenta más
+<!-- MAPS API -->
+<string name="maps">AIzaSyAckGMBmoQKgZeJwEP6bjK5jmHldsubiOA</string>
+
+<!-- BUTTONS MAPS -->
+<string name="draw_polygon">Dibujar Polígono</string>
+<string name="draw_points">Dibujar Puntos</string>
+
+<!-- Alerts/Errors -->
+<string name="alert">Alerta</string>
+<string name="msgAlertConn">No tienes conexión a Internet, verifica tu conexión!</string>
+<string name="infoGPS">El sistema GPS esta desactivado, ¿Desea activarlo?</string>
+<string name="GpsOutService">Proveedor fuera de servicio de localización, intenta más
     tarde.</string>
-    <string name="GpsTempUnavailable">Temporalmente no disponible el servicio de GPS.</string>
+<string name="GpsTempUnavailable">Temporalmente no disponible el servicio de GPS.</string>
 
 
-    <!--GPS STRINGS-->
-    <string name="gps_disabled">Activar GPS</string>
-    <string name="please_enable_gps">Necesitas habilitar el GPS</string>
+<!--GPS STRINGS-->
+<string name="gps_disabled">Activar GPS</string>
+<string name="please_enable_gps">Necesitas habilitar el GPS</string>
 
 
-    <!--NAMES LOTE-->
-    <string name="add_lote">Agregar Lote</string>
-    <string name="message_add_lote">Digite los todos lo campos</string>
+<!--NAMES LOTE-->
+<string name="add_lote">Agregar Lote</string>
+<string name="message_add_lote">Digite los todos lo campos</string>
+    <string name="message_registro_exitoso">Lote Registrado Éxitosamente</string>
 
-
-    <!--GLobals-->
-    <string name="coordenadas">Coordenadas</string>
-    <string name="name">Nombre</string>
-    <string name="description">Descripcion</string>
-    <string name="area">Area</string>
-    <string name="confirm">Aceptar</string>
-    <string name="close">Cerrar</string>
-    <string name="cancel">Cancelar</string>
+<!--GLobals-->
+<string name="coordenadas">Coordenadas</string>
+<string name="name">Nombre</string>
+<string name="description">Descripcion</string>
+<string name="area">Area</string>
+<string name="confirm">Aceptar</string>
+<string name="close">Cerrar</string>
+<string name="cancel">Cancelar</string>
 
 
 </resources>
