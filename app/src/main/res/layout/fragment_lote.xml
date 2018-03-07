@@ -1,0 +1,32 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+tools:context="com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.LoteFragment">
+
+<!--
+    <fragment
+        android:id="@+id/mapLotes"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />-->
+
+
+<com.google.android.gms.maps.MapView android:id="@+id/mapViewLotes"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+<android.support.design.widget.FloatingActionButton
+    android:id="@+id/fabAddLote"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end|left"
+    android:layout_margin="@dimen/margin_global"
+    android:tint="@color/white"
+    app:fabSize="auto"
+    app:fabCustomSize="@dimen/margin_80"
+    android:backgroundTint="@color/light_green_800"
+    android:src="@android:drawable/ic_input_add" />
+
+</FrameLayout>

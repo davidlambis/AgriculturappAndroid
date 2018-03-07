@@ -7,4 +7,8 @@
     <dimen name="text_size">22sp</dimen>
     <dimen name="text_size_16">16dp</dimen>
     <dimen name="text_size_18">18sp</dimen>
+
+
+
+    <dimen name="margin_global_10">10dp</dimen>
 </resources>

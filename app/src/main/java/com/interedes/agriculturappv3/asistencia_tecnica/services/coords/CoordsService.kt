@@ -149,10 +149,6 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
         // texto.setText("Coordenadas: " + loc.getLatitude() + "," + loc.getLongitude());
     }
 
-    public fun  loadLatitud(): Double {
-        return latitud;
-    }
-
 
     //Verificar Estado GPS
     private fun isLocationEnabled(): Boolean {
@@ -180,10 +176,10 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
     }
 
     //methods
-
+/*
     public fun serviceLocalizacionRun(): Location? {
         return location
-    }
+    }*/
 
     fun isServiceLocalizacionRun(): Boolean? {
         return serviceLocalizacionRunBool
@@ -191,5 +187,11 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
 
     fun setServiceLocalizacionRun(serviceLocalizacionRunBools: Boolean?) {
         serviceLocalizacionRunBool = serviceLocalizacionRunBools
+    }
+
+
+    fun getLocationCoords(): Coords {
+        val coords= Coords(latitud, longitud,"");
+        return coords;
     }
 }

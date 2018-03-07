@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_menu_main.*
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    //var coordsService: CoordsService? = null
+   // var coordsService: CoordsService? = null
     //var coordsGlobal:Coords?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         setToolbarInjection()
         setNavDrawerInjection()
         setAdapterFragment()
-        //this.coordsService = CoordsService(this)
+       // this.coordsService = CoordsService(this)
         //fragmentManager.beginTransaction().add(R.id.container, AccountingFragment()).commit()
     }
 
@@ -41,7 +41,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
     //region ADAPTER FRAGMENTS
-
 
     //region SETUP INJECTION
     private fun setToolbarInjection() {
@@ -94,8 +93,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onBackPressed() {
 
         val count = supportFragmentManager.backStackEntryCount
-
-
         if (count == 1) {
             super.onBackPressed()
             replaceCleanFragment(MainMenuFragment())
@@ -127,6 +124,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         fragmentTransaction?.addToBackStack(null)
         fragmentTransaction?.commit()
     }
+
 
 
     //region BroadcastReceiver LOCALIZACION

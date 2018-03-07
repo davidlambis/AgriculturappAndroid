@@ -11,6 +11,7 @@ import android.view.ViewGroup
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.LoteFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MainMenuFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.services.listas.Listas
@@ -39,7 +40,7 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
         val adapter = SingleAdapter(lista) { position ->
 
             if (lista[position].Identificador.equals("mis_lotes")) {
-                (activity as MenuMainActivity).replaceFragment(LotesFragment())
+                (activity as MenuMainActivity).replaceFragment(LoteFragment())
             }
 
         }
@@ -63,6 +64,9 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
         super.onResume()
         ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.grey_luiyi))
     }
+
+
+
 
 
     //endregion

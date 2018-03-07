@@ -1,138 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
-android:orientation="vertical"
+android:layout_height="match_parent"
+android:fitsSystemWindows="true">
 
-android:layout_height="match_parent">
-
-<ScrollView
-    android:id="@+id/login_form"
+<FrameLayout
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.productor.register_productor.RegisterProductorActivity">
 
-    <LinearLayout
-        android:id="@+id/message_snackbar"
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fondo_general"
+        tools:ignore="ContentDescription" />
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <EditText
-                    android:id="@+id/name_lote"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/name"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/description_lote"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/description"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/area_lote"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/area"
-                    android:inputType="numberDecimal"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/coordenadas_lote"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/coordenadas"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/register_configuracion"
+            <ImageView
+                android:id="@+id/ivClosetDialogLote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="@dimen/margin_global"
-                android:src="@android:drawable/ic_menu_save" />
+                android:tint="@color/grey_luiyi"
+                android:layout_marginLeft="@dimen/margin_global"
+                android:layout_marginTop="@dimen/margin_global"
+                android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/edit_configuracion"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="@dimen/margin_global"
-                android:src="@android:drawable/ic_menu_edit" />
+                android:orientation="vertical"
+                android:padding="4dp">
 
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputLayoutNombres"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/grey_luiyi"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <EditText
+                        android:id="@+id/name_lote"
+                        style="@style/editText"
+                        android:drawableLeft="@drawable/ic_nombres"
+                        android:drawableStart="@drawable/ic_nombres"
+                        android:hint="@string/name"
+                        android:inputType="text" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputLayoutDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/grey_luiyi"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <EditText
+                        android:id="@+id/description_lote"
+                        style="@style/editText"
+                        android:drawableLeft="@drawable/ic_apellidos"
+                        android:drawableStart="@drawable/ic_apellidos"
+                        android:hint="@string/description"
+                        android:inputType="text" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputLayoutArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/grey_luiyi"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <EditText
+                        android:id="@+id/area_lote"
+                        style="@style/editText"
+                        android:drawableLeft="@drawable/ic_numero_hectareas"
+                        android:drawableStart="@drawable/ic_numero_hectareas"
+                        android:hint="@string/area"
+                        android:inputType="number" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/textInputLayoutCoordenadas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/grey_luiyi"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <EditText
+                        android:id="@+id/coordenadas_lote"
+                        style="@style/editText"
+                        android:drawableLeft="@drawable/ic_apuntador"
+                        android:drawableStart="@drawable/ic_apuntador"
+                        android:hint="@string/coordenadas"
+                        android:inputType="textEmailAddress" />
+                </android.support.design.widget.TextInputLayout>
+
+
+            </LinearLayout>
+
+            <ProgressBar
+                android:visibility="gone"
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleInverse"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <Button
+
+                    android:id="@+id/btnRegisterLote"
+                    style="@style/small_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_global_10"
+                    android:background="@drawable/custom_button"
+                    android:text="@string/btn_registrar_productor" />
+
+                <Button
+                    android:id="@+id/btnCancelLote"
+                    style="@style/small_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_global_10"
+                    android:text="@string/cancel"
+                    android:background="@drawable/custom_button"
+                     />
+
+                <!--<android.support.design.widget.FloatingActionButton
+                    android:id="@+id/register_configuracion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="@dimen/margin_global"
+                    android:src="@android:drawable/ic_menu_save" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/edit_configuracion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="@dimen/margin_global"
+                    android:src="@android:drawable/ic_menu_edit" />-->
+
+
+            </LinearLayout>
 
         </LinearLayout>
 
+        <!-- </LinearLayout> -->
 
-    </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>
 
 
-</ScrollView>
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
