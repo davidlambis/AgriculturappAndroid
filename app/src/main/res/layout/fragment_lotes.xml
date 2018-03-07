@@ -18,13 +18,12 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabAddLote"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end|left"
-        android:backgroundTint="@color/grey_luiyi"
+        android:backgroundTint="@color/light_green_800"
         android:layout_margin="@dimen/margin_global"
-        android:src="@drawable/ic_add_location_light_green_500_36dp" />
+        android:src="@android:drawable/ic_menu_add" />
 
 </FrameLayout>
 
