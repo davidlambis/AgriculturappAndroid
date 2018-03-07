@@ -286,7 +286,7 @@ class LoteFragment : Fragment(), OnMapReadyCallback,GoogleMap.OnMapClickListener
     override fun requestResponseError(error: String?) {
         onMessageError(R.color.colorPrimary,error)
     }
-    
+
     //UI ELements
     override fun showAlertDialogAddLote(): AlertDialog? {
         dialog = AlertDialog.Builder(activity!!)

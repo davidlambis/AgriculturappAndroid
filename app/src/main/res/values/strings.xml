@@ -57,6 +57,10 @@
     <string name="spinner_banco">Seleccionar Banco</string>
     <string name="edit_text_numero_cuenta">Número de Cuenta</string>
 
+
+    <string name="edit_text_error_contrasenas">Las contraseñas no son iguales</string>
+    <string name="edit_text_error_contrasena">La contraseña es muy corta</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
@@ -94,6 +98,10 @@
     <string name="confirm">Aceptar</string>
     <string name="close">Cerrar</string>
     <string name="cancel">Cancelar</string>
+
+
+    <string name="message_registro_exitoso">Se registro Correctamente</string>
+
 
 
 </resources>
