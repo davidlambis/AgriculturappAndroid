@@ -1,6 +1,6 @@
 package com.interedes.agriculturappv3.events
 
-data class RegisterEvent(val eventType: Int, val mensajeError: String) {
+data class RegisterEvent(var eventType: Int, var mensajeError: String?) {
 
     companion object {
         val onRegistroExitoso: Int = 0

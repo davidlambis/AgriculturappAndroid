@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.R.id.*
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter.RegisterUserPresenter
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter.RegisterUserPresenterImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
@@ -104,6 +105,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
 
     override fun validarCampos(): Boolean? {
+        //val email_pattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
         var cancel = false
         var focusView: View? = null
         if (edtNombres?.text.toString().isEmpty()) {
@@ -146,7 +148,19 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
             edtNumeroCuenta?.setError(getString(R.string.error_field_required))
             focusView = edtNumeroCuenta
             cancel = true
-        }
+        } else if (!edtContrasena?.text.toString().trim().equals(edtConfirmarContrasena.text.toString().trim())) {
+            edtConfirmarContrasena?.setError(getString(R.string.edit_text_error_contrasenas))
+            focusView = edtConfirmarContrasena
+            cancel = true
+        } else if (edtContrasena.text.toString().trim().length < 6) {
+            edtContrasena?.setError(getString(R.string.edit_text_error_contrasena))
+            focusView = edtContrasena
+            cancel = true
+        } /* else if (!edtCorreo.text.toString().trim().matches(email_pattern.toRegex())) {
+            edtCorreo?.setError(getString(R.string.edit_text_error_correo))
+            focusView = edtCorreo
+            cancel = true
+        }*/
 
         if (cancel) {
             focusView?.requestFocus()
@@ -159,21 +173,24 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     override fun registerUsuario() {
         //TODO primero registro en el backend, retorna respuesta, si es OK hace registro a firebase y SQLITE
         //Llamar al presentador
-        val usuario =
-                Usuario(
-                        rol,
-                        edtNombres?.text.toString(),
-                        edtApellidos?.text.toString(),
-                        edtCedula?.text.toString().toInt(),
-                        edtCorreo?.text.toString(),
-                        edtContrasena?.text.toString(),
-                        edtConfirmarContrasena?.text.toString(),
-                        edtCelular?.text.toString().toInt(),
-                        spinnerMetodoPago?.text.toString(),
-                        spinnerBanco?.text.toString(),
-                        edtNumeroCuenta?.text.toString().toInt()
-                )
-        presenter?.registerUsuario(usuario)
+        //presenter?.validarCampos()
+        if (presenter?.validarCampos() == true) {
+            val usuario =
+                    Usuario(
+                            rol,
+                            edtNombres?.text.toString(),
+                            edtApellidos?.text.toString(),
+                            edtCedula?.text.toString(),
+                            edtCorreo?.text.toString().trim(),
+                            edtContrasena?.text.toString(),
+                            edtConfirmarContrasena?.text.toString(),
+                            edtCelular?.text.toString(),
+                            spinnerMetodoPago?.text.toString(),
+                            spinnerBanco?.text.toString(),
+                            edtNumeroCuenta?.text.toString()
+                    )
+            presenter?.registerUsuario(usuario)
+        }
     }
 
     override fun disableInputs() {
@@ -190,8 +207,8 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         Snackbar.make(container, getString(R.string.registro_exitoso), Snackbar.LENGTH_SHORT).show()
     }
 
-    override fun registroError() {
-
+    override fun registroError(error: String?) {
+        Snackbar.make(container, error.toString(), Snackbar.LENGTH_LONG).show()
     }
 
     override fun showProgress() {

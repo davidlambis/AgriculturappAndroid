@@ -7,6 +7,7 @@ interface RegisterUserPresenter {
 
     fun onCreate()
     fun onDestroy()
-    fun onEventMainThread(event : RegisterEvent?)
-    fun registerUsuario(usuario : Usuario)
+    fun onEventMainThread(event: RegisterEvent?)
+    fun validarCampos(): Boolean?
+    fun registerUsuario(usuario: Usuario)
 }

@@ -16,5 +16,5 @@ interface RegisterUserView {
     fun validarCampos(): Boolean?
     fun registerUsuario()
     fun registroExitoso()
-    fun registroError()
+    fun registroError(error : String?)
 }

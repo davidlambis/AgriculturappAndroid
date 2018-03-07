@@ -40,6 +40,7 @@
                         android:id="@+id/ivBackButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:contentDescription="@null"
                         android:src="@drawable/ic_back_button" />
 
                     <TextView
@@ -62,6 +63,7 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@null"
                             android:src="@drawable/ic_productos" />
 
                         <ImageView
@@ -74,14 +76,15 @@
                             android:layout_marginLeft="@dimen/margin_global"
                             android:layout_marginRight="@dimen/margin_global"
                             android:layout_marginStart="@dimen/margin_global"
+                            android:contentDescription="@null"
                             android:src="@drawable/ic_productor_big" />
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
                             android:layout_alignParentTop="true"
+                            android:contentDescription="@null"
                             android:src="@drawable/ic_productos" />
 
                     </RelativeLayout>
@@ -97,10 +100,11 @@
                         <EditText
                             android:id="@+id/edtNombres"
                             style="@style/editText"
+                            android:digits="abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
                             android:drawableLeft="@drawable/ic_nombres"
                             android:drawableStart="@drawable/ic_nombres"
                             android:hint="@string/edit_text_nombres"
-                            android:inputType="text" />
+                            android:inputType="textPersonName" />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -113,10 +117,11 @@
                         <EditText
                             android:id="@+id/edtApellidos"
                             style="@style/editText"
+                            android:digits="abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
                             android:drawableLeft="@drawable/ic_apellidos"
                             android:drawableStart="@drawable/ic_apellidos"
                             android:hint="@string/edit_text_apellidos"
-                            android:inputType="text" />
+                            android:inputType="textPersonName" />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -323,7 +328,8 @@
                     style="?android:attr/progressBarStyleInverse"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/btnRegistrar"
