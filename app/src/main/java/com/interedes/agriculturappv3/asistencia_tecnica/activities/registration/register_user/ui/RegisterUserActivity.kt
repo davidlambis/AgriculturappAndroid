@@ -8,14 +8,17 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.ContextCompat.startActivity
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.R.id.*
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter.RegisterUserPresenter
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter.RegisterUserPresenterImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
+import com.interedes.agriculturappv3.asistencia_tecnica.services.internet_connection.ConnectivityReceiver
 import kotlinx.android.synthetic.main.activity_register_user.*
 import java.util.*
 
@@ -28,7 +31,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_user)
-        if (intent.extras["rol"].equals("productor")) {
+        if (intent.extras != null && intent.extras["rol"].equals("productor")) {
             rol = "productor"
             loadInfo()
         } else if (intent.extras["rol"].equals("comprador")) {
@@ -99,10 +102,6 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         returnToParentActivity()
     }
 
-    override fun navigateToLogin() {
-
-    }
-
 
     override fun validarCampos(): Boolean? {
         //val email_pattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
@@ -116,9 +115,9 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
             edtApellidos?.setError(getString(R.string.error_field_required))
             focusView = edtApellidos
             cancel = true
-        } else if (edtCedula?.text.toString().isEmpty()) {
-            edtCedula?.setError(getString(R.string.error_field_required))
-            focusView = edtCedula
+        } else if (edtCorreo?.text.toString().isEmpty()) {
+            edtCorreo?.setError(getString(R.string.error_field_required))
+            focusView = edtCorreo
             cancel = true
         } else if (edtCorreo?.text.toString().isEmpty()) {
             edtCorreo?.setError(getString(R.string.error_field_required))
@@ -204,7 +203,11 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
 
     override fun registroExitoso() {
-        Snackbar.make(container, getString(R.string.registro_exitoso), Snackbar.LENGTH_SHORT).show()
+        //Snackbar.make(container, getString(R.string.registro_exitoso), Snackbar.LENGTH_SHORT).show()
+        val i = Intent(this, LoginActivity::class.java)
+        i.putExtra("correo", getString(R.string.snackbar_verificacion_correo))
+        i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(i)
     }
 
     override fun registroError(error: String?) {
@@ -217,6 +220,10 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
     override fun hideProgress() {
         progressBar.visibility = View.GONE
+    }
+
+    override fun hasNotConnectivity() {
+        Snackbar.make(container, getString(R.string.not_internet_connected), Snackbar.LENGTH_SHORT).show()
     }
 
     private fun setInputs(b: Boolean) {
@@ -250,6 +257,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     //endregion
 
     //region Métodos Generales
+
     private fun returnToParentActivity() {
         // Obtener intent de la actividad padre
         val upIntent = NavUtils.getParentActivityIntent(this)

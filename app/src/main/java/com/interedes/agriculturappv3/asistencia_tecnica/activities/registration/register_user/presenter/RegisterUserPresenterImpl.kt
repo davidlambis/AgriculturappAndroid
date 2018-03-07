@@ -1,18 +1,22 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter
 
+import android.support.design.widget.Snackbar
+import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.interactor.RegisterUserInteractor
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.interactor.RegisterUserInteractorImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.ui.RegisterUserView
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
+import com.interedes.agriculturappv3.asistencia_tecnica.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.events.RegisterEvent
 import com.interedes.agriculturappv3.events.RegisterEvent.Companion.onErrorRegistro
 import com.interedes.agriculturappv3.events.RegisterEvent.Companion.onRegistroExitoso
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import kotlinx.android.synthetic.main.activity_register_user.*
 import org.greenrobot.eventbus.Subscribe
 
 
-class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : RegisterUserPresenter {
+class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : RegisterUserPresenter, ConnectivityReceiver.connectivityReceiverListener {
 
 
     var registerUserInteractor: RegisterUserInteractor? = null
@@ -54,9 +58,13 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
     }
 
     override fun registerUsuario(usuario: Usuario) {
-        registerUserView?.disableInputs()
-        registerUserView?.showProgress()
-        registerUserInteractor?.registerUsuario(usuario)
+        if (checkConnection()) {
+            registerUserView?.disableInputs()
+            registerUserView?.showProgress()
+            registerUserInteractor?.registerUsuario(usuario)
+        } else {
+            registerUserView?.hasNotConnectivity()
+        }
     }
 
     //Acciones de Respuesta a Post de Eventos
@@ -71,6 +79,25 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
         registerUserView?.hideProgress()
         registerUserView?.registroError(error)
     }
+
+    //region Conectividad a Internet
+    //Conexión a Internet
+
+    //Revisar manualmente
+    private fun checkConnection(): Boolean {
+        return ConnectivityReceiver.isConnected
+        //showSnack(isConnected);
+    }
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        if (isConnected) {
+            //Snackbar.make(container, getString(R.string.internet_connected), Snackbar.LENGTH_SHORT).show()
+        } else {
+            //Snackbar.make(container, getString(R.string.not_internet_connected), Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    //endregion
 
 
 }

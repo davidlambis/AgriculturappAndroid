@@ -7,11 +7,13 @@ interface RegisterUserView {
     fun showProgress()
     fun hideProgress()
 
+    fun hasNotConnectivity()
+
     fun loadInfo()
     fun limpiarCambios()
 
     fun navigateToParentActivity()
-    fun navigateToLogin()
+
 
     fun validarCampos(): Boolean?
     fun registerUsuario()

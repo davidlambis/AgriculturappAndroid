@@ -12,6 +12,7 @@
         android:required="true" />
 
     <application
+        android:name=".AgriculturApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:hardwareAccelerated="false"
@@ -35,7 +36,7 @@
             android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.login.LoginActivity"
+            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity"
             android:configChanges="screenSize|orientation"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateHidden" />
@@ -54,11 +55,10 @@
             android:name=".asistencia_tecnica.modules.main_menu.MenuMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".asistencia_tecnica.activities.MapsActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name="com.github.bkhezry.mapdrawingtools.ui.MapsActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".asistencia_tecnica.activities.MapsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <!-- Maps -->
         <meta-data
@@ -68,6 +68,14 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/maps" />
+
+        <receiver
+            android:name=".asistencia_tecnica.services.internet_connection.ConnectivityReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
