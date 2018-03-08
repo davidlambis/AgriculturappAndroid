@@ -37,6 +37,8 @@ import android.widget.TextView
  */
 class LoteFragment : Fragment(), OnMapReadyCallback,GoogleMap.OnMapClickListener ,View.OnClickListener , MainViewLote {
 
+
+
     //Mapa
     private var mMap: GoogleMap? = null
     private var LastMarkerName: Marker? = null
@@ -76,6 +78,8 @@ class LoteFragment : Fragment(), OnMapReadyCallback,GoogleMap.OnMapClickListener
         } catch (e: Exception) {
             Log.i("ErrorMap", e.message)
         }
+
+        presenter?.getLotes();
         mapViewLotes.getMapAsync(this)
     }
 
@@ -163,9 +167,7 @@ class LoteFragment : Fragment(), OnMapReadyCallback,GoogleMap.OnMapClickListener
         //Snip
         markerOption.snippet(snippet)
         markerOption.draggable(true)
-
         mMap?.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-
         // Adding the circle to the GoogleMap
         return mMap?.addMarker(markerOption)
     }
@@ -173,8 +175,6 @@ class LoteFragment : Fragment(), OnMapReadyCallback,GoogleMap.OnMapClickListener
     //endregion
 
     //region Methods Interface MainViewLote
-
-
     override fun showProgress() {
         viewDialog?.progressBar?.visibility= View.VISIBLE;
     }
@@ -218,12 +218,9 @@ class LoteFragment : Fragment(), OnMapReadyCallback,GoogleMap.OnMapClickListener
     override fun disableInputs() {
         setInputs(false)
     }
-
     override fun enableInputs() {
         setInputs(true)
     }
-
-
     private fun setInputs(b: Boolean) {
         viewDialog?.name_lote?.isEnabled = b
         viewDialog?.description_lote?.isEnabled = b
@@ -242,13 +239,8 @@ class LoteFragment : Fragment(), OnMapReadyCallback,GoogleMap.OnMapClickListener
        _dialog?.dismiss()
     }
 
-
-
-
-
-
     override fun requestResponseOk() {
-        onMessageOk(R.color.colorPrimary,getString(R.string.message_registro_exitoso));
+        onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
     }
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
@@ -268,24 +260,27 @@ class LoteFragment : Fragment(), OnMapReadyCallback,GoogleMap.OnMapClickListener
         onMessageOk(colorPrimary, message)
     }
 
+    override fun setListLotes(lotes: List<Lote>?) {
+        Toast.makeText(activity!!.applicationContext, "Lotes: " + lotes?.size.toString(), Toast.LENGTH_LONG).show()
+    }
+
     override fun registerLote() {
         if (presenter?.validarCampos() == true) {
-            val lote =
-                    Lote(
-                            viewDialog?.name_lote?.text.toString(),
-                            viewDialog?.description_lote?.text.toString(),
-                            viewDialog?.area_lote?.text.toString().toDoubleOrNull(),
-                            viewDialog?.coordenadas_lote?.text.toString(),
-                            1,
-                            1
-                    )
+            val lote =  Lote()
+            lote.Nombre=viewDialog?.name_lote?.text.toString()
+            lote.Descripcion=viewDialog?.description_lote?.text.toString()
+            lote.Area=viewDialog?.area_lote?.text.toString().toDoubleOrNull()
+            lote.Coordenadas=viewDialog?.coordenadas_lote?.text.toString()
+            lote.Unidad_Medida_Id=1
+            lote.Unidad_Productiva_Id=1
             presenter?.registerLote(lote)
         }
     }
 
     override fun requestResponseError(error: String?) {
-        onMessageError(R.color.colorPrimary,error)
+        onMessageError(R.color.grey_luiyi,error)
     }
+
 
     //UI ELements
     override fun showAlertDialogAddLote(): AlertDialog? {
@@ -340,8 +335,11 @@ class LoteFragment : Fragment(), OnMapReadyCallback,GoogleMap.OnMapClickListener
 
     override fun onDestroy() {
         super.onDestroy()
-        mapViewLotes.onDestroy()
+      //  mapViewLotes.onDestroy()
         presenter?.onDestroy()
+        if(mapViewLotes != null) {
+            mapViewLotes.onDestroy();
+        }
     }
 
     override fun onLowMemory() {

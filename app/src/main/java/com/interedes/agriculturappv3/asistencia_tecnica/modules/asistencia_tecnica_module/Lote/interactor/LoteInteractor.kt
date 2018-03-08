@@ -7,4 +7,7 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
  */
 interface LoteInteractor {
     fun registerLote(lote : Lote)
+    fun updateLote(lote : Lote)
+    fun deleteLote(lote : Lote)
+    fun execute()
 }

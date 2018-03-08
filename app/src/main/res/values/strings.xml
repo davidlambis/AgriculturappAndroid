@@ -98,9 +98,10 @@
     <string name="close">Cerrar</string>
     <string name="cancel">Cancelar</string>
 
+
     <!-- INTERNET CONNECTION -->
     <string name="internet_connected">Conectado a Internet</string>
     <string name="not_internet_connected">No Conectado a Internet</string>
-
+    <string name="request_ok">Se realizo Éxitosamente</string>
 
 </resources>

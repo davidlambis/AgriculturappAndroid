@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecn
 
 import android.app.Dialog
 import android.support.v7.app.AlertDialog
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 
 /**
  * Created by EnuarMunoz on 7/03/18.
@@ -15,8 +16,9 @@ interface MainViewLote {
 
 
     fun hideElements()
-
     fun registerLote()
+    fun setListLotes(lotes:List<Lote>?)
+
     fun validarCampos(): Boolean?
     fun limpiarCampos()
 

@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -54,10 +53,18 @@ dependencies {
     implementation "org.greenrobot:eventbus:$rootProject.ext.greenRobotEventBusVersion"
 
     ///DB FLOW
+    /*
     annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.ext.dbflow_version"
     implementation "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.ext.dbflow_version"
     implementation "com.github.Raizlabs.DBFlow:dbflow:$rootProject.ext.dbflow_version"
-    implementation "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:${dbflow_version}@aar"
+    implementation "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:$rootProject.ext.dbflow_version"*/
+
+    // DBFlow
+
+    kapt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.ext.dbflow_version"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.ext.dbflow_version"
+    compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.ext.dbflow_version"
+    compile "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:$rootProject.ext.dbflow_version"
 
     ///API REST
     implementation "com.google.code.gson:gson:$rootProject.ext.gson"

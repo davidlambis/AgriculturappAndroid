@@ -1,10 +1,12 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.view.View
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MenuMainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
@@ -36,7 +38,8 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
     }*/
 
     override fun ingresar() {
-
+        progressBar.visibility = View.VISIBLE
+        startActivity(Intent(this, MenuMainActivity::class.java))
     }
 
     override fun errorIngresar(error: String?) {

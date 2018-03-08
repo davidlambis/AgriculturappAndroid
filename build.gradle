@@ -56,7 +56,7 @@ ext {
     gson="2.6.2"
 
     //DBFlow
-    dbflow_version="4.0.3"
+    dbflow_version="4.0.1"
 
     //Firebase
     firebaseVersion = '11.8.0'

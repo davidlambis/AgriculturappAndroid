@@ -5,6 +5,7 @@ import android.os.StrictMode
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 import com.interedes.agriculturappv3.asistencia_tecnica.services.internet_connection.ConnectivityReceiver
+import com.raizlabs.android.dbflow.config.FlowConfig
 import com.raizlabs.android.dbflow.config.FlowManager
 
 
@@ -23,7 +24,8 @@ class AgriculturApplication : Application() {
         FirebaseApp.initializeApp(this)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
         //DbFlow
-        FlowManager.init(this)
+        //FlowManager.init(this)
+        FlowManager.init(FlowConfig.Builder(this).build())
         //Avoiding Memory Leaks and code optimization
         val builder = StrictMode.VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())

@@ -11,5 +11,10 @@ interface LotePresenter {
     fun onDestroy()
     fun onEventMainThread(event: RequestEvent?)
     fun validarCampos(): Boolean?
+
+    //CRUD
     fun registerLote(lote: Lote)
+    fun updateLote(lote: Lote)
+    fun deleteLote(lote: Lote)
+    fun getLotes()
 }

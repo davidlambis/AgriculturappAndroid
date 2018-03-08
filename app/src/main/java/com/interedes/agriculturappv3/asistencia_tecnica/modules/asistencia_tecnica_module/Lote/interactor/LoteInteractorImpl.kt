@@ -9,14 +9,27 @@ import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecni
  */
 class LoteInteractorImpl:LoteInteractor {
 
+
     var loteRepository: LoteRepository? = null
 
     init {
         loteRepository = LoteRepositoryImpl()
     }
 
+
+
+    override fun execute() {
+        loteRepository?.getListLotes()
+    }
     override fun registerLote(lote: Lote) {
-        loteRepository?.registerLote(lote)
+        loteRepository?.saveLotes(lote)
+    }
+    override fun updateLote(lote: Lote) {
+        loteRepository?.updateLote(lote)
+    }
+
+    override fun deleteLote(lote: Lote) {
+        loteRepository?.deleteLote(lote)
     }
 
 }
