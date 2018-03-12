@@ -97,7 +97,7 @@ class FirebaseHelperYkro {
     }
 
     fun signOff() {
-       // notifyContactsOfConnectionChange(User.OFFLINE, true)
+       // notifyContactsOfConnectionChange(SearchResponse.OFFLINE, true)
     }*/
 
     companion object {

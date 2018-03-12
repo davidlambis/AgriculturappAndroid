@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.services.internet_connection
+package com.interedes.agriculturappv3.services.internet_connection
 
 import android.content.BroadcastReceiver
 import android.content.Context

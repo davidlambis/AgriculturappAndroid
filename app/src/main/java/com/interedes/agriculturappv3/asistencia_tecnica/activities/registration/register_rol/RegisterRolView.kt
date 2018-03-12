@@ -4,4 +4,6 @@ interface RegisterRolView {
     fun loadRoles()
     fun navigateToParentActivity()
     fun limpiarCambios()
+    fun showProgress()
+    fun hideProgress()
 }

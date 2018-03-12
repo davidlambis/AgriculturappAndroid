@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -17,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -38,7 +36,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.interedes.agriculturappv3.R;
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Coords;
-import com.interedes.agriculturappv3.asistencia_tecnica.services.coords.CoordsService;
+import com.interedes.agriculturappv3.services.coords.CoordsService;
 import com.interedes.agriculturappv3.util.ConexionInternet;
 
 import java.util.ArrayList;

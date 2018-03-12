@@ -1,16 +1,26 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.services.listas
+package com.interedes.agriculturappv3.services.listas
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.ItemLista
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Rol
+import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.Rol
 
 class Listas {
 
     companion object {
+
+        /*
         fun listaRoles(): ArrayList<Rol> {
             val lista_roles = ArrayList<Rol>()
             lista_roles.add(Rol(Nombre = "Productor", Imagen = R.drawable.ic_productor_big))
             lista_roles.add(Rol(Nombre = "Comprador", Imagen = R.drawable.ic_comprador_big))
+            return lista_roles
+        }*/
+
+
+        fun listaRoles(): ArrayList<Rol> {
+            val lista_roles = ArrayList<Rol>()
+            lista_roles.add(Rol(Id = 1, Nombre = "Productor", Imagen = R.drawable.ic_productor_big))
+            lista_roles.add(Rol(Id = 2, Nombre = "Comprador", Imagen = R.drawable.ic_comprador_big))
             return lista_roles
         }
 

@@ -64,12 +64,14 @@ dependencies {
     kapt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.ext.dbflow_version"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.ext.dbflow_version"
     compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.ext.dbflow_version"
-    compile "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:$rootProject.ext.dbflow_version"
+    implementation "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:${dbflow_version}@aar"
 
     ///API REST
     implementation "com.google.code.gson:gson:$rootProject.ext.gson"
     implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofit"
+    /*implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.ext.retrofit"
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxjava"*/
 
     //Firebase
     //noinspection GradleCompatible

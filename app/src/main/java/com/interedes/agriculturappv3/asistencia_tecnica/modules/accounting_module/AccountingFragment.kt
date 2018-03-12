@@ -4,16 +4,13 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_modu
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MainMenuFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MenuMainActivity
-import com.interedes.agriculturappv3.asistencia_tecnica.services.listas.Listas
 import kotlinx.android.synthetic.main.fragment_general.*
 
 

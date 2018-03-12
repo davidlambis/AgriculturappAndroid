@@ -2,10 +2,6 @@ package com.interedes.agriculturappv3.config
 
 import com.raizlabs.android.dbflow.annotation.Database
 
-/**
- * Created by EnuarMunoz on 7/03/18.
- */
-
 
 @Database(name = DataSource.NAME, version = DataSource.VERSION, generatedClassSeparator = "_")
 object DataSource {

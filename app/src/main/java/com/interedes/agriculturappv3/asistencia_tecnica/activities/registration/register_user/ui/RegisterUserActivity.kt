@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -8,18 +9,19 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.ContextCompat.startActivity
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.R.id.*
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter.RegisterUserPresenter
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter.RegisterUserPresenterImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
-import com.interedes.agriculturappv3.asistencia_tecnica.services.internet_connection.ConnectivityReceiver
+import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPago
 import kotlinx.android.synthetic.main.activity_register_user.*
+import java.sql.Timestamp
+
 import java.util.*
 
 class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClickListener {
@@ -27,6 +29,12 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     var camposValidados: Boolean? = false
     var rol: String? = null
     var presenter: RegisterUserPresenter? = null
+
+    init {
+        //Presenter
+        presenter = RegisterUserPresenterImpl(this)
+        (presenter as RegisterUserPresenterImpl).onCreate()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,52 +53,68 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         ivBackButton?.setOnClickListener(this)
         btnRegistrar?.setOnClickListener(this)
 
-        //Presenter
-        presenter = RegisterUserPresenterImpl(this)
-        (presenter as RegisterUserPresenterImpl).onCreate()
 
     }
 
-    //region Métodos Interfaz
-    override fun loadInfo() {
-        //Carga de Spinners de método de pago y despliegue de spinner dependientes de seleccionar bancco y número de cuenta.
-        val itemsMetodoPago = arrayOf("Transferencia Bancaria", "Efectivo", "Otros")
-        val metodoPagoList = ArrayList<String>()
-        metodoPagoList.addAll(Arrays.asList(*itemsMetodoPago))
-        spinnerMetodoPago?.setAdapter(null)
-        val metodoPagoArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, metodoPagoList)
-        spinnerMetodoPago?.setAdapter(metodoPagoArrayAdapter)
+    /*
+    override fun loadMetodosPago() {
+        presenter?.getMetodosPago()
 
-        spinnerMetodoPago?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-            if (metodoPagoList[position].equals("Transferencia Bancaria")) {
-                //Carga Spinner Banco
-                spinnerBanco?.visibility = View.VISIBLE
-                spinnerBanco?.setText("")
-                val itemsBanco = arrayOf("Bancolombia", "BBVA", "Banco Agrario")
-                val bancoList = ArrayList<String>()
-                bancoList.addAll(Arrays.asList(*itemsBanco))
-                spinnerBanco?.setAdapter(null)
-                val bancoArrayAdapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_dropdown_item, bancoList)
-                spinnerBanco?.setAdapter(bancoArrayAdapter)
-                spinnerBanco?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-                    textInputLayoutNumeroCuenta?.visibility = View.VISIBLE
-                    edtNumeroCuenta?.setText("")
-                }
-            } else if (metodoPagoList[position].equals("Otros")) {
-                spinnerBanco?.visibility = View.VISIBLE
-                spinnerBanco?.setText("")
-                val itemsBanco = arrayOf("Efecty", "Su Chance", "Baloto")
-                val bancoList = ArrayList<String>()
-                bancoList.addAll(Arrays.asList(*itemsBanco))
-                spinnerBanco?.setAdapter(null)
-                val bancoArrayAdapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_dropdown_item, bancoList)
-                spinnerBanco?.setAdapter(bancoArrayAdapter)
-                spinnerBanco?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l -> }
-            } else {
-                spinnerBanco?.visibility = View.GONE
-                textInputLayoutNumeroCuenta?.visibility = View.GONE
-            }
-        }
+    }*/
+
+
+    override fun setMetodosPago(metodosPago: List<MetodoPago>?) {
+        spinnerMetodoPago?.setAdapter(null)
+        val metodoPagoArrayAdapter = ArrayAdapter<MetodoPago>(this, android.R.layout.simple_spinner_dropdown_item, metodosPago)
+        spinnerMetodoPago?.setAdapter(metodoPagoArrayAdapter)
+    }
+
+    override fun loadMetodosPagoError(error: String?) {
+        onMessageError(R.color.grey_luiyi, error)
+    }
+
+    override fun loadInfo() {
+
+        presenter?.loadInfo()
+
+        //Carga de Spinners de método de pago y despliegue de spinner dependientes de seleccionar bancco y número de cuenta.
+        /* val itemsMetodoPago = arrayOf("Transferencia Bancaria", "Efectivo", "Otros")
+         val metodoPagoList = ArrayList<String>()
+         metodoPagoList.addAll(Arrays.asList(*itemsMetodoPago))
+         spinnerMetodoPago?.setAdapter(null)
+         val metodoPagoArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, metodoPagoList)
+         spinnerMetodoPago?.setAdapter(metodoPagoArrayAdapter)
+
+         spinnerMetodoPago?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+             if (metodoPagoList[position].equals("Transferencia Bancaria")) {
+                 //Carga Spinner Banco
+                 spinnerBanco?.visibility = View.VISIBLE
+                 spinnerBanco?.setText("")
+                 val itemsBanco = arrayOf("Bancolombia", "BBVA", "Banco Agrario")
+                 val bancoList = ArrayList<String>()
+                 bancoList.addAll(Arrays.asList(*itemsBanco))
+                 spinnerBanco?.setAdapter(null)
+                 val bancoArrayAdapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_dropdown_item, bancoList)
+                 spinnerBanco?.setAdapter(bancoArrayAdapter)
+                 spinnerBanco?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+                     textInputLayoutNumeroCuenta?.visibility = View.VISIBLE
+                     edtNumeroCuenta?.setText("")
+                 }
+             } else if (metodoPagoList[position].equals("Otros")) {
+                 spinnerBanco?.visibility = View.VISIBLE
+                 spinnerBanco?.setText("")
+                 val itemsBanco = arrayOf("Efecty", "Su Chance", "Baloto")
+                 val bancoList = ArrayList<String>()
+                 bancoList.addAll(Arrays.asList(*itemsBanco))
+                 spinnerBanco?.setAdapter(null)
+                 val bancoArrayAdapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_dropdown_item, bancoList)
+                 spinnerBanco?.setAdapter(bancoArrayAdapter)
+                 spinnerBanco?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l -> }
+             } else {
+                 spinnerBanco?.visibility = View.GONE
+                 textInputLayoutNumeroCuenta?.visibility = View.GONE
+             }
+         }*/
     }
 
     override fun limpiarCambios() {
@@ -174,23 +198,57 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         //Llamar al presentador
         //presenter?.validarCampos()
         if (presenter?.validarCampos() == true) {
-            val usuario =
-                    Usuario(
-                            rol,
-                            edtNombres?.text.toString(),
-                            edtApellidos?.text.toString(),
-                            edtCedula?.text.toString(),
-                            edtCorreo?.text.toString().trim(),
-                            edtContrasena?.text.toString(),
-                            edtConfirmarContrasena?.text.toString(),
-                            edtCelular?.text.toString(),
-                            spinnerMetodoPago?.text.toString(),
-                            spinnerBanco?.text.toString(),
-                            edtNumeroCuenta?.text.toString()
-                    )
+
+            //TEST
+            val tsLong = System.currentTimeMillis() / 1000
+            val tsTemp = Timestamp(tsLong)
+
+            //TODO Load Métodos Pago y Detalle backend
+            //TODO Encriptar Contraseña IMPORTANTE
+
+            val usuario = Usuario(0,
+                    edtNombres?.text.toString(),
+                    edtApellidos?.text.toString(),
+                    edtCorreo?.text.toString(),
+                    false,
+                    edtCedula?.text.toString(),
+                    edtContrasena?.text.toString(),
+                    "",
+                    tsTemp.toString(),
+                    "",
+                    edtCelular?.text.toString(),
+                    edtNumeroCuenta?.text.toString(),
+                    edtCelular?.text.toString(),
+                    false,
+                    "",
+                    0,
+                    0,
+                    spinnerBanco?.text.toString(),
+                    rol
+            )
+
             presenter?.registerUsuario(usuario)
+
         }
     }
+
+    override fun onMessageOk(colorPrimary: Int, message: String?) {
+        val color = Color.WHITE
+        val snackbar = Snackbar
+                .make(container, message!!, Snackbar.LENGTH_LONG)
+        val sbView = snackbar.view
+        sbView.setBackgroundColor(ContextCompat.getColor(applicationContext, colorPrimary))
+        val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_productor, 0, 0, 0)
+        // textView.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.activity_horizontal_margin));
+        textView.setTextColor(color)
+        snackbar.show()
+    }
+
+    override fun onMessageError(colorPrimary: Int, message: String?) {
+        onMessageOk(colorPrimary, message)
+    }
+
 
     override fun disableInputs() {
         setInputs(false)
@@ -211,7 +269,8 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     }
 
     override fun registroError(error: String?) {
-        Snackbar.make(container, error.toString(), Snackbar.LENGTH_LONG).show()
+        //Snackbar.make(container, error.toString(), Snackbar.LENGTH_LONG).show()
+        onMessageError(R.color.grey_luiyi, error)
     }
 
     override fun showProgress() {
@@ -223,7 +282,8 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     }
 
     override fun hasNotConnectivity() {
-        Snackbar.make(container, getString(R.string.not_internet_connected), Snackbar.LENGTH_SHORT).show()
+        //Snackbar.make(container, getString(R.string.not_internet_connected), Snackbar.LENGTH_SHORT).show()
+        onMessageOk(R.color.grey_luiyi, getString(R.string.not_internet_connected))
     }
 
     private fun setInputs(b: Boolean) {

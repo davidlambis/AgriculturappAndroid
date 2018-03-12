@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.services.coords
+package com.interedes.agriculturappv3.services.coords
 
 import android.Manifest
 import android.app.Activity
@@ -24,9 +24,6 @@ import android.widget.Toast
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Coords
 
-/**
- * Created by EnuarMunoz on 5/03/18.
- */
 class CoordsService constructor(context_:Context): Service(), LocationListener {
 
 

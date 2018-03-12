@@ -16,4 +16,13 @@ class RegisterUserInteractorImpl : RegisterUserInteractor {
         registerUserRepository?.registerUsuario(usuario)
     }
 
+    override fun loadInfo() {
+        registerUserRepository?.loadInfo()
+    }
+
+/*
+    override fun getMetodosPago() {
+        registerUserRepository?.getMetodosPago()
+    }*/
+
 }

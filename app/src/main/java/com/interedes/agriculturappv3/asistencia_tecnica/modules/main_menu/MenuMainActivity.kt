@@ -1,9 +1,5 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -12,10 +8,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
-import android.widget.Toast
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Coords
-import com.interedes.agriculturappv3.asistencia_tecnica.services.coords.CoordsService
 import kotlinx.android.synthetic.main.activity_menu_main.*
 
 

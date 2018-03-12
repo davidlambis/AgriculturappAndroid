@@ -7,16 +7,26 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Rol
+import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.Rol
 
 
 //Recibe directamente la lista y el listener del click
-class RegisterRolAdapter(val lista: ArrayList<Rol>, val listener: (Int) -> Unit) : RecyclerView.Adapter<RegisterRolAdapter.ViewHolder>() {
+class RegisterRolAdapter(val lista: MutableList<Rol>?, val listener: (Int) -> Unit) : RecyclerView.Adapter<RegisterRolAdapter.ViewHolder>() {
 
+
+    fun setItems(newLista: MutableList<Rol>) {
+        lista?.addAll(newLista)
+        notifyDataSetChanged()
+    }
+
+    fun clear() {
+        lista?.clear()
+        notifyDataSetChanged()
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         //Llama al método del holder para cargar los items
-        holder.bindItems(lista[position], position,listener)
+        holder.bindItems(lista!![position], position, listener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,7 +35,7 @@ class RegisterRolAdapter(val lista: ArrayList<Rol>, val listener: (Int) -> Unit)
     }
 
     override fun getItemCount(): Int {
-        return lista.size
+        return lista!!.size
     }
 
 
@@ -34,7 +44,7 @@ class RegisterRolAdapter(val lista: ArrayList<Rol>, val listener: (Int) -> Unit)
             val image: ImageView = itemView.findViewById(R.id.imageView)
             val textNombre: TextView = itemView.findViewById(R.id.textView)
             //image.setImageBitmap(data.Imagen)
-            image.setImageResource(data.Imagen)
+            image.setImageResource(data.Imagen!!) //DESCOMENTAR
             textNombre.text = data.Nombre
             //El listener en base a la posición
             itemView.setOnClickListener {

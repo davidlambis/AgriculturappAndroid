@@ -1,18 +1,18 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter
 
-import android.support.design.widget.Snackbar
-import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.interactor.RegisterUserInteractor
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.interactor.RegisterUserInteractorImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.ui.RegisterUserView
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
-import com.interedes.agriculturappv3.asistencia_tecnica.services.internet_connection.ConnectivityReceiver
-import com.interedes.agriculturappv3.events.RegisterEvent
-import com.interedes.agriculturappv3.events.RegisterEvent.Companion.onErrorRegistro
-import com.interedes.agriculturappv3.events.RegisterEvent.Companion.onRegistroExitoso
+import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent.Companion.onErrorRegistro
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent.Companion.onMetodosPagoError
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent.Companion.onMetodosPagoExitoso
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent.Companion.onRegistroExitoso
+import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import kotlinx.android.synthetic.main.activity_register_user.*
 import org.greenrobot.eventbus.Subscribe
 
 
@@ -25,6 +25,7 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
     init {
         registerUserInteractor = RegisterUserInteractorImpl()
         eventBus = GreenRobotEventBus()
+
     }
 
     override fun onCreate() {
@@ -45,7 +46,16 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
                 onRegistroExitoso()
             }
             RegisterEvent.onErrorRegistro -> {
-                onErrorRegistro(event.mensajeError!!)
+                onErrorRegistro(event.mensajeError)
+            }
+            RegisterEvent.onMetodosPagoExitoso -> {
+                //onMetodosPagoExitoso()
+                var metodosPagoList = event.mutableList as List<MetodoPago>
+                registerUserView?.setMetodosPago(metodosPagoList)
+
+            }
+            RegisterEvent.onMetodosPagoError -> {
+                onMetodosPagoError(event.mensajeError)
             }
         }
     }
@@ -57,6 +67,7 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
         return false
     }
 
+
     override fun registerUsuario(usuario: Usuario) {
         if (checkConnection()) {
             registerUserView?.disableInputs()
@@ -67,6 +78,24 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
         }
     }
 
+    override fun loadInfo() {
+        /*if (checkConnection()) {
+            registerUserInteractor?.loadInfo()
+        } else {
+            registerUserView?.hasNotConnectivity()
+        }*/
+        registerUserInteractor?.loadInfo()
+    }
+
+/*
+    override fun getMetodosPago() {
+        if (checkConnection()) {
+            registerUserInteractor?.getMetodosPago()
+        } else {
+            registerUserView?.hasNotConnectivity()
+        }
+    } */
+
     //Acciones de Respuesta a Post de Eventos
     private fun onRegistroExitoso() {
         registerUserView?.enableInputs()
@@ -74,10 +103,20 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
         registerUserView?.registroExitoso()
     }
 
-    private fun onErrorRegistro(error: String) {
+    private fun onErrorRegistro(error: String?) {
         registerUserView?.enableInputs()
         registerUserView?.hideProgress()
         registerUserView?.registroError(error)
+    }
+
+
+    /*
+    private fun onMetodosPagoExitoso() {
+        registerUserView?.loadMetodosPago()
+    }*/
+
+    private fun onMetodosPagoError(error: String?) {
+        registerUserView?.loadMetodosPagoError(error)
     }
 
     //region Conectividad a Internet

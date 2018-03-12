@@ -102,6 +102,8 @@
     <!-- INTERNET CONNECTION -->
     <string name="internet_connected">Conectado a Internet</string>
     <string name="not_internet_connected">No Conectado a Internet</string>
+    <string name="error_request">Error en la petición</string>
     <string name="request_ok">Se realizo Éxitosamente</string>
+    <string name="error_load_roles">No se pueden cargar los roles porque no hay internet</string>
 
 </resources>

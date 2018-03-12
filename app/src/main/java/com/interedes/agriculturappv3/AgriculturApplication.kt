@@ -4,7 +4,7 @@ import android.app.Application
 import android.os.StrictMode
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
-import com.interedes.agriculturappv3.asistencia_tecnica.services.internet_connection.ConnectivityReceiver
+import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.raizlabs.android.dbflow.config.FlowConfig
 import com.raizlabs.android.dbflow.config.FlowManager
 

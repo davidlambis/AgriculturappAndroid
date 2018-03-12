@@ -1,7 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter
 
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
-import com.interedes.agriculturappv3.events.RegisterEvent
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent
 
 interface RegisterUserPresenter {
 
@@ -10,4 +10,6 @@ interface RegisterUserPresenter {
     fun onEventMainThread(event: RegisterEvent?)
     fun validarCampos(): Boolean?
     fun registerUsuario(usuario: Usuario)
+    fun loadInfo()
+    //fun getMetodosPago()
 }
