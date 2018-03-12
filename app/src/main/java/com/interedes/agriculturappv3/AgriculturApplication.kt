@@ -1,7 +1,9 @@
 package com.interedes.agriculturappv3
 
 import android.app.Application
+import android.content.Context
 import android.os.StrictMode
+import android.support.multidex.MultiDex
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
@@ -31,6 +33,12 @@ class AgriculturApplication : Application() {
         StrictMode.setVmPolicy(builder.build())
     }
 
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
+    }
+
     override fun onTerminate() {
         super.onTerminate()
         //DbFlow
@@ -38,6 +46,8 @@ class AgriculturApplication : Application() {
     }
 
     //Listener del Broadcast Receiver de detección de Internet
+
+
     fun setConnectivityListener(listener: ConnectivityReceiver.connectivityReceiverListener) {
         ConnectivityReceiver.connectivityReceiverListener = listener
     }

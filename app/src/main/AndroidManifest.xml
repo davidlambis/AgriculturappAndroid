@@ -52,7 +52,7 @@
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".asistencia_tecnica.modules.main_menu.MenuMainActivity"
+            android:name=".asistencia_tecnica.modules.ui.main_menu.MenuMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -70,7 +70,7 @@
             android:value="@string/maps" />
 
         <receiver
-            android:name="com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver"
+            android:name=".services.internet_connection.ConnectivityReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />

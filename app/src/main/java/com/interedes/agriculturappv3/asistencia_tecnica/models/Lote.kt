@@ -38,6 +38,18 @@ class Lote : BaseModel() {
     @Column(name = "Area")
     var Area: Double? =null
 
+    @SerializedName("Latitud")
+    @Column(name = "Latitud")
+    var Latitud: Double? =null
+
+    @SerializedName("Longitud")
+    @Column(name = "Longitud")
+    var Longitud: Double? =null
+
+    @SerializedName("Poligono_Lote")
+    @Column(name = "Poligono_Lote")
+    var Poligono_Lote: String? =null
+
     @SerializedName("Coordenadas")
     @Column(name = "Coordenadas")
     var Coordenadas: String? =null

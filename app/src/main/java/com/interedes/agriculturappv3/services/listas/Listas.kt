@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.services.listas
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.ItemLista
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UP
 import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.Rol
 
 class Listas {
@@ -39,6 +40,15 @@ class Listas {
             lista_asistencia_tecnica_productor.add(ItemLista("Mis Lotes", Imagen = R.drawable.ic_lote, Identificador = "mis_lotes"))
             lista_asistencia_tecnica_productor.add(ItemLista("Mis Cultivos", Imagen = R.drawable.ic_cultivos, Identificador = "mis_cultivos"))
             return lista_asistencia_tecnica_productor
+        }
+
+
+        fun listaUP(): ArrayList<UP> {
+            val listaUP = ArrayList<UP>()
+            listaUP.add(UP(1,"Unidad Productiva 1",null,null,null))
+            listaUP.add(UP(2,"Unidad Productiva 2",null,null,null))
+            listaUP.add(UP(3,"Unidad Productiva 3",null,null,null))
+            return listaUP
         }
     }
 }

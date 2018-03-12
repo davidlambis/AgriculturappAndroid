@@ -10,4 +10,6 @@ interface LoteInteractor {
     fun updateLote(lote : Lote)
     fun deleteLote(lote : Lote)
     fun execute()
+
+    fun loadListUp()
 }

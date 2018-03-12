@@ -3,10 +3,12 @@
 
     <!--MENU ACTIVITIES-->
     <string name="title_menu">Menu</string>
+    <string name="title_lote">Lote</string>
 
     <!-- GLOBALES -->
     <string name="results_global_search">Mostrando %d Resultados</string>
     <string name="error_field_required">Campo Requerido</string>
+    <string name="coords">%f  /  %f</string>
 
 
     <!-- HOME -->
@@ -87,7 +89,12 @@
     <!--NAMES LOTE-->
     <string name="add_lote">Agregar Lote</string>
     <string name="message_add_lote">Digite los todos lo campos</string>
-
+    <string name="location_lote_select_type">Como desea ubicar el lote?</string>
+    <string name="tittle_add_coord_lote_gps">Agregar Lote</string>
+    <string name="location_type_gps">Ubicacion con GPS</string>
+    <string name="location_type_manual">Ubicacion Manual</string>
+    <string name="alert_delete_lote">Esta seguro que desea eliminar el lote</string>
+    <string name="select_UP">Seleccione Unidad Productiva</string>
 
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
@@ -97,13 +104,28 @@
     <string name="confirm">Aceptar</string>
     <string name="close">Cerrar</string>
     <string name="cancel">Cancelar</string>
+    <string name="on_connectividad">Conectado</string>
+    <string name="off_connectividad">Desconectado</string>
+    <string name="btn_save">Guardar</string>
+    <string name="confirmation">Confirmacion</string>
 
 
     <!-- INTERNET CONNECTION -->
     <string name="internet_connected">Conectado a Internet</string>
     <string name="not_internet_connected">No Conectado a Internet</string>
-    <string name="error_request">Error en la petición</string>
+    <string name="sin_conexion">Sin Conexión</string>
     <string name="request_ok">Se realizo Éxitosamente</string>
+    <string name="error_request">Error en la petición</string>
     <string name="error_load_roles">No se pueden cargar los roles porque no hay internet</string>
+
+
+    <string-array name="array_type_get_location_with_conection">
+        <item>Ubicacion GPS</item>
+        <item>Ubicacion Manual</item>
+    </string-array>
+
+    <string-array name="array_type_get_location_empty_conection">
+        <item>Ubicacion GPS</item>
+    </string-array>
 
 </resources>

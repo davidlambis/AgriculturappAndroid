@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.services.coords
+package com.interedes.agriculturappv3.asistencia_tecnica.services.coords
 
 import android.Manifest
 import android.app.Activity
@@ -24,14 +24,22 @@ import android.widget.Toast
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Coords
 
-class CoordsService constructor(context_:Context): Service(), LocationListener {
+/**
+ * Created by EnuarMunoz on 5/03/18.
+ */
+data class CoordsService constructor(var context_:Context): Service(), LocationListener {
+
+    companion object {
+        var instance:  CoordsService? = null
+    }
+
 
 
     private var context: Context?=null
 
     var latitud: Double = 0.toDouble()
     var longitud: Double = 0.toDouble()
-   // var localizacion = Coords(latitud,longitud,""
+    // var localizacion = Coords(latitud,longitud,""
     var serviceLocalizacionRunBool:Boolean? = false
 
 
@@ -46,9 +54,9 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
 
 
     init {
-
+        instance=this
         this.context=context_
-     //   this.context = this.applicationContext
+        //   this.context = this.applicationContext
         getLocation(context as Activity)
     }
 
@@ -91,8 +99,8 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
             return
         }
 
-        locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 0f, this)
-        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0f, this)
+        locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1f, this)
+        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1f, this)
 
         /*
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER
@@ -119,8 +127,10 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
     override fun onStatusChanged(s: String, status: Int, bundle: Bundle) {
         when (status) {
             LocationProvider.AVAILABLE -> Log.i("GPS", "Disponible")
-            LocationProvider.OUT_OF_SERVICE -> showStatusGPS(getString(R.string.GpsOutService))
-            LocationProvider.TEMPORARILY_UNAVAILABLE -> showStatusGPS(getString(R.string.GpsTempUnavailable))
+            LocationProvider.OUT_OF_SERVICE -> showStatusGPS("Proveedor fuera de servicio de localización")
+            LocationProvider.TEMPORARILY_UNAVAILABLE -> {
+                //showStatusGPS("Temporalmente no disponible el servicio de GPS")
+            }
         }
     }
 
@@ -139,7 +149,7 @@ class CoordsService constructor(context_:Context): Service(), LocationListener {
         latitud = loc.latitude
         longitud = loc.longitude
 
-       // localizacion.Latitud=loc.latitude
+        // localizacion.Latitud=loc.latitude
         //localizacion.Longitud=loc.longitude
 
         val retIntent = Intent("LOCATION")

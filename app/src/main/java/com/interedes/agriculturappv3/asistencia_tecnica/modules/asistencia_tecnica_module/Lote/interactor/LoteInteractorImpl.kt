@@ -16,11 +16,14 @@ class LoteInteractorImpl:LoteInteractor {
         loteRepository = LoteRepositoryImpl()
     }
 
-
+    override fun loadListUp() {
+        loteRepository?.getListUp()
+    }
 
     override fun execute() {
         loteRepository?.getListLotes()
     }
+
     override fun registerLote(lote: Lote) {
         loteRepository?.saveLotes(lote)
     }

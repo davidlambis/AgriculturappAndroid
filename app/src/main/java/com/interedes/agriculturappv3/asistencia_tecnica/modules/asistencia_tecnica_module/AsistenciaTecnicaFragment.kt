@@ -14,8 +14,8 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.MapsActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.LoteFragment
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MainMenuFragment
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.MainMenuFragment
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.listas.Listas
 import kotlinx.android.synthetic.main.fragment_general.*
 

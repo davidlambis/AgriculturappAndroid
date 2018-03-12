@@ -13,4 +13,7 @@ interface LoteRepository {
     fun saveLotes(lote: Lote)
     fun updateLote(lote: Lote)
     fun deleteLote(lote: Lote)
+
+    //ListUp
+    fun getListUp()
 }

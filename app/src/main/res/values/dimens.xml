@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="margin_3">3dp</dimen>
     <dimen name="margin_global">16dp</dimen>
     <dimen name="margin_24">24dp</dimen>
     <dimen name="margin_80">80dp</dimen>
+    <dimen name="margin_70">70dp</dimen>
     <dimen name="icon_productor_size">162dp</dimen>
     <dimen name="text_size">22sp</dimen>
     <dimen name="text_size_16">16dp</dimen>
     <dimen name="text_size_18">18sp</dimen>
-
+    <dimen name="text_size_25">25dp</dimen>
+    <dimen name="text_size_40">40dp</dimen>
+    <dimen name="text_size_12">12dp</dimen>
 
 
     <dimen name="margin_global_10">10dp</dimen>
+
+
+    <dimen name="height_mapa">250dp</dimen>
 </resources>

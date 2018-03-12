@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/selected"
+    android:oneshot="false">
+
+    <item android:drawable="@drawable/ic_cargando5" android:duration="150"/>
+    <item android:drawable="@drawable/ic_cargando4" android:duration="150"/>
+    <item android:drawable="@drawable/ic_cargando3" android:duration="150"/>
+    <item android:drawable="@drawable/ic_cargando2" android:duration="150"/>
+    <item android:drawable="@drawable/ic_cargando1" android:duration="150"/>
+</animation-list>

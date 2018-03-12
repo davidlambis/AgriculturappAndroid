@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu
+package com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment
 
 
 import android.os.Bundle
@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.listas.Listas
 import kotlinx.android.synthetic.main.fragment_main_menu.*
 

@@ -11,8 +11,7 @@ import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.presenter.LoginPresenter
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.presenter.LoginPresenterImpl
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
@@ -53,7 +52,9 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
 
     override fun ingresar(email: String, password: String) {
         if (presenter?.validarCampos() == true) {
-            presenter?.ingresar(email, password)
+            //presenter?.ingresar(email, password)
+            progressBar.visibility = View.VISIBLE
+            startActivity(Intent(this, MenuMainActivity::class.java))
         }
     }
 

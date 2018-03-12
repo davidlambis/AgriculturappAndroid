@@ -4,6 +4,9 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.UP
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.raizlabs.android.dbflow.kotlinextensions.delete
+import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
 
 class UpRepository: IUnidadProductiva.Repo {

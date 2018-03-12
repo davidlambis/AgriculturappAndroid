@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UP;
 import com.interedes.agriculturappv3.events.RequestEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IUnidadProductiva {
