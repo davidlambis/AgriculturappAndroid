@@ -16,8 +16,20 @@ class RegisterUserInteractorImpl : RegisterUserInteractor {
         registerUserRepository?.registerUsuario(usuario)
     }
 
-    override fun loadInfo() {
-        registerUserRepository?.loadInfo()
+    override fun loadMetodosPago() {
+        registerUserRepository?.loadMetodosPago()
+    }
+
+    override fun loadDetalleMetodosPagoByMetodoPagoId(Id : Long?) {
+        registerUserRepository?.loadDetalleMetodosPagoByMetodoPagoId(Id)
+    }
+
+    override fun getSqliteMetodosPago() {
+        registerUserRepository?.getSqliteMetodosPago()
+    }
+
+    override fun loadSqliteDetalleMetodosPagoByMetodoPagoId(Id: Long?) {
+        registerUserRepository?.loadSqliteDetalleMetodosPagoByMetodoPagoId(Id)
     }
 
 /*

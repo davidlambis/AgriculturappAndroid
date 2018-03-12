@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.services.api
 
+import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPagoResponse
 import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.RolResponse
 import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPagoResponse
@@ -13,11 +14,17 @@ import java.util.concurrent.TimeUnit
 interface ApiInterface {
 
     //region Peticiones
+    //Roles
     @GET("odata/agriculturebd/Rols")
     abstract fun getRoles(): Call<RolResponse>
 
+    //Métodos Pago
     @GET("odata/agriculturebd/MetodoPagos")
     abstract fun getMetodoPagos(): Call<MetodoPagoResponse>
+
+    //Detalle Métodos Pago
+    @GET("odata/agriculturebd/DetalleMetodopagos")
+    abstract fun getDetalleMetodoPagos(): Call<DetalleMetodoPagoResponse>
 
 
     //endregion

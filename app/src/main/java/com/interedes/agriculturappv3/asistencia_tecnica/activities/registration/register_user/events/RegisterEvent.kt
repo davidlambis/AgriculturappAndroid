@@ -7,10 +7,9 @@ data class RegisterEvent(var eventType: Int, var mutableList: MutableList<Object
     companion object {
         val onRegistroExitoso: Int = 0
         val onErrorRegistro: Int = 1
-        val onMetodosPagoExitoso : Int = 2
-        val onMetodosPagoError : Int = 3
-        val onDetalleMetodosPagoExitoso : Int = 4
-        val onDetalleMetodosPagoError : Int = 5
+        val onMetodoPagoExitoso: Int = 2
+        val onLoadInfoError: Int = 3
+        val onDetalleMetodosPagoExitoso: Int = 4
     }
 
 }

@@ -7,6 +7,9 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.Metodo
 interface RegisterUserInteractor {
 
     fun registerUsuario(usuario : Usuario)
-    fun loadInfo()
+    fun loadMetodosPago()
+    fun loadDetalleMetodosPagoByMetodoPagoId(Id : Long?)
+    fun loadSqliteDetalleMetodosPagoByMetodoPagoId(Id : Long?)
+    fun getSqliteMetodosPago()
     //fun getMetodosPago()
 }

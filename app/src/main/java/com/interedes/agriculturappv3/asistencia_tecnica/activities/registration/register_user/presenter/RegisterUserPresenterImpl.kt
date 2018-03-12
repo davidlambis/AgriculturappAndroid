@@ -6,10 +6,7 @@ import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent
-import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent.Companion.onErrorRegistro
-import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent.Companion.onMetodosPagoError
-import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent.Companion.onMetodosPagoExitoso
-import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent.Companion.onRegistroExitoso
+import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPago
 import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
@@ -48,14 +45,18 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
             RegisterEvent.onErrorRegistro -> {
                 onErrorRegistro(event.mensajeError)
             }
-            RegisterEvent.onMetodosPagoExitoso -> {
-                //onMetodosPagoExitoso()
-                var metodosPagoList = event.mutableList as List<MetodoPago>
+            RegisterEvent.onMetodoPagoExitoso -> {
+                //onMetodoPagoExitoso()
+                val metodosPagoList = event.mutableList as List<MetodoPago>
                 registerUserView?.setMetodosPago(metodosPagoList)
 
             }
-            RegisterEvent.onMetodosPagoError -> {
-                onMetodosPagoError(event.mensajeError)
+            RegisterEvent.onDetalleMetodosPagoExitoso -> {
+                val detalleMetodosPagoList = event.mutableList as List<DetalleMetodoPago>
+                registerUserView?.setDetalleMetodosPago(detalleMetodosPagoList)
+            }
+            RegisterEvent.onLoadInfoError -> {
+                onLoadInfoError(event.mensajeError)
             }
         }
     }
@@ -78,13 +79,24 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
         }
     }
 
-    override fun loadInfo() {
-        /*if (checkConnection()) {
-            registerUserInteractor?.loadInfo()
+    override fun loadMetodosPago() {
+        if (checkConnection()) {
+            registerUserInteractor?.loadMetodosPago()
         } else {
-            registerUserView?.hasNotConnectivity()
-        }*/
-        registerUserInteractor?.loadInfo()
+            registerUserView?.getSqliteMetodosPago()
+        }
+    }
+
+    override fun loadDetalleMetodosPagoByMetodoPagoId(Id: Long?) {
+        if (checkConnection()) {
+            registerUserInteractor?.loadDetalleMetodosPagoByMetodoPagoId(Id)
+        } else {
+            registerUserInteractor?.loadSqliteDetalleMetodosPagoByMetodoPagoId(Id)
+        }
+    }
+
+    override fun getSqliteMetodosPago() {
+        registerUserInteractor?.getSqliteMetodosPago()
     }
 
 /*
@@ -111,12 +123,13 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
 
 
     /*
-    private fun onMetodosPagoExitoso() {
+    private fun onMetodoPagoExitoso() {
         registerUserView?.loadMetodosPago()
     }*/
 
-    private fun onMetodosPagoError(error: String?) {
+    private fun onLoadInfoError(error: String?) {
         registerUserView?.loadMetodosPagoError(error)
+        registerUserView?.hideMetodosPago()
     }
 
     //region Conectividad a Internet

@@ -10,6 +10,8 @@ interface RegisterUserPresenter {
     fun onEventMainThread(event: RegisterEvent?)
     fun validarCampos(): Boolean?
     fun registerUsuario(usuario: Usuario)
-    fun loadInfo()
+    fun loadMetodosPago()
+    fun loadDetalleMetodosPagoByMetodoPagoId(Id:Long?)
+    fun getSqliteMetodosPago()
     //fun getMetodosPago()
 }

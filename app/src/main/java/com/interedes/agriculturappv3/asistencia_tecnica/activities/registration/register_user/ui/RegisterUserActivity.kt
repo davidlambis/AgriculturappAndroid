@@ -1,7 +1,9 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.ui
 
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
+import android.net.ConnectivityManager
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -13,22 +15,27 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter.RegisterUserPresenter
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter.RegisterUserPresenterImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
+import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPago
 import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPago
+import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import kotlinx.android.synthetic.main.activity_register_user.*
 import java.sql.Timestamp
 
-import java.util.*
+class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClickListener, ConnectivityReceiver.connectivityReceiverListener {
 
-class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClickListener {
 
     var camposValidados: Boolean? = false
     var rol: String? = null
     var presenter: RegisterUserPresenter? = null
+    var metodo_pago_id: Long? = null
+    var nombre_metodo_pago: String? = null
+    var detalle_metodo_pago_id: Long? = null
 
     init {
         //Presenter
@@ -39,9 +46,11 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_user)
+        baseContext.registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        AgriculturApplication.instance.setConnectivityListener(this)
         if (intent.extras != null && intent.extras["rol"].equals("productor")) {
             rol = "productor"
-            loadInfo()
+            loadMetodosPago()
         } else if (intent.extras["rol"].equals("comprador")) {
             rol = "comprador"
             imageViewRol?.setImageResource(R.drawable.ic_comprador_big)
@@ -56,65 +65,53 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
     }
 
-    /*
-    override fun loadMetodosPago() {
-        presenter?.getMetodosPago()
+    //Cargar métodos de Pago de SQLite
+    override fun getSqliteMetodosPago() {
+        presenter?.getSqliteMetodosPago()
+    }
 
-    }*/
 
-
+    //Cargar métodos Pago
     override fun setMetodosPago(metodosPago: List<MetodoPago>?) {
         spinnerMetodoPago?.setAdapter(null)
         val metodoPagoArrayAdapter = ArrayAdapter<MetodoPago>(this, android.R.layout.simple_spinner_dropdown_item, metodosPago)
         spinnerMetodoPago?.setAdapter(metodoPagoArrayAdapter)
+        spinnerMetodoPago?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+            spinnerBanco?.visibility = View.VISIBLE
+            spinnerBanco?.setText("")
+            metodo_pago_id = metodosPago?.get(position)?.Id
+            nombre_metodo_pago = metodosPago?.get(position)?.Nombre
+            presenter?.loadDetalleMetodosPagoByMetodoPagoId(metodo_pago_id)
+            if (!nombre_metodo_pago.equals("Transferencia Bancaria")) {
+                textInputLayoutNumeroCuenta?.visibility = View.GONE
+                edtNumeroCuenta?.setText("")
+            }
+        }
+    }
+
+    //Cargar Detalle métodos Pago
+    override fun setDetalleMetodosPago(detalleMetodosPago: List<DetalleMetodoPago>?) {
+        spinnerBanco?.setAdapter(null)
+        val detalleMetodoPagoArrayAdapter = ArrayAdapter<DetalleMetodoPago>(this, android.R.layout.simple_spinner_dropdown_item, detalleMetodosPago)
+        spinnerBanco?.setAdapter(detalleMetodoPagoArrayAdapter)
+        spinnerBanco?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+            detalle_metodo_pago_id = detalleMetodosPago?.get(position)?.Id
+            if (nombre_metodo_pago.equals("Transferencia Bancaria")) {
+                textInputLayoutNumeroCuenta?.visibility = View.VISIBLE
+                edtNumeroCuenta?.setText("")
+            } else {
+                textInputLayoutNumeroCuenta?.visibility = View.GONE
+                edtNumeroCuenta?.setText("")
+            }
+        }
     }
 
     override fun loadMetodosPagoError(error: String?) {
         onMessageError(R.color.grey_luiyi, error)
     }
 
-    override fun loadInfo() {
-
-        presenter?.loadInfo()
-
-        //Carga de Spinners de método de pago y despliegue de spinner dependientes de seleccionar bancco y número de cuenta.
-        /* val itemsMetodoPago = arrayOf("Transferencia Bancaria", "Efectivo", "Otros")
-         val metodoPagoList = ArrayList<String>()
-         metodoPagoList.addAll(Arrays.asList(*itemsMetodoPago))
-         spinnerMetodoPago?.setAdapter(null)
-         val metodoPagoArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, metodoPagoList)
-         spinnerMetodoPago?.setAdapter(metodoPagoArrayAdapter)
-
-         spinnerMetodoPago?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-             if (metodoPagoList[position].equals("Transferencia Bancaria")) {
-                 //Carga Spinner Banco
-                 spinnerBanco?.visibility = View.VISIBLE
-                 spinnerBanco?.setText("")
-                 val itemsBanco = arrayOf("Bancolombia", "BBVA", "Banco Agrario")
-                 val bancoList = ArrayList<String>()
-                 bancoList.addAll(Arrays.asList(*itemsBanco))
-                 spinnerBanco?.setAdapter(null)
-                 val bancoArrayAdapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_dropdown_item, bancoList)
-                 spinnerBanco?.setAdapter(bancoArrayAdapter)
-                 spinnerBanco?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-                     textInputLayoutNumeroCuenta?.visibility = View.VISIBLE
-                     edtNumeroCuenta?.setText("")
-                 }
-             } else if (metodoPagoList[position].equals("Otros")) {
-                 spinnerBanco?.visibility = View.VISIBLE
-                 spinnerBanco?.setText("")
-                 val itemsBanco = arrayOf("Efecty", "Su Chance", "Baloto")
-                 val bancoList = ArrayList<String>()
-                 bancoList.addAll(Arrays.asList(*itemsBanco))
-                 spinnerBanco?.setAdapter(null)
-                 val bancoArrayAdapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_dropdown_item, bancoList)
-                 spinnerBanco?.setAdapter(bancoArrayAdapter)
-                 spinnerBanco?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l -> }
-             } else {
-                 spinnerBanco?.visibility = View.GONE
-                 textInputLayoutNumeroCuenta?.visibility = View.GONE
-             }
-         }*/
+    override fun loadMetodosPago() {
+        presenter?.loadMetodosPago()
     }
 
     override fun limpiarCambios() {
@@ -259,6 +256,15 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         setInputs(true)
     }
 
+    override fun hideMetodosPago() {
+        textInputLayoutNumeroCuenta?.isEnabled = false
+        spinnerMetodoPago?.isEnabled = false
+        spinnerBanco?.isEnabled = false
+        spinnerMetodoPago?.visibility = View.GONE
+        spinnerBanco?.visibility = View.GONE
+        textInputLayoutNumeroCuenta?.visibility = View.GONE
+    }
+
 
     override fun registroExitoso() {
         //Snackbar.make(container, getString(R.string.registro_exitoso), Snackbar.LENGTH_SHORT).show()
@@ -314,6 +320,29 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
         }
     }
+    //endregion
+
+    //region Conexión a Internet
+    //Revisar manualmente
+    private fun checkConnection(): Boolean {
+        return ConnectivityReceiver.isConnected
+        //showSnack(isConnected);
+    }
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        if (isConnected) {
+            onMessageOk(R.color.colorPrimary, getString(R.string.internet_connected))
+            if (rol.equals("productor")) {
+                spinnerMetodoPago?.isEnabled = true
+                spinnerMetodoPago?.visibility = View.VISIBLE
+                loadMetodosPago()
+            }
+        } else {
+            onMessageError(R.color.grey_luiyi, getString(R.string.not_internet_connected))
+            presenter?.getSqliteMetodosPago()
+        }
+    }
+
     //endregion
 
     //region Métodos Generales

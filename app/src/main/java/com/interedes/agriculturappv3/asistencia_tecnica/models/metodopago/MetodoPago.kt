@@ -13,7 +13,6 @@ data class MetodoPago(@PrimaryKey
                       @SerializedName("Id")
                       @Column(name = "Id")
                       var Id: Long? = 0,
-
                       @SerializedName("Nombre")
                       @Column(name = "Nombre")
                       var Nombre: String? = null) {
