@@ -48,6 +48,16 @@ class Listas {
             listaUP.add(UP(1,"Unidad Productiva 1",null,null,null))
             listaUP.add(UP(2,"Unidad Productiva 2",null,null,null))
             listaUP.add(UP(3,"Unidad Productiva 3",null,null,null))
+            listaUP.add(UP(4,"Unidad Productiva 4",null,null,null))
+            listaUP.add(UP(5,"Unidad Productiva 5",null,null,null))
+            listaUP.add(UP(6,"Unidad Productiva 6",null,null,null))
+            listaUP.add(UP(7,"Unidad Productiva 7",null,null,null))
+            listaUP.add(UP(8,"Unidad Productiva 8",null,null,null))
+            listaUP.add(UP(9,"Unidad Productiva 9",null,null,null))
+            listaUP.add(UP(10,"Unidad Productiva 10",null,null,null))
+            listaUP.add(UP(11,"Unidad Productiva 11",null,null,null))
+            listaUP.add(UP(12,"Unidad Productiva 12",null,null,null))
+
             return listaUP
         }
     }

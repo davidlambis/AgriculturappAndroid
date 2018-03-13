@@ -62,4 +62,8 @@ class Lote : BaseModel() {
     @SerializedName("Unidad_Productiva_Id")
     @Column(name = "Unidad_Productiva_Id")
     var Unidad_Productiva_Id: Long? =null
+
+
+    @Column(name = "Nombre_Unidad_Productiva")
+    var Nombre_Unidad_Productiva: String? =null
 }

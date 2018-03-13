@@ -70,7 +70,7 @@ class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter
             var deleteBtn: ImageButton = itemView.findViewById(R.id.btnDeleteLote)
             //image.setImageBitmap(data.Imagen)
             // image.setImageResource(data.Imagen)
-            txt_name_lote.text = data.Nombre
+            txt_name_lote.text = data.Nombre+"("+data.Unidad_Productiva_Id.toString()+")"
             txt_description_lote.text = data.Descripcion
             txtAreaLote.text = data.Area.toString()
             txtFechaLote.text = ""

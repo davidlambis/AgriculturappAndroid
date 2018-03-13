@@ -22,10 +22,10 @@ interface LotePresenter {
     fun listUP()
 
     //CRUD
-    fun registerLote(lote: Lote)
-    fun updateLote(lote: Lote)
-    fun deleteLote(lote: Lote)
-    fun getLotes()
+    fun registerLote(lote: Lote,unidad_productiva_id:Long?)
+    fun updateLote(lote: Lote,unidad_productiva_id:Long?)
+    fun deleteLote(lote: Lote,unidad_productiva_id:Long?)
+    fun getLotes(unidad_productiva_id:Long?)
 
     //Coords Service
     fun startGps(activity:Activity)

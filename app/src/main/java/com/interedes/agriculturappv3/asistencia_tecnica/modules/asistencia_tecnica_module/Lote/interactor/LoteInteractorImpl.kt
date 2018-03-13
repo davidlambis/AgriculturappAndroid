@@ -20,19 +20,19 @@ class LoteInteractorImpl:LoteInteractor {
         loteRepository?.getListUp()
     }
 
-    override fun execute() {
-        loteRepository?.getListLotes()
+    override fun execute(unidad_productiva_id:Long?) {
+        loteRepository?.getListLotes(unidad_productiva_id)
     }
 
-    override fun registerLote(lote: Lote) {
-        loteRepository?.saveLotes(lote)
+    override fun registerLote(lote: Lote,unidad_productiva_id:Long?) {
+        loteRepository?.saveLotes(lote,unidad_productiva_id)
     }
-    override fun updateLote(lote: Lote) {
-        loteRepository?.updateLote(lote)
+    override fun updateLote(lote: Lote,unidad_productiva_id:Long?) {
+        loteRepository?.updateLote(lote,unidad_productiva_id)
     }
 
-    override fun deleteLote(lote: Lote) {
-        loteRepository?.deleteLote(lote)
+    override fun deleteLote(lote: Lote,unidad_productiva_id:Long?) {
+        loteRepository?.deleteLote(lote,unidad_productiva_id)
     }
 
 }

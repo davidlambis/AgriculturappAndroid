@@ -6,10 +6,10 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
  * Created by EnuarMunoz on 7/03/18.
  */
 interface LoteInteractor {
-    fun registerLote(lote : Lote)
-    fun updateLote(lote : Lote)
-    fun deleteLote(lote : Lote)
-    fun execute()
+    fun registerLote(lote : Lote,unidad_productiva_id:Long?)
+    fun updateLote(lote : Lote,unidad_productiva_id:Long?)
+    fun deleteLote(lote : Lote,unidad_productiva_id:Long?)
+    fun execute(unidad_productiva_id:Long?)
 
     fun loadListUp()
 }
