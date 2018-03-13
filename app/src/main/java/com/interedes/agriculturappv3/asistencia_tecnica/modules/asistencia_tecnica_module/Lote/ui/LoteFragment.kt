@@ -6,6 +6,7 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.Drawable
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -18,6 +19,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -127,6 +129,7 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
         mapViewLotes.getMapAsync(this)
         loadInitTaskHandler()
         configAppBarLayout()
+        initCollapsingToolbar()
     }
 
 
@@ -223,6 +226,30 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
                 }
             }
         })*/
+
+        app_bar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            internal var isShow = false
+            internal var scrollRange = -1
+
+            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.totalScrollRange
+                    fabLocationLote.visibility=View.VISIBLE
+                    fabUnidadProductiva.visibility=View.VISIBLE
+                }
+                if (scrollRange + verticalOffset >= 0 && scrollRange + verticalOffset < 120) {
+
+                    isShow = true
+                    fabLocationLote.visibility=View.GONE
+                    fabUnidadProductiva.visibility=View.GONE
+                }
+                else if (isShow) {
+                    fabLocationLote.visibility=View.VISIBLE
+                    fabUnidadProductiva.visibility=View.VISIBLE
+                    isShow = false
+                }
+            }
+        })
     }
 
     //endregion
@@ -644,7 +671,21 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
         }
 
         builder.setSingleChoiceItems(options,DIALOG_SET_TYPE_UBICATION,DialogInterface.OnClickListener { dialog, which ->
+
+            var listView= (dialog as AlertDialog).listView.selectedItem
+
+
+            if (listView != null) {
+                // do something interesting
+                Toast.makeText(activity,""+listView.toString(),Toast.LENGTH_LONG).show()
+            }
+
+
+
             when (which) {
+
+
+
                 //Position State Location GPS
                 0 -> {
                     _dialogTypeLocation= dialog as AlertDialog?
@@ -675,6 +716,8 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
     }
 
 
+
+
      override fun confirmDelete(lote:Lote): AlertDialog? {
          var  builder = AlertDialog.Builder(activity!!)
          builder.setTitle(getString(R.string.confirmation));
@@ -699,7 +742,20 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fabAddLote -> {
-                showAlertDialogAddLote(null)
+
+                if(UBICATION_MANUAL==false && UBICATION_GPS==false){
+                    showAlertTypeLocationLote()
+                   // onMessageOk(R.color.colorPrimary,getString(R.string.message_location_lote))
+                    Toast.makeText(activity,getString(R.string.message_location_lote),Toast.LENGTH_LONG).show()
+                }else{
+                    if(UBICATION_MANUAL==true && LastMarkerDrawingLote==null){
+                        Toast.makeText(activity,getString(R.string.message_location_lote_marker),Toast.LENGTH_LONG).show()
+                        //onMessageOk(R.color.colorPrimary,getString(R.string.message_location_lote_marker))
+                    }else{
+                        showAlertDialogAddLote(null)
+                    }
+                }
+
             }
             R.id.ivClosetDialogLote->_dialogRegisterUpdate?.dismiss()
             R.id.btnCancelLote->_dialogRegisterUpdate?.dismiss()

@@ -56,4 +56,6 @@ interface MainViewLote {
 
     //Events
     fun onEventBroadcastReceiver(extras: Bundle,intent: Intent)
+
+
 }
