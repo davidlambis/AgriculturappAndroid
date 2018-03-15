@@ -31,26 +31,13 @@ app:cardUseCompatPadding="true">
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:background="@drawable/sombra"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:shrinkColumns="*"
             android:stretchColumns="*">
-            <!-- Row 1 with single column
-        <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:gravity="center_horizontal">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18dp"
-                android:text="Row 1"
-                android:layout_span="3"
-                android:padding="18dip"
-                android:background="#b0b0b0"
-                android:textColor="#000"/>
-        </TableRow> -->
-            <!-- Row 1 with 3 columns -->
+
+
+
 
             <TableRow
                 android:id="@+id/tableRow3"
@@ -195,28 +182,26 @@ app:cardUseCompatPadding="true">
                 </RelativeLayout>
             </TableRow>
             <TableRow
-                android:id="@+id/tableRow4"
-                android:layout_width="match_parent"
+            android:id="@+id/tableRow4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="0dp">
 
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="0dp">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/grey_luiyi" />
-                </RelativeLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/grey_luiyi" />
+            </RelativeLayout>
             </TableRow>
         </TableLayout>
-
-
     </LinearLayout>
 
     <!-- <View

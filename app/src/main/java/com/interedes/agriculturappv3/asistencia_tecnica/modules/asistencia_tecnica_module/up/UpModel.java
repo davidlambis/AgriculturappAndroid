@@ -6,8 +6,8 @@ public class UpModel implements IUnidadProductiva.Model{
     private IUnidadProductiva.Repo upRepo = null;
 
     UpModel(){
-        this.upRepo = new UpRepository();
-    }
+    this.upRepo = new UpRepository();
+}
 
     @Override
     public void registerUP(UnidadProductiva unidadProductivaModel) {
