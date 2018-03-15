@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.activities.login.intera
 
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.repository.LoginRepository
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.repository.LoginRepositoryImpl
+import com.interedes.agriculturappv3.asistencia_tecnica.models.login.Login
 
 
 class LoginInteractorImpl : LoginInteractor{
@@ -12,8 +13,12 @@ class LoginInteractorImpl : LoginInteractor{
         loginRepository = LoginRepositoryImpl()
     }
 
-    override fun ingresar(email: String, password: String) {
+    override fun ingresar(login : Login) {
+        loginRepository?.ingresar(login)
+    }
 
+    override fun getSqliteUsuario(login: Login) {
+        loginRepository?.getSqliteUsuario(login)
     }
 
 }

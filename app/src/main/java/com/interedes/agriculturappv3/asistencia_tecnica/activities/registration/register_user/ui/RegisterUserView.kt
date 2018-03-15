@@ -8,6 +8,9 @@ interface RegisterUserView {
     fun enableInputs()
     fun hideMetodosPago()
 
+    fun disableBanco()
+    fun showBanco()
+
     fun showProgress()
     fun hideProgress()
 
@@ -23,7 +26,7 @@ interface RegisterUserView {
     fun getSqliteMetodosPago()
 
     //Detalle Métodos Pago
-    fun setDetalleMetodosPago(metodosPago: List<DetalleMetodoPago>?)
+    fun setDetalleMetodosPago(detalleMetodosPago: List<DetalleMetodoPago>?)
 
     fun limpiarCambios()
 
@@ -37,4 +40,6 @@ interface RegisterUserView {
 
     fun onMessageOk(colorPrimary: Int, message: String?)
     fun onMessageError(colorPrimary: Int, message: String?)
+
+
 }

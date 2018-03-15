@@ -1,30 +1,79 @@
 package com.interedes.agriculturappv3.services.api
 
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario
 import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPagoResponse
+import com.interedes.agriculturappv3.asistencia_tecnica.models.login.Login
+import com.interedes.agriculturappv3.asistencia_tecnica.models.login.LoginResponse
 import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.RolResponse
-import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPagoResponse
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.User
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.UserResponse
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.UsuarioResponse
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
+import retrofit2.http.*
 import java.util.concurrent.TimeUnit
+import retrofit2.http.GET
+
 
 interface ApiInterface {
 
     //region Peticiones
-    //Roles
+    //Get Roles
     @GET("odata/agriculturebd/Rols")
-    abstract fun getRoles(): Call<RolResponse>
+    fun getRoles(): Call<RolResponse>
 
-    //Métodos Pago
+    //Get Métodos Pago
     @GET("odata/agriculturebd/MetodoPagos")
-    abstract fun getMetodoPagos(): Call<MetodoPagoResponse>
+    fun getMetodoPagos(): Call<MetodoPagoResponse>
 
-    //Detalle Métodos Pago
+    //Get Detalle Métodos Pago
     @GET("odata/agriculturebd/DetalleMetodopagos")
-    abstract fun getDetalleMetodoPagos(): Call<DetalleMetodoPagoResponse>
+    fun getDetalleMetodoPagos(): Call<DetalleMetodoPagoResponse>
+
+    //Post Registro Usuarios
+    @Headers("Content-Type: application/json")
+    @POST("auth/register")
+    fun postRegistroUsers(@Body body: User): Call<UserResponse>
+
+    //Get Usuarios
+    @GET("odata/agriculturebd/Usuarios")
+    fun getUsuarios(): Call<UsuarioResponse>
+
+    //Post Login
+    @Headers("Content-Type: application/json")
+    @POST("auth/login")
+    fun postLogin(@Body body: Login): Call<LoginResponse>
+
+    //Get Usuario por Correo
+    @GET("odata/agriculturebd/Usuarios")
+    fun getUsuarioByCorreo(@Query("\$filter") filter:String): Call<UsuarioResponse>
+
+    /*
+    @GET("odata/agriculturebd/Usuarios?\$filter=Email")
+    fun getUsuarioByCorreo(@Query("\$filter") Email: String?): Call<UsuarioResponse>*/
+
+    /*
+    /api/schooldata/Galleries?$orderby=Date desc&$skip=0&$top=10&$filter=Type eq 'Video'
+
+    odata/agriculturebd/Usuarios?$filter=Email eq 'administrador'
+    */
+
+    /*
+    //Get Usuario por Correo
+    @GET("odata/agriculturebd/Usuarios")
+    abstract fun getUsuarioByCorreo(@Query("\$filter=Email") Email: String?): Call<UsuarioResponse>
+  */
+
+    /*
+    @GET("/Galleries?\$orderby=Date desc")
+    fun getPhotoGallery(
+            @Query("\$skip") skip: Int,
+            @Query("\$top") top: Int,
+            @Query("\$filter") _type: String
+    ): Call<ResponseBody> */
 
 
     //endregion

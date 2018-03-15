@@ -20,12 +20,16 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter.RegisterUserPresenter
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter.RegisterUserPresenterImpl
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario
 import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPago
 import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import kotlinx.android.synthetic.main.activity_register_user.*
-import java.sql.Timestamp
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+import android.text.TextUtils
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.User
+
 
 class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClickListener, ConnectivityReceiver.connectivityReceiverListener {
 
@@ -35,24 +39,27 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     var presenter: RegisterUserPresenter? = null
     var metodo_pago_id: Long? = null
     var nombre_metodo_pago: String? = null
-    var detalle_metodo_pago_id: Long? = null
+    var detalle_metodo_pago_id: Long? = 0
+    var rol_id: Long? = 0
+    var connectivityReceiver: ConnectivityReceiver? = null
 
     init {
         //Presenter
         presenter = RegisterUserPresenterImpl(this)
         (presenter as RegisterUserPresenterImpl).onCreate()
+        connectivityReceiver = ConnectivityReceiver()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_user)
-        baseContext.registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-        AgriculturApplication.instance.setConnectivityListener(this)
         if (intent.extras != null && intent.extras["rol"].equals("productor")) {
             rol = "productor"
+            rol_id = intent.extras["rol_id"] as Long?
             loadMetodosPago()
-        } else if (intent.extras["rol"].equals("comprador")) {
+        } else if (intent.extras != null && intent.extras["rol"].equals("comprador")) {
             rol = "comprador"
+            rol_id = intent.extras["rol_id"] as Long?
             imageViewRol?.setImageResource(R.drawable.ic_comprador_big)
             textViewRol?.text = getString(R.string.title_register_comprador)
             spinnerMetodoPago?.visibility = View.GONE
@@ -62,6 +69,9 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         ivBackButton?.setOnClickListener(this)
         btnRegistrar?.setOnClickListener(this)
 
+
+        registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        AgriculturApplication.instance.setConnectivityListener(this)
 
     }
 
@@ -77,8 +87,6 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         val metodoPagoArrayAdapter = ArrayAdapter<MetodoPago>(this, android.R.layout.simple_spinner_dropdown_item, metodosPago)
         spinnerMetodoPago?.setAdapter(metodoPagoArrayAdapter)
         spinnerMetodoPago?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-            spinnerBanco?.visibility = View.VISIBLE
-            spinnerBanco?.setText("")
             metodo_pago_id = metodosPago?.get(position)?.Id
             nombre_metodo_pago = metodosPago?.get(position)?.Nombre
             presenter?.loadDetalleMetodosPagoByMetodoPagoId(metodo_pago_id)
@@ -176,7 +184,17 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
             edtContrasena?.setError(getString(R.string.edit_text_error_contrasena))
             focusView = edtContrasena
             cancel = true
-        } /* else if (!edtCorreo.text.toString().trim().matches(email_pattern.toRegex())) {
+        } else if (!isValidEmail(edtCorreo.text.trim().toString())) {
+            edtCorreo?.setError(getString(R.string.edit_text_error_correo))
+            focusView = edtCorreo
+            cancel = true
+        } else if (!validatePassword(edtContrasena.text.trim().toString())) {
+            edtContrasena?.setError(getString(R.string.edit_text_pattern_contrasena))
+            focusView = edtContrasena
+            cancel = true
+        }
+
+        /* else if (!edtCorreo.text.toString().trim().matches(email_pattern.toRegex())) {
             edtCorreo?.setError(getString(R.string.edit_text_error_correo))
             focusView = edtCorreo
             cancel = true
@@ -191,40 +209,21 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     }
 
     override fun registerUsuario() {
-        //TODO primero registro en el backend, retorna respuesta, si es OK hace registro a firebase y SQLITE
-        //Llamar al presentador
-        //presenter?.validarCampos()
         if (presenter?.validarCampos() == true) {
 
-            //TEST
-            val tsLong = System.currentTimeMillis() / 1000
-            val tsTemp = Timestamp(tsLong)
-
-            //TODO Load Métodos Pago y Detalle backend
-            //TODO Encriptar Contraseña IMPORTANTE
-
-            val usuario = Usuario(0,
-                    edtNombres?.text.toString(),
-                    edtApellidos?.text.toString(),
-                    edtCorreo?.text.toString(),
-                    false,
-                    edtCedula?.text.toString(),
-                    edtContrasena?.text.toString(),
-                    "",
-                    tsTemp.toString(),
-                    "",
-                    edtCelular?.text.toString(),
-                    edtNumeroCuenta?.text.toString(),
-                    edtCelular?.text.toString(),
-                    false,
-                    "",
-                    0,
-                    0,
-                    spinnerBanco?.text.toString(),
-                    rol
+            val user = User(detalle_metodo_pago_id,
+                    edtNumeroCuenta?.text?.trim().toString(),
+                    edtCorreo?.text?.trim()?.toString(),
+                    edtContrasena?.text?.trim()?.toString(),
+                    edtConfirmarContrasena?.text?.trim()?.toString(),
+                    rol_id,
+                    edtCelular?.text?.trim()?.toString(),
+                    edtNombres?.text?.trim().toString(),
+                    edtApellidos?.text?.trim().toString(),
+                    edtCedula?.text?.trim().toString()
             )
 
-            presenter?.registerUsuario(usuario)
+            presenter?.registerUsuario(user)
 
         }
     }
@@ -237,7 +236,6 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         sbView.setBackgroundColor(ContextCompat.getColor(applicationContext, colorPrimary))
         val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
         textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_productor, 0, 0, 0)
-        // textView.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.activity_horizontal_margin));
         textView.setTextColor(color)
         snackbar.show()
     }
@@ -265,6 +263,15 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         textInputLayoutNumeroCuenta?.visibility = View.GONE
     }
 
+    override fun disableBanco() {
+        spinnerBanco?.isEnabled = false
+        spinnerBanco?.setText("")
+    }
+
+    override fun showBanco() {
+        spinnerBanco?.isEnabled = true
+        spinnerBanco?.visibility = View.VISIBLE
+    }
 
     override fun registroExitoso() {
         //Snackbar.make(container, getString(R.string.registro_exitoso), Snackbar.LENGTH_SHORT).show()
@@ -346,6 +353,38 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     //endregion
 
     //region Métodos Generales
+    //Validar Contraseña
+    fun validatePassword(password: String?): Boolean {
+        if (password == null) {
+            return false
+        }
+        var upper = false
+        var lower = false
+        var digit = false
+        var symbol = false
+        for (ch in password) {
+            if (Character.isUpperCase(ch)) {
+                upper = true
+            } else if (Character.isLowerCase(ch)) {
+                lower = true
+            } else if (Character.isDigit(ch)) {
+                digit = true
+            } else { // or some symbol test.
+                symbol = true
+            }
+            // This short-circuits the rest of the loop when all criteria are true.
+            if (upper && lower && digit && symbol) {
+                return true
+            }
+        }
+        return upper && lower && digit && symbol
+    }
+
+    //Validar Correo
+    fun isValidEmail(target: CharSequence): Boolean {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches()
+    }
+
 
     private fun returnToParentActivity() {
         // Obtener intent de la actividad padre
@@ -383,8 +422,10 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     }
 
     override fun onDestroy() {
-        presenter?.onDestroy()
         super.onDestroy()
+        unregisterReceiver(connectivityReceiver)
+        presenter?.onDestroy()
     }
+
     //endregion
 }

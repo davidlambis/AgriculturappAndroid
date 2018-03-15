@@ -60,6 +60,8 @@
     <string name="edit_text_numero_cuenta">Número de Cuenta</string>
     <string name="edit_text_error_contrasenas">Las contraseñas no son iguales</string>
     <string name="edit_text_error_contrasena">La contraseña es muy corta</string>
+    <string name="edit_text_pattern_contrasena">La contraseña debe tener una mayúscula, un número y un caracter alfanumérico</string>
+    <string name="edit_text_error_correo">Formato de Correo no válido</string>
     <string name="snackbar_verificacion_correo">Se ha enviado un correo de verificación</string>
 
     <!-- TODO: Remove or change this placeholder text -->

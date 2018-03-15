@@ -1,15 +1,18 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.presenter
 
+import android.view.View
+import com.interedes.agriculturappv3.R.id.spinnerBanco
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.interactor.RegisterUserInteractor
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.interactor.RegisterUserInteractorImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.ui.RegisterUserView
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent
 import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPago
 import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPago
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.User
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import kotlinx.android.synthetic.main.activity_register_user.*
 import org.greenrobot.eventbus.Subscribe
 
 
@@ -53,7 +56,9 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
             }
             RegisterEvent.onDetalleMetodosPagoExitoso -> {
                 val detalleMetodosPagoList = event.mutableList as List<DetalleMetodoPago>
+                registerUserView?.showBanco()
                 registerUserView?.setDetalleMetodosPago(detalleMetodosPagoList)
+
             }
             RegisterEvent.onLoadInfoError -> {
                 onLoadInfoError(event.mensajeError)
@@ -69,11 +74,11 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
     }
 
 
-    override fun registerUsuario(usuario: Usuario) {
+    override fun registerUsuario(user: User) {
         if (checkConnection()) {
             registerUserView?.disableInputs()
             registerUserView?.showProgress()
-            registerUserInteractor?.registerUsuario(usuario)
+            registerUserInteractor?.registerUsuario(user)
         } else {
             registerUserView?.hasNotConnectivity()
         }
@@ -89,8 +94,10 @@ class RegisterUserPresenterImpl(var registerUserView: RegisterUserView?) : Regis
 
     override fun loadDetalleMetodosPagoByMetodoPagoId(Id: Long?) {
         if (checkConnection()) {
+            registerUserView?.disableBanco()
             registerUserInteractor?.loadDetalleMetodosPagoByMetodoPagoId(Id)
         } else {
+            registerUserView?.disableBanco()
             registerUserInteractor?.loadSqliteDetalleMetodosPagoByMetodoPagoId(Id)
         }
     }

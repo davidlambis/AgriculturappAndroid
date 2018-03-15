@@ -1,6 +1,9 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
+import android.content.Intent
+import android.os.Bundle
+import com.interedes.agriculturappv3.asistencia_tecnica.models.login.Login
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario
 
 interface LoginView {
 
@@ -10,13 +13,16 @@ interface LoginView {
     fun disableInputs()
 
     fun validarCampos(): Boolean?
-    fun ingresar(email:String , password:String)
+    fun ingresar()
     fun errorIngresar(error: String?)
     fun navigateToMainActivity()
 
-    fun getUsuario()
-    fun requestResponseOk()
-    fun requestResponseError(error : String?)
     fun onMessageOk(colorPrimary: Int, message: String?)
     fun onMessageError(colorPrimary: Int, message: String?)
+
+    //Conexión a Internet
+    fun registerInternetReceiver()
+
+    fun unRegisterInternetReceiver()
+    fun checkConnection(): Boolean?
 }

@@ -1,22 +1,30 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.repository
 
+import android.util.Log
+import com.google.android.gms.drive.query.Filters.eq
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.iid.FirebaseInstanceId
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
+import com.interedes.agriculturappv3.R.id.*
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent
-import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPago_Table
 import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPago
 import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPagoResponse
+import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPago_Table
 import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPagoResponse
-//import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPago
+import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.Rol
+import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.Rol_Table
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.User
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.UserResponse
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.UsuarioResponse
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
@@ -28,65 +36,116 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
 
     val mDatabase: DatabaseReference?
     var eventBus: EventBus? = null
-
+    var apiService: ApiInterface? = null
 
     init {
         eventBus = GreenRobotEventBus()
         mDatabase = FirebaseDatabase.getInstance().reference
+        apiService = ApiInterface.create()
     }
 
 
-    //Registro de usuario en backend, firebase y sqlite
-    override fun registerUsuario(usuario: Usuario) {
+    //Registro de user en backend, firebase y sqlite
+    override fun registerUsuario(user: User) {
 
-        //TODO Primero Registrar en el Backend y cuando retorne un success en el backend, registrar en Firebase, SQLITE y posteriormente enviar el evento al presenter.
-        //FirebaseAuth.getInstance()?.createUserWithEmailAndPassword(usuario.correo, usuario.contrasena).addOnCompleteListener(OnCompleteListener<AuthResult>())
-        FirebaseAuth.getInstance()?.createUserWithEmailAndPassword(usuario.Email!!, usuario.Contrasena!!)?.addOnCompleteListener { task: Task<AuthResult> ->
-            if (task.isSuccessful) {
-                val currentUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
-                val uid: String? = currentUser?.uid
-                val reference: DatabaseReference? = mDatabase?.child("Users")?.child(uid)
-                val token: String? = FirebaseInstanceId.getInstance()?.token
-                val userMap = HashMap<String, String>()
-                userMap.put("Rol", usuario.RolNombre!!)
-                userMap.put("Nombres", usuario.Nombre!!)
-                userMap.put("Apellidos", usuario.Apellidos!!)
-                userMap.put("Cedula", usuario.Identificacion!!)
-                userMap.put("Correo", usuario.Email!!)
-                userMap.put("Celular", usuario.Nro_movil!!)
-                userMap.put("Imagen", usuario.Fotopefil!!)
-                userMap.put("Token", token!!)
+        //BACKEND
+        val call = apiService?.postRegistroUsers(user)
+        call?.enqueue(object : Callback<UserResponse> {
+            override fun onResponse(call: Call<UserResponse>?, response: Response<UserResponse>?) {
+                if (response != null && response.code() == 201) {
+                    //FIREBASE
+                    FirebaseAuth.getInstance()?.createUserWithEmailAndPassword(user.Email!!, user.Password!!)?.addOnCompleteListener { task: Task<AuthResult> ->
+                        if (task.isSuccessful) {
+                            val currentUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+                            val uid: String? = currentUser?.uid
+                            val reference: DatabaseReference? = mDatabase?.child("Users")?.child(uid)
+                            //val token: String? = FirebaseInstanceId.getInstance()?.token
+                            val rol: Rol? = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(user.Tipouser)).querySingle()
+                            val rolName = rol?.Nombre
 
-                reference?.setValue(userMap)?.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        postEvent(RegisterEvent.onRegistroExitoso)
+                            val userMap = HashMap<String?, String?>()
+                            userMap.put("Rol", rolName)
+                            userMap.put("Nombres", response.body()?.nombre)
+                            userMap.put("Apellidos", response.body()?.apellido)
+                            userMap.put("Cedula", response.body()?.identification)
+                            userMap.put("Correo", response.body()?.email)
+                            userMap.put("Celular", response.body()?.phoneNumber)
+                            userMap.put("Foto", "")
+                            // userMap.put("Token", token!!)
 
-                    } else {
-                        postEvent(RegisterEvent.onErrorRegistro, task.exception.toString())
+                            reference?.setValue(userMap)?.addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    //SQLITE, Traer usuario del servicio con todos los datos
+                                    val query: String = Listas.queryGeneral("Email", user.Email!!)
+                                    val callUsuario = apiService?.getUsuarioByCorreo(query)
+                                    callUsuario?.enqueue(object : Callback<UsuarioResponse> {
+                                        override fun onResponse(call: Call<UsuarioResponse>?, response: Response<UsuarioResponse>?) {
+                                            if (response != null && response.code() == 200) {
+                                                //val usuario: Usuario = response.body()?.value!!
+                                                val usuario: List<Usuario>? = response.body()?.value!!
+                                                //TODO Encriptar Contraseña, Save sqlite
+                                                for (u: Usuario in usuario!!) {
+                                                    if (u.Email.equals(user.Email)) {
+                                                        u.Contrasena = user.Password
+                                                        u.DetalleMetodoPagoNombre = SQLite.select().from(DetalleMetodoPago::class.java).where(DetalleMetodoPago_Table.Id.eq(u.DetalleMetodoPagoId?.toLong())).querySingle()?.Nombre
+                                                        u.RolNombre = rolName
+                                                        u.save()
+                                                    }
+                                                }
+
+                                                postEvent(RegisterEvent.onRegistroExitoso)
+                                            } else {
+                                                postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
+                                                Log.e("Error code Get", response?.errorBody()?.string())
+                                                Log.v("url", response?.raw().toString())
+                                            }
+                                        }
+
+                                        override fun onFailure(call: Call<UsuarioResponse>?, t: Throwable?) {
+                                            postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
+                                            Log.e("Error Get", t?.message.toString())
+                                        }
+
+                                    })
+
+                                } else {
+                                    postEvent(RegisterEvent.onErrorRegistro, "Petición fallida a Firebase")
+                                    Log.e("Error Firebase", task.exception.toString())
+                                }
+                            }
+
+                        } else {
+                            try {
+                                throw task.exception!!
+                            } catch (existEmail: FirebaseAuthUserCollisionException) {
+                                postEvent(RegisterEvent.onErrorRegistro, "Correo ya Registrado")
+                            } catch (malformedEmail: FirebaseAuthInvalidCredentialsException) {
+                                postEvent(RegisterEvent.onErrorRegistro, "Mal formato de correo")
+                            } catch (firebaseException: FirebaseException) {
+                                postEvent(RegisterEvent.onErrorRegistro, task.exception.toString())
+                            }
+                        }
                     }
-                }
 
-
-            } else {
-                try {
-                    throw task.exception!!
-                } catch (existEmail: FirebaseAuthUserCollisionException) {
-                    postEvent(RegisterEvent.onErrorRegistro, "Correo ya Registrado")
-                } catch (malformedEmail: FirebaseAuthInvalidCredentialsException) {
-                    postEvent(RegisterEvent.onErrorRegistro, "Mal formato de correo")
-                } catch (firebaseException: FirebaseException) {
-                    postEvent(RegisterEvent.onErrorRegistro, task.exception.toString())
+                } else {
+                    postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
+                    Log.e("Error code Post", response?.errorBody()?.string())
                 }
             }
-        }
+
+            override fun onFailure(call: Call<UserResponse>?, t: Throwable?) {
+                postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
+                Log.e("Error Post", t?.message.toString())
+            }
+
+        })
 
     }
 
     //Cargar información inicial de Métodos de Pago para el productor
     override fun loadMetodosPago() {
-        val apiService = ApiInterface.create()
-        val call = apiService.getMetodoPagos()
-        call.enqueue(object : Callback<MetodoPagoResponse> {
+        val call = apiService?.getMetodoPagos()
+        call?.enqueue(object : Callback<MetodoPagoResponse> {
             override fun onResponse(call: Call<MetodoPagoResponse>, response: retrofit2.Response<MetodoPagoResponse>?) {
                 if (response != null && response.code() == 200) {
                     val metodos_pago = response.body()?.value!!
@@ -110,9 +169,8 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
     }
 
     override fun loadDetalleMetodosPagoByMetodoPagoId(Id: Long?) {
-        val apiService = ApiInterface.create()
-        val call = apiService.getDetalleMetodoPagos()
-        call.enqueue(object : Callback<DetalleMetodoPagoResponse> {
+        val call = apiService?.getDetalleMetodoPagos()
+        call?.enqueue(object : Callback<DetalleMetodoPagoResponse> {
             override fun onResponse(call: Call<DetalleMetodoPagoResponse>?, response: Response<DetalleMetodoPagoResponse>?) {
                 if (response != null && response.code() == 200) {
                     val detalle_metodos_pago = response.body()?.value!!

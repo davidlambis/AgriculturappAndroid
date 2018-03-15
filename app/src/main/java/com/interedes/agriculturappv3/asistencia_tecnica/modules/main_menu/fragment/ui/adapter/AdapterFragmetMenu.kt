@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.adapter
+package com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.ui.adapter
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager

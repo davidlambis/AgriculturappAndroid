@@ -3,10 +3,10 @@ package com.interedes.agriculturappv3.asistencia_tecnica.activities.login.presen
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.interactor.LoginInteractor
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.interactor.LoginInteractorImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginView
+import com.interedes.agriculturappv3.asistencia_tecnica.models.login.Login
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 
 class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
@@ -31,7 +31,14 @@ class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
 
     @Subscribe
     override fun onEventMainThread(event: RequestEvent?) {
-
+        when (event?.eventType) {
+            RequestEvent.ERROR_EVENT -> {
+                onErrorIngresar(event.mensajeError)
+            }
+            RequestEvent.SAVE_EVENT -> {
+                loginView?.navigateToMainActivity()
+            }
+        }
     }
 
     override fun validarCampos(): Boolean? {
@@ -41,22 +48,25 @@ class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
         return false
     }
 
-    override fun ingresar(email: String, password: String) {
+    override fun ingresar(login: Login) {
         loginView?.disableInputs()
         loginView?.showProgress()
-        loginInteractor?.ingresar(email, password)
+        if (loginView?.checkConnection()!!) {
+            loginInteractor?.ingresar(login)
+        } else {
+            loginInteractor?.getSqliteUsuario(login)
+        }
     }
     //endregion
 
-    //region Eventos
-
+    //region Métodos de Respuesta de Eventos
+    fun onErrorIngresar(error: String?) {
+        loginView?.enableInputs()
+        loginView?.hideProgress()
+        loginView?.errorIngresar(error)
+    }
 
     //endregion
-    /*
-    //region Conexión a Internet
-    override fun onNetworkConnectionChanged(isConnected: Boolean) {
 
-    }
-    //endregion*/
 
 }

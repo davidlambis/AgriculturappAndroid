@@ -35,14 +35,19 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
 
     var lista: MutableList<Rol>? = null
     var adapter: RegisterRolAdapter? = null
+    var connectivityReceiver: ConnectivityReceiver? = null
+
+    init {
+        connectivityReceiver = ConnectivityReceiver()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_rol)
-        baseContext.registerReceiver(ConnectivityReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-        AgriculturApplication.instance.setConnectivityListener(this)
         loadRoles()
         imageViewBackButton?.setOnClickListener(this)
+        registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        AgriculturApplication.instance.setConnectivityListener(this)
     }
 
     //region Métodos Interfaz
@@ -160,11 +165,13 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
                     showProgress()
                     val i = Intent(this, RegisterUserActivity::class.java)
                     i.putExtra("rol", "productor")
+                    i.putExtra("rol_id", lista!![position].Id)
                     startActivity(i)
                 } else if (lista!![position].Nombre.equals("Comprador")) {
                     showProgress()
                     val j = Intent(this, RegisterUserActivity::class.java)
                     j.putExtra("rol", "comprador")
+                    j.putExtra("rol_id", lista!![position].Id)
                     startActivity(j)
                 } else {
                     Toast.makeText(this, lista!![position].Nombre.toString(), Toast.LENGTH_SHORT).show()
@@ -187,7 +194,7 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
         // textView.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.activity_horizontal_margin));
         textView.setTextColor(color)
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                getResources().getDimension(R.dimen.text_size_16));
+                getResources().getDimension(R.dimen.text_size_16))
         snackbar.show()
     }
 
@@ -226,5 +233,11 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
         hideProgress()
         limpiarCambios()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(connectivityReceiver)
+    }
+
     //endregion
 }

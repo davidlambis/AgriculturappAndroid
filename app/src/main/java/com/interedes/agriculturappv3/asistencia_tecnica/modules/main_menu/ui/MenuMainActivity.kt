@@ -15,11 +15,14 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.adapter.AdapterFragmetMenu
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.MainMenuFragment
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.ui.adapter.AdapterFragmetMenu
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.ui.MainMenuFragment
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.presenter.MenuPresenterImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.ui.MainViewMenu
+import com.raizlabs.android.dbflow.sql.language.SQLite
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu {
@@ -27,11 +30,13 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     // var coordsService: CoordsService? = null
     //var coordsGlobal:Coords?=null
     var presenter: MenuPresenterImpl? = null
+    var usuario_logued: Usuario? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_main)
 
+        usuario_logued = getLastUserLogued()
         //Presenter
         presenter = MenuPresenterImpl(this)
         (presenter as MenuPresenterImpl).onCreate()
@@ -48,6 +53,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         AdapterFragmetMenu(MainMenuFragment, fragmentManager, R.id.container)
     }
 
+    //TODO pasar al repository
+     fun getLastUserLogued(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
 
     //region ADAPTER FRAGMENTS
 
@@ -140,14 +150,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val retIntent = Intent("CONECTIVIDAD")
         retIntent.putExtra("state_conectivity", true)
         this?.sendBroadcast(retIntent)
-        onMessageOk(R.color.colorPrimary,getString(R.string.on_connectividad))
+        onMessageOk(R.color.colorPrimary, getString(R.string.on_connectividad))
     }
 
     override fun offConnectivity() {
         val retIntent = Intent("CONECTIVIDAD")
         retIntent.putExtra("state_conectivity", false)
         this?.sendBroadcast(retIntent)
-        onMessageError(R.color.grey_luiyi,getString(R.string.off_connectividad))
+        onMessageError(R.color.grey_luiyi, getString(R.string.off_connectividad))
     }
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {

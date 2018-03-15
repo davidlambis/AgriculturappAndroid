@@ -2,7 +2,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration
 
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.repository.RegisterUserRepository
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.repository.RegisterUserRepositoryImpl
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Usuario
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.User
 
 class RegisterUserInteractorImpl : RegisterUserInteractor {
 
@@ -12,8 +12,8 @@ class RegisterUserInteractorImpl : RegisterUserInteractor {
         registerUserRepository = RegisterUserRepositoryImpl()
     }
 
-    override fun registerUsuario(usuario: Usuario) {
-        registerUserRepository?.registerUsuario(usuario)
+    override fun registerUsuario(user: User) {
+        registerUserRepository?.registerUsuario(user)
     }
 
     override fun loadMetodosPago() {

@@ -45,10 +45,15 @@ class Listas {
 
         fun listaUP(): ArrayList<UP> {
             val listaUP = ArrayList<UP>()
-            listaUP.add(UP(1,"Unidad Productiva 1",null,null,null))
-            listaUP.add(UP(2,"Unidad Productiva 2",null,null,null))
-            listaUP.add(UP(3,"Unidad Productiva 3",null,null,null))
+            listaUP.add(UP(1, "Unidad Productiva 1", null, null, null))
+            listaUP.add(UP(2, "Unidad Productiva 2", null, null, null))
+            listaUP.add(UP(3, "Unidad Productiva 3", null, null, null))
             return listaUP
+        }
+
+        fun queryGeneral(criterio: String, valor: String): String {
+            val queryFilter = "$criterio eq '$valor'"
+            return queryFilter
         }
     }
 }

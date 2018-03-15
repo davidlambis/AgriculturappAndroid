@@ -9,6 +9,10 @@ import android.view.View
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_rol.RegisterRolActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity(), View.OnClickListener {
@@ -16,7 +20,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-// prueba
+        goToMainActivity()
         linearLayoutIngresar?.setOnClickListener(this)
         linearLayoutRegistrar?.setOnClickListener(this)
         linearLayoutContactanos?.setOnClickListener(this)
@@ -41,6 +45,19 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     //endregion
 
     //region Métodos
+    private fun goToMainActivity() {
+        if (getLastUserLogued() != null) {
+            val i = Intent(this, MenuMainActivity::class.java)
+            i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(i)
+        }
+    }
+
+    private fun getLastUserLogued(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
+
     private fun ingresar() {
         imageViewIngresar?.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary))
         startActivity(Intent(this, LoginActivity::class.java))

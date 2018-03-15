@@ -100,7 +100,7 @@
                         <EditText
                             android:id="@+id/edtNombres"
                             style="@style/editText"
-                            android:digits="abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
+                            android:digits="abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZáéíóú"
                             android:drawableLeft="@drawable/ic_nombres"
                             android:drawableStart="@drawable/ic_nombres"
                             android:hint="@string/edit_text_nombres"
@@ -117,7 +117,7 @@
                         <EditText
                             android:id="@+id/edtApellidos"
                             style="@style/editText"
-                            android:digits="abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
+                            android:digits="abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZáéíóú"
                             android:drawableLeft="@drawable/ic_apellidos"
                             android:drawableStart="@drawable/ic_apellidos"
                             android:hint="@string/edit_text_apellidos"
