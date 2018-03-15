@@ -58,7 +58,6 @@ class Lote : BaseModel() {
     @Column(name = "Unidad_Medida_Id")
     var Unidad_Medida_Id: Long? =null
 
-
     @SerializedName("Unidad_Productiva_Id")
     @Column(name = "Unidad_Productiva_Id")
     var Unidad_Productiva_Id: Long? =null

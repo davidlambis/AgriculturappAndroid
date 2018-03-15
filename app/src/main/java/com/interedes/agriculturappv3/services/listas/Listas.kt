@@ -2,7 +2,7 @@ package com.interedes.agriculturappv3.services.listas
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.ItemLista
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UP
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.Rol
 
 class Listas {
@@ -42,12 +42,81 @@ class Listas {
             return lista_asistencia_tecnica_productor
         }
 
+        fun listaUP(): ArrayList<UnidadProductiva> {
+            val listaUP = ArrayList<UnidadProductiva>()
+            listaUP.add(UnidadProductiva(1,
+                    "Unidad Productiva 1",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            ))
+            listaUP.add(UnidadProductiva(2,"Unidad Productiva 2",null,null,null, null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null))
+            listaUP.add(UnidadProductiva(3,"Unidad Productiva 3",null,null,null, null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null))
+            listaUP.add(UnidadProductiva(4,"Unidad Productiva 4",null,null,null, null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null))
+            listaUP.add(UnidadProductiva(5,"Unidad Productiva 5",null,null,null, null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null))
+            listaUP.add(UnidadProductiva(6,"Unidad Productiva 6",null,null,null, null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null))
 
-        fun listaUP(): ArrayList<UP> {
-            val listaUP = ArrayList<UP>()
-            listaUP.add(UP(1, "Unidad Productiva 1", null, null, null))
-            listaUP.add(UP(2, "Unidad Productiva 2", null, null, null))
-            listaUP.add(UP(3, "Unidad Productiva 3", null, null, null))
             return listaUP
         }
 

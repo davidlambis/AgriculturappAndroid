@@ -6,7 +6,6 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
-import android.graphics.drawable.Drawable
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -19,7 +18,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -39,8 +37,9 @@ import java.util.ArrayList
 import kotlinx.android.synthetic.main.map_layout.*
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UP
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.adapter.LoteAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up.UpPresenter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.content_recicler_list.*
@@ -96,38 +95,44 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
     //Globals
     var Unidad_Productiva_Id:Long=0
     var Nombre_Unidad_Productiva:String=""
-    var listUPGlobal:List<UP>?=ArrayList<UP>()
+    var listUnidadProductivaGlobal:List<UnidadProductiva>?=ArrayList<UnidadProductiva>()
     private var DIALOG_SELECTT_POSITION_UP: Int = 0
     var Unidad_Productiva_Id_Selected:Long?=null
+
+    var viewRoot:View?=null
 
     companion object {
         var instance:  LoteFragment? = null
     }
 
-    init {
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         instance=this
         //Presenter
-         presenter = LotePresenterImpl(this)
-        (presenter as LotePresenterImpl).onCreate()
-
-        loadListUp()
-
+        //(presenter as LotePresenterImpl).onCreate()
+        presenter =  LotePresenterImpl(this);
+        presenter?.onCreate();
     }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return  inflater.inflate(R.layout.fragment_lote, null)
+        return inflater.inflate(R.layout.fragment_lote, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        configAppBarLayout()
+        initCollapsingToolbar()
         initAdapter()
         fabAddLote.setOnClickListener(this)
         fabLocationLote.setOnClickListener(this)
         fabUnidadProductiva.setOnClickListener(this)
+        swipeRefreshLayout.setOnRefreshListener(this);
         mapViewLotes.onCreate(savedInstanceState)
         mapViewLotes.onResume()
-        swipeRefreshLayout.setOnRefreshListener(this);
         try {
             MapsInitializer.initialize(context!!)
         } catch (e: Exception) {
@@ -137,9 +142,10 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
         presenter?.getLotes(Unidad_Productiva_Id_Selected);
         mapViewLotes.getMapAsync(this)
         loadInitTaskHandler()
-        configAppBarLayout()
-        initCollapsingToolbar()
     }
+
+
+
 
 
     //region METHODS
@@ -475,9 +481,11 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
         setInputs(true)
     }
     private fun setInputs(b: Boolean) {
-        viewDialog?.name_lote?.isEnabled = b
-        viewDialog?.description_lote?.isEnabled = b
-        viewDialog?.area_lote?.isEnabled = b
+        if( viewDialog!=null){
+            viewDialog?.name_lote?.isEnabled = b
+            viewDialog?.description_lote?.isEnabled = b
+            viewDialog?.area_lote?.isEnabled = b
+        }
     }
 
     override fun limpiarCampos() {
@@ -537,20 +545,20 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
         onMessageOk(colorPrimary, message)
     }
 
-    override fun setListUP(listUp: List<UP>) {
-        listUPGlobal=listUp
+    override fun setListUP(listUnidadProductiva: List<UnidadProductiva>) {
+        listUnidadProductivaGlobal = listUnidadProductiva
     }
 
     override fun setListUPAdapterSpinner(){
         if(viewDialog!=null){
             ///Adapaters
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(null);
-            var upArrayAdapter = ArrayAdapter<UP>(activity, android.R.layout.simple_spinner_dropdown_item, listUPGlobal);
+            var upArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductivaGlobal);
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(upArrayAdapter);
             viewDialog?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                Unidad_Productiva_Id=listUPGlobal!![position].Id!!
-                Nombre_Unidad_Productiva=listUPGlobal!![position].UpName!!
-                Toast.makeText(activity,""+Unidad_Productiva_Id.toString(),Toast.LENGTH_SHORT).show()
+                Unidad_Productiva_Id= listUnidadProductivaGlobal!![position].Id!!
+                Nombre_Unidad_Productiva= listUnidadProductivaGlobal!![position].Nombre!!
+               /// Toast.makeText(activity,""+Unidad_Productiva_Id.toString(),Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -680,6 +688,7 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
     override fun showAlertTypeLocationLote(): AlertDialog? {
         var  builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.location_lote_select_type))
+        Toast.makeText(activity,getString(R.string.message_location_lote),Toast.LENGTH_SHORT).show()
         //var options=arrayOf(getString(R.string.location_type_gps), getString(R.string.location_type_manual))
         var options=arrayOf("")
         //La lista varia dependiendo del tipo de conectividad
@@ -691,11 +700,6 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
             showElementsAndSetPropertiesOffConnectioninternet()
         }
         builder.setSingleChoiceItems(options,DIALOG_SET_TYPE_UBICATION,DialogInterface.OnClickListener { dialog, which ->
-            var listView= (dialog as AlertDialog).listView.selectedItem
-            if (listView != null) {
-                // do something interesting
-                Toast.makeText(activity,""+listView.toString(),Toast.LENGTH_LONG).show()
-            }
             when (which) {
 
                 //Position State Location GPS
@@ -748,13 +752,25 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
         return builder.show();
     }
 
+    override fun verificateConnection(): AlertDialog? {
+        var  builder = AlertDialog.Builder(activity!!)
+        builder.setTitle(getString(R.string.alert));
+        builder.setMessage(getString(R.string.verificate_conexion));
+        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+          dialog.dismiss()
+        })
+        builder.setIcon(R.drawable.ic_lote);
+        return builder.show();
+    }
 
 
-     fun showAlertDialogSelectUp(): AlertDialog? {
+
+
+    fun showAlertDialogSelectUp(): AlertDialog? {
         var dialog = AlertDialog.Builder(activity!!)
          var upArraString=arrayOf<String>("Todos")
-         for (up in this!!.listUPGlobal!!){
-             upArraString+=up.UpName.toString()
+         for (up in this!!.listUnidadProductivaGlobal!!){
+             upArraString+=up.Nombre.toString()
          }
         //REGISTER
          dialog.setSingleChoiceItems(upArraString,DIALOG_SELECTT_POSITION_UP,DialogInterface.OnClickListener { dialog, which ->
@@ -765,7 +781,7 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
                  dialog.dismiss()
              }else{
                  var position= which-1
-                 Unidad_Productiva_Id_Selected=listUPGlobal!![position].Id
+                 Unidad_Productiva_Id_Selected= listUnidadProductivaGlobal!![position].Id
                  DIALOG_SELECTT_POSITION_UP=which
                 // Toast.makeText(activity,""+Unidad_Productiva_Id_Selected,Toast.LENGTH_LONG).show()
                  presenter?.getLotes(Unidad_Productiva_Id_Selected)
@@ -789,7 +805,6 @@ class LoteFragment : Fragment(), OnMapReadyCallback, SwipeRefreshLayout.OnRefres
             R.id.fabAddLote -> {
                 if(UBICATION_MANUAL==false && UBICATION_GPS==false){
                     showAlertTypeLocationLote()
-                    Toast.makeText(activity,getString(R.string.message_location_lote),Toast.LENGTH_LONG).show()
                 }else{
                     if(UBICATION_MANUAL==true && LastMarkerDrawingLote==null){
                         Toast.makeText(activity,getString(R.string.message_location_lote_marker),Toast.LENGTH_LONG).show()

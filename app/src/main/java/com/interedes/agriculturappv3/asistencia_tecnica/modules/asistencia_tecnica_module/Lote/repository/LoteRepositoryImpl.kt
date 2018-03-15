@@ -2,7 +2,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecn
 
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote_Table
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UP
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.events.ListEvent
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
@@ -85,8 +85,8 @@ class LoteRepositoryImpl:LoteRepository {
     }
 
 
-    private fun postEventList(type: Int, listUp:List<UP>?,error:String?) {
-        var upMutable= listUp as MutableList<Object>
+    private fun postEventList(type: Int, listUnidadProductiva:List<UnidadProductiva>?, error:String?) {
+        var upMutable= listUnidadProductiva as MutableList<Object>
         val event = ListEvent(type, upMutable, error)
         event.eventType = type
         event.mensajeError = null

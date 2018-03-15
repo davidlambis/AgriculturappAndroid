@@ -2,7 +2,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecn
 
 import android.app.AlertDialog;
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UP;
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva;
 import com.interedes.agriculturappv3.events.RequestEvent;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public interface IUnidadProductiva {
         void hideProgress();
         void hideElements();
 
-        void setListUps(List<UP> listUps);
+        void setListUps(List<UnidadProductiva> listUnidadProductivas);
 
         void requestResponseOK();
         void requestResponseError(String error);
@@ -37,24 +37,24 @@ public interface IUnidadProductiva {
         void onEventMainThread(RequestEvent requestEvent);
         boolean validarCampos();
 
-        void registerUP(UP UpModel);
-        void updateUP(UP UpModel);
-        void deleteUP(UP UpModel);
+        void registerUP(UnidadProductiva unidadProductivaModel);
+        void updateUP(UnidadProductiva unidadProductivaModel);
+        void deleteUP(UnidadProductiva unidadProductivaModel);
         void getUps();
     }
 
     interface Model{
-        void registerUP(UP UpModel);
-        void updateUP(UP UpModel);
-        void deleteUP(UP UpModel);
+        void registerUP(UnidadProductiva unidadProductivaModel);
+        void updateUP(UnidadProductiva unidadProductivaModel);
+        void deleteUP(UnidadProductiva unidadProductivaModel);
         void execute();
     }
 
     interface Repo{
-        List<UP> getUPs();
+        List<UnidadProductiva> getUPs();
         void getListUPs();
-        void saveUp(UP mUp);
-        void updateUp(UP mUp);
-        void deleteUp(UP mUp);
+        void saveUp(UnidadProductiva mUnidadProductiva);
+        void updateUp(UnidadProductiva mUnidadProductiva);
+        void deleteUp(UnidadProductiva mUnidadProductiva);
     }
 }

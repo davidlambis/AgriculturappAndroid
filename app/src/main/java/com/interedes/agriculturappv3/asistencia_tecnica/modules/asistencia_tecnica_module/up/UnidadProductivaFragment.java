@@ -9,13 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.interedes.agriculturappv3.R;
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UP;
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva;
 
 import java.util.List;
 
-public class UpView extends Fragment implements View.OnClickListener,IUnidadProductiva.View{
+public class UnidadProductivaFragment extends Fragment implements View.OnClickListener,IUnidadProductiva.View{
     IUnidadProductiva.Presenter IUpPresenter = null;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +26,7 @@ public class UpView extends Fragment implements View.OnClickListener,IUnidadProd
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.content_unidad_productiva,container,false);
+        return inflater.inflate(R.layout.fragment_unidad_productiva,container,false);
     }
 
     @Override
@@ -76,7 +75,7 @@ public class UpView extends Fragment implements View.OnClickListener,IUnidadProd
     }
 
     @Override
-    public void setListUps(List<UP> listUps) {
+    public void setListUps(List<UnidadProductiva> listUnidadProductivas) {
 
     }
 

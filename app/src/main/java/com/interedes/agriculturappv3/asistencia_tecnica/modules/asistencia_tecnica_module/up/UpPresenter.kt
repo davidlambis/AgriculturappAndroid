@@ -1,6 +1,6 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UP
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
@@ -26,18 +26,18 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?): IUnidadProductiva.Prese
     override fun onEventMainThread(requestEvent: RequestEvent?) {
         when (requestEvent?.eventType){
             RequestEvent.READ_EVENT -> {
-                IUpView?.setListUps(requestEvent.mutableList as List<UP>)
+                IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
             }
             RequestEvent.SAVE_EVENT -> {
-                IUpView?.setListUps(requestEvent.mutableList as List<UP>)
+                IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
                 onUPsaveOk()
             }
             RequestEvent.UPDATE_EVENT -> {
-                IUpView?.setListUps(requestEvent.mutableList as List<UP>)
+                IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
                 onUPUpdateOk()
             }
             RequestEvent.DELETE_EVENT -> {
-                IUpView?.setListUps(requestEvent.mutableList as List<UP>)
+                IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
                 onUPDeleteOk()
             }
             RequestEvent.ERROR_EVENT -> {
@@ -83,20 +83,20 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?): IUnidadProductiva.Prese
         return false
     }
 
-    override fun registerUP(UpModel: UP?) {
+    override fun registerUP(unidadProductivaModel: UnidadProductiva?) {
         IUpView?.disableInputs()
         IUpView?.showProgress()
-        IUpModel?.registerUP(UpModel)
+        IUpModel?.registerUP(unidadProductivaModel)
     }
 
-    override fun updateUP(UpModel: UP?) {
+    override fun updateUP(unidadProductivaModel: UnidadProductiva?) {
         IUpView?.showProgress()
-        IUpModel?.registerUP(UpModel)
+        IUpModel?.registerUP(unidadProductivaModel)
     }
 
-    override fun deleteUP(UpModel: UP?) {
+    override fun deleteUP(unidadProductivaModel: UnidadProductiva?) {
         IUpView?.showProgress()
-        IUpModel?.registerUP(UpModel)
+        IUpModel?.registerUP(unidadProductivaModel)
     }
 
     override fun getUps() {

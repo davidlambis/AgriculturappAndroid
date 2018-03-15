@@ -5,22 +5,20 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Bundle
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UP
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.adapter.ListenerAdapterEvent
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.interactor.LoteInteractor
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.interactor.LoteInteractorImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.LoteFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.MainViewLote
-import com.interedes.agriculturappv3.asistencia_tecnica.services.coords.CoordsService
 import com.interedes.agriculturappv3.events.ListEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.services.coords.CoordsServiceJava
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
+import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 
 /**
@@ -40,6 +38,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
 
     override fun onCreate() {
         eventBus?.register(this)
+        listUP()
     }
 
     override fun onDestroy() {
@@ -68,6 +67,11 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
             var extras =intent.extras
             loteMainView?.onEventBroadcastReceiver(extras,intent);
         }
+    }
+
+    override fun checkConnection(): Boolean {
+        return ConnectivityReceiver.isConnected
+        //showSnack(isConnected);
     }
 
     override fun onResume(context:Context) {
@@ -149,7 +153,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     override fun onEventMainThreadList(event: ListEvent?) {
         when (event?.eventType) {
             ListEvent.LIST_EVENT -> {
-                var list= event.mutableList as List<UP>
+                var list= event.mutableList as List<UnidadProductiva>
                 loteMainView?.setListUP(list)
             }
         }
@@ -167,27 +171,40 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     }
 
     override fun registerLote(lote: Lote,unidad_productiva_id:Long?) {
-        loteMainView?.disableInputs()
         loteMainView?.showProgress()
-        loteInteractor?.registerLote(lote,unidad_productiva_id)
+        if(checkConnection()){
+            loteMainView?.disableInputs()
+            loteInteractor?.registerLote(lote,unidad_productiva_id)
+        }else{
+            onMessageConectionError()
+        }
     }
 
     override fun updateLote(lote: Lote,unidad_productiva_id:Long?) {
         loteMainView?.showProgress()
-        loteInteractor?.registerLote(lote,unidad_productiva_id)
+        if(checkConnection()){
+            loteMainView?.disableInputs()
+            loteInteractor?.registerLote(lote,unidad_productiva_id)
+        }else{
+            onMessageConectionError()
+        }
     }
 
 
     override fun deleteLote(lote: Lote,unidad_productiva_id:Long?) {
         loteMainView?.showProgress()
-        loteInteractor?.deleteLote(lote,unidad_productiva_id)
+        if(checkConnection()){
+            loteInteractor?.deleteLote(lote,unidad_productiva_id)
+        }else{
+            onMessageConectionError()
+        }
     }
+
+
 
     override fun listUP() {
         loteInteractor?.loadListUp()
     }
-
-
 
     //endregion
 
@@ -222,6 +239,12 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
         loteMainView?.hideProgress()
         loteMainView?.requestResponseError(error)
     }
+
+    private fun onMessageConectionError() {
+        loteMainView?.hideProgress()
+        loteMainView?.verificateConnection()
+    }
+
     //endregion
 
 }

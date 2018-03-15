@@ -1,6 +1,6 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UP
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
@@ -20,34 +20,34 @@ class UpRepository: IUnidadProductiva.Repo {
         postEventOk(RequestEvent.READ_EVENT,getUPs(),null)
     }
 
-    override fun saveUp(mUp: UP) {
-        mUp.save()
-        postEventOk(RequestEvent.SAVE_EVENT,getUPs(),mUp)
+    override fun saveUp(mUnidadProductiva: UnidadProductiva) {
+        mUnidadProductiva.save()
+        postEventOk(RequestEvent.SAVE_EVENT,getUPs(), mUnidadProductiva)
     }
 
-    override fun updateUp(mUp: UP) {
-        mUp.update()
-        postEventOk(RequestEvent.UPDATE_EVENT,getUPs(),mUp)
+    override fun updateUp(mUnidadProductiva: UnidadProductiva) {
+        mUnidadProductiva.update()
+        postEventOk(RequestEvent.UPDATE_EVENT,getUPs(), mUnidadProductiva)
     }
 
-    override fun deleteUp(mUp: UP) {
-        mUp.delete()
-        postEventOk(RequestEvent.DELETE_EVENT,getUPs(),mUp)
+    override fun deleteUp(mUnidadProductiva: UnidadProductiva) {
+        mUnidadProductiva.delete()
+        postEventOk(RequestEvent.DELETE_EVENT,getUPs(), mUnidadProductiva)
     }
 
-    private fun postEventOk(type: Int,mups: List<UP>?,up:UP?){
-        postEvent(type,mups,up,null)
+    private fun postEventOk(type: Int, mups: List<UnidadProductiva>?, unidadProductiva: UnidadProductiva?){
+        postEvent(type,mups, unidadProductiva,null)
     }
 
-    private fun postEvent(type: Int,listUps: List<UP>?,up: UP?,message:String?){
-        var UpMutable = up as MutableList<Object>
+    private fun postEvent(type: Int, listUnidadProductivas: List<UnidadProductiva>?, unidadProductiva: UnidadProductiva?, message:String?){
+        var UpMutable = unidadProductiva as MutableList<Object>
         val event = RequestEvent(type,UpMutable,null,message)
         event.eventType = type
         event.mensajeError = message
         eventBus?.post(event)
     }
 
-    override fun getUPs(): List<UP> {
-        return SQLite.select().from(UP::class.java!!).queryList()
+    override fun getUPs(): List<UnidadProductiva> {
+        return SQLite.select().from(UnidadProductiva::class.java!!).queryList()
     }
 }

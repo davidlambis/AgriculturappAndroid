@@ -33,4 +33,7 @@ interface LotePresenter {
     fun onEventMainThreadOnItemClick(event: ListenerAdapterEvent?)
     fun onEventMainThreadList(event: ListEvent?)
 
+    //Conecttion
+    fun checkConnection(): Boolean
+
 }

@@ -108,6 +108,9 @@
     <string name="name">Nombre</string>
     <string name="description">Descripcion</string>
     <string name="area">Area</string>
+    <string name="department">Departamento</string>
+    <string name="city">Ciudad</string>
+
     <string name="confirm">Aceptar</string>
     <string name="close">Cerrar</string>
     <string name="cancel">Cancelar</string>
@@ -121,6 +124,7 @@
     <string name="internet_connected">Conectado a Internet</string>
     <string name="not_internet_connected">No Conectado a Internet</string>
     <string name="sin_conexion">Sin Conexión</string>
+    <string name="verificate_conexion">Verifique suconexion a internet</string>
     <string name="request_ok">Se realizo Éxitosamente</string>
     <string name="error_request">Error en la petición</string>
     <string name="error_load_roles">No se pueden cargar los roles porque no hay internet</string>

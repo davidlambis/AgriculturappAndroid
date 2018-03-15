@@ -1,6 +1,6 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up;
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UP;
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva;
 
 public class UpModel implements IUnidadProductiva.Model{
     private IUnidadProductiva.Repo upRepo = null;
@@ -10,18 +10,18 @@ public class UpModel implements IUnidadProductiva.Model{
     }
 
     @Override
-    public void registerUP(UP UpModel) {
-        upRepo.saveUp(UpModel);
+    public void registerUP(UnidadProductiva unidadProductivaModel) {
+        upRepo.saveUp(unidadProductivaModel);
     }
 
     @Override
-    public void updateUP(UP UpModel) {
-        upRepo.updateUp(UpModel);
+    public void updateUP(UnidadProductiva unidadProductivaModel) {
+        upRepo.updateUp(unidadProductivaModel);
     }
 
     @Override
-    public void deleteUP(UP UpModel) {
-        upRepo.deleteUp(UpModel);
+    public void deleteUP(UnidadProductiva unidadProductivaModel) {
+        upRepo.deleteUp(unidadProductivaModel);
     }
 
     @Override
