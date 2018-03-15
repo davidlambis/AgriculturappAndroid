@@ -19,6 +19,8 @@ import com.interedes.agriculturappv3.asistencia_tecnica.services.coords.CoordsSe
 import com.interedes.agriculturappv3.events.ListEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.services.coords.CoordsServiceJava
+import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 import org.greenrobot.eventbus.Subscribe
 
 /**
@@ -26,7 +28,7 @@ import org.greenrobot.eventbus.Subscribe
  */
 class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
 
-    var coordsService: CoordsService? = null
+    var coordsService: CoordsServiceKotlin? = null
     var loteInteractor: LoteInteractor? = null
     var eventBus: EventBus? = null
 
@@ -43,26 +45,27 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     override fun onDestroy() {
         loteMainView = null
         if(coordsService!=null){
-            CoordsService.instance?.closeService()
+            CoordsServiceKotlin.instance?.closeService()
+            //coordsService!!.closeService()
         }
     }
 
     override fun closeServiceGps() {
         if(coordsService!=null){
-            CoordsService.instance?.closeService()
+            //CoordsService.instance?.closeService()
+            CoordsServiceKotlin.instance?.closeService()
+            //coordsService!!.closeService()
         }
     }
 
-
-
-    override fun getLotes() {
-        loteInteractor?.execute()
+    override fun getLotes(unidad_productiva_id:Long?) {
+        loteInteractor?.execute(unidad_productiva_id)
     }
 
     //region Conectividad
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras: Bundle =intent.extras
+            var extras =intent.extras
             loteMainView?.onEventBroadcastReceiver(extras,intent);
         }
     }
@@ -77,7 +80,10 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     }
 
     override fun startGps(activity: Activity) {
-        coordsService= CoordsService(activity)
+        coordsService= CoordsServiceKotlin(activity)
+        if(CoordsServiceKotlin.instance!!.isLocationEnabled()){
+            loteMainView?.showProgressHud()
+        }
     }
 
     //region Suscribe Events
@@ -160,21 +166,21 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
         return false
     }
 
-    override fun registerLote(lote: Lote) {
+    override fun registerLote(lote: Lote,unidad_productiva_id:Long?) {
         loteMainView?.disableInputs()
         loteMainView?.showProgress()
-        loteInteractor?.registerLote(lote)
+        loteInteractor?.registerLote(lote,unidad_productiva_id)
     }
 
-    override fun updateLote(lote: Lote) {
+    override fun updateLote(lote: Lote,unidad_productiva_id:Long?) {
         loteMainView?.showProgress()
-        loteInteractor?.registerLote(lote)
+        loteInteractor?.registerLote(lote,unidad_productiva_id)
     }
 
 
-    override fun deleteLote(lote: Lote) {
+    override fun deleteLote(lote: Lote,unidad_productiva_id:Long?) {
         loteMainView?.showProgress()
-        loteInteractor?.deleteLote(lote)
+        loteInteractor?.deleteLote(lote,unidad_productiva_id)
     }
 
     override fun listUP() {

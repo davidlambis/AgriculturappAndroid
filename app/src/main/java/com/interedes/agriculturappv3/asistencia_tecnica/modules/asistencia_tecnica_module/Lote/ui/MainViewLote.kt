@@ -36,10 +36,16 @@ interface MainViewLote {
     //List UP
     fun loadListUp()
     fun setListUP(listUp:List<UP>)
+    fun setListUPAdapterSpinner()
 
     //VALIDATION
     fun validarCampos(): Boolean?
     fun limpiarCampos()
+
+
+    //ProgresHud
+    fun showProgressHud()
+    fun hideProgressHud()
 
     //Response Notify
     fun requestResponseOk()
@@ -56,4 +62,6 @@ interface MainViewLote {
 
     //Events
     fun onEventBroadcastReceiver(extras: Bundle,intent: Intent)
+
+
 }

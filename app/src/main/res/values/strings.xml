@@ -86,7 +86,7 @@
     <!--GPS STRINGS-->
     <string name="gps_disabled">Activar GPS</string>
     <string name="please_enable_gps">Necesitas habilitar el GPS</string>
-
+    <string name="loader_gps">Iniciando GPS</string>
 
     <!--NAMES LOTE-->
     <string name="add_lote">Agregar Lote</string>
@@ -97,6 +97,11 @@
     <string name="location_type_manual">Ubicacion Manual</string>
     <string name="alert_delete_lote">Esta seguro que desea eliminar el lote</string>
     <string name="select_UP">Seleccione Unidad Productiva</string>
+    <string name="message_location_lote">Seleccione una opcion de ubicacion</string>
+    <string name="message_location_lote_marker">Haga click en el mapa para ubicar el lote</string>
+
+    <string name="title_list_unidad_productiva">Lista de unidades productivas</string>
+    <string name="title_filter_unidad_productiva">Filtrar lote por unidad productiva</string>
 
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>

@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.repository
 
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote_Table
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UP
 import com.interedes.agriculturappv3.events.ListEvent
 import com.interedes.agriculturappv3.events.RequestEvent
@@ -23,15 +24,15 @@ class LoteRepositoryImpl:LoteRepository {
     }
 
     //region METHODS
-    override fun saveLotes(lote: Lote) {
+    override fun saveLotes(lote: Lote,unidad_productiva_id:Long?) {
         lote.save()
-        val lotes = getLotes()
+        val lotes = getLotes(unidad_productiva_id)
         postEventOk(RequestEvent.SAVE_EVENT,lotes,lote);
 
     }
 
-    override fun getListLotes() {
-        val lotes = getLotes()
+    override fun getListLotes(unidad_productiva_id:Long?) {
+        val lotes = getLotes(unidad_productiva_id)
         postEventOk(RequestEvent.READ_EVENT,lotes,null);
     }
 
@@ -41,21 +42,27 @@ class LoteRepositoryImpl:LoteRepository {
     }
 
 
-    override fun getLotes():List<Lote> {
-        val lotes = SQLite.select().from(Lote::class.java!!).queryList()
-        return lotes;
+    override fun getLotes(unidad_productiva_id:Long?):List<Lote> {
+        var listResponse:List<Lote>?=null
+
+        if(unidad_productiva_id==null){
+            listResponse = SQLite.select().from(Lote::class.java!!).queryList()
+        }else{
+            listResponse = SQLite.select().from(Lote::class.java!!).where(Lote_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).queryList()
+        }
+        return listResponse;
     }
 
-    override fun updateLote(lote: Lote) {
+    override fun updateLote(lote: Lote,unidad_productiva_id:Long?) {
         lote.update()
-        postEventOk(RequestEvent.UPDATE_EVENT, getLotes(),lote);
+        postEventOk(RequestEvent.UPDATE_EVENT, getLotes(unidad_productiva_id),lote);
 
     }
 
-    override fun deleteLote(lote: Lote) {
+    override fun deleteLote(lote: Lote,unidad_productiva_id:Long?) {
         lote.delete()
         //SQLite.delete<Lote>(Lote::class.java).where(Lote_Table.Id.eq(lote.Id)).async().execute()
-        postEventOk(RequestEvent.DELETE_EVENT, getLotes(),lote);
+        postEventOk(RequestEvent.DELETE_EVENT, getLotes(unidad_productiva_id),lote);
     }
 
     //endregion
