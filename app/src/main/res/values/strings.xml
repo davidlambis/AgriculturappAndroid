@@ -68,7 +68,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- MAPS API -->
-    <string name="maps">AIzaSyAckGMBmoQKgZeJwEP6bjK5jmHldsubiOA</string>
+    <string name="maps">AIzaSyA8ttTHUZLtDLvxcRY56H8iVcTt9Fofo3U</string>
+
 
     <!-- BUTTONS MAPS -->
     <string name="draw_polygon">Dibujar Polígono</string>
@@ -102,6 +103,11 @@
 
     <string name="title_list_unidad_productiva">Lista de unidades productivas</string>
     <string name="title_filter_unidad_productiva">Filtrar lote por unidad productiva</string>
+
+
+    <!--Unidad Prodductiva-->
+    <string name="tittle_add_unidadproductiva">Agregar Unidad Productiva</string>
+
 
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>

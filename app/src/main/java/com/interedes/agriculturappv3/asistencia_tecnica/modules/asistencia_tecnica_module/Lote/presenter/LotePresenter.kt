@@ -3,7 +3,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecn
 import android.app.Activity
 import android.content.Context
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.adapter.ListenerAdapterEvent
+import com.interedes.agriculturappv3.events.ListenerAdapterOnClickEvent
 import com.interedes.agriculturappv3.events.ListEvent
 import com.interedes.agriculturappv3.events.RequestEvent
 
@@ -15,7 +15,6 @@ interface LotePresenter {
     fun onDestroy()
     fun onResume(context:Context)
     fun onPause(context:Context)
-    fun onEventMainThread(event: RequestEvent?)
     fun validarCampos(): Boolean?
 
     //Listas
@@ -27,12 +26,16 @@ interface LotePresenter {
     fun deleteLote(lote: Lote,unidad_productiva_id:Long?)
     fun getLotes(unidad_productiva_id:Long?)
 
+
+    //Events
+    fun onEventMainThread(event: RequestEvent?)
+    fun onEventMainThreadOnItemClick(onClickEvent: ListenerAdapterOnClickEvent?)
+    fun onEventMainThreadList(event: ListEvent?)
+
+
     //Coords Service
     fun startGps(activity:Activity)
     fun closeServiceGps()
-    fun onEventMainThreadOnItemClick(event: ListenerAdapterEvent?)
-    fun onEventMainThreadList(event: ListEvent?)
-
     //Conecttion
     fun checkConnection(): Boolean
 

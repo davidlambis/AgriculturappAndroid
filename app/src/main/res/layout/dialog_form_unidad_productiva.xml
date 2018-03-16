@@ -1,41 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop" android:src="@drawable/fondo_general"
-        tools:ignore="ContentDescription"/>
-
+    android:orientation="vertical"
+    android:layout_height="match_parent">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/margin_global">
-
+        android:layout_margin="@dimen/margin_3">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:src="@drawable/ic_back_button"/>
-
-            <TextView
+                android:id="@+id/ivClosetDialogUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_global"
-                android:text="@string/text_registerUP"
-                android:textAlignment="center"
-                android:textColor="@color/grey_luiyi"
-                android:textSize="18sp"
-                android:textStyle="italic" />
+                android:tint="@color/grey_luiyi"
+                android:src="@drawable/ic_close_white"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -43,7 +27,7 @@
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                 <EditText
-                    android:id="@+id/edtNombreFinca"
+                    android:id="@+id/edtNombreUnidadProductiva"
                     style="@style/editText"
                     android:drawableLeft="@drawable/ic_nombre_finca"
                     android:drawableStart="@drawable/ic_nombre_finca"
@@ -59,6 +43,7 @@
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                 <EditText
+                    android:id="@+id/etDescripcionUnidadProductiva"
                     style="@style/editText"
                     android:drawableLeft="@drawable/ic_nombre_finca"
                     android:drawableStart="@drawable/ic_nombre_finca"
@@ -78,7 +63,7 @@
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                     <EditText
-                        android:id="@+id/edtLocalizacionFinca"
+                        android:id="@+id/edtLocalizacionUnidadProductiva"
                         style="@style/editText"
                         android:drawableLeft="@drawable/ic_localizacion_finca"
                         android:drawableStart="@drawable/ic_localizacion_finca"
@@ -89,7 +74,7 @@
 
 
                 <ImageView
-                    android:id="@+id/imageViewLocalizarFinca"
+                    android:id="@+id/imageViewLocalizarUnidadProductiva"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_gravity="center_vertical"
@@ -104,7 +89,7 @@
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                 <EditText
-                    android:id="@+id/edtNumeroHectareas"
+                    android:id="@+id/edtAreaUnidadProductiva"
                     style="@style/editText"
                     android:hint="@string/edit_text_numero_hectareas"
                     android:inputType="number"
@@ -112,15 +97,6 @@
                     android:drawableStart="@drawable/ic_numero_hectareas"
                     android:textAlignment="center" />
             </android.support.design.widget.TextInputLayout>
-
-            <Button
-                android:layout_gravity="center" style="@style/button"
-                android:layout_marginTop="@dimen/margin_global"
-                android:background="@drawable/custom_button"
-                android:text="@string/btn_registrar_productor" />
-
         </LinearLayout>
-
     </ScrollView>
-
-</FrameLayout>
+</LinearLayout>

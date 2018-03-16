@@ -23,9 +23,9 @@ class MenuPresenterImpl(var menuMainView: MainViewMenu?): ConnectivityReceiver.c
 
     override fun onResume(context: Context) {
         val intentFilter = IntentFilter()
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+       /* intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         val connectivityReceiver = ConnectivityReceiver()
-        context.registerReceiver(connectivityReceiver, intentFilter)
+        context.registerReceiver(connectivityReceiver, intentFilter)*/
         /*register connection status listener*/
         AgriculturApplication.instance.setConnectivityListener(this)
     }

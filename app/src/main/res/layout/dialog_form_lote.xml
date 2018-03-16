@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
 
 <ScrollView
@@ -121,15 +120,6 @@
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
-
-            <ProgressBar
-                android:visibility="gone"
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleInverse"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center" />
-
 
             <LinearLayout
 

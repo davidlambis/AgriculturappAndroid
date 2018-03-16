@@ -73,7 +73,7 @@ app:cardUseCompatPadding="true">
 
 
                     <TextView
-                        android:id="@+id/txtCiudadDepartament"
+                        android:id="@+id/txtCiudadDepartamentUp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Neiva-Huila"
@@ -83,11 +83,11 @@ app:cardUseCompatPadding="true">
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/txtArea"
+                        android:id="@+id/txtAreaUnidadProductiva"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="3232.34 mts"
-                        android:layout_below="@+id/txtCiudadDepartament"
+                        android:layout_below="@+id/txtCiudadDepartamentUp"
                         android:textColor="@color/purple"
                         android:textSize="@dimen/text_size_12"
                         android:textStyle="bold" />
@@ -101,7 +101,7 @@ app:cardUseCompatPadding="true">
 
                     <RelativeLayout
                         android:background="@drawable/sombra"
-                        android:id="@+id/relative_layout"
+                        android:id="@+id/btnLocationUp"
                         android:layout_width="wrap_content"
                         android:gravity="center"
                         android:layout_height="70dp">
@@ -113,10 +113,10 @@ app:cardUseCompatPadding="true">
                             android:src="@drawable/ic_geolocalizacion_btn" />
                     </RelativeLayout>
                     <TextView
-                        android:id="@+id/badge_notification_1"
+                        android:id="@+id/badge_notification_location_up"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignRight="@id/relative_layout"
+                        android:layout_alignRight="@id/btnLocationUp"
                         android:text=""
                         android:textColor="#FFF"
                         android:textSize="16sp"
@@ -124,8 +124,8 @@ app:cardUseCompatPadding="true">
 
                     <RelativeLayout
                         android:background="@drawable/sombra"
-                        android:layout_below="@+id/relative_layout"
-                        android:id="@+id/relative_layout1"
+                        android:layout_below="@+id/btnLocationUp"
+                        android:id="@+id/btnAddPoligonUp"
                         android:layout_width="match_parent"
                         android:gravity="center"
                         android:layout_height="70dp">
@@ -137,11 +137,11 @@ app:cardUseCompatPadding="true">
                             android:src="@drawable/ic_geolocalizacion_poligon_btn" />
                     </RelativeLayout>
                     <TextView
-                        android:id="@+id/badge_notification_2"
+                        android:id="@+id/badge_notification_poligon_up"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/relative_layout"
-                        android:layout_alignRight="@id/relative_layout1"
+                        android:layout_below="@+id/btnLocationUp"
+                        android:layout_alignRight="@id/btnAddPoligonUp"
                         android:background="@drawable/item_priority_high"
                         android:text=""
                         android:textColor="#FFF"
@@ -164,7 +164,7 @@ app:cardUseCompatPadding="true">
                                 android:padding="@dimen/margin_3"
                                 android:background="@color/light_green_800"
                                 android:layout_weight="1"
-                                android:id="@+id/ttt"
+                                android:id="@+id/indicator_is_configured_location"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:drawableTint="@color/red_900"
@@ -174,7 +174,7 @@ app:cardUseCompatPadding="true">
                                 android:padding="@dimen/margin_3"
                                 android:background="@color/red_900"
                                 android:layout_weight="1"
-                                android:id="@+id/ttts"
+                                android:id="@+id/indicator_is_configured_poligon"
                                 android:src="@drawable/ic_close_white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"/>

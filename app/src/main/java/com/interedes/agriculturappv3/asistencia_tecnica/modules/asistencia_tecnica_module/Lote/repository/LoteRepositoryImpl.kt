@@ -96,7 +96,6 @@ class LoteRepositoryImpl:LoteRepository {
 
     /*
     private fun postEventListLotes(type: Int, lotes:List<Lote>?,messageError: String) {
-
         var loteMitable= lotes as MutableList<Object>
         val listEvent = RequestEvent(type, loteMitable, null, messageError)
         listEvent.eventType = type

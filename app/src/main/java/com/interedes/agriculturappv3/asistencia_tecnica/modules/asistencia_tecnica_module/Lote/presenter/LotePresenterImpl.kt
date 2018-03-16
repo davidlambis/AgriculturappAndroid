@@ -8,11 +8,11 @@ import android.content.IntentFilter
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.adapter.ListenerAdapterEvent
+import com.interedes.agriculturappv3.events.ListenerAdapterOnClickEvent
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.interactor.LoteInteractor
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.interactor.LoteInteractorImpl
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.LoteFragment
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.Lote_Fragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.MainViewLote
 import com.interedes.agriculturappv3.events.ListEvent
 import com.interedes.agriculturappv3.libs.EventBus
@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.Subscribe
 /**
  * Created by EnuarMunoz on 7/03/18.
  */
+
 class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
 
     var coordsService: CoordsServiceKotlin? = null
@@ -93,56 +94,54 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     //region Suscribe Events
     @Subscribe
     override fun onEventMainThread(event: RequestEvent?) {
-            when (event?.eventType) {
-                RequestEvent.READ_EVENT -> {
-                    var loteList= event.mutableList as List<Lote>
-                    loteMainView?.setListLotes(loteList)
-                }
-                RequestEvent.SAVE_EVENT ->{
-                    var loteList= event.mutableList as List<Lote>
-                    loteMainView?.setListLotes(loteList)
-                    onLoteSaveOk()
-                }
-                RequestEvent.UPDATE_EVENT -> {
-                    var loteList= event.mutableList as List<Lote>
-                    loteMainView?.setListLotes(loteList)
-                    onLoteUpdateOk()
-                }
-                RequestEvent.DELETE_EVENT -> {
-                    var loteList= event.mutableList as List<Lote>
-                    loteMainView?.setListLotes(loteList)
-                    onLoteDeleteOk()
-                }
-                RequestEvent.ERROR_EVENT -> {
-                    onMessageError(event.mensajeError)
-                }
+        when (event?.eventType) {
+            RequestEvent.READ_EVENT -> {
+                var loteList= event.mutableList as List<Lote>
+                loteMainView?.setListLotes(loteList)
+            }
+            RequestEvent.SAVE_EVENT ->{
+                var loteList= event.mutableList as List<Lote>
+                loteMainView?.setListLotes(loteList)
+                onLoteSaveOk()
+            }
+            RequestEvent.UPDATE_EVENT -> {
+                var loteList= event.mutableList as List<Lote>
+                loteMainView?.setListLotes(loteList)
+                onLoteUpdateOk()
+            }
+            RequestEvent.DELETE_EVENT -> {
+                var loteList= event.mutableList as List<Lote>
+                loteMainView?.setListLotes(loteList)
+                onLoteDeleteOk()
+            }
+            RequestEvent.ERROR_EVENT -> {
+                onMessageError(event.mensajeError)
+            }
         }
 
     }
 
 
     @Subscribe
-    override fun onEventMainThreadOnItemClick(event: ListenerAdapterEvent?) {
+    override fun onEventMainThreadOnItemClick(event: ListenerAdapterOnClickEvent?) {
         when (event?.eventType) {
-            ListenerAdapterEvent.ITEM_EVENT -> {
+            ListenerAdapterOnClickEvent.ITEM_EVENT -> {
                 var lote= event.objectMutable as Lote
                 loteMainView?.onMessageOk(R.color.colorPrimary,"Item: "+lote.Nombre)
             }
-            ListenerAdapterEvent.READ_EVENT -> {
+            ListenerAdapterOnClickEvent.READ_EVENT -> {
                 var lote= event.objectMutable as Lote
                 loteMainView?.onMessageOk(R.color.colorPrimary,"Leer: "+lote.Nombre)
-              ///  Toast.makeText(activity,"Leer: "+lote.Nombre,Toast.LENGTH_LONG).show()
+                ///  Toast.makeText(activity,"Leer: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
-            ListenerAdapterEvent.EDIT_EVENT -> {
+            ListenerAdapterOnClickEvent.EDIT_EVENT -> {
                 var lote= event.objectMutable as Lote
-                LoteFragment.instance?.loteGlobal=lote
-                loteMainView?.showAlertDialogAddLote(LoteFragment.instance?.loteGlobal)
+                Lote_Fragment.instance?.loteGlobal=lote
+                loteMainView?.showAlertDialogAddLote(Lote_Fragment.instance?.loteGlobal)
             }
-            ListenerAdapterEvent.DELETE_EVENT -> {
+            ListenerAdapterOnClickEvent.DELETE_EVENT -> {
                 var lote= event.objectMutable as Lote
                 loteMainView?.confirmDelete(lote)
-
-
                 //// Toast.makeText(activity,"Eliminar: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
         }
