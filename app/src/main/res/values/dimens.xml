@@ -7,6 +7,7 @@
     <dimen name="margin_70">70dp</dimen>
 
     <dimen name="size_40">45dp</dimen>
+    <dimen name="size_60">60dp</dimen>
 
 
     <dimen name="icon_productor_size">162dp</dimen>

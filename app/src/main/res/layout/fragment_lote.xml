@@ -64,10 +64,13 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />-->
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+    <LinearLayout
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include  layout="@layout/content_recyclerview"/>
+    </LinearLayout>
 
-    <include layout="@layout/content_recicler_list">
-
-    </include>
 <!--
     <android.support.v7.widget.RecyclerView
         android:layout_marginTop="@dimen/margin_24"

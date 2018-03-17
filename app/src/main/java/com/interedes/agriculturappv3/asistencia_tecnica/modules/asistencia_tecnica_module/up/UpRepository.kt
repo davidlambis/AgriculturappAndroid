@@ -8,8 +8,9 @@ import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import java.util.*
 
-class UpRepository: IUnidadProductiva.Repo {
+class UpRepository() :IUnidadProductiva.Repo{
     var eventBus: EventBus? = null
 
     init {
@@ -40,8 +41,13 @@ class UpRepository: IUnidadProductiva.Repo {
     }
 
     private fun postEvent(type: Int, listUnidadProductivas: List<UnidadProductiva>?, unidadProductiva: UnidadProductiva?, message:String?){
-        var UpMutable = unidadProductiva as MutableList<Object>
-        val event = RequestEvent(type,UpMutable,null,message)
+        var UpListMutable = listUnidadProductivas as MutableList<Object>
+        var UpMutable:Object?=null
+        if(unidadProductiva!=null){
+            UpMutable = unidadProductiva as Object
+        }
+
+        val event = RequestEvent(type,UpListMutable,UpMutable,message)
         event.eventType = type
         event.mensajeError = message
         eventBus?.post(event)
