@@ -33,70 +33,103 @@ class LoginRepositoryImpl : LoginRepository {
     init {
         eventBus = GreenRobotEventBus()
         mDatabase = FirebaseDatabase.getInstance().reference
-        //mUserDatabase = mDatabase.child("Users")
         apiService = ApiInterface.create()
-        //mAuth = FirebaseAuth.getInstance()
     }
 
     //region Interfaz
     override fun ingresar(login: Login) {
-        //BACKEND
-        val call = apiService?.postLogin(login)
+        //Firebase
+        mAuth = FirebaseAuth.getInstance()
+        //Si se ha verificado el correo electrónico hace los inicios de Sesión
+        if (mAuth?.currentUser?.isEmailVerified!!) {
+            val call = apiService?.postLogin(login)
+            call?.enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
+                    if (response != null && response.code() == 200) {
+                        
+                    }
+                }
+
+                override fun onFailure(call: Call<LoginResponse>?, t: Throwable?) {
+                    postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+                    Log.e("Error Post", t?.message.toString())
+                }
+            })
+
+            /*SI NO HA VERIFICADO EL CORREO */
+        } else {
+            postEventError(RequestEvent.ERROR_EVENT, "No se ha verificado el correo electrónico")
+        }
+
+
+        /*val call = apiService?.postLogin(login)
         call?.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
                 if (response != null && response.code() == 200) {
                     val access_token: String? = response.body()?.access_token
                     //FIREBASE
                     mAuth = FirebaseAuth.getInstance()
-                    mAuth?.signInWithEmailAndPassword(login.username!!, login.password!!)?.addOnCompleteListener({ task ->
-                        if (task.isSuccessful) {
-                            val current_user_id = mAuth?.getCurrentUser()?.getUid()
-                            mUserDatabase = mDatabase?.child("Users")
-                            if (current_user_id != null) {
-                                mUserDatabase?.child(current_user_id)?.child("Access_Token")?.setValue(access_token)?.addOnSuccessListener({
-                                    val usuario_remembered = true
-                                    val query: String = Listas.queryGeneral("Email", login.username!!)
-                                    //Get usuario
-                                    val callUsuario = apiService?.getUsuarioByCorreo(query)
-                                    callUsuario?.enqueue(object : Callback<UsuarioResponse> {
-                                        override fun onResponse(call: Call<UsuarioResponse>?, response: Response<UsuarioResponse>?) {
-                                            if (response != null && response.code() == 200) {
-                                                val usuario: List<Usuario>? = response.body()?.value!!
-                                                for (u: Usuario in usuario!!) {
-                                                    if (u.Email.equals(login.username)) {
-                                                        u.Contrasena = login.password
-                                                        u.AccessToken = access_token
-                                                        u.UsuarioRemembered = usuario_remembered
-                                                        u.save()
-                                                    }
-                                                }
+                    //Si se ha verificado el correo electrónico hace los inicios de Sesión
+                    if (mAuth?.currentUser?.isEmailVerified!!) {
+                        mAuth?.signInWithEmailAndPassword(login.username!!, login.password!!)?.addOnCompleteListener({ task ->
+                            if (task.isSuccessful) {
+                                val current_user_id = mAuth?.getCurrentUser()?.getUid()
+                                mUserDatabase = mDatabase?.child("Users")
+                                if (current_user_id != null) {
 
-                                                postEvent(RequestEvent.SAVE_EVENT)
+                                }
 
-                                            } else {
-                                                postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
-                                                Log.e("Error Response Get", response?.errorBody()?.string())
-                                            }
-                                        }
+                                /* mUserDatabase?.child(current_user_id)?.child("Access_Token")?.setValue(access_token)?.addOnSuccessListener({
+                                 val usuario_remembered = true
+                                 if (mAuth?.currentUser?.isEmailVerified!!) {
 
-                                        override fun onFailure(call: Call<UsuarioResponse>?, t: Throwable?) {
-                                            postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
-                                            Log.e("Error Get", t?.message.toString())
-                                        }
+                                 }
 
-                                    })
-                                })
+
+                                 /*
+                                 val query: String = Listas.queryGeneral("Email", login.username!!)
+                                 //Get usuario
+                                 val callUsuario = apiService?.getUsuarioByCorreo(query)
+                                 callUsuario?.enqueue(object : Callback<UsuarioResponse> {
+                                     override fun onResponse(call: Call<UsuarioResponse>?, response: Response<UsuarioResponse>?) {
+                                         if (response != null && response.code() == 200) {
+                                             val usuario: List<Usuario>? = response.body()?.value!!
+                                             for (u: Usuario in usuario!!) {
+                                                 if (u.Email.equals(login.username)) {
+                                                     u.Contrasena = login.password
+                                                     u.AccessToken = access_token
+                                                     u.UsuarioRemembered = usuario_remembered
+                                                     u.save()
+                                                 }
+                                             }
+
+                                             postEvent(RequestEvent.SAVE_EVENT)
+
+                                         } else {
+                                             postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+                                             Log.e("Error Response Get", response?.errorBody()?.string())
+                                         }
+                                     }
+
+                                     override fun onFailure(call: Call<UsuarioResponse>?, t: Throwable?) {
+                                         postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+                                         Log.e("Error Get", t?.message.toString())
+                                     }
+
+                                 })*/
+                             })*/
+                            } else {
+                                try {
+                                    throw task.exception!!
+                                } catch (firebaseException: FirebaseException) {
+                                    postEventError(RequestEvent.ERROR_EVENT, "Petición fallida a Firebase")
+                                    Log.e("Error Post", firebaseException.toString())
+                                }
                             }
-
-                        } else {
-                            try {
-                                throw task.exception!!
-                            } catch (firebaseException: FirebaseException) {
-                                postEventError(RequestEvent.ERROR_EVENT, "Petición fallida a Firebase")
-                                Log.e("Error Post", firebaseException.toString())
-                            }
-                        }
-                    })
+                        })
+                    } else {
+                        postEventError(RequestEvent.ERROR_EVENT, "No se ha verificado el correo electrónico")
+                    }
 
                 } else {
                     postEventError(RequestEvent.ERROR_EVENT, "Usuario o Contraseña Incorrectos")
@@ -110,7 +143,7 @@ class LoginRepositoryImpl : LoginRepository {
             }
 
 
-        })
+        })*/
     }
 
     override fun getSqliteUsuario(login: Login) {

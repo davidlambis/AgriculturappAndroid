@@ -36,7 +36,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_main)
 
-        usuario_logued = getLastUserLogued()
+        if (getLastUserLogued() != null) {
+            usuario_logued = getLastUserLogued()
+        }
         //Presenter
         presenter = MenuPresenterImpl(this)
         (presenter as MenuPresenterImpl).onCreate()
@@ -54,7 +56,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     //TODO pasar al repository
-     fun getLastUserLogued(): Usuario? {
+    fun getLastUserLogued(): Usuario? {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
         return usuarioLogued
     }

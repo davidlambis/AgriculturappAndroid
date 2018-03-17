@@ -54,7 +54,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun getLastUserLogued(): Usuario? {
-        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered?.eq(true)).querySingle()
         return usuarioLogued
     }
 

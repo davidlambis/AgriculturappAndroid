@@ -51,30 +51,6 @@ interface ApiInterface {
     @GET("odata/agriculturebd/Usuarios")
     fun getUsuarioByCorreo(@Query("\$filter") filter:String): Call<UsuarioResponse>
 
-    /*
-    @GET("odata/agriculturebd/Usuarios?\$filter=Email")
-    fun getUsuarioByCorreo(@Query("\$filter") Email: String?): Call<UsuarioResponse>*/
-
-    /*
-    /api/schooldata/Galleries?$orderby=Date desc&$skip=0&$top=10&$filter=Type eq 'Video'
-
-    odata/agriculturebd/Usuarios?$filter=Email eq 'administrador'
-    */
-
-    /*
-    //Get Usuario por Correo
-    @GET("odata/agriculturebd/Usuarios")
-    abstract fun getUsuarioByCorreo(@Query("\$filter=Email") Email: String?): Call<UsuarioResponse>
-  */
-
-    /*
-    @GET("/Galleries?\$orderby=Date desc")
-    fun getPhotoGallery(
-            @Query("\$skip") skip: Int,
-            @Query("\$top") top: Int,
-            @Query("\$filter") _type: String
-    ): Call<ResponseBody> */
-
 
     //endregion
 
