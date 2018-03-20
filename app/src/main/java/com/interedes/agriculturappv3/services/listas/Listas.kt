@@ -137,6 +137,7 @@ class Listas {
             return listaUnidadMedida
         }
 
+
         fun queryGeneral(criterio: String, valor: String): String {
             val queryFilter = "$criterio eq '$valor'"
             return queryFilter

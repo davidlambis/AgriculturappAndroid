@@ -5,16 +5,19 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent
+import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPago
+import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPago_Table
 import com.interedes.agriculturappv3.asistencia_tecnica.models.login.Login
 import com.interedes.agriculturappv3.asistencia_tecnica.models.login.LoginResponse
-import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario
-import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.UsuarioResponse
-import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.*
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.raizlabs.android.dbflow.kotlinextensions.BuildConfig
 import com.raizlabs.android.dbflow.kotlinextensions.and
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -38,28 +41,108 @@ class LoginRepositoryImpl : LoginRepository {
 
     //region Interfaz
     override fun ingresar(login: Login) {
-        //Firebase
+        //FIREBASE
+        var emailConfirmed: Boolean? = false
         mAuth = FirebaseAuth.getInstance()
-        //Si se ha verificado el correo electrónico hace los inicios de Sesión
-        if (mAuth?.currentUser?.isEmailVerified!!) {
-            /*val call = apiService?.postLogin(login)
-            call?.enqueue(object : Callback<LoginResponse> {
-                override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
+        mAuth?.signInWithEmailAndPassword(login.username!!, login.password!!)?.addOnCompleteListener({ task ->
+            if (task.isSuccessful) {
+                emailConfirmed = mAuth?.currentUser?.isEmailVerified
+                //Si el correo está verificado
+                if (emailConfirmed!!) {
+                    postEvent(RequestEvent.SAVE_EVENT)
+                    //Primero debe consultar si en el backend el usuario tiene el atributo EmailConfirmed = true
+                    //LOGIN DESDE ADMIN
+                    /***val em = LoginActivity.em
+                    val ps = LoginActivity.ps
+                    val admin_login = Login(em, ps)
+                    val call = apiService?.postLogin(admin_login)
+                    call?.enqueue(object : Callback<LoginResponse> {
+                    override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
                     if (response != null && response.code() == 200) {
-                        
+                    val access_token: String = response.body()?.access_token!!
+                    //TRAER USUARIO QUE VA A HACER LOGIN POR CORREO
+                    val query = Listas.queryGeneral("Email", login.username!!)
+                    val call_usuario = apiService?.getAuthUserByCorreo(access_token, query)
+                    call_usuario?.enqueue(object : Callback<GetUserResponse> {
+                    override fun onResponse(call: Call<GetUserResponse>?, response: Response<GetUserResponse>?) {
+                    val user_login: List<UserResponse>? = response?.body()?.value!!
+                    //Actualizar EmailConfirmed
                     }
-                }
 
-                override fun onFailure(call: Call<LoginResponse>?, t: Throwable?) {
+                    override fun onFailure(call: Call<GetUserResponse>?, t: Throwable?) {
                     postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
-                    Log.e("Error Post", t?.message.toString())
-                }
-            })*/
+                    Log.e("Failure Get Login User", t?.message.toString())
+                    }
+                    })
+                    } else {
+                    postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+                    Log.e("response Login Admin", response?.errorBody().toString())
+                    }
+                    }
 
-            /*SI NO HA VERIFICADO EL CORREO */
-        } else {
-            postEventError(RequestEvent.ERROR_EVENT, "No se ha verificado el correo electrónico")
+                    override fun onFailure(call: Call<LoginResponse>?, t: Throwable?) {
+                    postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+                    Log.e("Failure Login Admin", t?.message.toString())
+                    }
+                    }) ***/
+                } else {
+                    postEventError(RequestEvent.ERROR_EVENT, "Correo no Verificado")
+                }
+            } else {
+                try {
+                    throw task.exception!!
+                } catch (firebaseException: FirebaseException) {
+                    postEventError(RequestEvent.ERROR_EVENT, "Petición fallida a Firebase")
+                    Log.e("Error Post", firebaseException.toString())
+                }
+            }
+        })
+
+
+        //Firebase
+        //mAuth = FirebaseAuth.getInstance()
+        //Si se ha verificado el correo electrónico hace los inicios de Sesión
+        //if (mAuth?.currentUser?.isEmailVerified!!) {
+        //LOGIN DESDE ADMIN
+        /***val em = LoginActivity.em
+        val ps = LoginActivity.ps
+        val admin_login = Login(em, ps)
+        val call = apiService?.postLogin(admin_login)
+        call?.enqueue(object : Callback<LoginResponse> {
+        override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
+        if (response != null && response.code() == 200) {
+        val access_token: String = response.body()?.access_token!!
+        //TRAER USUARIO QUE VA A HACER LOGIN POR CORREO
+        val query = Listas.queryGeneral("Email", login.username!!)
+        val call_usuario = apiService?.getAuthUserByCorreo(access_token, query)
+        call_usuario?.enqueue(object : Callback<GetUserResponse> {
+        override fun onResponse(call: Call<GetUserResponse>?, response: Response<GetUserResponse>?) {
+        val user_login: List<UserResponse>? = response?.body()?.value!!
+        //Actualizar EmailConfirmed
         }
+
+        override fun onFailure(call: Call<GetUserResponse>?, t: Throwable?) {
+        postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+        Log.e("Failure Get Login User", t?.message.toString())
+        }
+        })
+        } else {
+        postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+        Log.e("response Login Admin", response?.errorBody().toString())
+        }
+        }
+
+        override fun onFailure(call: Call<LoginResponse>?, t: Throwable?) {
+        postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+        Log.e("Failure Login Admin", t?.message.toString())
+        }
+        }) ***/
+
+        /*SI NO HA VERIFICADO EL CORREO */
+
+        /* } else {
+             postEventError(RequestEvent.ERROR_EVENT, "No se ha verificado el correo electrónico")
+         }*/
 
 
         /*val call = apiService?.postLogin(login)

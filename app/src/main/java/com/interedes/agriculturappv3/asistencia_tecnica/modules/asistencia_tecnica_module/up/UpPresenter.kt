@@ -14,13 +14,12 @@ import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 
-class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presenter{
-
+class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Presenter {
 
 
     var coordsService: CoordsServiceKotlin? = null
     var IUpInteractor: IUnidadProductiva.Interactor? = null
-    var eventBus : EventBus ?=null
+    var eventBus: EventBus? = null
 
     init {
         IUpInteractor = UpInteractor()
@@ -32,15 +31,17 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
         getListas()
 
     }
+
     override fun onDestroy() {
-        IUpView=null
+        IUpView = null
+        eventBus?.unregister(this)
     }
 
     //region Conectividad
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras =intent.extras
-            IUpView?.onEventBroadcastReceiver(extras,intent);
+            var extras = intent.extras
+            IUpView?.onEventBroadcastReceiver(extras, intent);
         }
     }
 
@@ -49,12 +50,12 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
         //showSnack(isConnected);
     }
 
-    override fun onResume(context:Context) {
+    override fun onResume(context: Context) {
         context.registerReceiver(mNotificationReceiver, IntentFilter("CONECTIVIDAD"))
         context.registerReceiver(mNotificationReceiver, IntentFilter("LOCATION"))
     }
 
-    override fun onPause(context:Context) {
+    override fun onPause(context: Context) {
         context.unregisterReceiver(this.mNotificationReceiver);
     }
 
@@ -63,14 +64,14 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
 
     //region Coords Service
     override fun startGps(activity: Activity) {
-        coordsService= CoordsServiceKotlin(activity)
-        if(CoordsServiceKotlin.instance!!.isLocationEnabled()){
+        coordsService = CoordsServiceKotlin(activity)
+        if (CoordsServiceKotlin.instance!!.isLocationEnabled()) {
             IUpView?.showProgressHud()
         }
     }
 
     override fun closeServiceGps() {
-        if(coordsService!=null){
+        if (coordsService != null) {
             //CoordsService.instance?.closeService()
             CoordsServiceKotlin.instance?.closeService()
             //coordsService!!.closeService()
@@ -80,7 +81,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
 
     @Subscribe
     override fun onEventMainThread(requestEvent: RequestEventUP?) {
-        when (requestEvent?.eventType){
+        when (requestEvent?.eventType) {
             RequestEventUP.READ_EVENT -> {
                 IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
             }
@@ -102,7 +103,6 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
             }
 
 
-
             RequestEventUP.ADD_LOCATION_EVENT -> {
                 IUpView?.requestResponseOK()
             }
@@ -111,7 +111,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
             }
 
             RequestEventUP.LIST_EVENT_UNIDAD_MEDIDA -> {
-                var list= requestEvent.mutableList as List<Unidad_Medida>
+                var list = requestEvent.mutableList as List<Unidad_Medida>
                 IUpView?.setListUnidadMedida(list)
 
             }
@@ -151,7 +151,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
     //region Methods
 
     override fun validarCampos(): Boolean {
-        if (IUpView?.validarCampos()==true){
+        if (IUpView?.validarCampos() == true) {
             return true
         }
         return false

@@ -1,14 +1,11 @@
 package com.interedes.agriculturappv3.services.api
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario
 import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPagoResponse
 import com.interedes.agriculturappv3.asistencia_tecnica.models.login.Login
 import com.interedes.agriculturappv3.asistencia_tecnica.models.login.LoginResponse
 import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.RolResponse
 import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPagoResponse
-import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.User
-import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.UserResponse
-import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.UsuarioResponse
+import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.*
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -49,7 +46,10 @@ interface ApiInterface {
 
     //Get Usuario por Correo
     @GET("odata/agriculturebd/Usuarios")
-    fun getUsuarioByCorreo(@Query("\$filter") filter:String): Call<UsuarioResponse>
+    fun getUsuarioByCorreo(@Query("\$filter") filter: String): Call<UsuarioResponse>
+
+    @GET("auth/ApplicationUsers")
+    fun getAuthUserByCorreo(@Header("Authorization") token: String, @Query("\$filter") filter: String): Call<GetUserResponse>
 
 
     //endregion

@@ -108,6 +108,15 @@
     <!--Unidad Prodductiva-->
     <string name="tittle_add_unidadproductiva">Agregar Unidad Productiva</string>
 
+    <!-- Cultivos -->
+    <string name="edit_text_nombre_cultivo"> Nombre del Cultivo</string>
+    <string name="edit_text_descripcion_cultivo">Descripción</string>
+    <string name="edit_text_estimado_cosecha">Cosecha</string>
+    <string name="edit_text_fecha_inicio">Fecha de Inicio</string>
+    <string name="edit_text_fecha_fin">Fecha de Fin</string>
+    <string name="spinner_unidad_productiva">Unidad Productiva</string>
+    <string name="spinner_lote">Lote</string>
+    <string name="title_add_cultivo">Agregar Cultivo</string>
 
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>

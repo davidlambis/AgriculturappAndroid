@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.activity_register_user.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import android.text.TextUtils
+import com.interedes.agriculturappv3.BuildConfig
 import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.User
 import java.util.*
 
@@ -73,7 +74,6 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
         registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         AgriculturApplication.instance.setConnectivityListener(this)
-
     }
 
     //Cargar métodos de Pago de SQLite
