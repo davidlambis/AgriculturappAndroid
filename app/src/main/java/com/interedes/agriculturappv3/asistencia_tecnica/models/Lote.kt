@@ -65,4 +65,7 @@ class Lote : BaseModel() {
 
     @Column(name = "Nombre_Unidad_Productiva")
     var Nombre_Unidad_Productiva: String? =null
+
+    @Column(name = "Nombre_Unidad_Medida")
+    var Nombre_Unidad_Medida: String? =null
 }

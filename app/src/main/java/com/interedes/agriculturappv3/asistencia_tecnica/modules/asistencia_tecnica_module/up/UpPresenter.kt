@@ -6,7 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
-import com.interedes.agriculturappv3.events.RequestEvent
+import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up.events.RequestEventUP
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
@@ -14,6 +15,7 @@ import com.interedes.agriculturappv3.services.internet_connection.ConnectivityRe
 import org.greenrobot.eventbus.Subscribe
 
 class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presenter{
+
 
 
     var coordsService: CoordsServiceKotlin? = null
@@ -27,6 +29,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
 
     override fun onCreate() {
         eventBus?.register(this)
+        getListas()
 
     }
     override fun onDestroy() {
@@ -76,25 +79,41 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
     //endregion
 
     @Subscribe
-    override fun onEventMainThread(requestEvent: RequestEvent?) {
+    override fun onEventMainThread(requestEvent: RequestEventUP?) {
         when (requestEvent?.eventType){
-            RequestEvent.READ_EVENT -> {
+            RequestEventUP.READ_EVENT -> {
                 IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
             }
-            RequestEvent.SAVE_EVENT -> {
+            RequestEventUP.SAVE_EVENT -> {
                 IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
+                closeServiceGps()
                 onUPsaveOk()
             }
-            RequestEvent.UPDATE_EVENT -> {
+            RequestEventUP.UPDATE_EVENT -> {
                 IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
                 onUPUpdateOk()
             }
-            RequestEvent.DELETE_EVENT -> {
+            RequestEventUP.DELETE_EVENT -> {
                 IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
                 onUPDeleteOk()
             }
-            RequestEvent.ERROR_EVENT -> {
+            RequestEventUP.ERROR_EVENT -> {
                 onMessageError(requestEvent.mensajeError)
+            }
+
+
+
+            RequestEventUP.ADD_LOCATION_EVENT -> {
+                IUpView?.requestResponseOK()
+            }
+            RequestEventUP.ADD_POLIGON_EVENT -> {
+                IUpView?.requestResponseOK()
+            }
+
+            RequestEventUP.LIST_EVENT_UNIDAD_MEDIDA -> {
+                var list= requestEvent.mutableList as List<Unidad_Medida>
+                IUpView?.setListUnidadMedida(list)
+
             }
         }
     }
@@ -156,6 +175,10 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
 
     override fun getUps() {
         IUpInteractor?.execute()
+    }
+
+    override fun getListas() {
+        IUpInteractor?.getListas()
     }
 
     //endregion

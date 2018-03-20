@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
+import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up.events.RequestEventUP
 import com.interedes.agriculturappv3.events.RequestEvent
 
 /**
@@ -33,6 +35,11 @@ interface IUnidadProductiva {
         fun setListUps(listUnidadProductivas: List<UnidadProductiva>)
         fun setResults(unidadesProductivas:Int)
 
+
+        ///ListUnidad Medida
+        fun setListUnidadMedida(listUnidadMedida:List<Unidad_Medida>)
+        fun setListUnidadMedidaAdapterSpinner()
+
         fun requestResponseOK()
         fun requestResponseError(error: String?)
 
@@ -40,7 +47,7 @@ interface IUnidadProductiva {
         fun onMessageError(colorPrimary: Int, msg: String?)
 
         //Dialog
-        fun showAlertDialogAddUnidadProductiva(unidadProductiva:UnidadProductiva?): AlertDialog?
+        fun showAlertDialogAddUnidadProductiva(unidadProductiva:UnidadProductiva?)
 
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
@@ -53,7 +60,7 @@ interface IUnidadProductiva {
         fun onPause(context: Context)
 
 
-        fun onEventMainThread(requestEvent: RequestEvent?)
+        fun onEventMainThread(requestEvent: RequestEventUP?)
 
         fun validarCampos(): Boolean
 
@@ -61,6 +68,10 @@ interface IUnidadProductiva {
         fun updateUP(unidadProductivaModel: UnidadProductiva?)
         fun deleteUP(unidadProductivaModel: UnidadProductiva?)
         fun getUps()
+
+
+
+        fun getListas()
 
 
 
@@ -79,10 +90,12 @@ interface IUnidadProductiva {
         fun updateUP(unidadProductivaModel: UnidadProductiva?)
         fun deleteUP(unidadProductivaModel: UnidadProductiva?)
         fun execute()
+        fun getListas()
     }
 
     interface Repo {
         //val uPs: List<UnidadProductiva>
+        fun getListas()
         fun getListUPs()
         fun getUPs(): List<UnidadProductiva>
         fun saveUp(mUnidadProductiva: UnidadProductiva)

@@ -1,214 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:backgroundTint="@color/white"
-android:clickable="true"
-
-android:foreground="?android:attr/selectableItemBackground"
-app:cardUseCompatPadding="true">
-
-<View
-    android:id="@+id/indicator_element_sincronize_status"
-    android:layout_width="10dp"
-    android:layout_height="match_parent"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true"
-    android:background="@color/colorPrimary" />
-
-<LinearLayout
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:clickable="true"
+
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardUseCompatPadding="true"
+    android:focusable="true">
+
+    <View
+        android:id="@+id/indicator_element_sincronize_status"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:background="@color/colorPrimary" />
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="@dimen/activity_horizontal_margin">
 
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:shrinkColumns="*"
-            android:stretchColumns="*">
+            android:orientation="vertical">
 
-
-
-
-            <TableRow
-                android:id="@+id/tableRow3"
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center|right"
-                    android:orientation="vertical"
-                    android:padding="@dimen/margin_3">
-
-                    <TextView
-                        android:id="@+id/txtNombreUnidadProductiva"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Unidad Producitva"
-                        android:textColor="@color/purple"
-                        android:textSize="@dimen/text_size_18"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:id="@+id/txtDescripcinUnidadProductiva"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="descripcion up "
-                        android:textColor="@color/purple"
-                        android:textSize="@dimen/text_size_12"
-                        android:layout_below="@+id/txtNombreUnidadProductiva"
-                        android:textStyle="bold" />
+                android:background="@color/white"
+                android:shrinkColumns="*"
+                android:stretchColumns="*">
 
 
-                    <TextView
-                        android:id="@+id/txtCiudadDepartamentUp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Neiva-Huila"
-                        android:textColor="@color/purple"
-                        android:textSize="@dimen/text_size_12"
-                        android:layout_below="@+id/txtDescripcinUnidadProductiva"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/txtAreaUnidadProductiva"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="3232.34 mts"
-                        android:layout_below="@+id/txtCiudadDepartamentUp"
-                        android:textColor="@color/purple"
-                        android:textSize="@dimen/text_size_12"
-                        android:textStyle="bold" />
-
-                </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                <TableRow
+                    android:id="@+id/tableRow3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                     <RelativeLayout
-                        android:background="@drawable/sombra"
-                        android:id="@+id/btnLocationUp"
                         android:layout_width="wrap_content"
-                        android:gravity="center"
-                        android:layout_height="70dp">
-                        <ImageView
-                            android:id="@+id/button1"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtNombreUnidadProductiva"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawableTint="@color/red_900"
-                            android:src="@drawable/ic_geolocalizacion_btn" />
+                            android:text="Unidad Producitva"
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/text_size_18"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtDescripcinUnidadProductiva"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/txtNombreUnidadProductiva"
+                            android:text="descripcion up "
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/text_size_12"
+                            android:textStyle="bold" />
+
+
+                        <TextView
+                            android:id="@+id/txtCiudadDepartamentUp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/txtDescripcinUnidadProductiva"
+                            android:text="Neiva-Huila"
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/text_size_12"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtAreaUnidadProductiva"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/txtCiudadDepartamentUp"
+                            android:text="3232.34 mts"
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/text_size_12"
+                            android:textStyle="bold" />
+
                     </RelativeLayout>
-                    <TextView
-                        android:id="@+id/badge_notification_location_up"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignRight="@id/btnLocationUp"
-                        android:text=""
-                        android:textColor="#FFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
 
                     <RelativeLayout
-                        android:background="@drawable/sombra"
-                        android:layout_below="@+id/btnLocationUp"
-                        android:id="@+id/btnAddPoligonUp"
-                        android:layout_width="match_parent"
-                        android:gravity="center"
-                        android:layout_height="70dp">
-                        <ImageView
-                            android:id="@+id/myButton1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableTint="@color/red_900"
-                            android:src="@drawable/ic_geolocalizacion_poligon_btn" />
-                    </RelativeLayout>
-                    <TextView
-                        android:id="@+id/badge_notification_poligon_up"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/btnLocationUp"
-                        android:layout_alignRight="@id/btnAddPoligonUp"
-                        android:background="@drawable/item_priority_high"
-                        android:text=""
-                        android:textColor="#FFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="150dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        <RelativeLayout
+                            android:id="@+id/btnLocationUp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="70dp"
+                            android:background="@drawable/sombra"
+                            android:gravity="center">
 
                             <ImageView
-                                android:padding="@dimen/margin_3"
-                                android:background="@color/light_green_800"
-                                android:layout_weight="1"
-                                android:id="@+id/indicator_is_configured_location"
+                                android:id="@+id/button1"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:drawableTint="@color/red_900"
-                                android:src="@drawable/ic_done_white" />
+                                android:src="@drawable/ic_geolocalizacion_btn"
+                                tools:ignore="ContentDescription" />
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/badge_notification_location_up"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignEnd="@id/btnLocationUp"
+                            android:background="@drawable/item_ok"
+                            android:text=""
+                            android:textColor="#FFF"
+                            android:textSize="@dimen/text_size_12"
+                            android:textStyle="bold" />
+
+                        <RelativeLayout
+                            android:id="@+id/btnAddPoligonUp"
+                            android:layout_width="match_parent"
+                            android:layout_height="70dp"
+                            android:layout_below="@+id/btnLocationUp"
+                            android:background="@drawable/sombra"
+                            android:gravity="center">
 
                             <ImageView
-                                android:padding="@dimen/margin_3"
-                                android:background="@color/red_900"
-                                android:layout_weight="1"
-                                android:id="@+id/indicator_is_configured_poligon"
-                                android:src="@drawable/ic_close_white"
+                                android:id="@+id/myButton1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:drawableTint="@color/red_900"
+                                android:src="@drawable/ic_geolocalizacion_poligon_btn"
+                                tools:ignore="ContentDescription" />
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/badge_notification_poligon_up"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignEnd="@id/btnAddPoligonUp"
+                            android:layout_below="@+id/btnLocationUp"
+                            android:background="@drawable/item_priority_high"
+                            android:text=""
+                            android:textColor="#FFF"
+                            android:textSize="@dimen/text_size_12"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="150dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/btn_edit_up"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </RelativeLayout>
-            </TableRow>
-            <TableRow
-            android:id="@+id/tableRow4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp">
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@color/light_green_800"
+                                android:drawableTint="@color/red_900"
+                                android:padding="@dimen/margin_3"
+                                android:src="@android:drawable/ic_menu_edit"
+                                tools:ignore="ContentDescription" />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="0dp">
-
-                <View
+                            <ImageView
+                                android:id="@+id/btn_delete_up"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@color/red_900"
+                                android:padding="@dimen/margin_3"
+                                android:src="@android:drawable/ic_menu_delete"
+                                tools:ignore="ContentDescription" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </TableRow>
+                <!--<TableRow
+                    android:id="@+id/tableRow4"
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/grey_luiyi" />
-            </RelativeLayout>
-            </TableRow>
-        </TableLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="0dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@color/grey_luiyi" />
+                    </RelativeLayout>
+                </TableRow>-->
+            </TableLayout>
+        </LinearLayout>
+
+        <!-- <View
+             android:layout_width="match_parent"
+             android:layout_height="3dp"
+             android:layout_marginTop="5dp"
+             android:background="@color/colorPrimary" />-->
     </LinearLayout>
-
-    <!-- <View
-
-         android:layout_width="match_parent"
-         android:layout_height="3dp"
-         android:layout_marginTop="5dp"
-         android:background="@color/colorPrimary" />-->
-</LinearLayout>
 </android.support.v7.widget.CardView>

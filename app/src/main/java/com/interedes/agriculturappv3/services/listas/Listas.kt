@@ -4,6 +4,7 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.ItemLista
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.Rol
+import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 
 class Listas {
 
@@ -118,6 +119,22 @@ class Listas {
                     null))
 
             return listaUP
+        }
+
+
+        fun listaUnidadMedida(): ArrayList<Unidad_Medida> {
+            val listaUnidadMedida = ArrayList<Unidad_Medida>()
+            listaUnidadMedida.add(Unidad_Medida(1,
+                    "Hectarea",
+                    "Hect"
+
+            ))
+            listaUnidadMedida.add(Unidad_Medida(2,
+                    "Metros",
+                    "Mts"))
+
+
+            return listaUnidadMedida
         }
 
         fun queryGeneral(criterio: String, valor: String): String {

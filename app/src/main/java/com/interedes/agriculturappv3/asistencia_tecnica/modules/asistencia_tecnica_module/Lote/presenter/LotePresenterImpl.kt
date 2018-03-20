@@ -8,13 +8,12 @@ import android.content.IntentFilter
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
-import com.interedes.agriculturappv3.events.ListenerAdapterOnClickEvent
-import com.interedes.agriculturappv3.events.RequestEvent
+import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.events.RequestEventLote
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.interactor.LoteInteractor
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.interactor.LoteInteractorImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.Lote_Fragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.MainViewLote
-import com.interedes.agriculturappv3.events.ListEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
@@ -31,7 +30,12 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     var loteInteractor: LoteInteractor? = null
     var eventBus: EventBus? = null
 
+    companion object {
+        var instance:  LotePresenterImpl? = null
+    }
+
     init {
+        instance=this
         loteInteractor=LoteInteractorImpl()
         eventBus = GreenRobotEventBus()
 
@@ -39,7 +43,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
 
     override fun onCreate() {
         eventBus?.register(this)
-        listUP()
+        loadListas()
     }
 
     override fun onDestroy() {
@@ -93,70 +97,66 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
 
     //region Suscribe Events
     @Subscribe
-    override fun onEventMainThread(event: RequestEvent?) {
-        when (event?.eventType) {
-            RequestEvent.READ_EVENT -> {
-                var loteList= event.mutableList as List<Lote>
+    override fun onEventMainThread(eventLote: RequestEventLote?) {
+        when (eventLote?.eventType) {
+            RequestEventLote.READ_EVENT -> {
+                var loteList= eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
             }
-            RequestEvent.SAVE_EVENT ->{
-                var loteList= event.mutableList as List<Lote>
+            RequestEventLote.SAVE_EVENT ->{
+                var loteList= eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
                 onLoteSaveOk()
             }
-            RequestEvent.UPDATE_EVENT -> {
-                var loteList= event.mutableList as List<Lote>
+            RequestEventLote.UPDATE_EVENT -> {
+                var loteList= eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
                 onLoteUpdateOk()
             }
-            RequestEvent.DELETE_EVENT -> {
-                var loteList= event.mutableList as List<Lote>
+            RequestEventLote.DELETE_EVENT -> {
+                var loteList= eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
                 onLoteDeleteOk()
             }
-            RequestEvent.ERROR_EVENT -> {
-                onMessageError(event.mensajeError)
+            RequestEventLote.ERROR_EVENT -> {
+                onMessageError(eventLote.mensajeError)
             }
-        }
 
-    }
-
-
-    @Subscribe
-    override fun onEventMainThreadOnItemClick(event: ListenerAdapterOnClickEvent?) {
-        when (event?.eventType) {
-            ListenerAdapterOnClickEvent.ITEM_EVENT -> {
-                var lote= event.objectMutable as Lote
+            //EVENTS ONITEM CLICK
+            RequestEventLote.ITEM_EVENT -> {
+                var lote= eventLote.objectMutable as Lote
                 loteMainView?.onMessageOk(R.color.colorPrimary,"Item: "+lote.Nombre)
             }
-            ListenerAdapterOnClickEvent.READ_EVENT -> {
-                var lote= event.objectMutable as Lote
+            RequestEventLote.ITEM_READ_EVENT -> {
+                var lote= eventLote.objectMutable as Lote
                 loteMainView?.onMessageOk(R.color.colorPrimary,"Leer: "+lote.Nombre)
                 ///  Toast.makeText(activity,"Leer: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
-            ListenerAdapterOnClickEvent.EDIT_EVENT -> {
-                var lote= event.objectMutable as Lote
+            RequestEventLote.ITEM_EDIT_EVENT -> {
+                var lote= eventLote.objectMutable as Lote
                 Lote_Fragment.instance?.loteGlobal=lote
                 loteMainView?.showAlertDialogAddLote(Lote_Fragment.instance?.loteGlobal)
             }
-            ListenerAdapterOnClickEvent.DELETE_EVENT -> {
-                var lote= event.objectMutable as Lote
+            RequestEventLote.ITEM_DELETE_EVENT -> {
+                var lote= eventLote.objectMutable as Lote
                 loteMainView?.confirmDelete(lote)
                 //// Toast.makeText(activity,"Eliminar: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
-        }
-    }
 
-
-    @Subscribe
-    override fun onEventMainThreadList(event: ListEvent?) {
-        when (event?.eventType) {
-            ListEvent.LIST_EVENT -> {
-                var list= event.mutableList as List<UnidadProductiva>
+            //LIST EVENTS
+            RequestEventLote.LIST_EVENT_UP -> {
+                var list= eventLote.mutableList as List<UnidadProductiva>
                 loteMainView?.setListUP(list)
             }
+
+            RequestEventLote.LIST_EVENT_UNIDAD_MEDIDA -> {
+                var list= eventLote.mutableList as List<Unidad_Medida>
+                loteMainView?.setListUnidadMedida(list)
+            }
         }
+
     }
+
 
     //endregion
 
@@ -201,8 +201,8 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
 
 
 
-    override fun listUP() {
-        loteInteractor?.loadListUp()
+    override fun loadListas() {
+        loteInteractor?.loadListas()
     }
 
     //endregion

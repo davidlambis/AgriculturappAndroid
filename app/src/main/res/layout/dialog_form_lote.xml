@@ -44,7 +44,7 @@
                     android:drawableLeft="@drawable/ic_localizacion_finca"
                     android:drawableStart="@drawable/ic_localizacion_finca"
                     android:hint="@string/select_UP"
-                    android:textAlignment="center"
+                    android:textAlignment="textStart"
                     android:textColorHint="@color/grey_luiyi"
                     android:textSize="@dimen/text_size_18"
                     app:met_baseColor="@color/grey_luiyi"
@@ -86,21 +86,49 @@
                         android:inputType="text" />
                 </android.support.design.widget.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/textInputLayoutArea"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@color/grey_luiyi"
-                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/textInputLayoutArea"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/grey_luiyi"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
-                    <EditText
-                        android:id="@+id/area_lote"
-                        style="@style/editText"
-                        android:drawableLeft="@drawable/ic_numero_hectareas"
-                        android:drawableStart="@drawable/ic_numero_hectareas"
-                        android:hint="@string/area"
-                        android:inputType="numberDecimal" />
-                </android.support.design.widget.TextInputLayout>
+                        <EditText
+                            android:id="@+id/area_lote"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_numero_hectareas"
+                            android:drawableStart="@drawable/ic_numero_hectareas"
+                            android:hint="@string/area"
+                            android:inputType="numberDecimal" />
+                    </android.support.design.widget.TextInputLayout>
+
+
+                    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                        android:id="@+id/spinnerUnidadMedidaLote"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:hint="@string/title_unidad"
+                        android:textColorHint="@color/grey_luiyi"
+                        android:textSize="@dimen/text_size_18"
+                        android:textAlignment="center"
+                        android:drawableLeft="@drawable/ic_medicion"
+                        android:drawableStart="@drawable/ic_medicion"
+                        app:met_baseColor="@color/grey_luiyi"
+                        app:met_floatingLabel="normal"
+                        app:met_floatingLabelTextColor="@color/grey_luiyi"
+                        app:met_primaryColor="@color/grey_luiyi"
+                        app:met_textColor="@color/grey_luiyi"
+                        app:met_textColorHint="@color/black_alpha_40" />
+
+
+                </LinearLayout>
+
+
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/textInputLayoutCoordenadas"

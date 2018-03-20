@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
+import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 
 /**
  * Created by EnuarMunoz on 7/03/18.
@@ -33,9 +34,12 @@ interface MainViewLote {
     fun setResults(lotes:Int)
 
     //List UnidadProductiva
-    fun loadListUp()
     fun setListUP(listUnidadProductiva:List<UnidadProductiva>)
     fun setListUPAdapterSpinner()
+
+    ///ListUnidad Medida
+    fun setListUnidadMedida(listUnidadMedida:List<Unidad_Medida>)
+    fun setListUnidadMedidaAdapterSpinner()
 
     //VALIDATION
     fun validarCampos(): Boolean?

@@ -14,10 +14,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
+import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up.adapter.UnidadProductivaAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -42,7 +45,11 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
     var viewDialog:View?= null;
     var _dialogRegisterUpdate: AlertDialog? = null
 
-    //Coords
+
+    //Globals
+
+    var unidadMedidaGlobal:Unidad_Medida?=null
+    var listUnidadMedidaGlobal:List<Unidad_Medida>?= java.util.ArrayList<Unidad_Medida>()
     private var latitud: Double = 0.0
     private var longitud: Double = 0.0
 
@@ -106,7 +113,13 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
             viewDialog?.edtAreaUnidadProductiva?.setError(getString(R.string.error_field_required))
             focusView =  viewDialog?.edtAreaUnidadProductiva
             cancel = true
-        } else if (viewDialog?.edtLocalizacionUnidadProductiva?.text.toString().isEmpty()) {
+        }
+        else if (viewDialog?.spinnerUnidadMedidaUp?.text.toString().isEmpty()) {
+            viewDialog?.spinnerUnidadMedidaUp?.setError(getString(R.string.error_field_required))
+            focusView =  viewDialog?.spinnerUnidadMedidaUp
+            cancel = true
+        }
+        else if (viewDialog?.edtLocalizacionUnidadProductiva?.text.toString().isEmpty()) {
             viewDialog?.edtLocalizacionUnidadProductiva?.setError(getString(R.string.error_field_required))
             focusView =  viewDialog?.edtLocalizacionUnidadProductiva
             cancel = true
@@ -172,17 +185,14 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         txtResults.setText(results);
     }
 
-
     override fun requestResponseOK() {
-
+        _dialogRegisterUpdate?.dismiss()
+        onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
     }
 
     override fun requestResponseError(error: String?) {
 
     }
-
-
-
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
         val color = Color.WHITE
@@ -208,6 +218,10 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
             unidadProductiva.Descripcion=viewDialog?.etDescripcionUnidadProductiva?.text.toString()
             unidadProductiva.UpArea=viewDialog?.edtAreaUnidadProductiva?.text.toString().toDoubleOrNull()
             unidadProductiva.Coordenadas=viewDialog?.edtLocalizacionUnidadProductiva?.text.toString()
+            unidadProductiva.UnidadMedidaId=unidadMedidaGlobal?.Id
+            unidadProductiva.Nombre_Unidad_Medida=unidadMedidaGlobal?.Descripcion
+            unidadProductiva.Configuration_Point=true
+            unidadProductiva.Configuration_Poligon=false
             presenter?.registerUP(unidadProductiva)
         }
     }
@@ -220,10 +234,31 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
             updateUP.Descripcion=viewDialog?.etDescripcionUnidadProductiva?.text.toString()
             updateUP.UpArea=viewDialog?.edtAreaUnidadProductiva?.text.toString().toDoubleOrNull()
             updateUP.Coordenadas=viewDialog?.edtLocalizacionUnidadProductiva?.text.toString()
+            updateUP.UnidadMedidaId=unidadMedidaGlobal?.Id
+            updateUP.Nombre_Unidad_Medida=unidadMedidaGlobal?.Descripcion
+            updateUP.Configuration_Point=unidadProductivaGlobal!!.Configuration_Point
+            updateUP.Configuration_Poligon=unidadProductivaGlobal!!.Configuration_Poligon
             presenter?.updateUP(updateUP)
         }
     }
 
+    override fun setListUnidadMedida(listUnidadMedida: List<Unidad_Medida>) {
+        listUnidadMedidaGlobal = listUnidadMedida
+    }
+
+
+    override fun setListUnidadMedidaAdapterSpinner(){
+        if(viewDialog!=null){
+            ///Adapaters
+            viewDialog?.spinnerUnidadMedidaUp!!.setAdapter(null)
+            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedidaGlobal);
+            viewDialog?.spinnerUnidadMedidaUp!!.setAdapter(uMedidaArrayAdapter);
+            viewDialog?.spinnerUnidadMedidaUp!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+                unidadMedidaGlobal= listUnidadMedidaGlobal!![position] as Unidad_Medida
+                //Toast.makeText(activity,""+ unidadMedidaGlobal!!.Id.toString(),Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 
     override fun showProgressHud(){
@@ -231,7 +266,6 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         imageView.setBackgroundResource(R.drawable.spin_animation);
         var drawable =  imageView.getBackground() as AnimationDrawable;
         drawable.start();
-
         hud = KProgressHUD.create(activity)
                 .setCustomView(imageView)
                 .setWindowColor(resources.getColor(R.color.white))
@@ -244,30 +278,37 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
     }
 
 
-    override fun showAlertDialogAddUnidadProductiva(unidadProductiva:UnidadProductiva?): AlertDialog? {
-        var dialog = AlertDialog.Builder(activity!!)
+    override fun showAlertDialogAddUnidadProductiva(unidadProductiva:UnidadProductiva?) {
+
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_unidad_productiva, null)
-        val btnCloseDialog= viewDialog?.ivClosetDialogUp
-
+        setListUnidadMedidaAdapterSpinner()
         val imageViewLocalizarUnidadProductiva= viewDialog?.imageViewLocalizarUnidadProductiva
+        val btnCloseDialog= viewDialog?.ivClosetDialogUp
         //Set Events
         btnCloseDialog?.setOnClickListener(this)
         imageViewLocalizarUnidadProductiva?.setOnClickListener(this)
-        //UPDATE
-        dialog?.setView(viewDialog)
-        dialog?.setTitle(getString(R.string.tittle_add_unidadproductiva))
-        dialog?.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
-            /*Snackbar.make(viewDialog?.coordenadas_lote!!, "No se realizaron cambios", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()*/
+        val dialog = AlertDialog.Builder(activity)
+                .setView(viewDialog)
+                .setIcon(R.drawable.ic_lote)
+                . setTitle(getString(R.string.tittle_add_unidadproductiva))
+                .setPositiveButton(getString(R.string.btn_save), null) //Set to null. We override the onclick
+                .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+
+                })
+                .create()
+        dialog.setOnShowListener(DialogInterface.OnShowListener {
+            val button = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+            button.setOnClickListener {
+                // TODO Do something
+                registerUp()
+                //Dismiss once everything is OK.
+                //dialog.dismiss()
+            }
         })
-        dialog?.setPositiveButton(getString(R.string.btn_save), DialogInterface.OnClickListener { dialog, which ->
-            registerUp()
-        })
-        // dialog?.setMessage(getString(R.string.message_add_lote))
-        dialog?.setIcon(R.drawable.ic_lote)
-        _dialogRegisterUpdate = dialog?.show()
-        return _dialogRegisterUpdate
+        dialog?.show()
+        _dialogRegisterUpdate=dialog
+        //return  _dialogRegisterUpdate
     }
 
     //endregion

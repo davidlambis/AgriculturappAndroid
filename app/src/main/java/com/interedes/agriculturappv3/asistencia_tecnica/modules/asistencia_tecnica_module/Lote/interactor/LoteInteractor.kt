@@ -11,5 +11,5 @@ interface LoteInteractor {
     fun deleteLote(lote : Lote,unidad_productiva_id:Long?)
     fun execute(unidad_productiva_id:Long?)
 
-    fun loadListUp()
+    fun loadListas()
 }

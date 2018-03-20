@@ -3,9 +3,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecn
 import android.app.Activity
 import android.content.Context
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
-import com.interedes.agriculturappv3.events.ListenerAdapterOnClickEvent
-import com.interedes.agriculturappv3.events.ListEvent
-import com.interedes.agriculturappv3.events.RequestEvent
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.events.RequestEventLote
 
 /**
  * Created by EnuarMunoz on 7/03/18.
@@ -18,7 +16,7 @@ interface LotePresenter {
     fun validarCampos(): Boolean?
 
     //Listas
-    fun listUP()
+    fun loadListas()
 
     //CRUD
     fun registerLote(lote: Lote,unidad_productiva_id:Long?)
@@ -28,9 +26,7 @@ interface LotePresenter {
 
 
     //Events
-    fun onEventMainThread(event: RequestEvent?)
-    fun onEventMainThreadOnItemClick(onClickEvent: ListenerAdapterOnClickEvent?)
-    fun onEventMainThreadList(event: ListEvent?)
+    fun onEventMainThread(eventLote: RequestEventLote?)
 
 
     //Coords Service

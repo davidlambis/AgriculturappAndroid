@@ -3,10 +3,10 @@
     <item>
         <shape android:shape="oval">
             <corners android:radius="8dp" />
-            <!--<solid android:color="#f20000" />
+            <solid android:color="@color/light_green_800" />
             <stroke
                 android:width="2dip"
-                android:color="#FFF" />-->
+                android:color="#FFF" />
             <padding
                 android:bottom="5dp"
                 android:left="5dp"
@@ -15,7 +15,7 @@
         </shape>
     </item>
     <item
-        android:drawable="@drawable/ic_admiracion"
+        android:drawable="@drawable/ic_done_white"
         android:width="15dp"
         android:height="15dp"
        />

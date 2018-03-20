@@ -4,15 +4,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
-import com.interedes.agriculturappv3.events.ListenerAdapterOnClickEvent
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up.events.RequestEventUP
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import kotlinx.android.synthetic.main.content_list_lotes.view.*
 
 /**
  * Created by usuario on 16/03/2018.
@@ -65,10 +64,47 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
 
 
             var btnAddPoligonUp: RelativeLayout = itemView.findViewById(R.id.btnAddPoligonUp)
-            var btnAddLocationUp: RelativeLayout = itemView.findViewById(R.id.btnAddPoligonUp)
+            var btnAddLocationUp: RelativeLayout = itemView.findViewById(R.id.btnLocationUp)
 
             var badge_notification_location_up: TextView = itemView.findViewById(R.id.badge_notification_location_up)
             var badge_notification_poligon_up: TextView = itemView.findViewById(R.id.badge_notification_poligon_up)
+
+            var btn_edit_up: ImageView = itemView.findViewById(R.id.btn_edit_up)
+            var btn_delete_up: ImageView = itemView.findViewById(R.id.btn_delete_up)
+
+
+
+
+            if(data.Configuration_Point==true){
+                //indicator_is_configured_location.setImageResource(R.drawable.ic_done_white)
+               // indicator_is_configured_location.setBackgroundResource(R.color.light_green_800)
+               // badge_notification_location_up.visibility=View.GONE
+
+                badge_notification_location_up.setBackgroundResource(R.drawable.item_ok)
+            }else if(data.Configuration_Point==false){
+               // indicator_is_configured_location.setImageResource(R.drawable.ic_close_white)
+               // indicator_is_configured_location.setBackgroundResource(R.color.red_900)
+               // badge_notification_location_up.visibility=View.VISIBLE
+                badge_notification_location_up.setBackgroundResource(R.drawable.item_priority_high)
+            }
+
+
+            if(data.Configuration_Poligon==true){
+               // indicator_is_configured_poligon.setImageResource(R.drawable.ic_done_white)
+               // indicator_is_configured_poligon.setBackgroundResource(R.color.light_green_800)
+              //  badge_notification_poligon_up.visibility=View.GONE
+                badge_notification_poligon_up.setBackgroundResource(R.drawable.item_ok)
+
+            }else if(data.Configuration_Poligon==false){
+                //indicator_is_configured_poligon.setImageResource(R.drawable.ic_close_white)
+                //indicator_is_configured_poligon.setBackgroundResource(R.color.red_900)
+               // badge_notification_poligon_up.visibility=View.VISIBLE
+                badge_notification_poligon_up.setBackgroundResource(R.drawable.item_priority_high)
+            }
+
+
+
+
 
             //image.setImageBitmap(data.Imagen)
             // image.setImageResource(data.Imagen)
@@ -80,23 +116,23 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
 
             //El listener en base a la posición
             itemView.setOnClickListener {
-                UnidadProductivaAdapter.instance?.postEventc(ListenerAdapterOnClickEvent.ITEM_EVENT,data)
+                UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ITEM_EVENT,data)
             }
 
             btnAddPoligonUp.setOnClickListener {
-                UnidadProductivaAdapter.instance?.postEventc(ListenerAdapterOnClickEvent.ADD_POLIGON_EVENT,data)
+                UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ADD_POLIGON_EVENT,data)
             }
 
 
             btnAddLocationUp.setOnClickListener {
-                UnidadProductivaAdapter.instance?.postEventc(ListenerAdapterOnClickEvent.ADD_LOCATION_EVENT,data)
+                UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ADD_LOCATION_EVENT,data)
             }
         }
     }
 
     fun postEventc(type: Int, unidadProductiva: UnidadProductiva?) {
         var unidadMitable= unidadProductiva as Object
-        val event = ListenerAdapterOnClickEvent(type, unidadMitable)
+        val event = RequestEventUP(type, null,unidadMitable,null)
         event.eventType = type
         eventBus?.post(event)
     }
