@@ -59,7 +59,7 @@ interface MainViewLote {
 
 
     //UI
-    fun showAlertDialogAddLote(lote:Lote?): AlertDialog?
+    fun showAlertDialogAddLote(lote:Lote?)
     fun showAlertTypeLocationLote(): AlertDialog?
     fun confirmDelete(lote:Lote):AlertDialog?
     fun verificateConnection():AlertDialog?

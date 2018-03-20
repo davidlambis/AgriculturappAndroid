@@ -14,8 +14,8 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
-        buildConfigField "String", "em", getEm()
-        buildConfigField "String", "ps", getPs()
+        //buildConfigField "String", "em", getEm()
+        //buildConfigField "String", "ps", getPs()
     }
     buildTypes {
         release {

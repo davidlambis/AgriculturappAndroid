@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.location.Location
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.AppBarLayout
@@ -69,7 +68,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     val handler = Handler()
 
     //Dialog
-    private var _dialogRegisterUpdate: AlertDialog? = null
+    var _dialogRegisterUpdate: AlertDialog? = null
     private var _dialogTypeLocation: AlertDialog? = null
     var viewDialog: View? = null;
 
@@ -339,8 +338,11 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             }
 
             //Add Marker UP
-            var centerLatLng: LatLng? = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
-            addMarker(centerLatLng!!, unidadProductivaGlobalDialog?.Nombre!!, unidadProductivaGlobalDialog?.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            if(unidadProductivaGlobalDialog!=null){
+                var centerLatLng: LatLng? = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
+                addMarker(centerLatLng!!, unidadProductivaGlobalDialog?.Nombre!!, unidadProductivaGlobalDialog?.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            }
+
             // double area= calculateAreaOfGPSPolygonOnEarthInSquareMeters(locationsGlobals);
             //Toast.makeText(activity, "AREA: " + String.format("%.0f mts", area), Toast.LENGTH_LONG).show()
         }else{
@@ -663,28 +665,17 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     }
 
     //UI ELements
-    override fun showAlertDialogAddLote(lote: Lote?): AlertDialog? {
-        var dialog = AlertDialog.Builder(activity!!)
+    override fun showAlertDialogAddLote(lote: Lote?) {
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_lote, null)
         val coordsLote = viewDialog?.coordenadas_lote
-
         val btnClosetDialogLote = viewDialog?.ivClosetDialogLote
-        val btnRegister = viewDialog?.btnRegisterLote
-        val btnUpdateLote = viewDialog?.btnUpdateLote
-        val btnCancelLote = viewDialog?.btnCancelLote
 
         setListUPAdapterSpinner()
         setListUnidadMedidaAdapterSpinner()
-
-        btnUpdateLote?.setOnClickListener(this)
-        btnRegister?.setOnClickListener(this)
-        btnCancelLote?.setOnClickListener(this)
         btnClosetDialogLote?.setOnClickListener(this)
         //REGISTER
         if (lote == null) {
-            btnRegister?.visibility = View.VISIBLE
-            btnUpdateLote?.visibility = View.GONE
             if (UBICATION_MANUAL == true) {
                 if (LastMarkerDrawingLote != null) {
                     locationLote.latitude = LastMarkerDrawingLote!!.getPosition().latitude
@@ -699,8 +690,6 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         }
         //UPDATE
         else {
-            btnRegister?.visibility = View.GONE
-            btnUpdateLote?.visibility = View.VISIBLE
             unidadMedidaGlobal = Unidad_Medida(lote.Id, lote.Nombre_Unidad_Medida, null)
             viewDialog?.name_lote?.setText(lote.Nombre)
             viewDialog?.description_lote?.setText(lote.Descripcion)
@@ -710,17 +699,28 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             viewDialog?.spinnerUnidadMedidaLote?.setText(lote.Nombre_Unidad_Medida)
             viewDialog?.spinnerUnidadProductiva?.visibility = View.GONE
         }
-
-        dialog?.setView(viewDialog)
-        dialog?.setTitle(getString(R.string.add_lote))
-        dialog?.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
-            /*Snackbar.make(viewDialog?.coordenadas_lote!!, "No se realizaron cambios", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()*/
+        val dialog = AlertDialog.Builder(context!!)
+                .setView(viewDialog)
+                .setIcon(R.drawable.ic_lote)
+                . setTitle(getString(R.string.tittle_add_unidadproductiva))
+                .setPositiveButton(getString(R.string.btn_save), null) //Set to null. We override the onclick
+                .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+                })
+                .create()
+        dialog.setOnShowListener(DialogInterface.OnShowListener {
+            val button = (dialog as AlertDialog).getButton(android.app.AlertDialog.BUTTON_POSITIVE)
+            button.setOnClickListener {
+                // TODO Do something
+                if(lote!=null){
+                    updateLote()
+                }else{
+                    registerLote()
+                }
+            }
         })
-        // dialog?.setMessage(getString(R.string.message_add_lote))
-        dialog?.setIcon(R.drawable.ic_lote)
-        _dialogRegisterUpdate = dialog?.show()
-        return _dialogRegisterUpdate
+        dialog?.show()
+        _dialogRegisterUpdate=dialog
+
     }
 
     override fun showAlertTypeLocationLote(): AlertDialog? {
@@ -855,9 +855,6 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 }
             }
             R.id.ivClosetDialogLote -> _dialogRegisterUpdate?.dismiss()
-            R.id.btnCancelLote -> _dialogRegisterUpdate?.dismiss()
-            R.id.btnRegisterLote -> registerLote()
-            R.id.btnUpdateLote -> updateLote()
             R.id.fabLocationLote -> showAlertTypeLocationLote()
             R.id.fabUnidadProductiva -> showAlertDialogSelectUp()
         }

@@ -13,8 +13,8 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.MapsActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.Lote_Fragment
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.UnidadProductiva.UnidadProductiva_Fragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.Cultivo_Fragment
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up.UnidadProductiva_Fragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.ui.MainMenuFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.listas.Listas

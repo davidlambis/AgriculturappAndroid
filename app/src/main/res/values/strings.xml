@@ -4,6 +4,7 @@
     <!--MENU ACTIVITIES-->
     <string name="title_menu">Menu</string>
     <string name="title_lote">Lote</string>
+    <string name="title_up">Unidad Productiva</string>
 
     <!-- GLOBALES -->
     <string name="results_global_search">Mostrando %d Resultados</string>

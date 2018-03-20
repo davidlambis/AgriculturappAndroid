@@ -149,62 +149,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-
-                <Button
-
-                    android:id="@+id/btnRegisterLote"
-                    style="@style/small_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/margin_global_10"
-                    android:background="@drawable/custom_button"
-                    android:text="@string/btn_registrar_productor" />
-
-                <Button
-                    android:id="@+id/btnUpdateLote"
-                    style="@style/small_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/margin_global_10"
-                    android:background="@drawable/custom_button"
-                    android:text="@string/btn_save" />
-
-                <Button
-                    android:id="@+id/btnCancelLote"
-                    style="@style/small_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/margin_global_10"
-                    android:text="@string/cancel"
-                    android:background="@drawable/custom_button"
-                    />
-                <!--<android.support.design.widget.FloatingActionButton
-                    android:id="@+id/register_configuracion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_margin="@dimen/margin_global"
-                    android:src="@android:drawable/ic_menu_save" />
-
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/edit_configuracion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_margin="@dimen/margin_global"
-                    android:src="@android:drawable/ic_menu_edit" />-->
-
-
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

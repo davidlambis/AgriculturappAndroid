@@ -174,12 +174,12 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
 
     override fun registerLote(lote: Lote,unidad_productiva_id:Long?) {
         loteMainView?.showProgress()
-        if(checkConnection()){
-            loteMainView?.disableInputs()
-            loteInteractor?.registerLote(lote,unidad_productiva_id)
-        }else{
-            onMessageConectionError()
-        }
+        //if(checkConnection()){
+        loteMainView?.disableInputs()
+        loteInteractor?.registerLote(lote,unidad_productiva_id)
+        //}else{
+          //  onMessageConectionError()
+        //}
     }
 
     override fun updateLote(lote: Lote,unidad_productiva_id:Long?) {
@@ -189,7 +189,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
             loteInteractor?.registerLote(lote,unidad_productiva_id)
         }else{
             onMessageConectionError()
-        }
+       }
     }
 
 
@@ -199,7 +199,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
             loteInteractor?.deleteLote(lote,unidad_productiva_id)
         }else{
             onMessageConectionError()
-        }
+       }
     }
 
 
