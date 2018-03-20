@@ -8,7 +8,6 @@ data class RequestEventLote (var eventType: Int,
                              var objectMutable: Object? = null,
                              var mensajeError: String?
 ) {
-
     companion object {
         val READ_EVENT: Int = 0
         val SAVE_EVENT: Int = 1

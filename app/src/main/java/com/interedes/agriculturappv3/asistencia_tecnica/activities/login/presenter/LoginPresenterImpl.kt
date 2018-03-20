@@ -67,6 +67,4 @@ class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
     }
 
     //endregion
-
-
 }

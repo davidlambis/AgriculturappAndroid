@@ -44,6 +44,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     override fun onCreate() {
         eventBus?.register(this)
         loadListas()
+        loteMainView?.showAlertDialogSelectUp()
     }
 
     override fun onDestroy() {
@@ -52,6 +53,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
             CoordsServiceKotlin.instance?.closeService()
             //coordsService!!.closeService()
         }
+        eventBus?.unregister(this)
     }
 
     override fun closeServiceGps() {
@@ -82,6 +84,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     override fun onResume(context:Context) {
         context.registerReceiver(mNotificationReceiver, IntentFilter("CONECTIVIDAD"))
         context.registerReceiver(mNotificationReceiver, IntentFilter("LOCATION"))
+
     }
 
     override fun onPause(context:Context) {
