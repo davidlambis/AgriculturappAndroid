@@ -18,13 +18,13 @@ class Listas {
             return lista_roles
         }*/
 
-
+        /*
         fun listaRoles(): ArrayList<Rol> {
             val lista_roles = ArrayList<Rol>()
             lista_roles.add(Rol(Id = 1, Nombre = "Productor", Imagen = R.drawable.ic_productor_big))
             lista_roles.add(Rol(Id = 2, Nombre = "Comprador", Imagen = R.drawable.ic_comprador_big))
             return lista_roles
-        }
+        } */
 
         fun listaMenuProductor(): ArrayList<ItemLista> {
             val lista_menu_productor = ArrayList<ItemLista>()

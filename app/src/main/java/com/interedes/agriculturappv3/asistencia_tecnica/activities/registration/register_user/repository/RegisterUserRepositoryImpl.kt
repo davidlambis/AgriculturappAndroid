@@ -1,14 +1,11 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.repository
 
 import android.util.Log
-import com.google.android.gms.drive.query.Filters.eq
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.iid.FirebaseInstanceId
-import com.interedes.agriculturappv3.R.id.*
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.events.RegisterEvent
 import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPago
 import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPagoResponse
@@ -19,17 +16,16 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.Rol
 import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.Rol_Table
 import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.User
 import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.UserResponse
-import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario
-import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.UsuarioResponse
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.google.firebase.auth.FirebaseUser
+import java.util.*
 
 
 class RegisterUserRepositoryImpl : RegisterUserRepository {
@@ -49,6 +45,7 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
     override fun registerUsuario(user: User) {
 
         //BACKEND
+
         val call = apiService?.postRegistroUsers(user)
         call?.enqueue(object : Callback<UserResponse> {
             override fun onResponse(call: Call<UserResponse>?, response: Response<UserResponse>?) {
@@ -60,6 +57,7 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
                             val uid: String? = currentUser?.uid
                             val reference: DatabaseReference? = mDatabase?.child("Users")?.child(uid)
                             //val token: String? = FirebaseInstanceId.getInstance()?.token
+                            // val uuid_tipo_user = user.Tipouser as UUID?
                             val rol: Rol? = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(user.Tipouser)).querySingle()
                             val rolName = rol?.Nombre
 
@@ -75,41 +73,44 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
 
                             reference?.setValue(userMap)?.addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
+
+                                    //ENVIAR EMAIL DE CONFIRMACIÓN
+                                    sendEmailVerification(currentUser)
                                     //SQLITE, Traer usuario del servicio con todos los datos
-                                    val query: String = Listas.queryGeneral("Email", user.Email!!)
-                                    val callUsuario = apiService?.getUsuarioByCorreo(query)
-                                    callUsuario?.enqueue(object : Callback<UsuarioResponse> {
-                                        override fun onResponse(call: Call<UsuarioResponse>?, response: Response<UsuarioResponse>?) {
-                                            if (response != null && response.code() == 200) {
-                                                //val usuario: Usuario = response.body()?.value!!
-                                                val usuario: List<Usuario>? = response.body()?.value!!
-                                                //TODO Encriptar Contraseña, Save sqlite
-                                                for (u: Usuario in usuario!!) {
-                                                    if (u.Email.equals(user.Email)) {
-                                                        u.Contrasena = user.Password
-                                                        u.DetalleMetodoPagoNombre = SQLite.select().from(DetalleMetodoPago::class.java).where(DetalleMetodoPago_Table.Id.eq(u.DetalleMetodoPagoId?.toLong())).querySingle()?.Nombre
-                                                        u.RolNombre = rolName
-                                                        u.save()
-                                                    }
-                                                }
+                                    /* val query: String = Listas.queryGeneral("Email", user.Email!!)
+                                     val callUsuario = apiService?.getUsuarioByCorreo(query)
+                                     callUsuario?.enqueue(object : Callback<UsuarioResponse> {
+                                         override fun onResponse(call: Call<UsuarioResponse>?, response: Response<UsuarioResponse>?) {
+                                             if (response != null && response.code() == 200) {
+                                                 //val usuario: Usuario = response.body()?.value!!
+                                                 val usuario: List<Usuario>? = response.body()?.value!!
+                                                 //TODO Encriptar Contraseña, Save sqlite
+                                                 for (u: Usuario in usuario!!) {
+                                                     if (u.Email.equals(user.Email)) {
+                                                         u.Contrasena = user.Password
+                                                         u.DetalleMetodoPagoNombre = SQLite.select().from(DetalleMetodoPago::class.java).where(DetalleMetodoPago_Table.Id.eq(u.DetalleMetodoPagoId?.toLong())).querySingle()?.Nombre
+                                                         u.RolNombre = rolName
+                                                         u.save()
+                                                     }
+                                                 }
 
-                                                postEvent(RegisterEvent.onRegistroExitoso)
-                                            } else {
-                                                postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
-                                                Log.e("Error code Get", response?.errorBody()?.string())
-                                                Log.v("url", response?.raw().toString())
-                                            }
-                                        }
+                                                 postEvent(RegisterEvent.onRegistroExitoso)
+                                             } else {
+                                                 postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
+                                                 Log.e("Error code Get", response?.errorBody()?.string())
+                                                 Log.v("url", response?.raw().toString())
+                                             }
+                                         }
 
-                                        override fun onFailure(call: Call<UsuarioResponse>?, t: Throwable?) {
-                                            postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
-                                            Log.e("Error Get", t?.message.toString())
-                                        }
+                                         override fun onFailure(call: Call<UsuarioResponse>?, t: Throwable?) {
+                                             postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
+                                             Log.e("Error Get", t?.message.toString())
+                                         }
 
-                                    })
+                                     }) */
 
                                 } else {
-                                    postEvent(RegisterEvent.onErrorRegistro, "Petición fallida a Firebase")
+                                    postEvent(RegisterEvent.onErrorRegistro, "Petición fallida a Firebase(registro user)")
                                     Log.e("Error Firebase", task.exception.toString())
                                 }
                             }
@@ -128,13 +129,13 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
                     }
 
                 } else {
-                    postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
+                    postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor(Post response code)")
                     Log.e("Error code Post", response?.errorBody()?.string())
                 }
             }
 
             override fun onFailure(call: Call<UserResponse>?, t: Throwable?) {
-                postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
+                postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor(Post Register)")
                 Log.e("Error Post", t?.message.toString())
             }
 
@@ -142,6 +143,7 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
 
     }
 
+    //region Métodos Interfaz
     //Cargar información inicial de Métodos de Pago para el productor
     override fun loadMetodosPago() {
         val call = apiService?.getMetodoPagos()
@@ -223,7 +225,24 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
             postEvent(RegisterEvent.onLoadInfoError, "No se pudieron cargar los bancos")
         }
     }
+    //endregion
 
+    //region Métodos
+
+    //endregion
+    private fun sendEmailVerification(currentUser: FirebaseUser?) {
+        currentUser?.sendEmailVerification()?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                postEvent(RegisterEvent.onRegistroExitoso)
+            } else {
+                postEvent(RegisterEvent.onErrorRegistro, "Petición fallida a Firebase(Email Verificación)")
+            }
+
+        }
+    }
+
+
+    //region Eventos
     private fun postEvent(type: Int) {
         postEvent(type, null)
     }
@@ -254,6 +273,6 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
         eventBus?.post(detalleMetodoPagoEvent)
 
     }
-
+    //endregion
 
 }

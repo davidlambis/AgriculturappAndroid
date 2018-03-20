@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.models.usuario
 
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 data class User(
         @SerializedName("DetalleMetodopagoId")
@@ -19,7 +20,7 @@ data class User(
         var ConfirmPassword: String? = null,
 
         @SerializedName("Tipouser")
-        var Tipouser: Long? = 0,
+        var Tipouser: UUID? = null,
 
         @SerializedName("PhoneNumber")
         var PhoneNumber: String? = null,

@@ -12,6 +12,7 @@ import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -55,14 +56,12 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
 
         //Si hay conectividad a Internet
         if (checkConnection()) {
-            //TODO Load From Backend if has connectivity
             val apiService = ApiInterface.create()
             val call = apiService.getRoles()
             call.enqueue(object : Callback<RolResponse> {
                 override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
                     if (response != null) {
                         lista = response.body()?.value!!
-
                         if (lista != null) {
                             for (item: Rol in lista!!) {
                                 if (item.Nombre.equals("Comprador")) {
@@ -70,9 +69,6 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
                                     item.save()
                                 } else if (item.Nombre.equals("Productor")) {
                                     item.Imagen = R.drawable.ic_productor_big
-                                    item.save()
-                                } else {
-                                    item.Imagen = R.drawable.ic_comprador_big
                                     item.save()
                                 }
                             }
@@ -86,6 +82,7 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
 
                 override fun onFailure(call: Call<RolResponse>?, t: Throwable?) {
                     onMessageOk(R.color.grey_luiyi, getString(R.string.error_request))
+                    Log.e("Error", t?.message.toString())
                 }
 
             })
@@ -173,12 +170,8 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
                     j.putExtra("rol", "comprador")
                     j.putExtra("rol_id", lista!![position].Id)
                     startActivity(j)
-                } else {
-                    Toast.makeText(this, lista!![position].Nombre.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
-            //progressBar?.visibility = View.GONE
-            //swipeRefreshLayout.isRefreshing = false
             recyclerView?.adapter = adapter
         }
     }

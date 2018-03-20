@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.models.usuario
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.Rol
+import java.util.*
 
 class UserResponse {
 
@@ -9,7 +10,7 @@ class UserResponse {
     var detalleMetodopagoId: Long? = 0
 
     @SerializedName("tipouser")
-    var tipouser: Long? = 0
+    var tipouser: UUID? = null
 
     @SerializedName("apellido")
     var apellido: String? = null
@@ -23,9 +24,8 @@ class UserResponse {
     @SerializedName("identification")
     var identification: String? = null
 
-    /*
     @SerializedName("id")
-    var id: Long? = 0 */
+    var id: UUID? = null
 
     @SerializedName("userName")
     var userName: String? = null

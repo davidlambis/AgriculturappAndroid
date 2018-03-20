@@ -9,11 +9,4 @@
             android:src="@drawable/logo_agr_app_big" />
     </item>
 
-
-    <item>
-        <bitmap
-            android:gravity="center_vertical"
-            android:src="@drawable/splash_text_mediano" />
-    </item>
-
 </layer-list>

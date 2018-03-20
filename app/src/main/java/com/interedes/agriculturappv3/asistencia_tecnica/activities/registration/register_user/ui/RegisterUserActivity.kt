@@ -29,6 +29,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import android.text.TextUtils
 import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.User
+import java.util.*
 
 
 class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClickListener, ConnectivityReceiver.connectivityReceiverListener {
@@ -40,7 +41,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     var metodo_pago_id: Long? = null
     var nombre_metodo_pago: String? = null
     var detalle_metodo_pago_id: Long? = 0
-    var rol_id: Long? = 0
+    var rol_id: UUID? = null
     var connectivityReceiver: ConnectivityReceiver? = null
 
     init {
@@ -55,11 +56,11 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         setContentView(R.layout.activity_register_user)
         if (intent.extras != null && intent.extras["rol"].equals("productor")) {
             rol = "productor"
-            rol_id = intent.extras["rol_id"] as Long?
+            rol_id = intent.extras["rol_id"] as UUID?
             loadMetodosPago()
         } else if (intent.extras != null && intent.extras["rol"].equals("comprador")) {
             rol = "comprador"
-            rol_id = intent.extras["rol_id"] as Long?
+            rol_id = intent.extras["rol_id"] as UUID?
             imageViewRol?.setImageResource(R.drawable.ic_comprador_big)
             textViewRol?.text = getString(R.string.title_register_comprador)
             spinnerMetodoPago?.visibility = View.GONE
@@ -164,15 +165,15 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
             edtCelular?.setError(getString(R.string.error_field_required))
             focusView = edtCelular
             cancel = true
-        } else if (spinnerMetodoPago?.visibility == View.VISIBLE && spinnerMetodoPago?.text.toString().isEmpty()) {
+        } else if (rol.equals("productor") && spinnerMetodoPago?.visibility == View.VISIBLE && spinnerMetodoPago?.text.toString().isEmpty()) {
             spinnerMetodoPago?.setError(getString(R.string.error_field_required))
             focusView = spinnerMetodoPago
             cancel = true
-        } else if (spinnerBanco?.visibility == View.VISIBLE && spinnerBanco.text.toString().isEmpty()) {
+        } else if (rol.equals("productor") && spinnerBanco?.visibility == View.VISIBLE && spinnerBanco.text.toString().isEmpty()) {
             spinnerBanco?.setError(getString(R.string.error_field_required))
             focusView = spinnerBanco
             cancel = true
-        } else if (textInputLayoutNumeroCuenta?.visibility == View.VISIBLE && edtNumeroCuenta.text.toString().isEmpty()) {
+        } else if (rol.equals("productor") && textInputLayoutNumeroCuenta?.visibility == View.VISIBLE && edtNumeroCuenta.text.toString().isEmpty()) {
             edtNumeroCuenta?.setError(getString(R.string.error_field_required))
             focusView = edtNumeroCuenta
             cancel = true
