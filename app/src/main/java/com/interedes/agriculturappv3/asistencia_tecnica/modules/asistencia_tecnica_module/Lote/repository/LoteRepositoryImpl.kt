@@ -34,9 +34,8 @@ class LoteRepositoryImpl:LoteRepository {
     }
 
     override fun loadListas() {
-        var listUp= Listas.listaUP()
+        var listUp=SQLite.select().from(UnidadProductiva::class.java!!).queryList()
         var listUnidadMedida= Listas.listaUnidadMedida()
-
 
         postEventListUnidadMedida(RequestEventLote.LIST_EVENT_UNIDAD_MEDIDA,listUnidadMedida,null);
         postEventListUp(RequestEventLote.LIST_EVENT_UP,listUp,null);

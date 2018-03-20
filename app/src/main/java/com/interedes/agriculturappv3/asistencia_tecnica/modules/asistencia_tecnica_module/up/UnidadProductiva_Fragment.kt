@@ -222,6 +222,8 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
             unidadProductiva.Nombre_Unidad_Medida=unidadMedidaGlobal?.Descripcion
             unidadProductiva.Configuration_Point=true
             unidadProductiva.Configuration_Poligon=false
+            unidadProductiva.Latitud=latitud
+            unidadProductiva.Longitud=longitud
             presenter?.registerUP(unidadProductiva)
         }
     }
@@ -238,6 +240,8 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
             updateUP.Nombre_Unidad_Medida=unidadMedidaGlobal?.Descripcion
             updateUP.Configuration_Point=unidadProductivaGlobal!!.Configuration_Point
             updateUP.Configuration_Poligon=unidadProductivaGlobal!!.Configuration_Poligon
+            updateUP.Latitud=latitud
+            updateUP.Longitud=longitud
             presenter?.updateUP(updateUP)
         }
     }

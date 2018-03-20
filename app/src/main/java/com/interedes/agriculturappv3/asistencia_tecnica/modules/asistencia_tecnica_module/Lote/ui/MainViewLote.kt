@@ -62,8 +62,8 @@ interface MainViewLote {
     fun showAlertDialogAddLote(lote:Lote?): AlertDialog?
     fun showAlertTypeLocationLote(): AlertDialog?
     fun confirmDelete(lote:Lote):AlertDialog?
-
     fun verificateConnection():AlertDialog?
+    fun showAlertDialogSelectUp():AlertDialog?
 
     //Events
     fun onEventBroadcastReceiver(extras: Bundle,intent: Intent)

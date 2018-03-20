@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.AppBarLayout
@@ -47,20 +48,21 @@ import kotlinx.android.synthetic.main.map_layout.*
 import java.util.ArrayList
 
 
-class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefreshLayout.OnRefreshListener, GoogleMap.OnMapClickListener ,View.OnClickListener  , GoogleMap.OnMyLocationButtonClickListener{
+class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefreshLayout.OnRefreshListener, GoogleMap.OnMapClickListener, View.OnClickListener, GoogleMap.OnMyLocationButtonClickListener {
 
     //Mapa
     private var mMap: GoogleMap? = null
     private var LastMarkerDrawingLote: Marker? = null
-    private var polygon: Polygon?=null
+    private var polygon: Polygon? = null
     private var bounds: LatLngBounds? = null
     private val builder = LatLngBounds.Builder()
-    private var LOADED_MAPA:Boolean=false
+    private var LOADED_MAPA: Boolean = false
 
     //marker and location
     private var locationLote: Location = Location("")
-    val listMarkerLote= ArrayList<Marker>()
-    var markerLocation: Marker?=null
+    val listMarkerLote = ArrayList<Marker>()
+    val listMarkerUp = ArrayList<Marker>()
+    var markerLocation: Marker? = null
 
     //Presenter
     var presenter: LotePresenter? = null
@@ -69,7 +71,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     //Dialog
     private var _dialogRegisterUpdate: AlertDialog? = null
     private var _dialogTypeLocation: AlertDialog? = null
-    var viewDialog:View?= null;
+    var viewDialog: View? = null;
 
     //Coords
     private var latitud: Double = 0.0
@@ -77,7 +79,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
 
     //Progress
     /** These can be lateinit as they are set in onCreate */
-    private var hud: KProgressHUD?=null
+    private var hud: KProgressHUD? = null
 
     //UbicationLote
     private var UBICATION_MANUAL: Boolean = false
@@ -85,36 +87,36 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     private var DIALOG_SET_TYPE_UBICATION: Int = -1
 
     //Adapter
-    var adapter: LoteAdapter?=null
-    var lotesList: ArrayList<Lote>?= ArrayList<Lote>()
-    var loteGlobal: Lote?=null
-
+    var adapter: LoteAdapter? = null
+    var lotesList: ArrayList<Lote>? = ArrayList<Lote>()
+    var loteGlobal: Lote? = null
 
 
     //Globals
 
-    var unidadMedidaGlobal:Unidad_Medida?=null
-    var unidadProductivaGloabal:UnidadProductiva?=null
-    var listUnidadProductivaGlobal:List<UnidadProductiva>?= ArrayList<UnidadProductiva>()
-    var listUnidadMedidaGlobal:List<Unidad_Medida>?= ArrayList<Unidad_Medida>()
+    var unidadMedidaGlobal: Unidad_Medida? = null
+    var unidadProductivaGlobalSppiner: UnidadProductiva? = null
+    var unidadProductivaGlobalDialog: UnidadProductiva? = null
+    var listUnidadProductivaGlobal: List<UnidadProductiva>? = ArrayList<UnidadProductiva>()
+    var listUnidadMedidaGlobal: List<Unidad_Medida>? = ArrayList<Unidad_Medida>()
 
     private var DIALOG_SELECTT_POSITION_UP: Int = 0
-    var Unidad_Productiva_Id_Selected:Long?=null
+    private var DIALOG_SELECT_ALL_UP: Boolean = true
+    var Unidad_Productiva_Id_Selected: Long? = null
 
     companion object {
-        var instance:  Lote_Fragment? = null
+        var instance: Lote_Fragment? = null
     }
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        instance=this
+        instance = this
         //Presenter
         //(presenter as LotePresenterImpl).onCreate()
-        presenter =  LotePresenterImpl(this);
+        presenter = LotePresenterImpl(this);
         (presenter as LotePresenterImpl).onCreate()
-       /// presenter?.onCreate();
+        /// presenter?.onCreate();
     }
 
 
@@ -139,14 +141,11 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         } catch (e: Exception) {
             Log.i("ErrorMap", e.message)
         }
-        (activity as MenuMainActivity).toolbar.title=getString(R.string.title_lote)
+        (activity as MenuMainActivity).toolbar.title = getString(R.string.title_lote)
         presenter?.getLotes(Unidad_Productiva_Id_Selected);
         mapViewLotes.getMapAsync(this)
         loadInitTaskHandler()
     }
-
-
-
 
 
     //region METHODS
@@ -184,66 +183,39 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
 
     fun loadInitTaskHandler() {
         handler.postDelayed({
-            if ((activity as MenuMainActivity).presenter?.checkConnection()!!){
+            if ((activity as MenuMainActivity).presenter?.checkConnection()!!) {
                 hideElementsAndSetPropertiesOnConectionInternet()
-            }else{
-                if(LOADED_MAPA==false){
+            } else {
+                if (LOADED_MAPA == false) {
                     showElementsAndSetPropertiesOffConnectioninternet()
                 }
-                onMessageError(R.color.grey_luiyi,getString(R.string.sin_conexion))
+                onMessageError(R.color.grey_luiyi, getString(R.string.sin_conexion))
             }
         }, 10000)
     }
 
 
-    override fun hideElementsAndSetPropertiesOnConectionInternet(){
-
-        if(imgOffConection.visibility==View.VISIBLE) imgOffConection.visibility=View.GONE
-
-        if(UBICATION_MANUAL==true){
-            DIALOG_SET_TYPE_UBICATION=1
-        }else if(UBICATION_GPS==true){
-            DIALOG_SET_TYPE_UBICATION=0
-        }else{
-            DIALOG_SET_TYPE_UBICATION=-1
+    override fun hideElementsAndSetPropertiesOnConectionInternet() {
+        if (imgOffConection.visibility == View.VISIBLE) imgOffConection.visibility = View.GONE
+        if (UBICATION_MANUAL == true) {
+            DIALOG_SET_TYPE_UBICATION = 1
+        } else if (UBICATION_GPS == true) {
+            DIALOG_SET_TYPE_UBICATION = 0
+        } else {
+            DIALOG_SET_TYPE_UBICATION = -1
         }
-
     }
-    override fun showElementsAndSetPropertiesOffConnectioninternet(){
-        if(imgOffConection.visibility==View.GONE) imgOffConection.visibility=View.VISIBLE
-        if(UBICATION_GPS==true){
-            DIALOG_SET_TYPE_UBICATION=0
-        }else{
-            DIALOG_SET_TYPE_UBICATION=-1
+
+    override fun showElementsAndSetPropertiesOffConnectioninternet() {
+        if (imgOffConection.visibility == View.GONE) imgOffConection.visibility = View.VISIBLE
+        if (UBICATION_GPS == true) {
+            DIALOG_SET_TYPE_UBICATION = 0
+        } else {
+            DIALOG_SET_TYPE_UBICATION = -1
         }
     }
 
     private fun initCollapsingToolbar() {
-        /*val collapsingToolbar = collapsing_toolbar_layout as CollapsingToolbarLayout
-        collapsingToolbar.title = " "
-        appBarLayout = app_bar_layout as AppBarLayout
-        appBarLayout?.setExpanded(false)*/
-
-        /*
-        // hiding & showing the txtPostTitle when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            internal var isShow = false
-            internal var scrollRange = -1
-            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.title = ""
-                    toolbarLote.setBackgroundColor(activity!!.applicationContext.resources.getColor(R.color.white))
-                    isShow = true
-                } else if (isShow) {
-                    collapsingToolbar.title = " "
-                    isShow = false
-                }
-            }
-        })*/
-
         app_bar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             internal var isShow = false
             internal var scrollRange = -1
@@ -251,18 +223,17 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.totalScrollRange
-                    fabLocationLote.visibility=View.VISIBLE
-                    fabUnidadProductiva.visibility=View.VISIBLE
+                    fabLocationLote.visibility = View.VISIBLE
+                    fabUnidadProductiva.visibility = View.VISIBLE
                 }
                 if (scrollRange + verticalOffset >= 0 && scrollRange + verticalOffset < 120) {
 
                     isShow = true
-                    fabLocationLote.visibility=View.GONE
-                    fabUnidadProductiva.visibility=View.GONE
-                }
-                else if (isShow) {
-                    fabLocationLote.visibility=View.VISIBLE
-                    fabUnidadProductiva.visibility=View.VISIBLE
+                    fabLocationLote.visibility = View.GONE
+                    fabUnidadProductiva.visibility = View.GONE
+                } else if (isShow) {
+                    fabLocationLote.visibility = View.VISIBLE
+                    fabUnidadProductiva.visibility = View.VISIBLE
                     isShow = false
                 }
             }
@@ -275,6 +246,10 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     //On Map Reding
     override fun onMapReady(map: GoogleMap?) {
         mMap = map
+        val positionInitial = LatLng(4.565473550710278, -74.058837890625)
+        /// mMap.addMarker(new MarkerOptions().position(positionInitial).title("Ecuador"));
+        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(positionInitial, 6f))
+
         if (ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
         } else {
@@ -285,58 +260,108 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             mMap?.setOnMyLocationButtonClickListener(this);
             // Setting a click event handler for the map
             mMap?.setOnMapLoadedCallback(GoogleMap.OnMapLoadedCallback {
-                LOADED_MAPA=true
+                LOADED_MAPA = true
                 hideElementsAndSetPropertiesOnConectionInternet()
             })
-            animateLocationMap()
+
+            animateLocationMap(lotesList!!)
+
         }
     }
 
     override fun onMyLocationButtonClick(): Boolean {
         showAlertTypeLocationLote()
-        /*if(latitud!=0.0 && longitud!=0.0){
-            addMarkerLocation(latitud,longitud)
-        }else {
-            presenter?.startGps(activity as MenuMainActivity)
-        }*/
-        //Toast.makeText(activity,"Click",Toast.LENGTH_SHORT).show();
         return true;
     }
 
-    private fun animateLocationMap() {
+
+
+    private fun animateLocationMap(lotes: List<Lote>) {
         mMap?.clear()
-
-        val locations = ArrayList<LatLng>()
-        locations.add(LatLng(2.930625, -75.271928))
-        locations.add(LatLng(2.930534, -75.271674))
-        locations.add(LatLng(2.930248, -75.271566))
-        locations.add(LatLng(2.930063,  -75.271644))
-        locations.add(LatLng(2.930288, -75.272092))
-        locations.add(LatLng(2.930625, -75.271928))
-
-        val area = SphericalUtil.computeArea(locations)
-        val rectOptions = PolygonOptions()
-        rectOptions.addAll(locations)
-        rectOptions.strokeColor(ContextCompat.getColor(activity!!, android.R.color.holo_orange_dark))
-        rectOptions.fillColor(ContextCompat.getColor(activity!!, android.R.color.holo_orange_light))
-
-        // Get back the mutable Polygon
-        polygon = mMap?.addPolygon(rectOptions)
-        getPolygonCenterPoint(locations)
-        val width = resources.displayMetrics.widthPixels
-        val height = resources.displayMetrics.heightPixels
-        val padding = (width * 0.10).toInt() // offset from edges of the map 10% of screen
-        val cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
-        mMap?.animateCamera(cu)
-
-        for (lote in this!!.lotesList!!){
-            var latlngLote =  LatLng(lote.Latitud!!, lote.Longitud!!);
-            var markerLote=addMarker(latlngLote, latlngLote.latitude.toString() + " : " + latlngLote.longitude, lote.Nombre!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-            listMarkerLote.add(markerLote!!)
+        //Si existe poligono se dibuja
+        if(DIALOG_SELECT_ALL_UP==false && unidadProductivaGlobalDialog?.Configuration_Poligon==true && unidadProductivaGlobalDialog?.Configuration_Point==true){
+            var locations = ArrayList<LatLng>()
+            locations.add(LatLng(2.930625, -75.271928))
+            locations.add(LatLng(2.930534, -75.271674))
+            locations.add(LatLng(2.930248, -75.271566))
+            locations.add(LatLng(2.930063,  -75.271644))
+            locations.add(LatLng(2.930288, -75.272092))
+            locations.add(LatLng(2.930625, -75.271928))
+            polygon=addPoligonUp(locations, ContextCompat.getColor(activity!!, android.R.color.holo_orange_dark),ContextCompat.getColor(activity!!, android.R.color.holo_orange_light))
         }
-        // double area= calculateAreaOfGPSPolygonOnEarthInSquareMeters(locationsGlobals);
-        Toast.makeText(activity, "AREA: " + String.format("%.0f mts", area), Toast.LENGTH_LONG).show()
 
+
+        if(DIALOG_SELECT_ALL_UP==true && lotes.size<=0){
+            var  builder =  LatLngBounds.Builder()
+            for (up in listUnidadProductivaGlobal!!) {
+                var latlngUp = LatLng(up.Latitud!!, up.Longitud!!);
+                var markerUP = addMarker(latlngUp, up.Nombre!!, up.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                listMarkerUp.add(markerUP!!)
+                builder.include(latlngUp)
+            }
+            var  bounds = builder.build()
+            var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
+            mMap?.animateCamera(cu)
+
+        }
+
+        else if(DIALOG_SELECT_ALL_UP==false && lotes.size<=0){
+            var  builder =  LatLngBounds.Builder()
+            var latlngUp = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
+            var markerUP = addMarker(latlngUp, unidadProductivaGlobalDialog?.Nombre!!, unidadProductivaGlobalDialog?.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            listMarkerUp.add(markerUP!!)
+            builder.include(latlngUp)
+            var  bounds = builder.build()
+            var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
+            mMap?.animateCamera(cu)
+
+        }
+        else if(DIALOG_SELECT_ALL_UP==false && lotes.size>0 || DIALOG_SELECT_ALL_UP==true && lotes.size>0){
+            var locations = ArrayList<LatLng>()
+            val area = SphericalUtil.computeArea(locations)
+            //Ajustar camara mostrando todos los marcadores
+            var  builder =  LatLngBounds.Builder();
+            for ( l in lotes) {
+                var centerLatLng: LatLng? = LatLng(l.Latitud!!, l.Longitud!!)
+                builder.include(centerLatLng)
+            }
+
+            var  bounds = builder.build()
+            var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
+            mMap?.animateCamera(cu)
+
+            //mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+            //mMap?.setPadding(0, getResources().getDrawable(R.drawable.logo_agr_app).getIntrinsicHeight(), 0, 0);
+            for (lote in lotes) {
+                var latlngLote = LatLng(lote.Latitud!!, lote.Longitud!!);
+                var markerLote = addMarker(latlngLote, lote.Nombre!!, lote.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                listMarkerLote.add(markerLote!!)
+            }
+
+            //Add Marker UP
+            var centerLatLng: LatLng? = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
+            addMarker(centerLatLng!!, unidadProductivaGlobalDialog?.Nombre!!, unidadProductivaGlobalDialog?.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            // double area= calculateAreaOfGPSPolygonOnEarthInSquareMeters(locationsGlobals);
+            //Toast.makeText(activity, "AREA: " + String.format("%.0f mts", area), Toast.LENGTH_LONG).show()
+        }else{
+            val positionInitial = LatLng(4.565473550710278, -74.058837890625)
+            mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(positionInitial, 6f))
+        }
+    }
+
+
+    private fun addPoligonUp(locations: ArrayList<LatLng>, color: Int, color1: Int): Polygon? {
+        // Instantiating CircleOptions to draw a circle around the marker
+        var poligonOption = PolygonOptions()
+        //mMap.clear();
+        // Specifying the psition of the marker
+        poligonOption.addAll(locations)
+        // Title marker
+        poligonOption.strokeColor(color)
+        // Fill color of the marker
+        poligonOption.fillColor(color1)
+        // Adding the circle to the GoogleMap
+        return mMap?.addPolygon(poligonOption)
     }
 
     ///Convert Coords Poligon to LatLng Unique
@@ -344,10 +369,6 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         var centerLatLng: LatLng? = null
         for (i in polygonPointsList.indices) {
             builder.include(polygonPointsList[i])
-            /*Location locationadd= new Location("");
-            locationadd.setLatitude(polygonPointsList.get(i).latitude);
-            locationadd.setLatitude(polygonPointsList.get(i).latitude);
-            locationsGlobals.add(locationadd);*/
         }
         bounds = builder.build()
         centerLatLng = bounds?.getCenter()
@@ -358,13 +379,12 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         if (LastMarkerDrawingLote != null) {
             LastMarkerDrawingLote?.remove()
         }
-        if(UBICATION_MANUAL==true){
+        if (UBICATION_MANUAL == true) {
             // Creating a marker
             LastMarkerDrawingLote = drawMarker(latLng, latLng.latitude.toString() + " / " + latLng.longitude, "Location", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-            txtCoordsLote.setText(String.format(getString(R.string.coords),latLng.latitude,latLng.longitude))
+            txtCoordsLote.setText(String.format(getString(R.string.coords), latLng.latitude, latLng.longitude))
         }
     }
-
 
     //Properties and Drawing Marker
     private fun addMarker(latLng: LatLng, title: String, snippet: String, bitmapDescriptor: BitmapDescriptor): Marker? {
@@ -385,24 +405,23 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     }
 
     //Properties and Drawing Marker
-    private fun addMarkerLocation(lat:Double,lng:Double) {
+    private fun addMarkerLocation(lat: Double, lng: Double) {
         // Instantiating CircleOptions to draw a circle around the marker
         //Get Zoom last(Obtener zoom anterior)
-        var zoom= mMap?.getCameraPosition()!!.zoom
+        var zoom = mMap?.getCameraPosition()!!.zoom
         /// Toast.makeText(getApplicationContext(),"Zoom: "+String.valueOf(zoom),Toast.LENGTH_SHORT).show();
-        var coordenadas =  LatLng(lat, lng)
+        var coordenadas = LatLng(lat, lng)
         var myposition = CameraUpdateFactory.newLatLngZoom(coordenadas, zoom)
-        if(markerLocation != null) markerLocation?.remove()
+        if (markerLocation != null) markerLocation?.remove()
 
         //Define color del marker
-        var bitmapMarker= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
-        markerLocation = addMarker(coordenadas,"Mi Ubicacion","",bitmapMarker)
+        var bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
+        markerLocation = addMarker(coordenadas, "Mi Ubicacion", "", bitmapMarker)
 
-        if(UBICATION_GPS==true){
+        if (UBICATION_GPS == true) {
             mMap?.animateCamera(myposition);
         }
     }
-
 
     private fun drawMarker(latLng: LatLng, title: String, snippet: String, bitmapDescriptor: BitmapDescriptor): Marker? {
         // Instantiating CircleOptions to draw a circle around the marker
@@ -441,36 +460,29 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         var cancel = false
         var focusView: View? = null
 
-
-        if (viewDialog?.spinnerUnidadProductiva?.text.toString().isEmpty() && viewDialog?.spinnerUnidadProductiva?.visibility==View.VISIBLE) {
+        if (viewDialog?.spinnerUnidadProductiva?.text.toString().isEmpty() && viewDialog?.spinnerUnidadProductiva?.visibility == View.VISIBLE) {
             viewDialog?.spinnerUnidadProductiva?.setError(getString(R.string.error_field_required))
-            focusView =  viewDialog?.spinnerUnidadProductiva
+            focusView = viewDialog?.spinnerUnidadProductiva
             cancel = true
-        }
-
-
-
-        else if (viewDialog?.name_lote?.text.toString().isEmpty()) {
+        } else if (viewDialog?.name_lote?.text.toString().isEmpty()) {
             viewDialog?.name_lote?.setError(getString(R.string.error_field_required))
-            focusView =  viewDialog?.name_lote
+            focusView = viewDialog?.name_lote
             cancel = true
         } else if (viewDialog?.description_lote?.text.toString().isEmpty()) {
             viewDialog?.description_lote?.setError(getString(R.string.error_field_required))
-            focusView =  viewDialog?.description_lote
+            focusView = viewDialog?.description_lote
             cancel = true
         } else if (viewDialog?.area_lote?.text.toString().isEmpty()) {
             viewDialog?.area_lote?.setError(getString(R.string.error_field_required))
-            focusView =  viewDialog?.area_lote
+            focusView = viewDialog?.area_lote
             cancel = true
-        }
-        else if (viewDialog?.spinnerUnidadMedidaLote?.text.toString().isEmpty()) {
+        } else if (viewDialog?.spinnerUnidadMedidaLote?.text.toString().isEmpty()) {
             viewDialog?.spinnerUnidadMedidaLote?.setError(getString(R.string.error_field_required))
-            focusView =  viewDialog?.spinnerUnidadMedidaLote
+            focusView = viewDialog?.spinnerUnidadMedidaLote
             cancel = true
-        }
-        else if (viewDialog?.coordenadas_lote?.text.toString().isEmpty()) {
+        } else if (viewDialog?.coordenadas_lote?.text.toString().isEmpty()) {
             viewDialog?.coordenadas_lote?.setError(getString(R.string.error_field_required))
-            focusView =  viewDialog?.coordenadas_lote
+            focusView = viewDialog?.coordenadas_lote
             cancel = true
         } /* else if (!edtCorreo.text.toString().trim().matches(email_pattern.toRegex())) {
             edtCorreo?.setError(getString(R.string.edit_text_error_correo))
@@ -488,11 +500,13 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     override fun disableInputs() {
         setInputs(false)
     }
+
     override fun enableInputs() {
         setInputs(true)
     }
+
     private fun setInputs(b: Boolean) {
-        if( viewDialog!=null){
+        if (viewDialog != null) {
             viewDialog?.name_lote?.isEnabled = b
             viewDialog?.description_lote?.isEnabled = b
             viewDialog?.area_lote?.isEnabled = b
@@ -504,39 +518,40 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         viewDialog?.description_lote?.setText("");
         viewDialog?.area_lote?.setText("");
         viewDialog?.coordenadas_lote?.setText("");
-        if(LastMarkerDrawingLote != null) LastMarkerDrawingLote?.remove()
-        LastMarkerDrawingLote=null
+        if (LastMarkerDrawingLote != null) LastMarkerDrawingLote?.remove()
+        LastMarkerDrawingLote = null
     }
 
 
-    override fun setPropertiesTypeLocationGps(){
-        UBICATION_GPS=true
-        UBICATION_MANUAL=false
+    override fun setPropertiesTypeLocationGps() {
+        UBICATION_GPS = true
+        UBICATION_MANUAL = false
         if (LastMarkerDrawingLote != null) {
             LastMarkerDrawingLote?.remove()
         }
-        if(LastMarkerDrawingLote != null) LastMarkerDrawingLote?.remove()
-        LastMarkerDrawingLote=null
+        if (LastMarkerDrawingLote != null) LastMarkerDrawingLote?.remove()
+        LastMarkerDrawingLote = null
         _dialogTypeLocation?.dismiss()
         txtCoordsLote.setText("")
     }
-    override fun setPropertiesTypeLocationManual(){
+
+    override fun setPropertiesTypeLocationManual() {
         presenter?.closeServiceGps()
-        if(markerLocation != null) markerLocation?.remove()
-        UBICATION_GPS=false
-        UBICATION_MANUAL=true
+        if (markerLocation != null) markerLocation?.remove()
+        UBICATION_GPS = false
+        UBICATION_MANUAL = true
         if (fabAddLote.getVisibility() == View.GONE) {
-            fabAddLote.visibility=View.VISIBLE
+            fabAddLote.visibility = View.VISIBLE
         }
         _dialogTypeLocation?.dismiss()
-        Toast.makeText(activity,"Ubicacion Manual", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "Ubicacion Manual", Toast.LENGTH_SHORT).show()
         txtCoordsLote.setText("")
     }
 
 
     override fun requestResponseOk() {
         _dialogRegisterUpdate?.dismiss()
-        onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
+        onMessageOk(R.color.colorPrimary, getString(R.string.request_ok));
     }
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
@@ -564,27 +579,27 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         listUnidadMedidaGlobal = listUnidadMedida
     }
 
-    override fun setListUPAdapterSpinner(){
-        if(viewDialog!=null){
+    override fun setListUPAdapterSpinner() {
+        if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(null);
             var upArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductivaGlobal);
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(upArrayAdapter);
             viewDialog?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                unidadProductivaGloabal= listUnidadProductivaGlobal!![position] as UnidadProductiva
+                unidadProductivaGlobalSppiner = listUnidadProductivaGlobal!![position] as UnidadProductiva
                 /// Toast.makeText(activity,""+Unidad_Productiva_Id.toString(),Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    override fun setListUnidadMedidaAdapterSpinner(){
-        if(viewDialog!=null){
+    override fun setListUnidadMedidaAdapterSpinner() {
+        if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadMedidaLote!!.setAdapter(null)
             var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedidaGlobal);
             viewDialog?.spinnerUnidadMedidaLote!!.setAdapter(uMedidaArrayAdapter);
             viewDialog?.spinnerUnidadMedidaLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                unidadMedidaGlobal= listUnidadMedidaGlobal!![position] as Unidad_Medida
+                unidadMedidaGlobal = listUnidadMedidaGlobal!![position] as Unidad_Medida
                 //Toast.makeText(activity,""+ unidadMedidaGlobal!!.Id.toString(),Toast.LENGTH_SHORT).show()
             }
         }
@@ -599,9 +614,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         adapter?.setItems(lotes)
         hideProgress()
         setResults(lotes.size)
-        if(mapViewLotes.getVisibility()==View.VISIBLE){
-            animateLocationMap()
-        }
+        animateLocationMap(lotes)
     }
 
     override fun setResults(lotes: Int) {
@@ -612,45 +625,42 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
 
     override fun registerLote() {
         if (presenter?.validarCampos() == true) {
-            val lote =  Lote()
-            lote.Nombre=viewDialog?.name_lote?.text.toString()
-            lote.Descripcion=viewDialog?.description_lote?.text.toString()
-            lote.Area=viewDialog?.area_lote?.text.toString().toDoubleOrNull()
-            lote.Coordenadas=viewDialog?.coordenadas_lote?.text.toString()
-            lote.Unidad_Productiva_Id=unidadProductivaGloabal?.Id
-            lote.Latitud=locationLote.latitude
-            lote.Longitud=locationLote.longitude
-            lote.Nombre_Unidad_Productiva=unidadProductivaGloabal?.Nombre
-            lote.Unidad_Medida_Id=unidadMedidaGlobal?.Id
-            lote.Nombre_Unidad_Medida=unidadMedidaGlobal?.Descripcion
-            presenter?.registerLote(lote,Unidad_Productiva_Id_Selected)
+            val lote = Lote()
+            lote.Nombre = viewDialog?.name_lote?.text.toString()
+            lote.Descripcion = viewDialog?.description_lote?.text.toString()
+            lote.Area = viewDialog?.area_lote?.text.toString().toDoubleOrNull()
+            lote.Coordenadas = viewDialog?.coordenadas_lote?.text.toString()
+            lote.Unidad_Productiva_Id = unidadProductivaGlobalSppiner?.Id
+            lote.Latitud = locationLote.latitude
+            lote.Longitud = locationLote.longitude
+            lote.Nombre_Unidad_Productiva = unidadProductivaGlobalSppiner?.Nombre
+            lote.Unidad_Medida_Id = unidadMedidaGlobal?.Id
+            lote.Nombre_Unidad_Medida = unidadMedidaGlobal?.Descripcion
+            presenter?.registerLote(lote, Unidad_Productiva_Id_Selected)
         }
     }
 
     override fun updateLote() {
         if (presenter?.validarCampos() == true) {
-            var lote =  Lote()
-            lote.Id=loteGlobal!!.Id
-            lote.Nombre=viewDialog?.name_lote?.text.toString()
-            lote.Descripcion=viewDialog?.description_lote?.text.toString()
-            lote.Area=viewDialog?.area_lote?.text.toString().toDoubleOrNull()
-            lote.Coordenadas=viewDialog?.coordenadas_lote?.text.toString()
-            lote.Unidad_Productiva_Id=loteGlobal?.Unidad_Productiva_Id
-            lote.Latitud=loteGlobal?.Latitud
-            lote.Longitud=loteGlobal?.Longitud
-            lote.Nombre_Unidad_Productiva=loteGlobal?.Nombre_Unidad_Productiva
-            lote.Unidad_Medida_Id=unidadMedidaGlobal?.Id
-            lote.Nombre_Unidad_Medida=unidadMedidaGlobal?.Descripcion
-            presenter?.updateLote(lote,Unidad_Productiva_Id_Selected)
+            var lote = Lote()
+            lote.Id = loteGlobal!!.Id
+            lote.Nombre = viewDialog?.name_lote?.text.toString()
+            lote.Descripcion = viewDialog?.description_lote?.text.toString()
+            lote.Area = viewDialog?.area_lote?.text.toString().toDoubleOrNull()
+            lote.Coordenadas = viewDialog?.coordenadas_lote?.text.toString()
+            lote.Unidad_Productiva_Id = loteGlobal?.Unidad_Productiva_Id
+            lote.Latitud = loteGlobal?.Latitud
+            lote.Longitud = loteGlobal?.Longitud
+            lote.Nombre_Unidad_Productiva = loteGlobal?.Nombre_Unidad_Productiva
+            lote.Unidad_Medida_Id = unidadMedidaGlobal?.Id
+            lote.Nombre_Unidad_Medida = unidadMedidaGlobal?.Descripcion
+            presenter?.updateLote(lote, Unidad_Productiva_Id_Selected)
         }
     }
 
-
-
     override fun requestResponseError(error: String?) {
-        onMessageError(R.color.grey_luiyi,error)
+        onMessageError(R.color.grey_luiyi, error)
     }
-
 
     //UI ELements
     override fun showAlertDialogAddLote(lote: Lote?): AlertDialog? {
@@ -672,33 +682,33 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         btnCancelLote?.setOnClickListener(this)
         btnClosetDialogLote?.setOnClickListener(this)
         //REGISTER
-        if(lote==null){
-            btnRegister?.visibility=View.VISIBLE
-            btnUpdateLote?.visibility=View.GONE
-            if(UBICATION_MANUAL==true){
+        if (lote == null) {
+            btnRegister?.visibility = View.VISIBLE
+            btnUpdateLote?.visibility = View.GONE
+            if (UBICATION_MANUAL == true) {
                 if (LastMarkerDrawingLote != null) {
-                    locationLote.latitude=LastMarkerDrawingLote!!.getPosition().latitude
-                    locationLote.longitude=LastMarkerDrawingLote!!.getPosition().longitude
+                    locationLote.latitude = LastMarkerDrawingLote!!.getPosition().latitude
+                    locationLote.longitude = LastMarkerDrawingLote!!.getPosition().longitude
                     coordsLote?.setText(LastMarkerDrawingLote!!.getPosition().latitude.toString() + " / " + LastMarkerDrawingLote!!.getPosition().longitude)
                 }
-            }else{
-                locationLote.latitude=latitud!!
-                locationLote.longitude=longitud!!
+            } else {
+                locationLote.latitude = latitud!!
+                locationLote.longitude = longitud!!
                 coordsLote?.setText(latitud.toString() + " / " + longitud.toString())
             }
         }
         //UPDATE
-        else{
-            btnRegister?.visibility=View.GONE
-            btnUpdateLote?.visibility=View.VISIBLE
-            unidadMedidaGlobal=Unidad_Medida(lote.Id,lote.Nombre_Unidad_Medida,null)
+        else {
+            btnRegister?.visibility = View.GONE
+            btnUpdateLote?.visibility = View.VISIBLE
+            unidadMedidaGlobal = Unidad_Medida(lote.Id, lote.Nombre_Unidad_Medida, null)
             viewDialog?.name_lote?.setText(lote.Nombre)
             viewDialog?.description_lote?.setText(lote.Descripcion)
             viewDialog?.area_lote?.setText(lote.Area.toString())
             viewDialog?.coordenadas_lote?.setText(lote.Coordenadas)
             viewDialog?.spinnerUnidadProductiva?.setText(lote.Nombre_Unidad_Productiva)
             viewDialog?.spinnerUnidadMedidaLote?.setText(lote.Nombre_Unidad_Medida)
-            viewDialog?.spinnerUnidadProductiva?.visibility=View.GONE
+            viewDialog?.spinnerUnidadProductiva?.visibility = View.GONE
         }
 
         dialog?.setView(viewDialog)
@@ -714,35 +724,35 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     }
 
     override fun showAlertTypeLocationLote(): AlertDialog? {
-        var  builder = AlertDialog.Builder(activity!!)
+        var builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.location_lote_select_type))
-        Toast.makeText(activity,getString(R.string.message_location_lote), Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, getString(R.string.message_location_lote), Toast.LENGTH_SHORT).show()
         //var options=arrayOf(getString(R.string.location_type_gps), getString(R.string.location_type_manual))
-        var options=arrayOf("")
+        var options = arrayOf("")
         //La lista varia dependiendo del tipo de conectividad
-        if(LOADED_MAPA==true || (activity as MenuMainActivity).presenter?.checkConnection()==true){
-            options=resources.getStringArray(R.array.array_type_get_location_with_conection)
+        if (LOADED_MAPA == true || (activity as MenuMainActivity).presenter?.checkConnection() == true) {
+            options = resources.getStringArray(R.array.array_type_get_location_with_conection)
             hideElementsAndSetPropertiesOnConectionInternet()
-        }else{
-            options=resources.getStringArray(R.array.array_type_get_location_empty_conection)
+        } else {
+            options = resources.getStringArray(R.array.array_type_get_location_empty_conection)
             showElementsAndSetPropertiesOffConnectioninternet()
         }
-        builder.setSingleChoiceItems(options,DIALOG_SET_TYPE_UBICATION, DialogInterface.OnClickListener { dialog, which ->
+        builder.setSingleChoiceItems(options, DIALOG_SET_TYPE_UBICATION, DialogInterface.OnClickListener { dialog, which ->
             when (which) {
 
             //Position State Location GPS
                 0 -> {
-                    _dialogTypeLocation= dialog as AlertDialog?
+                    _dialogTypeLocation = dialog as AlertDialog?
                     setPropertiesTypeLocationGps()
 
-                    if(LotePresenterImpl.instance?.coordsService==null){
+                    if (LotePresenterImpl.instance?.coordsService == null) {
                         presenter?.startGps(activity as MenuMainActivity)
                     }
                     //scheduleDismiss();
                 }
             //Position State Location Manual
                 else -> {
-                    _dialogTypeLocation= dialog as AlertDialog?
+                    _dialogTypeLocation = dialog as AlertDialog?
                     setPropertiesTypeLocationManual()
                 }
             }
@@ -751,40 +761,40 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         return builder.show();
     }
 
-    override fun showProgressHud(){
-        var  imageView =  ImageView(activity);
+    override fun showProgressHud() {
+        var imageView = ImageView(activity);
         imageView.setBackgroundResource(R.drawable.spin_animation);
-        var drawable =  imageView.getBackground() as AnimationDrawable;
+        var drawable = imageView.getBackground() as AnimationDrawable;
         drawable.start();
 
         hud = KProgressHUD.create(activity)
                 .setCustomView(imageView)
                 .setWindowColor(resources.getColor(R.color.white))
-                .setLabel("Cargando...",resources.getColor(R.color.grey_luiyi));
+                .setLabel("Cargando...", resources.getColor(R.color.grey_luiyi));
         hud?.show()
     }
 
-    override fun hideProgressHud(){
+    override fun hideProgressHud() {
         hud?.dismiss()
     }
 
     override fun confirmDelete(lote: Lote): AlertDialog? {
-        var  builder = AlertDialog.Builder(activity!!)
+        var builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.confirmation));
         builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
 
         })
         builder.setMessage(getString(R.string.alert_delete_lote));
         builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
-            loteGlobal=lote
-            presenter?.deleteLote(lote,Unidad_Productiva_Id_Selected)
+            loteGlobal = lote
+            presenter?.deleteLote(lote, Unidad_Productiva_Id_Selected)
         })
         builder.setIcon(R.drawable.ic_lote);
         return builder.show();
     }
 
     override fun verificateConnection(): AlertDialog? {
-        var  builder = AlertDialog.Builder(activity!!)
+        var builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.verificate_conexion));
         builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
@@ -795,37 +805,38 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     }
 
 
-
-
-    fun showAlertDialogSelectUp(): AlertDialog? {
+    override fun showAlertDialogSelectUp(): AlertDialog? {
         var dialog = AlertDialog.Builder(activity!!)
-        var upArraString=arrayOf<String>("Todos")
-        for (up in this!!.listUnidadProductivaGlobal!!){
-            upArraString+=up.Nombre.toString()
+        var upArraString = arrayOf<String>("Todos")
+        for (up in this!!.listUnidadProductivaGlobal!!) {
+            upArraString += up.Nombre.toString()
         }
         //REGISTER
-        dialog.setSingleChoiceItems(upArraString,DIALOG_SELECTT_POSITION_UP, DialogInterface.OnClickListener { dialog, which ->
-            if(which==0){
-                DIALOG_SELECTT_POSITION_UP=which
-                Unidad_Productiva_Id_Selected=null
+        dialog.setSingleChoiceItems(upArraString, DIALOG_SELECTT_POSITION_UP, DialogInterface.OnClickListener { dialog, which ->
+            if (which == 0) {
+                DIALOG_SELECTT_POSITION_UP = which
+                DIALOG_SELECT_ALL_UP = true
+                Unidad_Productiva_Id_Selected = null
                 presenter?.getLotes(Unidad_Productiva_Id_Selected)
                 dialog.dismiss()
-            }else{
-                var position= which-1
-                Unidad_Productiva_Id_Selected= listUnidadProductivaGlobal!![position].Id
-                DIALOG_SELECTT_POSITION_UP=which
-                // Toast.makeText(activity,""+Unidad_Productiva_Id_Selected,Toast.LENGTH_LONG).show()
+            } else {
+                DIALOG_SELECT_ALL_UP = false
+                var position = which - 1
+                Unidad_Productiva_Id_Selected = listUnidadProductivaGlobal!![position].Id
+                unidadProductivaGlobalDialog = listUnidadProductivaGlobal!![position]
+                DIALOG_SELECTT_POSITION_UP = which
+                //Toast.makeText(activity,""+Unidad_Productiva_Id_Selected,Toast.LENGTH_LONG).show()
                 presenter?.getLotes(Unidad_Productiva_Id_Selected)
                 dialog.dismiss()
             }
         })
         dialog?.setTitle(getString(R.string.title_filter_unidad_productiva))
-        dialog?.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
-            //Toast.makeText(activity,"no selecciono item",Toast.LENGTH_LONG).show()
+        dialog?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            presenter?.getLotes(Unidad_Productiva_Id_Selected)
         })
         // dialog?.setMessage(getString(R.string.message_add_lote))
         dialog?.setIcon(R.drawable.ic_lote)
-        return  dialog?.show()
+        return dialog?.show()
     }
     //endregion
 
@@ -833,47 +844,47 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fabAddLote -> {
-                if(UBICATION_MANUAL==false && UBICATION_GPS==false){
+                if (UBICATION_MANUAL == false && UBICATION_GPS == false) {
                     showAlertTypeLocationLote()
-                }else{
-                    if(UBICATION_MANUAL==true && LastMarkerDrawingLote==null){
-                        Toast.makeText(activity,getString(R.string.message_location_lote_marker), Toast.LENGTH_LONG).show()
-                    }else{
+                } else {
+                    if (UBICATION_MANUAL == true && LastMarkerDrawingLote == null) {
+                        Toast.makeText(activity, getString(R.string.message_location_lote_marker), Toast.LENGTH_LONG).show()
+                    } else {
                         showAlertDialogAddLote(null)
                     }
                 }
             }
-            R.id.ivClosetDialogLote->_dialogRegisterUpdate?.dismiss()
-            R.id.btnCancelLote->_dialogRegisterUpdate?.dismiss()
+            R.id.ivClosetDialogLote -> _dialogRegisterUpdate?.dismiss()
+            R.id.btnCancelLote -> _dialogRegisterUpdate?.dismiss()
             R.id.btnRegisterLote -> registerLote()
             R.id.btnUpdateLote -> updateLote()
             R.id.fabLocationLote -> showAlertTypeLocationLote()
-            R.id.fabUnidadProductiva->showAlertDialogSelectUp()
+            R.id.fabUnidadProductiva -> showAlertDialogSelectUp()
         }
     }
 
 
     //Escuchador de eventos
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
-        if(extras!=null){
+        if (extras != null) {
             if (extras.containsKey("state_conectivity")) {
                 var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
-                if(state_conectivity==true){
+                if (state_conectivity == true) {
                     hideElementsAndSetPropertiesOnConectionInternet()
                 }
             }
-            if(extras.containsKey("latitud") && extras.containsKey("longitud") ){
-                latitud=intent.extras!!.getDouble("latitud")
-                longitud=intent.extras!!.getDouble("longitud")
+            if (extras.containsKey("latitud") && extras.containsKey("longitud")) {
+                latitud = intent.extras!!.getDouble("latitud")
+                longitud = intent.extras!!.getDouble("longitud")
 
                 if (fabAddLote.getVisibility() == View.GONE) {
-                    fabAddLote.visibility= View.VISIBLE
+                    fabAddLote.visibility = View.VISIBLE
                 }
-                addMarkerLocation(latitud,longitud)
+                addMarkerLocation(latitud, longitud)
                 hideProgressHud()
-                txtCoordsLote.setText(String.format(getString(R.string.coords),latitud,longitud))
-                if(viewDialog!=null){
-                    viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords),latitud,longitud))
+                txtCoordsLote.setText(String.format(getString(R.string.coords), latitud, longitud))
+                if (viewDialog != null) {
+                    viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
                 }
                 //Toast.makeText(activity,"Broadcast: "+longitud.toString(), Toast.LENGTH_SHORT).show()
                 // tvCoords.setText(String.valueOf(location.getLatitude()) + " , " + String.valueOf(location.getLongitude()));
@@ -888,7 +899,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         super.onDestroy()
         presenter?.onDestroy()
         handler.removeCallbacksAndMessages(null);
-        if(mapViewLotes != null) {
+        if (mapViewLotes != null) {
             mapViewLotes.onDestroy();
         }
     }
@@ -905,7 +916,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
 
     override fun onPause() {
         super.onPause()
-        presenter?.onPause( activity!!.applicationContext)
+        presenter?.onPause(activity!!.applicationContext)
     }
 
     override fun onResume() {
