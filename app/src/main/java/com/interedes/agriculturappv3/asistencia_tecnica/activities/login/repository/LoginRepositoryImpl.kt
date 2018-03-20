@@ -42,7 +42,7 @@ class LoginRepositoryImpl : LoginRepository {
         mAuth = FirebaseAuth.getInstance()
         //Si se ha verificado el correo electrónico hace los inicios de Sesión
         if (mAuth?.currentUser?.isEmailVerified!!) {
-            val call = apiService?.postLogin(login)
+            /*val call = apiService?.postLogin(login)
             call?.enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
                     if (response != null && response.code() == 200) {
@@ -54,7 +54,7 @@ class LoginRepositoryImpl : LoginRepository {
                     postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
                     Log.e("Error Post", t?.message.toString())
                 }
-            })
+            })*/
 
             /*SI NO HA VERIFICADO EL CORREO */
         } else {

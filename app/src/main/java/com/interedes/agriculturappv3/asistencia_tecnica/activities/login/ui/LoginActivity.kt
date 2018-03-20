@@ -11,7 +11,9 @@ import android.support.v4.content.ContextCompat
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import com.interedes.agriculturappv3.AgriculturApplication
+import com.interedes.agriculturappv3.BuildConfig
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.R.id.textInputLayoutContrasena
 import com.interedes.agriculturappv3.R.id.textInputLayoutCorreo
@@ -38,6 +40,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        //Toast.makeText(this, BuildConfig.em, Toast.LENGTH_SHORT).show()
         fabLogin?.setOnClickListener(this)
         if (intent.extras != null && intent.extras["correo"].equals(getString(R.string.snackbar_verificacion_correo))) {
             onMessageOk(R.color.colorPrimary, getString(R.string.snackbar_verificacion_correo))
@@ -62,9 +65,9 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     //Login
     override fun ingresar() {
         if (presenter?.validarCampos() == true) {
-           // val login = Login(edtCorreo?.text?.trim().toString(),
-          //          edtContrasena?.text?.trim()?.toString())
-           // presenter?.ingresar(login)
+            // val login = Login(edtCorreo?.text?.trim().toString(),
+            //          edtContrasena?.text?.trim()?.toString())
+            // presenter?.ingresar(login)
             progressBar.visibility = View.VISIBLE
             startActivity(Intent(this, MenuMainActivity::class.java))
         }
