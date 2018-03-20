@@ -28,4 +28,8 @@ class UpInteractor :IUnidadProductiva.Interactor {
     override fun execute() {
         upRepo!!.getListUPs()
     }
+
+    override fun getListas() {
+        upRepo!!.getListas()
+    }
 }

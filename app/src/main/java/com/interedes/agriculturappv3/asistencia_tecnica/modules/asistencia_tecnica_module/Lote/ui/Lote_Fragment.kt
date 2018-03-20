@@ -34,6 +34,7 @@ import com.google.maps.android.SphericalUtil
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
+import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.adapter.LoteAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.presenter.LotePresenter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.presenter.LotePresenterImpl
@@ -91,9 +92,12 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
 
 
     //Globals
-    var Unidad_Productiva_Id:Long=0
-    var Nombre_Unidad_Productiva:String=""
+
+    var unidadMedidaGlobal:Unidad_Medida?=null
+    var unidadProductivaGloabal:UnidadProductiva?=null
     var listUnidadProductivaGlobal:List<UnidadProductiva>?= ArrayList<UnidadProductiva>()
+    var listUnidadMedidaGlobal:List<Unidad_Medida>?= ArrayList<Unidad_Medida>()
+
     private var DIALOG_SELECTT_POSITION_UP: Int = 0
     var Unidad_Productiva_Id_Selected:Long?=null
 
@@ -193,7 +197,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
 
 
     override fun hideElementsAndSetPropertiesOnConectionInternet(){
+
         if(imgOffConection.visibility==View.VISIBLE) imgOffConection.visibility=View.GONE
+
         if(UBICATION_MANUAL==true){
             DIALOG_SET_TYPE_UBICATION=1
         }else if(UBICATION_GPS==true){
@@ -354,7 +360,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         }
         if(UBICATION_MANUAL==true){
             // Creating a marker
-            LastMarkerDrawingLote = drawMarker(latLng, latLng.latitude.toString() + " : " + latLng.longitude, "Location", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+            LastMarkerDrawingLote = drawMarker(latLng, latLng.latitude.toString() + " / " + latLng.longitude, "Location", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             txtCoordsLote.setText(String.format(getString(R.string.coords),latLng.latitude,latLng.longitude))
         }
     }
@@ -441,6 +447,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             focusView =  viewDialog?.spinnerUnidadProductiva
             cancel = true
         }
+
+
+
         else if (viewDialog?.name_lote?.text.toString().isEmpty()) {
             viewDialog?.name_lote?.setError(getString(R.string.error_field_required))
             focusView =  viewDialog?.name_lote
@@ -453,7 +462,13 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             viewDialog?.area_lote?.setError(getString(R.string.error_field_required))
             focusView =  viewDialog?.area_lote
             cancel = true
-        } else if (viewDialog?.coordenadas_lote?.text.toString().isEmpty()) {
+        }
+        else if (viewDialog?.spinnerUnidadMedidaLote?.text.toString().isEmpty()) {
+            viewDialog?.spinnerUnidadMedidaLote?.setError(getString(R.string.error_field_required))
+            focusView =  viewDialog?.spinnerUnidadMedidaLote
+            cancel = true
+        }
+        else if (viewDialog?.coordenadas_lote?.text.toString().isEmpty()) {
             viewDialog?.coordenadas_lote?.setError(getString(R.string.error_field_required))
             focusView =  viewDialog?.coordenadas_lote
             cancel = true
@@ -545,6 +560,10 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         listUnidadProductivaGlobal = listUnidadProductiva
     }
 
+    override fun setListUnidadMedida(listUnidadMedida: List<Unidad_Medida>) {
+        listUnidadMedidaGlobal = listUnidadMedida
+    }
+
     override fun setListUPAdapterSpinner(){
         if(viewDialog!=null){
             ///Adapaters
@@ -552,16 +571,25 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             var upArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductivaGlobal);
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(upArrayAdapter);
             viewDialog?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                Unidad_Productiva_Id= listUnidadProductivaGlobal!![position].Id!!
-                Nombre_Unidad_Productiva= listUnidadProductivaGlobal!![position].Nombre!!
+                unidadProductivaGloabal= listUnidadProductivaGlobal!![position] as UnidadProductiva
                 /// Toast.makeText(activity,""+Unidad_Productiva_Id.toString(),Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    override fun loadListUp() {
-        presenter?.listUP()
+    override fun setListUnidadMedidaAdapterSpinner(){
+        if(viewDialog!=null){
+            ///Adapaters
+            viewDialog?.spinnerUnidadMedidaLote!!.setAdapter(null)
+            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedidaGlobal);
+            viewDialog?.spinnerUnidadMedidaLote!!.setAdapter(uMedidaArrayAdapter);
+            viewDialog?.spinnerUnidadMedidaLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+                unidadMedidaGlobal= listUnidadMedidaGlobal!![position] as Unidad_Medida
+                //Toast.makeText(activity,""+ unidadMedidaGlobal!!.Id.toString(),Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+
 
     override fun setListLotes(lotes: List<Lote>) {
         adapter?.clear()
@@ -589,11 +617,12 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             lote.Descripcion=viewDialog?.description_lote?.text.toString()
             lote.Area=viewDialog?.area_lote?.text.toString().toDoubleOrNull()
             lote.Coordenadas=viewDialog?.coordenadas_lote?.text.toString()
-            lote.Unidad_Medida_Id=1
-            lote.Unidad_Productiva_Id=Unidad_Productiva_Id
+            lote.Unidad_Productiva_Id=unidadProductivaGloabal?.Id
             lote.Latitud=locationLote.latitude
             lote.Longitud=locationLote.longitude
-            lote.Nombre_Unidad_Productiva=Nombre_Unidad_Productiva
+            lote.Nombre_Unidad_Productiva=unidadProductivaGloabal?.Nombre
+            lote.Unidad_Medida_Id=unidadMedidaGlobal?.Id
+            lote.Nombre_Unidad_Medida=unidadMedidaGlobal?.Descripcion
             presenter?.registerLote(lote,Unidad_Productiva_Id_Selected)
         }
     }
@@ -606,11 +635,12 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             lote.Descripcion=viewDialog?.description_lote?.text.toString()
             lote.Area=viewDialog?.area_lote?.text.toString().toDoubleOrNull()
             lote.Coordenadas=viewDialog?.coordenadas_lote?.text.toString()
-            lote.Unidad_Medida_Id=loteGlobal?.Unidad_Medida_Id
             lote.Unidad_Productiva_Id=loteGlobal?.Unidad_Productiva_Id
             lote.Latitud=loteGlobal?.Latitud
             lote.Longitud=loteGlobal?.Longitud
             lote.Nombre_Unidad_Productiva=loteGlobal?.Nombre_Unidad_Productiva
+            lote.Unidad_Medida_Id=unidadMedidaGlobal?.Id
+            lote.Nombre_Unidad_Medida=unidadMedidaGlobal?.Descripcion
             presenter?.updateLote(lote,Unidad_Productiva_Id_Selected)
         }
     }
@@ -635,6 +665,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         val btnCancelLote = viewDialog?.btnCancelLote
 
         setListUPAdapterSpinner()
+        setListUnidadMedidaAdapterSpinner()
 
         btnUpdateLote?.setOnClickListener(this)
         btnRegister?.setOnClickListener(this)
@@ -660,12 +691,13 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         else{
             btnRegister?.visibility=View.GONE
             btnUpdateLote?.visibility=View.VISIBLE
-
+            unidadMedidaGlobal=Unidad_Medida(lote.Id,lote.Nombre_Unidad_Medida,null)
             viewDialog?.name_lote?.setText(lote.Nombre)
             viewDialog?.description_lote?.setText(lote.Descripcion)
             viewDialog?.area_lote?.setText(lote.Area.toString())
             viewDialog?.coordenadas_lote?.setText(lote.Coordenadas)
             viewDialog?.spinnerUnidadProductiva?.setText(lote.Nombre_Unidad_Productiva)
+            viewDialog?.spinnerUnidadMedidaLote?.setText(lote.Nombre_Unidad_Medida)
             viewDialog?.spinnerUnidadProductiva?.visibility=View.GONE
         }
 
@@ -702,7 +734,10 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 0 -> {
                     _dialogTypeLocation= dialog as AlertDialog?
                     setPropertiesTypeLocationGps()
-                    presenter?.startGps(activity as MenuMainActivity)
+
+                    if(LotePresenterImpl.instance?.coordsService==null){
+                        presenter?.startGps(activity as MenuMainActivity)
+                    }
                     //scheduleDismiss();
                 }
             //Position State Location Manual
@@ -837,6 +872,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 addMarkerLocation(latitud,longitud)
                 hideProgressHud()
                 txtCoordsLote.setText(String.format(getString(R.string.coords),latitud,longitud))
+                if(viewDialog!=null){
+                    viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords),latitud,longitud))
+                }
                 //Toast.makeText(activity,"Broadcast: "+longitud.toString(), Toast.LENGTH_SHORT).show()
                 // tvCoords.setText(String.valueOf(location.getLatitude()) + " , " + String.valueOf(location.getLongitude()));
             }

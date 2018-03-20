@@ -15,5 +15,5 @@ interface LoteRepository {
     fun deleteLote(lote: Lote,unidad_productiva_id:Long?)
 
     //ListUp
-    fun getListUp()
+    fun loadListas()
 }

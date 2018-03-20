@@ -16,8 +16,8 @@ class LoteInteractorImpl:LoteInteractor {
         loteRepository = LoteRepositoryImpl()
     }
 
-    override fun loadListUp() {
-        loteRepository?.getListUp()
+    override fun loadListas() {
+        loteRepository?.loadListas()
     }
 
     override fun execute(unidad_productiva_id:Long?) {

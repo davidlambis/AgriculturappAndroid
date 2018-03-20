@@ -83,20 +83,47 @@
 
             </LinearLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
-                <EditText
-                    android:id="@+id/edtAreaUnidadProductiva"
-                    style="@style/editText"
-                    android:hint="@string/edit_text_numero_hectareas"
-                    android:inputType="number"
-                    android:drawableLeft="@drawable/ic_numero_hectareas"
-                    android:drawableStart="@drawable/ic_numero_hectareas"
-                    android:textAlignment="center" />
-            </android.support.design.widget.TextInputLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <EditText
+                        android:id="@+id/edtAreaUnidadProductiva"
+                        style="@style/editText"
+                        android:hint="@string/edit_text_numero_hectareas"
+                        android:inputType="number"
+                        android:drawableLeft="@drawable/ic_numero_hectareas"
+                        android:drawableStart="@drawable/ic_numero_hectareas"
+                        android:textAlignment="center" />
+                </android.support.design.widget.TextInputLayout>
+
+                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                    android:id="@+id/spinnerUnidadMedidaUp"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:hint="@string/title_unidad"
+                    android:textColorHint="@color/grey_luiyi"
+                    android:textSize="@dimen/text_size_18"
+                    android:textAlignment="center"
+                    android:drawableLeft="@drawable/ic_medicion"
+                    android:drawableStart="@drawable/ic_medicion"
+                    app:met_baseColor="@color/grey_luiyi"
+                    app:met_floatingLabel="normal"
+                    app:met_floatingLabelTextColor="@color/grey_luiyi"
+                    app:met_primaryColor="@color/grey_luiyi"
+                    app:met_textColor="@color/grey_luiyi"
+                    app:met_textColorHint="@color/black_alpha_40" />
+
+            </LinearLayout>
+
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

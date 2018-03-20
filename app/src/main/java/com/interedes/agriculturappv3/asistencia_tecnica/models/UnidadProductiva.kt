@@ -35,6 +35,11 @@ data class UnidadProductiva(@PrimaryKey(autoincrement = true)
                             @Column(name = "Area")
                             var UpArea: Double? = 0.0,
 
+
+                            @SerializedName("UnidadMedidaId")
+                            @Column(name = "UnidadMedidaId")
+                            var UnidadMedidaId: Long? =null,
+
                             @SerializedName("Usuario_Id")
                             @Column(name = "Usuario_Id")
                             var Usuario_Id: Long? = 0,
@@ -66,10 +71,10 @@ data class UnidadProductiva(@PrimaryKey(autoincrement = true)
                             var Postal_Code_Gps: String? = null,
 
                             @Column(getterName = "getConfiguration_Point")
-                            var Configuration_Point: Boolean? = false,
+                            var Configuration_Point: Boolean? = null,
 
                             @Column(getterName = "getConfiguration_Poligon")
-                            var Configuration_Poligon: Boolean? = false,
+                            var Configuration_Poligon: Boolean? = null,
 
 
                             //Ubicacion UnidadProductiva
@@ -77,7 +82,14 @@ data class UnidadProductiva(@PrimaryKey(autoincrement = true)
                             var Nombre_Departamento: String? = null,
 
                             @Column(name = "Nombre_Ciudad")
-                            var Nombre_Ciudad: String? = null
+                            var Nombre_Ciudad: String? = null,
+
+
+                            @Column(name = "Nombre_Unidad_Medida")
+                            var Nombre_Unidad_Medida: String? =null
+
+
+
 
 ) {
     override fun toString(): String {

@@ -45,8 +45,8 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
                 (activity as MenuMainActivity).replaceFragment(Lote_Fragment())
             }
             if (lista[position].Identificador.equals("mis_unidades_productivas")){
-               startActivity(Intent(activity, MapsActivity::class.java))
-                ///(activity as MenuMainActivity).replaceFragment(UnidadProductiva_Fragment())
+               //startActivity(Intent(activity, MapsActivity::class.java))
+                (activity as MenuMainActivity).replaceFragment(UnidadProductiva_Fragment())
             }
 
         }

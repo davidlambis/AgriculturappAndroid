@@ -124,6 +124,7 @@
     <string name="off_connectividad">Desconectado</string>
     <string name="btn_save">Guardar</string>
     <string name="confirmation">Confirmacion</string>
+    <string name="title_unidad">Unidad</string>
 
 
     <!-- INTERNET CONNECTION -->
@@ -134,6 +135,7 @@
     <string name="request_ok">Se realizo Éxitosamente</string>
     <string name="error_request">Error en la petición</string>
     <string name="error_load_roles">No se pueden cargar los roles porque no hay internet</string>
+    <string name="_3232_34_mts">3232.34 mts</string>
 
 
     <string-array name="array_type_get_location_with_conection">

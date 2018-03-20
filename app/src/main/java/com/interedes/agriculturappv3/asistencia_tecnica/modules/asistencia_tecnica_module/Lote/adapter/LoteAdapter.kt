@@ -8,7 +8,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
-import com.interedes.agriculturappv3.events.ListenerAdapterOnClickEvent
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.events.RequestEventLote
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import kotlinx.android.synthetic.main.content_list_lotes.view.*
@@ -21,11 +21,9 @@ import kotlinx.android.synthetic.main.content_list_lotes.view.*
 
 class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter.ViewHolder>() {
 
-
     companion object {
         var instance:  LoteAdapter? = null
     }
-
     var eventBus: EventBus? = null
     init {
         eventBus = GreenRobotEventBus()
@@ -79,23 +77,23 @@ class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter
 
             //El listener en base a la posición
             itemView.setOnClickListener {
-                LoteAdapter.instance?.postEventc(ListenerAdapterOnClickEvent.ITEM_EVENT,data)
+                LoteAdapter.instance?.postEventc(RequestEventLote.ITEM_EVENT,data)
             }
 
             deleteBtn.setOnClickListener {
-                LoteAdapter.instance?.postEventc(ListenerAdapterOnClickEvent.DELETE_EVENT,data)
+                LoteAdapter.instance?.postEventc(RequestEventLote.ITEM_DELETE_EVENT,data)
             }
 
 
             btnEditLote.setOnClickListener {
-                LoteAdapter.instance?.postEventc(ListenerAdapterOnClickEvent.EDIT_EVENT,data)
+                LoteAdapter.instance?.postEventc(RequestEventLote.ITEM_EDIT_EVENT,data)
             }
         }
     }
 
     fun postEventc(type: Int, lote:Lote?) {
         var loteMitable= lote as Object
-        val event = ListenerAdapterOnClickEvent(type, loteMitable)
+        val event = RequestEventLote(type,null, loteMitable,null)
         event.eventType = type
         eventBus?.post(event)
     }
@@ -103,7 +101,7 @@ class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter
 
 
 /*
-class LoteAdapter(val lista: ArrayList<Lote>, val listener: (ListenerAdapterOnClickEvent) -> Unit) : RecyclerView.Adapter<LoteAdapter.ViewHolder>() {
+class LoteAdapter(val lista: ArrayList<Lote>, val listener: (ListenerAdapterOnClickEventLote) -> Unit) : RecyclerView.Adapter<LoteAdapter.ViewHolder>() {
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -134,7 +132,7 @@ class LoteAdapter(val lista: ArrayList<Lote>, val listener: (ListenerAdapterOnCl
 
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindItems(data: Lote, pos: Int, listenerAdapetr: (ListenerAdapterOnClickEvent) -> Unit) = with(itemView) {
+        fun bindItems(data: Lote, pos: Int, listenerAdapetr: (ListenerAdapterOnClickEventLote) -> Unit) = with(itemView) {
 
 
 
@@ -156,13 +154,13 @@ class LoteAdapter(val lista: ArrayList<Lote>, val listener: (ListenerAdapterOnCl
 
             //El listener en base a la posición
             itemView.setOnClickListener {
-                var search= ListenerAdapterOnClickEvent(pos,0);
+                var search= ListenerAdapterOnClickEventLote(pos,0);
                 listenerAdapetr(search)
             }
 
 
             deleteBtn.setOnClickListener {
-                var delete= ListenerAdapterOnClickEvent(pos,2);
+                var delete= ListenerAdapterOnClickEventLote(pos,2);
                 listenerAdapetr(delete)
             }
 
