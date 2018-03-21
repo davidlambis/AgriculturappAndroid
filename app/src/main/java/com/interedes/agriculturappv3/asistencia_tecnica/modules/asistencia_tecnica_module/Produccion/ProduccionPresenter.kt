@@ -1,12 +1,15 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion
 
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.produccion.Produccion
-import com.interedes.agriculturappv3.events.RequestEvent
+import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.events.RequestEventProduccion
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.Const
@@ -36,6 +39,7 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
 
     override fun onCreate() {
         eventBus?.register(this)
+        getListas()
     }
 
     override fun onDestroy() {
@@ -68,52 +72,72 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
 
     //region Suscribe Events
     @Subscribe
-    override fun onEventMainThread(eventLote: RequestEvent?) {
-        when (eventLote?.eventType) {
-            RequestEvent.READ_EVENT -> {
-                var produccionList = eventLote.mutableList as List<Produccion>
+    override fun onEventMainThread(event: RequestEventProduccion?) {
+        when (event?.eventType) {
+            RequestEventProduccion.READ_EVENT -> {
+                var produccionList = event.mutableList as List<Produccion>
                 //loteMainView?.setListLotes(loteList)
             }
-            RequestEvent.SAVE_EVENT -> {
-                var produccionList = eventLote.mutableList as List<Produccion>
+            RequestEventProduccion.SAVE_EVENT -> {
+                var produccionList = event.mutableList as List<Produccion>
                 //loteMainView?.setListLotes(loteList)
                 onSaveOk()
             }
-            RequestEvent.UPDATE_EVENT -> {
-                var produccionList = eventLote.mutableList as List<Produccion>
+            RequestEventProduccion.UPDATE_EVENT -> {
+                var produccionList = event.mutableList as List<Produccion>
                 //loteMainView?.setListLotes(loteList)
                 onUpdateOk()
             }
-            RequestEvent.DELETE_EVENT -> {
-                var produccionList = eventLote.mutableList as List<Produccion>
+            RequestEventProduccion.DELETE_EVENT -> {
+                var produccionList = event.mutableList as List<Produccion>
                 //loteMainView?.setListLotes(loteList)
                 onDeleteOk()
             }
-            RequestEvent.ERROR_EVENT -> {
-                onMessageError(eventLote.mensajeError)
+            RequestEventProduccion.ERROR_EVENT -> {
+                onMessageError(event.mensajeError)
             }
 
-        //EVENTS ONITEM CLICK
-            RequestEvent.ITEM_EVENT -> {
-                var proiduccion = eventLote.objectMutable as Produccion
+           //EVENTS ONITEM CLICK
+            RequestEventProduccion.ITEM_EVENT -> {
+                var proiduccion = event.objectMutable as Produccion
                 //loteMainView?.onMessageOk(R.color.colorPrimary,"Item: "+lote.Nombre)
             }
-            RequestEvent.ITEM_READ_EVENT -> {
-                var lote = eventLote.objectMutable as Produccion
+            RequestEventProduccion.ITEM_READ_EVENT -> {
+                var lote = event.objectMutable as Produccion
                 //loteMainView?.onMessageOk(R.color.colorPrimary,"Leer: "+lote.Nombre)
                 ///  Toast.makeText(activity,"Leer: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
-            RequestEvent.ITEM_EDIT_EVENT -> {
-                var lote = eventLote.objectMutable as Produccion
+            RequestEventProduccion.ITEM_EDIT_EVENT -> {
+                var lote = event.objectMutable as Produccion
                 //Lote_Fragment.instance?.loteGlobal=lote
                 //loteMainView?.showAlertDialogAddLote(Lote_Fragment.instance?.loteGlobal)
             }
-            RequestEvent.ITEM_DELETE_EVENT -> {
-                var lote = eventLote.objectMutable as Produccion
+            RequestEventProduccion.ITEM_DELETE_EVENT -> {
+                var lote = event.objectMutable as Produccion
                 //loteMainView?.confirmDelete(lote)
                 //// Toast.makeText(activity,"Eliminar: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
-        //LIST EVENTS
+           //LIST EVENTS
+
+            RequestEventProduccion.LIST_EVENT_UNIDAD_MEDIDA -> {
+                var list= event.mutableList as List<Unidad_Medida>
+                mainView?.setListUnidadMedida(list)
+            }
+
+            RequestEventProduccion.LIST_EVENT_UP -> {
+                var list= event.mutableList as List<UnidadProductiva>
+                mainView?.setListUnidadProductiva(list)
+            }
+
+            RequestEventProduccion.LIST_EVENT_LOTE -> {
+                var list= event.mutableList as List<Lote>
+                mainView?.setListLotes(list)
+            }
+
+            RequestEventProduccion.LIST_EVENT_CULTIVO -> {
+                var list= event.mutableList as List<Cultivo>
+                mainView?.setListCultivos(list)
+            }
         }
     }
     //endregion
@@ -156,6 +180,22 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
     override fun getListProduccion(cultivo_id:Long?) {
         interactor?.execute(cultivo_id)
     }
+
+    override fun getListas() {
+        interactor?.getListas()
+    }
+
+    //endregion
+
+    //region METHODS VIEWS
+    override fun setListSpinnerLote(unidad_productiva_id: Long?) {
+       mainView?.setListSpinnerLote(unidad_productiva_id)
+    }
+
+    override fun setListSpinnerCultivo(lote_id: Long?) {
+        mainView?.setListSpinnerCultivo(lote_id)
+    }
+
 
     //endregion
 

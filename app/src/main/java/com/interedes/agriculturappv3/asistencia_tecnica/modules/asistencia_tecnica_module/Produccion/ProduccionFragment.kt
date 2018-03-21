@@ -19,16 +19,19 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.produccion.Produccion
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.adapter.ProduccionAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
+import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_produccion.*
 import kotlinx.android.synthetic.main.dialog_form_produccion.view.*
 import kotlinx.android.synthetic.main.fragment_produccion.*
-import kotlinx.android.synthetic.main.map_layout.*
 import java.util.*
 
 
@@ -37,11 +40,8 @@ import java.util.*
  */
 class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.OnRefreshListener,  IMainProduccion.MainView {
 
-
-
     var presenter: IMainProduccion.Presenter? = null
     var adapter:ProduccionAdapter?=null
-
 
     //Progress
     private var hud: KProgressHUD?=null
@@ -55,8 +55,18 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     var listUnidadMedidaGlobal:List<Unidad_Medida>?= ArrayList<Unidad_Medida>()
     var Cultivo_Id: Long? = null
     var unidadMedidaGlobal:Unidad_Medida?=null
-    var fechaInicio: Date?=null;
-    var fechaFin: Date?=null;
+    var fechaInicio: Date?=null
+    var fechaFin: Date?=null
+
+    //Listas
+    var listUnidadProductivaGlobal:List<UnidadProductiva>?= ArrayList<UnidadProductiva>()
+    var listLoteGlobal:List<Lote>?= ArrayList<Lote>()
+    var listCultivosGlobal:List<Cultivo>?= ArrayList<Cultivo>()
+    var unidadProductivaGlobal:UnidadProductiva?=null
+    var loteGlobal:Lote?=null
+    var cultivoGlobal:Cultivo?=null
+
+
     companion object {
         var instance:  ProduccionFragment? = null
     }
@@ -79,7 +89,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
-        (activity as MenuMainActivity).toolbar.title=getString(R.string.title_up)
+        (activity as MenuMainActivity).toolbar.title=getString(R.string.tittle_producccion)
         fabAddProduccion.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         setupInjection()
@@ -87,6 +97,16 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
     fun setupInjection(){
         presenter?.getListProduccion(Cultivo_Id)
+        spinnerUnidadProductiva.setAdapter(null)
+        var unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductivaGlobal)
+        spinnerUnidadProductiva.setAdapter(unidadProductivaArrayAdapter)
+        spinnerUnidadProductiva.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+            unidadProductivaGlobal= listUnidadProductivaGlobal!![position] as UnidadProductiva
+            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+        }
+
+        presenter?.setListSpinnerLote(null)
+        presenter?.setListSpinnerCultivo(null)
     }
 
     //region ADAPTER
@@ -97,10 +117,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     }
     //endregion
 
-
-
     //region IMPLEMENTS MAINVIEW
-
     override fun validarCampos(): Boolean {
         var cancel = false
         var focusView: View? = null
@@ -135,6 +152,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
     override fun limpiarCampos() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+
     }
 
     override fun disableInputs() {
@@ -294,6 +313,48 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
                 //Toast.makeText(activity,""+ unidadMedidaGlobal!!.Id.toString(),Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+
+    override fun setListSpinnerLote(unidad_productiva_id: Long?) {
+        spinnerLote.setAdapter(null)
+        spinnerLote.setText("")
+        spinnerLote.setHint(String.format(getString(R.string.spinner_lote)))
+        var list= listLoteGlobal?.filter { lote: Lote -> lote.Unidad_Productiva_Id==unidad_productiva_id }
+        var loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, list)
+        spinnerLote.setAdapter(loteArrayAdapter)
+        spinnerLote.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+            loteGlobal= list!![position] as Lote
+            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+        }
+    }
+
+    override fun setListSpinnerCultivo(lote_id: Long?) {
+        spinnerCultivo.setAdapter(null)
+        spinnerCultivo.setText("")
+        spinnerCultivo.setHint(String.format(getString(R.string.spinner_cultivo)))
+        var list= listCultivosGlobal?.filter { cultivo: Cultivo -> cultivo.LoteId==lote_id }
+        val cultivoArrayAdapter = ArrayAdapter<Cultivo>(activity, android.R.layout.simple_spinner_dropdown_item, list)
+        spinnerCultivo.setAdapter(cultivoArrayAdapter)
+        spinnerCultivo.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+            cultivoGlobal= listCultivosGlobal!![position] as Cultivo
+        }
+    }
+
+    override fun setListUnidadMedida(listUnidadMedida: List<Unidad_Medida>) {
+        listUnidadMedidaGlobal = listUnidadMedida
+    }
+
+    override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>) {
+        listUnidadProductivaGlobal=listUnidadProductiva
+    }
+
+    override fun setListLotes(listLotes: List<Lote>) {
+       listLoteGlobal= listLotes
+    }
+
+    override fun setListCultivos(listCultivos: List<Cultivo>) {
+        listCultivosGlobal= listCultivos
     }
 
     override fun verificateConnection(): AlertDialog? {

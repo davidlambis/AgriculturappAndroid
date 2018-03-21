@@ -88,14 +88,10 @@ data class UnidadProductiva(@PrimaryKey(autoincrement = true)
                             @Column(name = "Nombre_Unidad_Medida")
                             var Nombre_Unidad_Medida: String? =null
 
-
-
-
 ) {
     override fun toString(): String {
         return Nombre!!
     }
-
 }
 
 

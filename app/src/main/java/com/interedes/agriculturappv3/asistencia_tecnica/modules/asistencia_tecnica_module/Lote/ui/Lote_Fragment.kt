@@ -289,8 +289,8 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             polygon=addPoligonUp(locations, ContextCompat.getColor(activity!!, android.R.color.holo_orange_dark),ContextCompat.getColor(activity!!, android.R.color.holo_orange_light))
         }
 
-
-        if(DIALOG_SELECT_ALL_UP==true && lotes.size<=0){
+        //si se selecciona la opcion todos, y no se encontraron lotes regiostrados y existen up registradas
+        if(DIALOG_SELECT_ALL_UP==true && lotes.size<=0 && listUnidadProductivaGlobal?.size!! >0){
             var  builder =  LatLngBounds.Builder()
             for (up in listUnidadProductivaGlobal!!) {
                 var latlngUp = LatLng(up.Latitud!!, up.Longitud!!);
@@ -303,7 +303,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             mMap?.animateCamera(cu)
 
         }
-
+        //si se selecciona una up, y  no se encontraron lotes registrados
         else if(DIALOG_SELECT_ALL_UP==false && lotes.size<=0){
             var  builder =  LatLngBounds.Builder()
             var latlngUp = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
@@ -315,6 +315,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             mMap?.animateCamera(cu)
 
         }
+        //si se selecciona una up, y  se encontraron lotes regiostrados
         else if(DIALOG_SELECT_ALL_UP==false && lotes.size>0 || DIALOG_SELECT_ALL_UP==true && lotes.size>0){
             var locations = ArrayList<LatLng>()
             val area = SphericalUtil.computeArea(locations)
@@ -345,7 +346,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
 
             // double area= calculateAreaOfGPSPolygonOnEarthInSquareMeters(locationsGlobals);
             //Toast.makeText(activity, "AREA: " + String.format("%.0f mts", area), Toast.LENGTH_LONG).show()
-        }else{
+        }
+        //si no enontaron   up registradas, y  no se encontraron lotes regiostrados
+        else{
             val positionInitial = LatLng(4.565473550710278, -74.058837890625)
             mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(positionInitial, 6f))
         }

@@ -5,9 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.produccion.Produccion
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.events.RequestEventProduccion
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.events.RequestEvent
 
@@ -37,10 +40,6 @@ interface IMainProduccion {
         fun setListProduccion(listProduccion: List<Produccion>)
         fun setResults(unidadesProductivas:Int)
 
-
-        ///ListUnidad Medida
-
-
         //Response Notify
         fun requestResponseOK()
         fun requestResponseError(error: String?)
@@ -50,8 +49,14 @@ interface IMainProduccion {
 
         //Set sppiners
         fun setListUnidadMedidaAdapterSpinner()
+        fun setListUnidadMedida(listUnidadMedida:List<Unidad_Medida>)
+        fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>)
+        fun setListLotes(listLotes:List<Lote>)
+        fun setListCultivos(listCultivos:List<Cultivo>)
 
-
+        //Spinner
+        fun setListSpinnerLote(unidad_productiva_id:Long?)
+        fun setListSpinnerCultivo(lote_id:Long?)
 
 
         //Dialog
@@ -69,7 +74,7 @@ interface IMainProduccion {
         fun onPause(context: Context)
 
         //Events
-        fun onEventMainThread(requestEvent: RequestEvent?)
+        fun onEventMainThread(requestEvent: RequestEventProduccion?)
 
         //Validacion
         fun validarCampos(): Boolean?
@@ -79,6 +84,12 @@ interface IMainProduccion {
         fun updateProducccion(produccin: Produccion,cultivo_id:Long)
         fun deleteProduccion(produccin: Produccion,cultivo_id:Long)
         fun getListProduccion(cultivo_id:Long?)
+        fun getListas()
+
+
+        //Methods View
+        fun setListSpinnerLote(unidad_productiva_id:Long?)
+        fun setListSpinnerCultivo(lote_id:Long?)
 
 
         //Conecttion
@@ -94,7 +105,7 @@ interface IMainProduccion {
     }
 
     interface Repository {
-        //val uPs: List<UnidadProductiva>
+        fun getListas()
         fun getListProduccion(cultivo_id:Long?)
         fun getProductions(cultivo_id:Long?): List<Produccion>
         fun saveProduccion(produccion: Produccion,cultivo_id:Long)

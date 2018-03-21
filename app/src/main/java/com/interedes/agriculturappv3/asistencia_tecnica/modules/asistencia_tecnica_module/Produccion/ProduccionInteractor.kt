@@ -30,6 +30,6 @@ class ProduccionInteractor:IMainProduccion.Interactor {
     }
 
     override fun getListas() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        repository?.getListas()
     }
 }

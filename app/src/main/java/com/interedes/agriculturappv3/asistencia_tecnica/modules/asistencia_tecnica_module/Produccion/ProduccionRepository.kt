@@ -1,10 +1,15 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion
 
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
+import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.produccion.Produccion
 import com.interedes.agriculturappv3.asistencia_tecnica.models.produccion.Produccion_Table
+import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.events.RequestEventProduccion
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
@@ -32,6 +37,18 @@ class ProduccionRepository :IMainProduccion.Repository {
         postEventOk(RequestEventProduccion.READ_EVENT,listaProduccion,null);
     }
 
+    override fun getListas() {
+        var listUnidadProductiva = SQLite.select().from(UnidadProductiva::class.java!!).queryList()
+        var listLotes = SQLite.select().from(Lote::class.java!!).queryList()
+        var listCultivos = SQLite.select().from(Cultivo::class.java!!).queryList()
+        var listUnidadMedida= Listas.listaUnidadMedida()
+
+        postEventListUnidadMedida(RequestEventProduccion.LIST_EVENT_UNIDAD_MEDIDA,listUnidadMedida,null);
+        postEventListUnidadProductiva(RequestEventProduccion.LIST_EVENT_UP,listUnidadProductiva,null);
+        postEventListLotes(RequestEventProduccion.LIST_EVENT_LOTE,listLotes,null);
+        postEventListCultivos(RequestEventProduccion.LIST_EVENT_CULTIVO,listCultivos,null);
+    }
+
     override fun getProductions(cultivo_id:Long?):List<Produccion> {
         var listResponse:List<Produccion>?=null
         if(cultivo_id==null){
@@ -55,6 +72,27 @@ class ProduccionRepository :IMainProduccion.Repository {
     //endregion
 
     //region Events
+
+    private fun postEventListUnidadMedida(type: Int, listUnidadMedida:List<Unidad_Medida>?, messageError:String?) {
+        var upMutable= listUnidadMedida as MutableList<Object>
+        postEvent(type, upMutable,null,messageError)
+    }
+
+    private fun postEventListUnidadProductiva(type: Int, listUnidadMedida:List<UnidadProductiva>?, messageError:String?) {
+        var upMutable= listUnidadMedida as MutableList<Object>
+        postEvent(type, upMutable,null,messageError)
+    }
+
+    private fun postEventListLotes(type: Int, listUnidadMedida:List<Lote>?, messageError:String?) {
+        var upMutable= listUnidadMedida as MutableList<Object>
+        postEvent(type, upMutable,null,messageError)
+    }
+
+    private fun postEventListCultivos(type: Int, listUnidadMedida:List<Cultivo>?, messageError:String?) {
+        var upMutable= listUnidadMedida as MutableList<Object>
+        postEvent(type, upMutable,null,messageError)
+    }
+
     private fun postEventOk(type: Int, producciones: List<Produccion>?, produccion:Produccion?) {
         var produccionListMitable= producciones as MutableList<Object>
         var ProducciconMutable:Object?=null

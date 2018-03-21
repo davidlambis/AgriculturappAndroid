@@ -22,7 +22,7 @@ import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.UnidadProductiva.adapter.UnidadProductivaAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up.adapter.UnidadProductivaAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.content_recyclerview.*
@@ -37,7 +37,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
 
 
     var presenter: IUnidadProductiva.Presenter? = null
-    var adapter:UnidadProductivaAdapter?=null
+    var adapter: UnidadProductivaAdapter?=null
     var unidadProductivaList:ArrayList<UnidadProductiva>?=ArrayList<UnidadProductiva>()
     var unidadProductivaGlobal:UnidadProductiva?=null
     //Progress
@@ -48,7 +48,6 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
 
 
     //Globals
-
     var unidadMedidaGlobal:Unidad_Medida?=null
     var listUnidadMedidaGlobal:List<Unidad_Medida>?= java.util.ArrayList<Unidad_Medida>()
     private var latitud: Double = 0.0

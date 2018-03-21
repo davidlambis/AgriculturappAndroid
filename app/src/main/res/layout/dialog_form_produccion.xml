@@ -31,7 +31,7 @@
                     style="@style/editText"
                     android:drawableLeft="@drawable/ic_nombre_finca"
                     android:drawableStart="@drawable/ic_nombre_finca"
-                    android:hint="@string/date_format_inicio"
+                    android:hint="@string/title_date_start"
                     android:inputType="text" />
 
 
@@ -47,7 +47,7 @@
                     style="@style/editText"
                     android:drawableLeft="@drawable/ic_nombre_finca"
                     android:drawableStart="@drawable/ic_nombre_finca"
-                    android:hint="@string/date_format_fin"
+                    android:hint="@string/title_date_end"
                     android:inputType="text"/>
             </android.support.design.widget.TextInputLayout>
 

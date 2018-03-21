@@ -86,12 +86,23 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.4+'
 
     ///Show Progress
-    compile 'com.kaopiz:kprogresshud:1.1.0'
+    compile "com.kaopiz:kprogresshud:$kprogresshudVersion"
 
 
     compile 'com.android.support:multidex:1.0.1'
-    //Maps
-    compile 'com.github.bkhezry:MapDrawingTools:1.1.0'
+
+    //Maps MapDrawingTools
+    compile "com.github.bkhezry:MapDrawingTools:$mapDrawingVersion"
+
+    /*
+    //Extenciones Kotlin (QUERYS LIST)
+    compile "com.github.vicpinm:krealmextensions:$krealmextensionsVersion"
+
+   //For Single and Flowable queries:
+    compile "io.reactivex.rxjava2:rxjava:$rxjavaVersion"
+    compile "io.reactivex.rxjava2:rxandroid:$rxandroidVerion"*/
+
+
     def SupportLibVersion = '27.1.0'
     compile "com.android.support:appcompat-v7:$SupportLibVersion",
             "com.android.support:design:$SupportLibVersion"

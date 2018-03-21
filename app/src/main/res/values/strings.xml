@@ -107,6 +107,15 @@
 
     <!--Unidad Prodductiva-->
     <string name="tittle_add_unidadproductiva">Agregar Unidad Productiva</string>
+    <string name="title_up">Unidad Productiva</string>
+    <!--Produccion-->
+
+
+    <string name="tittle_producccion">Produccion</string>
+    <string name="spinner_cultivo">Cultivo</string>
+    <string name="title_date_end">Fecha de Fin</string>
+    <string name="title_date_start">Fechas de Inicio</string>
+    <string name="tittle_date_produccion">Fechas de Produccion</string>
 
     <!-- Cultivos -->
     <string name="edit_text_nombre_cultivo"> Nombre del Cultivo</string>
@@ -138,6 +147,7 @@
     <string name="btn_save">Guardar</string>
     <string name="confirmation">Confirmacion</string>
     <string name="title_unidad">Unidad</string>
+    <string name="cantidad">Cantidad</string>
 
 
     <!-- INTERNET CONNECTION -->
