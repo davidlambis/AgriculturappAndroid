@@ -61,8 +61,6 @@ class ProduccionAdapter(val lista: ArrayList<Produccion>) : RecyclerView.Adapter
             var btnEditProducccion: ImageButton = itemView.findViewById(R.id.btnEditProducccion)
             var btnDeleteProduccion: ImageButton = itemView.findViewById(R.id.btnDeleteProduccion)
 
-
-
             //image.setImageBitmap(data.Imagen)
             // image.setImageResource(data.Imagen)
             txtFechaInicioProduccion.text = data.getFechaInicioFormat()

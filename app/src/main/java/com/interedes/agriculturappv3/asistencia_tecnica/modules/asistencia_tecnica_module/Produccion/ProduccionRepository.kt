@@ -29,7 +29,7 @@ class ProduccionRepository :IMainProduccion.Repository {
     override fun saveProduccion(produccion: Produccion,cultivo_id:Long) {
         produccion.save()
         var listProduccion = getProductions(cultivo_id)
-        postEventOk(RequestEventProduccion.READ_EVENT,listProduccion,null);
+        postEventOk(RequestEventProduccion.SAVE_EVENT,listProduccion,null);
     }
 
     override fun getListProduccion(cultivo_id:Long?) {

@@ -12,8 +12,6 @@ import java.util.*
 /**
  * Created by usuario on 20/03/2018.
  */
-
-
 @Table(database = DataSource::class)
 data class Produccion(@PrimaryKey(autoincrement = true)
                       @SerializedName("Id")
@@ -27,7 +25,7 @@ data class Produccion(@PrimaryKey(autoincrement = true)
                       @SerializedName("FechaInicio")
                       @Column(name = "FechaInicio")
                       var FechaInicio: Date? = null,
-
+                      
                       @SerializedName("FechaFin")
                       @Column(name = "FechaFin")
                       var FechaFin: Date? = null,

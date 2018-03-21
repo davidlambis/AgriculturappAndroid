@@ -124,8 +124,8 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
             }
 
 
-            btnAddLocationUp.setOnClickListener {
-                UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ADD_LOCATION_EVENT,data)
+            btn_edit_up.setOnClickListener {
+                UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ITEM_EDIT_EVENT,data)
             }
         }
     }

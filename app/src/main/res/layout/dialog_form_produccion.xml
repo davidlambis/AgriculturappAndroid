@@ -21,34 +21,70 @@
                 android:tint="@color/grey_luiyi"
                 android:src="@drawable/ic_close_white"/>
 
+
+            <TextView
+                android:id="@+id/txtUnidadProductivaSelected"
+                android:layout_margin="@dimen/margin_10"
+                android:layout_width="match_parent"
+                android:text="Unidad Productiva"
+                android:gravity="start|center"
+                android:drawableStart="@drawable/ic_banco"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txtLoteSelected"
+                    android:layout_margin="@dimen/margin_10"
+                    android:layout_width="match_parent"
+                    android:text="Lote"
+                    android:layout_weight="1"
+                    android:gravity="start|center"
+                    android:drawableStart="@drawable/ic_nombre_finca"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/txtCultivoSelected"
+                    android:layout_margin="@dimen/margin_10"
+                    android:layout_width="match_parent"
+                    android:text="Cultivo"
+                    android:layout_weight="1"
+                    android:gravity="start|center"
+                    android:drawableStart="@drawable/ic_localizacion_finca"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.9"
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                 <EditText
                     android:id="@+id/txtFechaInicio"
                     style="@style/editText"
-                    android:drawableLeft="@drawable/ic_nombre_finca"
-                    android:drawableStart="@drawable/ic_nombre_finca"
-                    android:hint="@string/title_date_start"
-                    android:inputType="text" />
-
-
+                    android:drawableLeft="@drawable/ic_mes"
+                    android:drawableStart="@drawable/ic_mes"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/edit_text_fecha_inicio" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.9"
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
                 <EditText
                     android:id="@+id/txtFechaFin"
                     style="@style/editText"
-                    android:drawableLeft="@drawable/ic_nombre_finca"
-                    android:drawableStart="@drawable/ic_nombre_finca"
-                    android:hint="@string/title_date_end"
-                    android:inputType="text"/>
+                    android:drawableLeft="@drawable/ic_mes"
+                    android:drawableStart="@drawable/ic_mes"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/edit_text_fecha_fin" />
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout

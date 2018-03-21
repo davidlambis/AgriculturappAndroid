@@ -1,9 +1,11 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion
 
 
+import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -32,6 +34,7 @@ import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_produccion.*
 import kotlinx.android.synthetic.main.dialog_form_produccion.view.*
 import kotlinx.android.synthetic.main.fragment_produccion.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -45,6 +48,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
     //Progress
     private var hud: KProgressHUD?=null
+
     //Dialog
     var viewDialog:View?= null;
     var _dialogRegisterUpdate: AlertDialog? = null
@@ -52,32 +56,29 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     //Globals
     var produccionGlobal:Produccion?=null
     var produccionList:ArrayList<Produccion>?=ArrayList<Produccion>()
-    var listUnidadMedidaGlobal:List<Unidad_Medida>?= ArrayList<Unidad_Medida>()
-    var Cultivo_Id: Long? = null
+    var Cultivo_Id: Long? = 0
     var unidadMedidaGlobal:Unidad_Medida?=null
     var fechaInicio: Date?=null
     var fechaFin: Date?=null
 
+    var confFecha:Boolean?=false
+
     //Listas
-    var listUnidadProductivaGlobal:List<UnidadProductiva>?= ArrayList<UnidadProductiva>()
-    var listLoteGlobal:List<Lote>?= ArrayList<Lote>()
-    var listCultivosGlobal:List<Cultivo>?= ArrayList<Cultivo>()
+    var cultivoGlobal:Cultivo?=null
     var unidadProductivaGlobal:UnidadProductiva?=null
     var loteGlobal:Lote?=null
-    var cultivoGlobal:Cultivo?=null
 
+    var dateTime = Calendar.getInstance()
 
     companion object {
         var instance:  ProduccionFragment? = null
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_produccion, container, false)
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,16 +98,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
     fun setupInjection(){
         presenter?.getListProduccion(Cultivo_Id)
-        spinnerUnidadProductiva.setAdapter(null)
-        var unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductivaGlobal)
-        spinnerUnidadProductiva.setAdapter(unidadProductivaArrayAdapter)
-        spinnerUnidadProductiva.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-            unidadProductivaGlobal= listUnidadProductivaGlobal!![position] as UnidadProductiva
-            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
-        }
-
-        presenter?.setListSpinnerLote(null)
-        presenter?.setListSpinnerCultivo(null)
+        presenter?.setListSpinnerUnidadProductiva()
     }
 
     //region ADAPTER
@@ -150,38 +142,76 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         return false
     }
 
+    override fun validarListasAddProduccion(): Boolean {
+        var cancel = false
+        var focusView: View? = null
+        if (spinnerUnidadProductiva?.text.toString().isEmpty() ) {
+            spinnerUnidadProductiva?.setError(getString(R.string.error_field_required))
+            focusView = spinnerUnidadProductiva
+            cancel = true
+        } else if (spinnerLote?.text.toString().isEmpty()) {
+            spinnerLote?.setError(getString(R.string.error_field_required))
+            focusView =spinnerLote
+            cancel = true
+        }
+        else if (spinnerCultivo?.text.toString().isEmpty() ) {
+            spinnerCultivo?.setError(getString(R.string.error_field_required))
+            focusView = spinnerCultivo
+            cancel = true
+        }
+        if (cancel) {
+            focusView?.requestFocus()
+        } else {
+            return true;
+        }
+        return false
+    }
+
     override fun limpiarCampos() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if(viewDialog!=null){
+            viewDialog?.txtFechaInicio?.setText("");
+            viewDialog?.txtFechaFin?.setText("");
+            viewDialog?.txtCultivoSelected?.setText("");
+            viewDialog?.txtUnidadProductivaSelected?.setText("");
+            viewDialog?.txtLoteSelected?.setText("");
+            viewDialog?.txtCantidadProduccionReal?.setText("");
 
-
-    }
-
-    override fun disableInputs() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun enableInputs() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
     }
 
     override fun showProgress() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        showProgressHud()
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     override fun hideProgress() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        hideProgressHud()
+        swipeRefreshLayout.setRefreshing(false);
     }
 
-    override fun hideElements() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun disableInputs() {
+        setInputs(false)
+    }
+    override fun enableInputs() {
+        setInputs(true)
+    }
+    private fun setInputs(b: Boolean) {
+        if( viewDialog!=null){
+            viewDialog?.txtFechaFin?.isEnabled = b
+            viewDialog?.txtFechaFin?.isEnabled = b
+            viewDialog?.spinnerUnidadMedidaProduccion?.isEnabled = b
+            viewDialog?.txtCantidadProduccionReal?.isEnabled = b
+        }
+    }
+    override fun showProgressHud(){
+        hud = KProgressHUD.create(activity)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setWindowColor(getResources().getColor(R.color.colorPrimary))
+        hud?.show()
     }
 
-    override fun showProgressHud() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun hideProgressHud() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun hideProgressHud(){
+        hud?.dismiss()
     }
 
     override fun registerProduccion() {
@@ -225,8 +255,6 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         txtResults.setText(results);
     }
 
-
-
     override fun requestResponseOK() {
         if(_dialogRegisterUpdate!=null){
             _dialogRegisterUpdate?.dismiss()
@@ -258,7 +286,15 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     override fun showAlertDialogAddProduccion(produccion: Produccion?) {
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_produccion, null)
-        setListUnidadMedidaAdapterSpinner()
+        presenter?.setListSpinnerUnidadMedida()
+        viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.Nombre)
+        viewDialog?.txtLoteSelected?.setText(loteGlobal?.Nombre)
+        viewDialog?.txtCultivoSelected?.setText(cultivoGlobal?.Nombre)
+
+        viewDialog?.ivClosetDialog?.setOnClickListener(this)
+        viewDialog?.txtFechaInicio?.setOnClickListener(this)
+        viewDialog?.txtFechaFin?.setOnClickListener(this)
+
 
         //REGISTER
         if (produccion == null) {
@@ -266,12 +302,12 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         }
         //UPDATE
         else {
+            Cultivo_Id=produccion.CultivoId
             unidadMedidaGlobal = Unidad_Medida(produccion.UnidadMedidaId, produccion.NombreUnidadMedida, null)
             viewDialog?.txtFechaInicio?.setText(produccion.getFechaInicioFormat())
             viewDialog?.txtFechaFin?.setText(produccion.getFechafinFormat())
             viewDialog?.txtCantidadProduccionReal?.setText(produccion.ProduccionReal.toString())
             viewDialog?.spinnerUnidadMedidaProduccion?.setText(produccion.NombreUnidadMedida)
-
         }
         //Set Events
         ivClosetDialog?.setOnClickListener(this)
@@ -301,60 +337,53 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         _dialogRegisterUpdate=dialog
     }
 
-
-    override fun setListUnidadMedidaAdapterSpinner(){
-        if(viewDialog!=null){
-            ///Adapaters
-            viewDialog?.spinnerUnidadMedidaProduccion!!.setAdapter(null)
-            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedidaGlobal);
-            viewDialog?.spinnerUnidadMedidaProduccion!!.setAdapter(uMedidaArrayAdapter);
-            viewDialog?.spinnerUnidadMedidaProduccion!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                unidadMedidaGlobal= listUnidadMedidaGlobal!![position] as Unidad_Medida
-                //Toast.makeText(activity,""+ unidadMedidaGlobal!!.Id.toString(),Toast.LENGTH_SHORT).show()
-            }
+    override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?) {
+        spinnerUnidadProductiva.setAdapter(null)
+        var unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
+        spinnerUnidadProductiva.setAdapter(unidadProductivaArrayAdapter)
+        spinnerUnidadProductiva.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+            unidadProductivaGlobal= listUnidadProductiva!![position] as UnidadProductiva
+            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
         }
+        presenter?.setListSpinnerLote(null)
+        presenter?.setListSpinnerCultivo(null)
     }
 
-
-    override fun setListSpinnerLote(unidad_productiva_id: Long?) {
+    override fun setListLotes(listLotes: List<Lote>?) {
         spinnerLote.setAdapter(null)
         spinnerLote.setText("")
         spinnerLote.setHint(String.format(getString(R.string.spinner_lote)))
-        var list= listLoteGlobal?.filter { lote: Lote -> lote.Unidad_Productiva_Id==unidad_productiva_id }
-        var loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, list)
+        var loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, listLotes)
         spinnerLote.setAdapter(loteArrayAdapter)
         spinnerLote.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-            loteGlobal= list!![position] as Lote
+            loteGlobal= listLotes!![position] as Lote
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
         }
     }
 
-    override fun setListSpinnerCultivo(lote_id: Long?) {
+    override fun setListCultivos(listCultivos: List<Cultivo>?) {
         spinnerCultivo.setAdapter(null)
         spinnerCultivo.setText("")
         spinnerCultivo.setHint(String.format(getString(R.string.spinner_cultivo)))
-        var list= listCultivosGlobal?.filter { cultivo: Cultivo -> cultivo.LoteId==lote_id }
-        val cultivoArrayAdapter = ArrayAdapter<Cultivo>(activity, android.R.layout.simple_spinner_dropdown_item, list)
+        val cultivoArrayAdapter = ArrayAdapter<Cultivo>(activity, android.R.layout.simple_spinner_dropdown_item, listCultivos)
         spinnerCultivo.setAdapter(cultivoArrayAdapter)
         spinnerCultivo.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-            cultivoGlobal= listCultivosGlobal!![position] as Cultivo
+            cultivoGlobal= listCultivos!![position] as Cultivo
+            Cultivo_Id=cultivoGlobal?.Id
         }
     }
 
-    override fun setListUnidadMedida(listUnidadMedida: List<Unidad_Medida>) {
-        listUnidadMedidaGlobal = listUnidadMedida
-    }
-
-    override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>) {
-        listUnidadProductivaGlobal=listUnidadProductiva
-    }
-
-    override fun setListLotes(listLotes: List<Lote>) {
-       listLoteGlobal= listLotes
-    }
-
-    override fun setListCultivos(listCultivos: List<Cultivo>) {
-        listCultivosGlobal= listCultivos
+    override fun setListUnidadMedida(listUnidadMedida: List<Unidad_Medida>?) {
+        if(viewDialog!=null){
+            ///Adapaters
+            viewDialog?.spinnerUnidadMedidaProduccion!!.setAdapter(null)
+            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedida);
+            viewDialog?.spinnerUnidadMedidaProduccion!!.setAdapter(uMedidaArrayAdapter);
+            viewDialog?.spinnerUnidadMedidaProduccion!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+                unidadMedidaGlobal= listUnidadMedida!![position] as Unidad_Medida
+                //Toast.makeText(activity,""+ unidadMedidaGlobal!!.Id.toString(),Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun verificateConnection(): AlertDialog? {
@@ -373,10 +402,51 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fabAddProduccion -> {
-                showAlertDialogAddProduccion(null)
+                if(presenter?.validarListasAddProduccion()==true){
+                    showAlertDialogAddProduccion(null)
+                }
             }
             R.id.ivClosetDialogUp->_dialogRegisterUpdate?.dismiss()
+
+            R.id.txtFechaInicio -> {
+                confFecha=true
+                updateDate()
+            }
+            R.id.txtFechaFin -> {
+                confFecha=false
+                updateDate()
+            }
         }
+    }
+
+    //Fecha
+    private fun updateDate() {
+        DatePickerDialog(context, d, dateTime.get(Calendar.YEAR), dateTime.get(Calendar.MONTH), dateTime.get(Calendar.DAY_OF_MONTH)).show()
+    }
+
+    internal var d: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+        dateTime.set(Calendar.YEAR, year)
+        dateTime.set(Calendar.MONTH, monthOfYear)
+        dateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        if (confFecha!!) {
+            mostrarResultadosFechaInicio()
+        } else {
+            mostrarResultadosFechaFin()
+        }
+    }
+
+    private fun mostrarResultadosFechaInicio() {
+        val format1 = SimpleDateFormat("MM/dd/yyyy")
+        val formatted = format1.format(dateTime.time)
+        fechaInicio=dateTime.time
+        viewDialog?.txtFechaInicio?.setText(formatted)
+    }
+
+    private fun mostrarResultadosFechaFin() {
+        val format1 = SimpleDateFormat("MM/dd/yyyy")
+        val formatted = format1.format(dateTime.time)
+        fechaFin=dateTime.time
+        viewDialog?.txtFechaFin?.setText(formatted)
     }
 
     //Escuchador de eventos

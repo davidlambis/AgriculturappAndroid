@@ -15,6 +15,7 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
+import java.util.ArrayList
 
 /**
  * Created by usuario on 21/03/2018.
@@ -25,6 +26,13 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
 
     var interactor: IMainProduccion.Interactor? = null
     var eventBus: EventBus? = null
+
+    //GLOBALS
+    var listUnidadProductivaGlobal:List<UnidadProductiva>?= ArrayList<UnidadProductiva>()
+    var listLoteGlobal:List<Lote>?= ArrayList<Lote>()
+    var listCultivosGlobal:List<Cultivo>?= ArrayList<Cultivo>()
+    var listUnidadMedidaGlobal:List<Unidad_Medida>?= ArrayList<Unidad_Medida>()
+
 
 
     companion object {
@@ -75,22 +83,22 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
     override fun onEventMainThread(event: RequestEventProduccion?) {
         when (event?.eventType) {
             RequestEventProduccion.READ_EVENT -> {
-                var produccionList = event.mutableList as List<Produccion>
-                //loteMainView?.setListLotes(loteList)
+                var list = event.mutableList as List<Produccion>
+                mainView?.setListProduccion(list)
             }
             RequestEventProduccion.SAVE_EVENT -> {
-                var produccionList = event.mutableList as List<Produccion>
-                //loteMainView?.setListLotes(loteList)
+                var list = event.mutableList as List<Produccion>
+                mainView?.setListProduccion(list)
                 onSaveOk()
             }
             RequestEventProduccion.UPDATE_EVENT -> {
-                var produccionList = event.mutableList as List<Produccion>
-                //loteMainView?.setListLotes(loteList)
+                var list = event.mutableList as List<Produccion>
+                mainView?.setListProduccion(list)
                 onUpdateOk()
             }
             RequestEventProduccion.DELETE_EVENT -> {
-                var produccionList = event.mutableList as List<Produccion>
-                //loteMainView?.setListLotes(loteList)
+                var list = event.mutableList as List<Produccion>
+                mainView?.setListProduccion(list)
                 onDeleteOk()
             }
             RequestEventProduccion.ERROR_EVENT -> {
@@ -117,26 +125,22 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
                 //loteMainView?.confirmDelete(lote)
                 //// Toast.makeText(activity,"Eliminar: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
-           //LIST EVENTS
 
+           //LIST EVENTS
             RequestEventProduccion.LIST_EVENT_UNIDAD_MEDIDA -> {
-                var list= event.mutableList as List<Unidad_Medida>
-                mainView?.setListUnidadMedida(list)
+                listUnidadMedidaGlobal= event.mutableList as List<Unidad_Medida>
             }
 
             RequestEventProduccion.LIST_EVENT_UP -> {
-                var list= event.mutableList as List<UnidadProductiva>
-                mainView?.setListUnidadProductiva(list)
+                listUnidadProductivaGlobal= event.mutableList as List<UnidadProductiva>
             }
 
             RequestEventProduccion.LIST_EVENT_LOTE -> {
-                var list= event.mutableList as List<Lote>
-                mainView?.setListLotes(list)
+                listLoteGlobal= event.mutableList as List<Lote>
             }
 
             RequestEventProduccion.LIST_EVENT_CULTIVO -> {
-                var list= event.mutableList as List<Cultivo>
-                mainView?.setListCultivos(list)
+                listCultivosGlobal= event.mutableList as List<Cultivo>
             }
         }
     }
@@ -145,6 +149,13 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
     //region Methods
     override fun validarCampos(): Boolean? {
         if (mainView?.validarCampos() == true) {
+            return true
+        }
+        return false
+    }
+
+    override fun validarListasAddProduccion(): Boolean? {
+        if (mainView?.validarListasAddProduccion() == true) {
             return true
         }
         return false
@@ -189,13 +200,22 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
 
     //region METHODS VIEWS
     override fun setListSpinnerLote(unidad_productiva_id: Long?) {
-       mainView?.setListSpinnerLote(unidad_productiva_id)
+        var list= listLoteGlobal?.filter { lote: Lote -> lote.Unidad_Productiva_Id==unidad_productiva_id }
+       mainView?.setListLotes(list)
     }
 
     override fun setListSpinnerCultivo(lote_id: Long?) {
-        mainView?.setListSpinnerCultivo(lote_id)
+        var list= listCultivosGlobal?.filter { cultivo: Cultivo -> cultivo.LoteId==lote_id }
+        mainView?.setListCultivos(list)
     }
 
+    override fun setListSpinnerUnidadProductiva() {
+        mainView?.setListUnidadProductiva(listUnidadProductivaGlobal)
+    }
+
+    override fun setListSpinnerUnidadMedida() {
+        mainView?.setListUnidadMedida(listUnidadMedidaGlobal)
+    }
 
     //endregion
 

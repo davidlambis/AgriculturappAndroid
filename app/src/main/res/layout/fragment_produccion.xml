@@ -21,7 +21,7 @@
             <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                 android:id="@+id/spinnerUnidadProductiva"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/size_60"
+                android:layout_height="wrap_content"
                 android:hint="@string/spinner_unidad_productiva"
                 android:textColorHint="@color/grey_luiyi"
                 android:textSize="@dimen/text_size_16"
@@ -44,7 +44,7 @@
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                     android:id="@+id/spinnerLote"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_60"
+                    android:layout_height="wrap_content"
                     android:hint="@string/spinner_lote"
                     android:textColorHint="@color/grey_luiyi"
                     android:textSize="@dimen/text_size_16"
@@ -61,7 +61,7 @@
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                     android:id="@+id/spinnerCultivo"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_60"
+                    android:layout_height="wrap_content"
                     android:hint="@string/spinner_cultivo"
                     android:textColorHint="@color/grey_luiyi"
                     android:textSize="@dimen/text_size_16"
