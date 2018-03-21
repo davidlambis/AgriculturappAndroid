@@ -59,7 +59,7 @@ class LoteRepositoryImpl:LoteRepository {
 
     override fun deleteLote(lote: Lote,unidad_productiva_id:Long?) {
         lote.delete()
-        //SQLite.delete<Lote>(Lote::class.java).where(Lote_Table.Id.eq(lote.Id)).async().execute()
+        //SQLite.delete<Lote>(Lote::class.java).where(Lote_Table.Id.eq(lote.Id)).async().getAllCultivos()
         postEventOk(RequestEventLote.DELETE_EVENT, getLotes(unidad_productiva_id),lote);
     }
 

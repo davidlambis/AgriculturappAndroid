@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
@@ -69,32 +71,96 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
                 val list_unidad_medida = cultivoEvent.mutableList as List<Unidad_Medida>
                 view?.setListUnidadMedidas(list_unidad_medida)
             }
+            CultivoEvent.LIST_EVENT_LOTES -> {
+                view?.enableInputs()
+                val list_lotes = cultivoEvent.mutableList as List<Lote>
+                view?.setListLotes(list_lotes)
+            }
+            CultivoEvent.SAVE_EVENT -> {
+                val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
+                view?.setListCultivos(list_cultivos)
+                view?.requestResponseOk()
+            }
+            CultivoEvent.ERROR_DIALOG_EVENT -> {
+                view?.requestResponseDialogError(cultivoEvent.mensajeError)
+            }
+            CultivoEvent.READ_EVENT -> {
+                val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
+                view?.setListCultivos(list_cultivos)
+            }
+            CultivoEvent.UPDATE_EVENT -> {
+                val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
+                view?.setListCultivos(list_cultivos)
+                view?.requestResponseOk()
+            }
+            CultivoEvent.DELETE_EVENT -> {
+                var list_cultivos = cultivoEvent.mutableList as List<Cultivo>
+                view?.setListCultivos(list_cultivos)
+                view?.requestResponseOk()
+            }
+
+        //EVENTS ON ITEM CLICK
+            CultivoEvent.ITEM_EVENT -> {
+                val cultivo = cultivoEvent.objectMutable as Cultivo
+                view?.onMessageOk(R.color.colorPrimary, "Item: " + cultivo.Nombre)
+            }
+
+            CultivoEvent.ITEM_EDIT_EVENT -> {
+                val cultivo = cultivoEvent.objectMutable as Cultivo
+                Cultivo_Fragment.instance?.cultivoGlobal = cultivo
+                view?.showAlertDialogCultivo(Cultivo_Fragment.instance?.cultivoGlobal)
+            }
+
+            CultivoEvent.ITEM_DELETE_EVENT -> {
+                val cultivo = cultivoEvent.objectMutable as Cultivo
+                view?.deleteCultivo(cultivo)
+            }
+
         }
     }
 
     override fun validarCampos(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (view?.validarCampos() == true) {
+            return true
+        } else {
+            return false
+        }
     }
 
     override fun registerCultivo(cultivo: Cultivo?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        interactor?.registerCultivo(cultivo)
     }
 
     override fun updateCultivo(cultivo: Cultivo?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        interactor?.updateCultivo(cultivo)
     }
 
     override fun deleteCultivo(cultivo: Cultivo?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        interactor?.deleteCultivo(cultivo)
     }
 
-    override fun getCultivos() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getAllCultivos() {
+        interactor?.getAllCultivos()
     }
 
     override fun getListas() {
         interactor?.getListas()
     }
+
+    override fun loadLotesSpinner(unidadProductivaId: Long?) {
+        view?.disableInputs()
+        view?.hideLotes()
+        interactor?.loadLotesSpinner(unidadProductivaId)
+    }
+
+    //endregion
+
+    //region Acciones de Respuesta a Post de Eventos
+
+    //endregion
+
+    //region Messages/Notificaciones
+
 
     //endregion
 

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialogContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -38,6 +39,7 @@
                     android:textAlignment="center"
                     android:textColorHint="@color/grey_luiyi"
                     android:textSize="@dimen/text_size_18"
+                    android:visibility="gone"
                     app:met_baseColor="@color/grey_luiyi"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelTextColor="@color/grey_luiyi"
@@ -94,7 +96,7 @@
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                 <EditText
-                    android:id="@+id/etDescripcionCultivo"
+                    android:id="@+id/edtDescripcionCultivo"
                     style="@style/editText"
                     android:drawableLeft="@drawable/ic_nombre_finca"
                     android:drawableStart="@drawable/ic_nombre_finca"
@@ -158,6 +160,8 @@
                         style="@style/editText"
                         android:drawableLeft="@drawable/ic_localizacion_finca"
                         android:drawableStart="@drawable/ic_localizacion_finca"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
                         android:hint="@string/edit_text_fecha_inicio" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -180,9 +184,50 @@
                         style="@style/editText"
                         android:drawableLeft="@drawable/ic_localizacion_finca"
                         android:drawableStart="@drawable/ic_localizacion_finca"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
                         android:hint="@string/edit_text_fecha_fin" />
                 </android.support.design.widget.TextInputLayout>
 
+
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnRegisterCultivo"
+                    style="@style/small_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_global_10"
+                    android:background="@drawable/custom_button"
+                    android:text="@string/btn_registrar_productor" />
+
+                <Button
+                    android:id="@+id/btnUpdateCultivo"
+                    style="@style/small_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_global_10"
+                    android:background="@drawable/custom_button"
+                    android:text="@string/btn_save" />
+
+                <Button
+                    android:id="@+id/btnCancelCultivo"
+                    style="@style/small_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_global_10"
+                    android:background="@drawable/custom_button"
+                    android:text="@string/cancel" />
 
             </LinearLayout>
 

@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.UnidadProductiva.adapter
+package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -57,10 +57,10 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: UnidadProductiva, pos: Int) = with(itemView) {
-            var txt_unidad_productiva: TextView = itemView.findViewById(R.id.txtNombreUnidadProductiva)
-            var txt_descripcion_unidadproductiva: TextView = itemView.findViewById(R.id.txtDescripcinUnidadProductiva)
-            var txt_area_unidad_productiva: TextView = itemView.findViewById(R.id.txtAreaUnidadProductiva)
-            var txtCiudaDepartamento: TextView = itemView.findViewById(R.id.txtCiudadDepartamentUp)
+            var txt_unidad_productiva: TextView = itemView.findViewById(R.id.txtNombreCultivo)
+            var txt_descripcion_unidadproductiva: TextView = itemView.findViewById(R.id.txtDescripcionCultivo)
+            var txt_area_unidad_productiva: TextView = itemView.findViewById(R.id.txtFechaInicio)
+            var txtCiudaDepartamento: TextView = itemView.findViewById(R.id.txtCosechaEstimada)
 
 
             var btnAddPoligonUp: RelativeLayout = itemView.findViewById(R.id.btnAddPoligonUp)
@@ -70,33 +70,42 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
             var badge_notification_poligon_up: TextView = itemView.findViewById(R.id.badge_notification_poligon_up)
 
             var btn_edit_up: ImageView = itemView.findViewById(R.id.btn_edit_up)
+            //var btn_delete_up: ImageView = itemView.findViewById(R.id.btn_delete_up)
+
+
+
 
             if(data.Configuration_Point==true){
                 //indicator_is_configured_location.setImageResource(R.drawable.ic_done_white)
-               // indicator_is_configured_location.setBackgroundResource(R.color.light_green_800)
-               // badge_notification_location_up.visibility=View.GONE
+                // indicator_is_configured_location.setBackgroundResource(R.color.light_green_800)
+                // badge_notification_location_up.visibility=View.GONE
 
                 badge_notification_location_up.setBackgroundResource(R.drawable.item_ok)
             }else if(data.Configuration_Point==false){
-               // indicator_is_configured_location.setImageResource(R.drawable.ic_close_white)
-               // indicator_is_configured_location.setBackgroundResource(R.color.red_900)
-               // badge_notification_location_up.visibility=View.VISIBLE
+                // indicator_is_configured_location.setImageResource(R.drawable.ic_close_white)
+                // indicator_is_configured_location.setBackgroundResource(R.color.red_900)
+                // badge_notification_location_up.visibility=View.VISIBLE
                 badge_notification_location_up.setBackgroundResource(R.drawable.item_priority_high)
             }
 
 
             if(data.Configuration_Poligon==true){
-               // indicator_is_configured_poligon.setImageResource(R.drawable.ic_done_white)
-               // indicator_is_configured_poligon.setBackgroundResource(R.color.light_green_800)
-              //  badge_notification_poligon_up.visibility=View.GONE
+                // indicator_is_configured_poligon.setImageResource(R.drawable.ic_done_white)
+                // indicator_is_configured_poligon.setBackgroundResource(R.color.light_green_800)
+                //  badge_notification_poligon_up.visibility=View.GONE
                 badge_notification_poligon_up.setBackgroundResource(R.drawable.item_ok)
 
             }else if(data.Configuration_Poligon==false){
                 //indicator_is_configured_poligon.setImageResource(R.drawable.ic_close_white)
                 //indicator_is_configured_poligon.setBackgroundResource(R.color.red_900)
-               // badge_notification_poligon_up.visibility=View.VISIBLE
+                // badge_notification_poligon_up.visibility=View.VISIBLE
                 badge_notification_poligon_up.setBackgroundResource(R.drawable.item_priority_high)
             }
+
+
+
+
+
             //image.setImageBitmap(data.Imagen)
             // image.setImageResource(data.Imagen)
             txt_unidad_productiva.text = data.Nombre
@@ -117,10 +126,6 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
 
             btnAddLocationUp.setOnClickListener {
                 UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ADD_LOCATION_EVENT,data)
-            }
-
-            btn_edit_up.setOnClickListener {
-                UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ITEM_EDIT_EVENT,data)
             }
         }
     }

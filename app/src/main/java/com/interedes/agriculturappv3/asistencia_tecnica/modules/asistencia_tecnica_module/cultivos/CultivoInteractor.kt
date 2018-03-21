@@ -5,6 +5,7 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
 
 class CultivoInteractor : ICultivo.Interactor {
 
+
     var repository: ICultivo.Repository? = null
 
     init {
@@ -12,23 +13,27 @@ class CultivoInteractor : ICultivo.Interactor {
     }
 
     override fun registerCultivo(cultivo: Cultivo?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        repository?.saveCultivo(cultivo!!)
     }
 
     override fun updateCultivo(cultivo: Cultivo?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        repository?.updateCultivo(cultivo!!)
     }
 
     override fun deleteCultivo(cultivo: Cultivo?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        repository?.deleteCultivo(cultivo!!)
     }
 
-    override fun execute() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getAllCultivos() {
+        repository?.getListAllCultivos()
     }
 
     override fun getListas() {
         repository?.getListas()
+    }
+
+    override fun loadLotesSpinner(unidadProductivaId: Long?) {
+        repository?.loadLotesSpinner(unidadProductivaId)
     }
 
 

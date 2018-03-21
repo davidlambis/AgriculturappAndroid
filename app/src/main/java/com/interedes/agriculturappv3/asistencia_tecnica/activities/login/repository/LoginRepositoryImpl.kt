@@ -70,18 +70,18 @@ class LoginRepositoryImpl : LoginRepository {
                     }
 
                     override fun onFailure(call: Call<GetUserResponse>?, t: Throwable?) {
-                    postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+                    postEventError(RequestEvent.ERROR_DIALOG_EVENT, "Petición fallida al Servidor")
                     Log.e("Failure Get Login User", t?.message.toString())
                     }
                     })
                     } else {
-                    postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+                    postEventError(RequestEvent.ERROR_DIALOG_EVENT, "Petición fallida al Servidor")
                     Log.e("response Login Admin", response?.errorBody().toString())
                     }
                     }
 
                     override fun onFailure(call: Call<LoginResponse>?, t: Throwable?) {
-                    postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+                    postEventError(RequestEvent.ERROR_DIALOG_EVENT, "Petición fallida al Servidor")
                     Log.e("Failure Login Admin", t?.message.toString())
                     }
                     }) ***/
@@ -122,18 +122,18 @@ class LoginRepositoryImpl : LoginRepository {
         }
 
         override fun onFailure(call: Call<GetUserResponse>?, t: Throwable?) {
-        postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+        postEventError(RequestEvent.ERROR_DIALOG_EVENT, "Petición fallida al Servidor")
         Log.e("Failure Get Login User", t?.message.toString())
         }
         })
         } else {
-        postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+        postEventError(RequestEvent.ERROR_DIALOG_EVENT, "Petición fallida al Servidor")
         Log.e("response Login Admin", response?.errorBody().toString())
         }
         }
 
         override fun onFailure(call: Call<LoginResponse>?, t: Throwable?) {
-        postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+        postEventError(RequestEvent.ERROR_DIALOG_EVENT, "Petición fallida al Servidor")
         Log.e("Failure Login Admin", t?.message.toString())
         }
         }) ***/
@@ -141,7 +141,7 @@ class LoginRepositoryImpl : LoginRepository {
         /*SI NO HA VERIFICADO EL CORREO */
 
         /* } else {
-             postEventError(RequestEvent.ERROR_EVENT, "No se ha verificado el correo electrónico")
+             postEventError(RequestEvent.ERROR_DIALOG_EVENT, "No se ha verificado el correo electrónico")
          }*/
 
 
@@ -189,13 +189,13 @@ class LoginRepositoryImpl : LoginRepository {
                                              postEvent(RequestEvent.SAVE_EVENT)
 
                                          } else {
-                                             postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+                                             postEventError(RequestEvent.ERROR_DIALOG_EVENT, "Petición fallida al Servidor")
                                              Log.e("Error Response Get", response?.errorBody()?.string())
                                          }
                                      }
 
                                      override fun onFailure(call: Call<UsuarioResponse>?, t: Throwable?) {
-                                         postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+                                         postEventError(RequestEvent.ERROR_DIALOG_EVENT, "Petición fallida al Servidor")
                                          Log.e("Error Get", t?.message.toString())
                                      }
 
@@ -205,23 +205,23 @@ class LoginRepositoryImpl : LoginRepository {
                                 try {
                                     throw task.exception!!
                                 } catch (firebaseException: FirebaseException) {
-                                    postEventError(RequestEvent.ERROR_EVENT, "Petición fallida a Firebase")
+                                    postEventError(RequestEvent.ERROR_DIALOG_EVENT, "Petición fallida a Firebase")
                                     Log.e("Error Post", firebaseException.toString())
                                 }
                             }
                         })
                     } else {
-                        postEventError(RequestEvent.ERROR_EVENT, "No se ha verificado el correo electrónico")
+                        postEventError(RequestEvent.ERROR_DIALOG_EVENT, "No se ha verificado el correo electrónico")
                     }
 
                 } else {
-                    postEventError(RequestEvent.ERROR_EVENT, "Usuario o Contraseña Incorrectos")
+                    postEventError(RequestEvent.ERROR_DIALOG_EVENT, "Usuario o Contraseña Incorrectos")
                     Log.e("Error Response Post", response?.errorBody()?.string())
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>?, t: Throwable?) {
-                postEventError(RequestEvent.ERROR_EVENT, "Petición fallida al Servidor")
+                postEventError(RequestEvent.ERROR_DIALOG_EVENT, "Petición fallida al Servidor")
                 Log.e("Error Post", t?.message.toString())
             }
 

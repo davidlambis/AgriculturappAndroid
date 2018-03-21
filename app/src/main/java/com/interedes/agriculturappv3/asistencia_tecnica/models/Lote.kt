@@ -28,44 +28,48 @@ class Lote : BaseModel() {
 
     @SerializedName("Nombre")
     @Column(name = "Nombre")
-    var Nombre: String? =null
+    var Nombre: String? = null
 
     @SerializedName("Descripcion")
     @Column(name = "Descripcion")
-    var Descripcion: String? =null
+    var Descripcion: String? = null
 
     @SerializedName("Area")
     @Column(name = "Area")
-    var Area: Double? =null
+    var Area: Double? = null
 
     @SerializedName("Latitud")
     @Column(name = "Latitud")
-    var Latitud: Double? =null
+    var Latitud: Double? = null
 
     @SerializedName("Longitud")
     @Column(name = "Longitud")
-    var Longitud: Double? =null
+    var Longitud: Double? = null
 
     @SerializedName("Poligono_Lote")
     @Column(name = "Poligono_Lote")
-    var Poligono_Lote: String? =null
+    var Poligono_Lote: String? = null
 
     @SerializedName("Coordenadas")
     @Column(name = "Coordenadas")
-    var Coordenadas: String? =null
+    var Coordenadas: String? = null
 
     @SerializedName("Unidad_Medida_Id")
     @Column(name = "Unidad_Medida_Id")
-    var Unidad_Medida_Id: Long? =null
+    var Unidad_Medida_Id: Long? = null
 
     @SerializedName("Unidad_Productiva_Id")
     @Column(name = "Unidad_Productiva_Id")
-    var Unidad_Productiva_Id: Long? =null
+    var Unidad_Productiva_Id: Long? = null
 
 
     @Column(name = "Nombre_Unidad_Productiva")
-    var Nombre_Unidad_Productiva: String? =null
+    var Nombre_Unidad_Productiva: String? = null
 
     @Column(name = "Nombre_Unidad_Medida")
-    var Nombre_Unidad_Medida: String? =null
+    var Nombre_Unidad_Medida: String? = null
+
+    override fun toString(): String {
+        return Nombre!!
+    }
 }

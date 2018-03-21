@@ -3,7 +3,9 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecn
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
@@ -18,23 +20,33 @@ interface ICultivo {
 
         fun showProgress()
         fun hideProgress()
-        fun hideElements()
+        fun hideLotes()
 
         //Fun Cultivo CRUD
         fun registerCultivo()
 
         fun updateCultivo()
+        fun deleteCultivo(cultivo: Cultivo): AlertDialog?
         fun setListCultivos(listCultivos: List<Cultivo>)
         fun setResults(cultivos: Int)
 
-        fun requestResponseOK()
-        fun requestResponseError(error: String?)
 
+        //Dialog
+        fun requestResponseDialogOK()
+
+        fun requestResponseDialogError(error: String?)
+        fun onMessageDialogOk(colorPrimary: Int, msg: String?)
+        fun onMessageDialogError(colorPrimary: Int, msg: String?)
+
+        //
+        fun requestResponseOk()
+
+        fun requestResponseError(error: String?)
         fun onMessageOk(colorPrimary: Int, msg: String?)
         fun onMessageError(colorPrimary: Int, msg: String?)
 
         //Dialog
-        fun showAlertDialogCultivo(cultivo: Cultivo?)
+        fun showAlertDialogCultivo(cultivo: Cultivo?): AlertDialog?
 
         //Spinners y Date Pickers
         //Unidades Productivas
@@ -42,6 +54,9 @@ interface ICultivo {
 
         //Unidad Medida
         fun setListUnidadMedidas(listUnidadMedida: List<Unidad_Medida>)
+
+        //Lotes
+        fun setListLotes(listLotes: List<Lote>)
 
         fun setAdaptersSpinner()
 
@@ -63,9 +78,10 @@ interface ICultivo {
         fun registerCultivo(cultivo: Cultivo?)
         fun updateCultivo(cultivo: Cultivo?)
         fun deleteCultivo(cultivo: Cultivo?)
-        fun getCultivos()
+        fun getAllCultivos()
 
         fun getListas()
+        fun loadLotesSpinner(unidadProductivaId: Long?)
 
         //Conecttion
         fun checkConnection(): Boolean
@@ -75,14 +91,16 @@ interface ICultivo {
         fun registerCultivo(cultivo: Cultivo?)
         fun updateCultivo(cultivo: Cultivo?)
         fun deleteCultivo(cultivo: Cultivo?)
-        fun execute()
+        fun getAllCultivos()
         fun getListas()
+        fun loadLotesSpinner(unidadProductivaId: Long?)
     }
 
     interface Repository {
         fun getListas()
-        fun getListCultivos()
-        fun getCultivos(): List<Cultivo>
+        fun loadLotesSpinner(unidadProductivaId: Long?)
+        fun getListAllCultivos()
+        fun getCultivosByLote(loteId: Long?): List<Cultivo>
         fun saveCultivo(cultivo: Cultivo)
         fun updateCultivo(cultivo: Cultivo)
         fun deleteCultivo(cultivo: Cultivo)

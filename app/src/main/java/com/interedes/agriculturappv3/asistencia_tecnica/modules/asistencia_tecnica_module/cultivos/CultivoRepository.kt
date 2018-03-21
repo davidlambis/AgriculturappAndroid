@@ -1,15 +1,19 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
+import com.interedes.agriculturappv3.asistencia_tecnica.models.*
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.raizlabs.android.dbflow.kotlinextensions.delete
+import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
 
 class CultivoRepository : ICultivo.Repository {
+
+
     var eventBus: EventBus? = null
 
     init {
@@ -20,45 +24,88 @@ class CultivoRepository : ICultivo.Repository {
     override fun getListas() {
         //get Unidades Productivas
         val listUnidadesProductivas: List<UnidadProductiva> = SQLite.select().from(UnidadProductiva::class.java).queryList()
+        if (listUnidadesProductivas.size > 0) {
+            postEventListUnidadProductiva(CultivoEvent.LIST_EVENT_UNIDAD_PRODUCTIVA, listUnidadesProductivas, null)
+        } else {
+            postEventError(CultivoEvent.ERROR_DIALOG_EVENT, "No hay Unidades productivas registradas")
+        }
         val listUnidadMedida = Listas.listaUnidadMedida()
-        postEventListUnidadProductiva(CultivoEvent.LIST_EVENT_UNIDAD_PRODUCTIVA, listUnidadesProductivas, null)
         postEventListUnidadMedida(CultivoEvent.LIST_EVENT_UNIDAD_MEDIDA, listUnidadMedida, null)
     }
 
-    override fun getListCultivos() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun loadLotesSpinner(unidadProductivaId: Long?) {
+        val listLotes: List<Lote> = SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(unidadProductivaId)).queryList()
+        if (listLotes.size > 0) {
+            postEventListLotes(CultivoEvent.LIST_EVENT_LOTES, listLotes, null)
+        } else {
+            postEventError(CultivoEvent.ERROR_DIALOG_EVENT, "No hay lotes Registrados")
+        }
     }
 
-    override fun getCultivos(): List<Cultivo> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getListAllCultivos() {
+        val list_all_cultivos = getAllCultivos()
+        postEventOk(CultivoEvent.READ_EVENT, list_all_cultivos, null)
     }
 
     override fun saveCultivo(cultivo: Cultivo) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        cultivo.save()
+        postEventOk(CultivoEvent.SAVE_EVENT, getAllCultivos(), cultivo)
+    }
+
+    override fun getCultivosByLote(loteId: Long?): List<Cultivo> {
+        return SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(loteId)).queryList()
     }
 
     override fun updateCultivo(cultivo: Cultivo) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        cultivo.update()
+        postEventOk(CultivoEvent.UPDATE_EVENT, getCultivosByLote(cultivo.LoteId), cultivo)
     }
 
     override fun deleteCultivo(cultivo: Cultivo) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        cultivo.delete()
+        postEventOk(CultivoEvent.DELETE_EVENT, getCultivosByLote(cultivo.LoteId), cultivo)
+    }
+    //endregion
+
+    //region Métodos
+    fun getAllCultivos(): List<Cultivo> {
+        return SQLite.select().from(Cultivo::class.java).queryList()
     }
     //endregion
 
     //region Events
     private fun postEventListUnidadProductiva(type: Int, listUnidadProductiva: List<UnidadProductiva>?, messageError: String?) {
-        val unidadProductivaMutable = listUnidadProductiva as MutableList<Any>
+        val unidadProductivaMutable = listUnidadProductiva as MutableList<Object>
         postEvent(type, unidadProductivaMutable, null, messageError)
     }
 
     private fun postEventListUnidadMedida(type: Int, listUnidadMedida: List<Unidad_Medida>?, messageError: String?) {
-        val unidadMedidaMutable = listUnidadMedida as MutableList<Any>
+        val unidadMedidaMutable = listUnidadMedida as MutableList<Object>
         postEvent(type, unidadMedidaMutable, null, messageError)
     }
 
+    private fun postEventListLotes(type: Int, listLote: List<Lote>?, messageError: String?) {
+        val loteMutable = listLote as MutableList<Object>
+        postEvent(type, loteMutable, null, messageError)
+    }
+
+    private fun postEventError(type: Int, messageError: String?) {
+        val event = CultivoEvent(type, null, null, messageError)
+        event.eventType = type
+        eventBus?.post(event)
+    }
+
+    private fun postEventOk(type: Int, listCultivos: List<Cultivo>?, cultivo: Cultivo?) {
+        val cultivoListMutable = listCultivos as MutableList<Object>
+        var cultivoMutable: Object? = null
+        if (cultivo != null) {
+            cultivoMutable = cultivo as Object
+        }
+        postEvent(type, cultivoListMutable, cultivoMutable, null)
+    }
+
     //Main Post Event
-    private fun postEvent(type: Int, listModel: MutableList<Any>?, model: Any?, errorMessage: String?) {
+    private fun postEvent(type: Int, listModel: MutableList<Object>?, model: Object?, errorMessage: String?) {
         val event = CultivoEvent(type, listModel, model, errorMessage)
         event.eventType = type
         eventBus?.post(event)

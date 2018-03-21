@@ -38,7 +38,13 @@ data class Cultivo(@PrimaryKey(autoincrement = true)
 
                    @SerializedName("Nombre")
                    @Column(name = "Nombre")
-                   var Nombre: String? = null) {
+                   var Nombre: String? = null,
+
+                   @Column(name = "Unidad_Medida_Id")
+                   var Unidad_Medida_Id: Long? = null,
+
+                   @Column(name = "Nombre_Unidad_Medida")
+                   var Nombre_Unidad_Medida: String? = null) {
 
     override fun toString(): String {
         return Nombre!!
