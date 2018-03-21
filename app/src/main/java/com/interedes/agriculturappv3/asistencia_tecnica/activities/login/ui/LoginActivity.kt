@@ -32,8 +32,8 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     var connectivityReceiver: ConnectivityReceiver? = null
 
     companion object {
-        val em = BuildConfig.em
-        val ps = BuildConfig.ps
+        //val em = BuildConfig.em
+        //val ps = BuildConfig.ps
     }
 
     init {

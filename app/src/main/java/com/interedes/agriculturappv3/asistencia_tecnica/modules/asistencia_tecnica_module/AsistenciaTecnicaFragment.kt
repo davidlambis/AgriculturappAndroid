@@ -1,6 +1,5 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -10,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.activities.MapsActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.Lote_Fragment
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.ProduccionFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.UnidadProductiva.UnidadProductiva_Fragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.Cultivo_Fragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.ui.MainMenuFragment
@@ -50,7 +49,9 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
             } else if (lista[position].Identificador.equals("mis_cultivos")) {
                 (activity as MenuMainActivity).replaceFragment(Cultivo_Fragment())
             }
-
+            else if (lista[position].Identificador.equals("produccion")) {
+                (activity as MenuMainActivity).replaceFragment(ProduccionFragment())
+            }
         }
         recyclerView?.adapter = adapter
     }

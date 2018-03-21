@@ -16,6 +16,7 @@ import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecni
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.ui.MainViewLote
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -29,6 +30,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     var coordsService: CoordsServiceKotlin? = null
     var loteInteractor: LoteInteractor? = null
     var eventBus: EventBus? = null
+
 
     companion object {
         var instance:  LotePresenterImpl? = null
@@ -72,7 +74,9 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             var extras =intent.extras
-            loteMainView?.onEventBroadcastReceiver(extras,intent);
+            if(extras!=null){
+                loteMainView?.onEventBroadcastReceiver(extras,intent)
+            }
         }
     }
 
@@ -82,8 +86,8 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     }
 
     override fun onResume(context:Context) {
-        context.registerReceiver(mNotificationReceiver, IntentFilter("CONECTIVIDAD"))
-        context.registerReceiver(mNotificationReceiver, IntentFilter("LOCATION"))
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_LOCATION))
 
     }
 
@@ -186,7 +190,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
         loteMainView?.showProgress()
         if(checkConnection()){
             loteMainView?.disableInputs()
-            loteInteractor?.registerLote(lote,unidad_productiva_id)
+            loteInteractor?.updateLote(lote,unidad_productiva_id)
         }else{
             onMessageConectionError()
        }

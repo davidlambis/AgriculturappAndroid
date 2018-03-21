@@ -119,6 +119,12 @@
     <string name="spinner_lote">Lote</string>
     <string name="title_add_cultivo">Agregar Cultivo</string>
 
+
+    <!-- Produccion -->
+    <string name="tittle_date_produccion">Fecha Produccion</string>
+    <string name="spinner_cultivo"> Cultivo</string>
+
+
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
     <string name="name">Nombre</string>
@@ -135,6 +141,9 @@
     <string name="btn_save">Guardar</string>
     <string name="confirmation">Confirmacion</string>
     <string name="title_unidad">Unidad</string>
+    <string name="date_format_inicio">Fecha Inicio (DD/MM/AAAA)</string>
+    <string name="date_format_fin">Fecha Fin (DD/MM/AAAA)</string>
+    <string name="cantidad">Cantidad</string>
 
 
     <!-- INTERNET CONNECTION -->

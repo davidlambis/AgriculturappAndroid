@@ -7,7 +7,6 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up.events.RequestEventUP
 
 interface ICultivo {
     interface View {

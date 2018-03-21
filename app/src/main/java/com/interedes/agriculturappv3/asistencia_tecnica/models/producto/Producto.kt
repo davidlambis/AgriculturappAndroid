@@ -39,20 +39,22 @@ data class Producto(@PrimaryKey(autoincrement = true)
                     @Column(name = "FechaLimiteDisponibilidad")
                     var FechaLimiteDisponibilidad: Date? = null,
 
-
+/*
                     @SerializedName("Imagen")
                     @Column(name = "Imagen")
                     var Imagen: Blob? = null,
 
                     @SerializedName("IsEnabled")
                     @Column(getterName = "getIsEnabled")
-                    var IsEnabled: Boolean? = null,
+                    var IsEnabled: Boolean? = null,*/
 
+                    @SerializedName("IsEnabled")
+                    @Column(getterName = "getEnabled")
+                    var Enabled: Boolean? = null,
 
                     @SerializedName("Precio")
                     @Column(name = "Precio")
                     var Precio: Double? = null,
-
 
                     @SerializedName("PrecioSpecial")
                     @Column(name = "PrecioSpecial")
@@ -66,8 +68,6 @@ data class Producto(@PrimaryKey(autoincrement = true)
                     @SerializedName("cultivoId")
                     @Column(name = "CultivoId")
                     var CultivoId: Long? = null
-
-
 ) {
 
     override fun toString(): String {

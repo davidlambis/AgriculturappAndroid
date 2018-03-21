@@ -15,7 +15,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/ivClosetDialogUp"
+                android:id="@+id/ivClosetDialog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tint="@color/grey_luiyi"
@@ -27,11 +27,11 @@
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                 <EditText
-                    android:id="@+id/edtNombreUnidadProductiva"
+                    android:id="@+id/txtFechaInicio"
                     style="@style/editText"
                     android:drawableLeft="@drawable/ic_nombre_finca"
                     android:drawableStart="@drawable/ic_nombre_finca"
-                    android:hint="@string/edit_text_nombre_finca"
+                    android:hint="@string/date_format_inicio"
                     android:inputType="text" />
 
 
@@ -43,46 +43,13 @@
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                 <EditText
-                    android:id="@+id/etDescripcionUnidadProductiva"
+                    android:id="@+id/txtFechaFin"
                     style="@style/editText"
                     android:drawableLeft="@drawable/ic_nombre_finca"
                     android:drawableStart="@drawable/ic_nombre_finca"
-                    android:hint="@string/edit_text_description"
+                    android:hint="@string/date_format_fin"
                     android:inputType="text"/>
             </android.support.design.widget.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.9"
-                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                    <EditText
-                        android:id="@+id/edtLocalizacionUnidadProductiva"
-                        style="@style/editText"
-                        android:drawableLeft="@drawable/ic_localizacion_finca"
-                        android:drawableStart="@drawable/ic_localizacion_finca"
-                        android:enabled="false"
-                        android:hint="@string/edit_text_localizacion_finca"
-                        android:inputType="text"/>
-                </android.support.design.widget.TextInputLayout>
-
-
-                <ImageView
-                    android:id="@+id/imageViewLocalizarUnidadProductiva"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="0.1"
-                    android:src="@drawable/ic_apuntador" />
-
-            </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -95,9 +62,9 @@
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                     <EditText
-                        android:id="@+id/edtAreaUnidadProductiva"
+                        android:id="@+id/txtCantidadProduccionReal"
                         style="@style/editText"
-                        android:hint="@string/edit_text_numero_hectareas"
+                        android:hint="@string/cantidad"
                         android:inputType="numberDecimal"
                         android:drawableLeft="@drawable/ic_numero_hectareas"
                         android:drawableStart="@drawable/ic_numero_hectareas"
@@ -105,7 +72,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/spinnerUnidadMedidaUp"
+                    android:id="@+id/spinnerUnidadMedidaProduccion"
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:hint="@string/title_unidad"
@@ -120,10 +87,7 @@
                     app:met_primaryColor="@color/grey_luiyi"
                     app:met_textColor="@color/grey_luiyi"
                     app:met_textColorHint="@color/black_alpha_40" />
-
             </LinearLayout>
-
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

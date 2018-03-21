@@ -24,6 +24,7 @@ import android.widget.Toast
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Coords
 import com.interedes.agriculturappv3.asistencia_tecnica.services.coords.CoordsService
+import com.interedes.agriculturappv3.services.Const
 
 /**
  * Created by usuario on 13/03/2018.
@@ -34,6 +35,7 @@ class CoordsServiceKotlin(var context_: Context): Service(), LocationListener {
     var latitud: Double = 0.toDouble()
     var longitud: Double = 0.toDouble()
     var texto: TextView?=null
+    private val PACKAGE_NAME = "com.interedes.agriculturappv3"
     //
 
 
@@ -132,7 +134,8 @@ class CoordsServiceKotlin(var context_: Context): Service(), LocationListener {
         latitud = loc.latitude
         longitud = loc.longitude
 
-        val retIntent = Intent("LOCATION")
+        val retIntent = Intent(Const.SERVICE_LOCATION)
+        retIntent.setPackage(PACKAGE_NAME)
         retIntent.putExtra("latitud", latitud)
         retIntent.putExtra("longitud", longitud)
         //retIntent.putExtra("initial", "" );

@@ -1,13 +1,12 @@
-package com.interedes.agriculturappv3.events
+package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.events
 
 /**
  * Created by usuario on 21/03/2018.
  */
-
-data class RequestEvent (var eventType: Int,
-                             var mutableList: MutableList<Object>? = null,
-                             var objectMutable: Object? = null,
-                             var mensajeError: String?
+data class RequestEventProduccion (var eventType: Int,
+                         var mutableList: MutableList<Object>? = null,
+                         var objectMutable: Object? = null,
+                         var mensajeError: String?
 ) {
     companion object {
         val READ_EVENT: Int = 0

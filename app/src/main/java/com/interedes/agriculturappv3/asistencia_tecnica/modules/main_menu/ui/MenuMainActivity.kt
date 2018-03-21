@@ -22,6 +22,7 @@ import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragme
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.presenter.MenuPresenterImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.ui.MainViewMenu
+import com.interedes.agriculturappv3.services.Const
 import com.raizlabs.android.dbflow.sql.language.SQLite
 
 
@@ -146,17 +147,15 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
     //region Implemetacion Interfaz ViewMenu
-
-
     override fun onConnectivity() {
-        val retIntent = Intent("CONECTIVIDAD")
+        val retIntent = Intent(Const.SERVICE_CONECTIVITY)
         retIntent.putExtra("state_conectivity", true)
         this?.sendBroadcast(retIntent)
         onMessageOk(R.color.colorPrimary, getString(R.string.on_connectividad))
     }
 
     override fun offConnectivity() {
-        val retIntent = Intent("CONECTIVIDAD")
+        val retIntent = Intent(Const.SERVICE_CONECTIVITY)
         retIntent.putExtra("state_conectivity", false)
         this?.sendBroadcast(retIntent)
         onMessageError(R.color.grey_luiyi, getString(R.string.off_connectividad))

@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecn
 /**
  * Created by EnuarMunoz on 16/03/18.
  */
+
 data class RequestEventLote (var eventType: Int,
                              var mutableList: MutableList<Object>? = null,
                              var objectMutable: Object? = null,

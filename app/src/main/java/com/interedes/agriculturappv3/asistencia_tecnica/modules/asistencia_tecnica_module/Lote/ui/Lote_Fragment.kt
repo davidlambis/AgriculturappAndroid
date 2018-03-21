@@ -552,7 +552,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
 
 
     override fun requestResponseOk() {
-        _dialogRegisterUpdate?.dismiss()
+        if(_dialogRegisterUpdate!=null){
+            _dialogRegisterUpdate?.dismiss()
+        }
         onMessageOk(R.color.colorPrimary, getString(R.string.request_ok));
     }
 
