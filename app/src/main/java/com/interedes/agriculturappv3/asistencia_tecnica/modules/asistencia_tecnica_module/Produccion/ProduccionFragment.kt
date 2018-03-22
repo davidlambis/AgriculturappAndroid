@@ -54,9 +54,9 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     var _dialogRegisterUpdate: AlertDialog? = null
 
     //Globals
-    var produccionGlobal:Produccion?=null
+    //var produccionGlobal:Produccion?=null
     var produccionList:ArrayList<Produccion>?=ArrayList<Produccion>()
-    var Cultivo_Id: Long? = 0
+    var Cultivo_Id: Long? = null
     var unidadMedidaGlobal:Unidad_Medida?=null
     var fechaInicio: Date?=null
     var fechaFin: Date?=null
@@ -223,20 +223,32 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             producccion.CultivoId=Cultivo_Id
             producccion.UnidadMedidaId=unidadMedidaGlobal?.Id
             producccion.NombreUnidadMedida=unidadMedidaGlobal?.Descripcion
+
+
+            producccion.NombreUnidadProductiva=viewDialog?.txtUnidadProductivaSelected?.text.toString()
+            producccion.NombreLote= viewDialog?.txtLoteSelected?.text.toString()
+            producccion.NombreCultivo=viewDialog?.txtCultivoSelected?.text.toString()
             presenter?.registerProdcuccion(producccion,Cultivo_Id!! )
+
+
         }
     }
 
-    override fun updateProduccion() {
+    override fun updateProduccion(produccion:Produccion) {
         if (presenter?.validarCampos() == true) {
             val producccion =  Produccion()
-            producccion.Id=produccionGlobal?.Id
+            producccion.Id=produccion.Id
             producccion.FechaInicio=fechaInicio
             producccion.FechaFin=fechaFin
             producccion.ProduccionReal=viewDialog?.txtCantidadProduccionReal?.text.toString().toDoubleOrNull()
             producccion.CultivoId=Cultivo_Id
             producccion.UnidadMedidaId=unidadMedidaGlobal?.Id
             producccion.NombreUnidadMedida=unidadMedidaGlobal?.Descripcion
+
+
+            producccion.NombreUnidadProductiva=viewDialog?.txtUnidadProductivaSelected?.text.toString()
+            producccion.NombreLote= viewDialog?.txtLoteSelected?.text.toString()
+            producccion.NombreCultivo=viewDialog?.txtCultivoSelected?.text.toString()
             presenter?.registerProdcuccion(producccion,Cultivo_Id!! )
         }
     }
@@ -269,7 +281,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     override fun onMessageOk(colorPrimary: Int, message: String?) {
         val color = Color.WHITE
         val snackbar = Snackbar
-                .make(container, message!!, Snackbar.LENGTH_LONG)
+                .make(container_fragment, message!!, Snackbar.LENGTH_LONG)
         val sbView = snackbar.view
         sbView.setBackgroundColor(ContextCompat.getColor(activity!!.applicationContext, colorPrimary))
         val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
@@ -287,9 +299,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_produccion, null)
         presenter?.setListSpinnerUnidadMedida()
-        viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.Nombre)
-        viewDialog?.txtLoteSelected?.setText(loteGlobal?.Nombre)
-        viewDialog?.txtCultivoSelected?.setText(cultivoGlobal?.Nombre)
+
 
         viewDialog?.ivClosetDialog?.setOnClickListener(this)
         viewDialog?.txtFechaInicio?.setOnClickListener(this)
@@ -298,16 +308,26 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
         //REGISTER
         if (produccion == null) {
-
+            viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.Nombre)
+            viewDialog?.txtLoteSelected?.setText(loteGlobal?.Nombre)
+            viewDialog?.txtCultivoSelected?.setText(cultivoGlobal?.Nombre)
         }
         //UPDATE
         else {
+
+            viewDialog?.txtUnidadProductivaSelected?.setText(produccion.NombreUnidadProductiva)
+            viewDialog?.txtLoteSelected?.setText(produccion.NombreLote)
+            viewDialog?.txtCultivoSelected?.setText(produccion.NombreCultivo)
+
             Cultivo_Id=produccion.CultivoId
             unidadMedidaGlobal = Unidad_Medida(produccion.UnidadMedidaId, produccion.NombreUnidadMedida, null)
             viewDialog?.txtFechaInicio?.setText(produccion.getFechaInicioFormat())
             viewDialog?.txtFechaFin?.setText(produccion.getFechafinFormat())
             viewDialog?.txtCantidadProduccionReal?.setText(produccion.ProduccionReal.toString())
             viewDialog?.spinnerUnidadMedidaProduccion?.setText(produccion.NombreUnidadMedida)
+
+            fechaInicio= produccion.FechaInicio
+            fechaFin=produccion.FechaFin
         }
         //Set Events
         ivClosetDialog?.setOnClickListener(this)
@@ -325,7 +345,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             button.setOnClickListener {
                 // TODO Do something
                 if(produccion!=null){
-                    updateProduccion()
+                    updateProduccion(produccion)
                 }else{
                     registerProduccion()
                 }
@@ -342,6 +362,12 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         var unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
         spinnerUnidadProductiva.setAdapter(unidadProductivaArrayAdapter)
         spinnerUnidadProductiva.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+            spinnerLote.setText("")
+            spinnerLote.setHint(String.format(getString(R.string.spinner_lote)))
+
+            spinnerCultivo.setText("")
+            spinnerCultivo.setHint(String.format(getString(R.string.spinner_cultivo)))
+
             unidadProductivaGlobal= listUnidadProductiva!![position] as UnidadProductiva
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
         }
@@ -356,8 +382,11 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         var loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, listLotes)
         spinnerLote.setAdapter(loteArrayAdapter)
         spinnerLote.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+            spinnerCultivo.setText("")
+            spinnerCultivo.setHint(String.format(getString(R.string.spinner_cultivo)))
             loteGlobal= listLotes!![position] as Lote
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+
         }
     }
 
@@ -370,6 +399,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         spinnerCultivo.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             cultivoGlobal= listCultivos!![position] as Cultivo
             Cultivo_Id=cultivoGlobal?.Id
+            presenter?.getListProduccion(Cultivo_Id)
         }
     }
 

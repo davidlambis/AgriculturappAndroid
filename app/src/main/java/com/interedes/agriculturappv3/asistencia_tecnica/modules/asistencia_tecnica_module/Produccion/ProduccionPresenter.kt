@@ -111,18 +111,17 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
                 //loteMainView?.onMessageOk(R.color.colorPrimary,"Item: "+lote.Nombre)
             }
             RequestEventProduccion.ITEM_READ_EVENT -> {
-                var lote = event.objectMutable as Produccion
+                var producccion = event.objectMutable as Produccion
                 //loteMainView?.onMessageOk(R.color.colorPrimary,"Leer: "+lote.Nombre)
                 ///  Toast.makeText(activity,"Leer: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
             RequestEventProduccion.ITEM_EDIT_EVENT -> {
-                var lote = event.objectMutable as Produccion
-                //Lote_Fragment.instance?.loteGlobal=lote
-                //loteMainView?.showAlertDialogAddLote(Lote_Fragment.instance?.loteGlobal)
+                var producccion = event.objectMutable as Produccion
+                mainView?.showAlertDialogAddProduccion(producccion)
             }
             RequestEventProduccion.ITEM_DELETE_EVENT -> {
-                var lote = event.objectMutable as Produccion
-                //loteMainView?.confirmDelete(lote)
+                var producccion = event.objectMutable as Produccion
+                //mainView?.confirmDelete(producccion)
                 //// Toast.makeText(activity,"Eliminar: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
 

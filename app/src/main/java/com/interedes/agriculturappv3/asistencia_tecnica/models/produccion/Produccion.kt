@@ -43,12 +43,19 @@ data class Produccion(@PrimaryKey(autoincrement = true)
                       var UnidadMedidaId: Long? = null,
 
                       @Column(name = "NombreUnidadMedida")
-                      var NombreUnidadMedida: String? = null
-) {
+                      var NombreUnidadMedida: String? = null,
 
-    override fun toString(): String {
-        return Descripcion!!
-    }
+                      @Column(name = "NombreUnidadProductiva")
+                      var NombreUnidadProductiva: String? = null,
+
+                      @Column(name = "NombreLote")
+                      var NombreLote: String? = null,
+
+                      @Column(name = "NombreCultivo")
+                      var NombreCultivo: String? = null
+
+
+) {
 
 
 

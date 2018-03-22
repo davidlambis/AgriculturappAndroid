@@ -38,7 +38,7 @@ interface IMainProduccion {
 
         //Fun Lote CRUD
         fun registerProduccion()
-        fun updateProduccion()
+        fun updateProduccion(produccion:Produccion)
         fun setListProduccion(listProduccion: List<Produccion>)
         fun setResults(unidadesProductivas:Int)
 

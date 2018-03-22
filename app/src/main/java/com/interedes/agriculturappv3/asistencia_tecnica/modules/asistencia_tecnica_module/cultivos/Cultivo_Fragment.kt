@@ -25,10 +25,10 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.adapters.CultivoAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
+import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_cultivo.view.*
 import kotlinx.android.synthetic.main.fragment_cultivo.*
-import kotlinx.android.synthetic.main.map_layout.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -284,7 +284,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     override fun onMessageOk(colorPrimary: Int, msg: String?) {
         val color = Color.WHITE
         val snackbar = Snackbar
-                .make(container, msg!!, Snackbar.LENGTH_LONG)
+                .make(container_fragment, msg!!, Snackbar.LENGTH_LONG)
         val sbView = snackbar.view
         sbView.setBackgroundColor(ContextCompat.getColor(activity!!.applicationContext, colorPrimary))
         val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
