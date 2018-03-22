@@ -21,6 +21,9 @@ interface IMainProduccion {
 
     interface MainView {
         fun validarCampos(): Boolean
+        fun validarListasAddProduccion(): Boolean
+
+
         fun limpiarCampos()
 
         fun disableInputs()
@@ -28,7 +31,6 @@ interface IMainProduccion {
 
         fun showProgress()
         fun hideProgress()
-        fun hideElements()
 
         //ProgresHud
         fun showProgressHud()
@@ -36,7 +38,7 @@ interface IMainProduccion {
 
         //Fun Lote CRUD
         fun registerProduccion()
-        fun updateProduccion()
+        fun updateProduccion(produccion:Produccion)
         fun setListProduccion(listProduccion: List<Produccion>)
         fun setResults(unidadesProductivas:Int)
 
@@ -48,15 +50,10 @@ interface IMainProduccion {
         fun onMessageError(colorPrimary: Int, msg: String?)
 
         //Set sppiners
-        fun setListUnidadMedidaAdapterSpinner()
-        fun setListUnidadMedida(listUnidadMedida:List<Unidad_Medida>)
-        fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>)
-        fun setListLotes(listLotes:List<Lote>)
-        fun setListCultivos(listCultivos:List<Cultivo>)
-
-        //Spinner
-        fun setListSpinnerLote(unidad_productiva_id:Long?)
-        fun setListSpinnerCultivo(lote_id:Long?)
+        fun setListUnidadMedida(listUnidadMedida:List<Unidad_Medida>?)
+        fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
+        fun setListLotes(listLotes:List<Lote>?)
+        fun setListCultivos(listCultivos:List<Cultivo>?)
 
 
         //Dialog
@@ -78,6 +75,7 @@ interface IMainProduccion {
 
         //Validacion
         fun validarCampos(): Boolean?
+        fun validarListasAddProduccion(): Boolean?
 
         //Methods
         fun registerProdcuccion(produccin: Produccion,cultivo_id:Long)
@@ -88,6 +86,8 @@ interface IMainProduccion {
 
 
         //Methods View
+        fun setListSpinnerUnidadProductiva()
+        fun setListSpinnerUnidadMedida()
         fun setListSpinnerLote(unidad_productiva_id:Long?)
         fun setListSpinnerCultivo(lote_id:Long?)
 

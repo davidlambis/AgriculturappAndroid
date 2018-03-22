@@ -15,7 +15,7 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 /**
  * Created by usuario on 21/03/2018.
  */
-class ProduccionAdapter(val lista: ArrayList<Produccion>) : RecyclerView.Adapter<ProduccionAdapter.ViewHolder>() {
+class ProduccionAdapter(var lista: ArrayList<Produccion>) : RecyclerView.Adapter<ProduccionAdapter.ViewHolder>() {
 
     companion object {
         var instance:  ProduccionAdapter? = null
@@ -55,13 +55,11 @@ class ProduccionAdapter(val lista: ArrayList<Produccion>) : RecyclerView.Adapter
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: Produccion, pos: Int) = with(itemView) {
-            var txtFechaInicioProduccion: TextView = itemView.findViewById(R.id.txtFechaInicioProduccion)
-            var txtFechaFinProducccion: TextView = itemView.findViewById(R.id.txtFechaFinProducccion)
+            var txtFechaInicioProduccion: TextView = itemView.findViewById(R.id.txtFechaInicio)
+            var txtFechaFinProducccion: TextView = itemView.findViewById(R.id.txtFechaFin)
             var txtCantidadProduccion: TextView = itemView.findViewById(R.id.txtCantidadProduccion)
             var btnEditProducccion: ImageButton = itemView.findViewById(R.id.btnEditProducccion)
             var btnDeleteProduccion: ImageButton = itemView.findViewById(R.id.btnDeleteProduccion)
-
-
 
             //image.setImageBitmap(data.Imagen)
             // image.setImageResource(data.Imagen)
@@ -91,4 +89,8 @@ class ProduccionAdapter(val lista: ArrayList<Produccion>) : RecyclerView.Adapter
         eventBus?.post(event)
     }
 }
+
+
+
+
 

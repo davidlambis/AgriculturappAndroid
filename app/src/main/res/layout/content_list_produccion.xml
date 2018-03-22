@@ -85,6 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageButton
+            android:clickable="true"
             android:id="@+id/btnEditProducccion"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_edit"
@@ -94,6 +95,7 @@
             android:layout_height="wrap_content"
             />
         <ImageButton
+            android:clickable="true"
             android:id="@+id/btnDeleteProduccion"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_delete"
