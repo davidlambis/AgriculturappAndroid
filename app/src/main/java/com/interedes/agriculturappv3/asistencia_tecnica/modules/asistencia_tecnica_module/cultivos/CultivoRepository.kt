@@ -29,6 +29,8 @@ class CultivoRepository : ICultivo.Repository {
         } else {
             postEventError(CultivoEvent.ERROR_DIALOG_EVENT, "No hay Unidades productivas registradas")
         }
+        val listTipoProducto = Listas.listaTipoProducto()
+        postEventListTipoProducto(CultivoEvent.LIST_EVENT_TIPO_PRODUCTO, listTipoProducto, null)
         val listUnidadMedida = Listas.listaUnidadMedida()
         postEventListUnidadMedida(CultivoEvent.LIST_EVENT_UNIDAD_MEDIDA, listUnidadMedida, null)
     }
@@ -40,6 +42,31 @@ class CultivoRepository : ICultivo.Repository {
         } else {
             postEventError(CultivoEvent.ERROR_DIALOG_EVENT, "No hay lotes Registrados")
         }
+    }
+
+    override fun loadLotesSpinnerSearch(unidadProductivaId: Long?) {
+        val listLotes: List<Lote> = SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(unidadProductivaId)).queryList()
+        if (listLotes.size > 0) {
+            postEventListLotes(CultivoEvent.LIST_EVENT_LOTES_SEARCH, listLotes, null)
+        } else {
+            postEventError(CultivoEvent.ERROR_EVENT, "No hay lotes Registrados")
+        }
+    }
+
+    override fun loadDetalleTipoProducto(tipoProductoId: Long?) {
+        val listDetalleTipoProducto = ArrayList<DetalleTipoProducto>()
+        for (item in Listas.listaDetalleTipoProducto()) {
+            if (item.TipoProductoId == tipoProductoId) {
+                listDetalleTipoProducto.add(item)
+            }
+        }
+        postEventListDetalleTipoProducto(CultivoEvent.LIST_EVENT_DETALLE_TIPO_PRODUCTO, listDetalleTipoProducto, null)
+
+    }
+
+    override fun searchCultivos(loteId: Long?) {
+        val list_cultivos = getCultivosByLote(loteId)
+        postEventOk(CultivoEvent.SEARCH_EVENT, list_cultivos, null)
     }
 
     override fun getListAllCultivos() {
@@ -77,6 +104,16 @@ class CultivoRepository : ICultivo.Repository {
     private fun postEventListUnidadProductiva(type: Int, listUnidadProductiva: List<UnidadProductiva>?, messageError: String?) {
         val unidadProductivaMutable = listUnidadProductiva as MutableList<Object>
         postEvent(type, unidadProductivaMutable, null, messageError)
+    }
+
+    private fun postEventListTipoProducto(type: Int, listTipoProducto: List<TipoProducto>?, messageError: String?) {
+        val tipoProductoMutable = listTipoProducto as MutableList<Object>
+        postEvent(type, tipoProductoMutable, null, messageError)
+    }
+
+    private fun postEventListDetalleTipoProducto(type: Int, listDetalleTipoProducto: List<DetalleTipoProducto>?, messageError: String?) {
+        val detalleTipoProductoMutable = listDetalleTipoProducto as MutableList<Object>
+        postEvent(type, detalleTipoProductoMutable, null, messageError)
     }
 
     private fun postEventListUnidadMedida(type: Int, listUnidadMedida: List<Unidad_Medida>?, messageError: String?) {

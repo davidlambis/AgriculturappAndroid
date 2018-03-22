@@ -18,10 +18,9 @@ import android.view.ViewGroup
 import android.widget.*
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
+import com.interedes.agriculturappv3.asistencia_tecnica.models.*
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo_Table.DetalleTipoProductoId
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote_Table.Unidad_Medida_Id
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.adapters.CultivoAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
@@ -53,8 +52,11 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     //Variables Globales
     var Unidad_Medida_Id: Long? = 0
     var Lote_Id: Long? = 0
+    var DetalleTipoProductoId: Long? = 0
+    var NombreDetalleTipoProducto: String? = null
     var listUnidadProductivaGlobal: List<UnidadProductiva>? = java.util.ArrayList<UnidadProductiva>()
     var listUnidadMedidaGlobal: List<Unidad_Medida>? = java.util.ArrayList<Unidad_Medida>()
+    var listTipoProductoGlobal: List<TipoProducto>? = java.util.ArrayList<TipoProducto>()
     //Fecha
     internal var dateTime = Calendar.getInstance()
     var Date_Selected: String? = null
@@ -82,6 +84,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         initAdapter()
         (activity as MenuMainActivity).toolbar.title = getString(R.string.title_cultivo)
         fabAddCultivo.setOnClickListener(this)
+        fabSearchCultivo.setOnClickListener(this)
         swipeRefreshLayout.setOnRefreshListener(this)
         setupInjection()
     }
@@ -94,6 +97,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
     fun setupInjection() {
         presenter?.getAllCultivos()
+        setAdaptersSpinnersSearch()
     }
 
 
@@ -102,6 +106,9 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         when (p0?.id) {
             R.id.fabAddCultivo -> {
                 showAlertDialogCultivo(null)
+            }
+            R.id.fabSearchCultivo -> {
+                searchCultivos(Lote_Id)
             }
             R.id.ivClosetDialogCultivo -> {
                 _dialogRegisterUpdate?.dismiss()
@@ -123,11 +130,51 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             R.id.btnCancelCultivo -> {
                 _dialogRegisterUpdate?.dismiss()
             }
+
         }
     }
-    //endregion
 
-    //region Métodos Interfaz
+    //endregion
+    //Search
+    override fun setAdaptersSpinnersSearch() {
+        spinnerUnidadProductiva?.setAdapter(null)
+        val unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductivaGlobal)
+        spinnerUnidadProductiva?.setAdapter(unidadProductivaArrayAdapter)
+        spinnerUnidadProductiva?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+            if (listUnidadProductivaGlobal?.get(position)?.Id!! > 0) {
+                presenter?.loadLotesSpinnerSearch(listUnidadProductivaGlobal?.get(position)?.Id)
+            }
+        }
+    }
+
+    override fun validarCamposSearch(): Boolean {
+        var cancel = false
+        var focusView: View? = null
+        if (spinnerUnidadProductiva?.text.toString().isEmpty()) {
+            spinnerUnidadProductiva?.setError(getString(R.string.error_field_required))
+            focusView = spinnerUnidadProductiva
+            cancel = true
+        } else if (spinnerLote?.text.toString().isEmpty()) {
+            onMessageError(R.color.grey_luiyi, getString(R.string.error_lotes))
+            spinnerLote?.setError(getString(R.string.error_field_required))
+            focusView = spinnerLote
+            cancel = true
+        }
+        if (cancel) {
+            focusView?.requestFocus()
+        } else {
+            return true;
+        }
+        return false
+    }
+
+    override fun searchCultivos(loteId: Long?) {
+        if (presenter?.validarCamposSearch() == true) {
+            textViewLote?.setText(spinnerLote?.text.toString())
+            presenter?.searchCultivos(loteId)
+        }
+    }
+
     override fun validarCampos(): Boolean {
         var cancel = false
         var focusView: View? = null
@@ -143,7 +190,6 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             viewDialog?.edtNombreCultivo?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.edtNombreCultivo
             cancel = true
-
         } else if (viewDialog?.edtDescripcionCultivo?.text.toString().isEmpty()) {
             viewDialog?.edtDescripcionCultivo?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.edtDescripcionCultivo
@@ -163,6 +209,12 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         } else if (viewDialog?.edtFechaFin?.text.toString().isEmpty()) {
             viewDialog?.edtFechaFin?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.edtFechaFin
+            cancel = true
+        } else if (viewDialog?.spinnerTipoProducto?.text.toString().isEmpty()) {
+            focusView = viewDialog?.spinnerTipoProducto
+            cancel = true
+        } else if (viewDialog?.spinnerDetalleTipoProducto?.text.toString().isEmpty()) {
+            focusView = viewDialog?.spinnerDetalleTipoProducto
             cancel = true
         }
 
@@ -222,6 +274,8 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo.Nombre = viewDialog?.edtNombreCultivo?.text?.trim()?.toString()
             cultivo.Unidad_Medida_Id = Unidad_Medida_Id
             cultivo.Nombre_Unidad_Medida = viewDialog?.spinnerUnidadMedidaCosecha?.text?.toString()
+            cultivo.DetalleTipoProductoId = DetalleTipoProductoId
+            cultivo.Nombre_Detalle_Tipo_Producto = NombreDetalleTipoProducto
             presenter?.registerCultivo(cultivo)
         }
     }
@@ -253,7 +307,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivoGlobal = cultivo
             presenter?.deleteCultivo(cultivo)
         })
-        builder.setIcon(R.drawable.ic_lote);
+        builder.setIcon(R.drawable.ic_cultivos);
         return builder.show();
     }
 
@@ -278,7 +332,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     }
 
     override fun requestResponseError(error: String?) {
-
+        onMessageOk(R.color.grey_luiyi, error)
     }
 
     override fun onMessageOk(colorPrimary: Int, msg: String?) {
@@ -362,6 +416,8 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                 viewDialog?.edtEstimadoCosecha?.setText(cultivo.EstimadoCosecha.toString())
                 viewDialog?.edtFechaInicio?.setText(cultivo.FechaIncio)
                 viewDialog?.edtFechaFin?.setText(cultivo.FechaFin)
+                viewDialog?.spinnerTipoProducto?.visibility = View.GONE
+                viewDialog?.spinnerDetalleTipoProducto?.visibility = View.GONE
             }
 
             dialog.setView(viewDialog)
@@ -387,8 +443,39 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
     }
 
+    override fun setListTipoProducto(listTipoProducto: List<TipoProducto>) {
+        listTipoProductoGlobal = listTipoProducto
+    }
+
+    override fun setListDetalleTipoProducto(listDetalleTipoProducto: List<DetalleTipoProducto>) {
+        if (viewDialog != null) {
+            viewDialog?.spinnerDetalleTipoProducto?.visibility = View.VISIBLE
+            viewDialog?.spinnerDetalleTipoProducto!!.setAdapter(null)
+            val detalleTipoProductoArrayAdapter = ArrayAdapter<DetalleTipoProducto>(activity, android.R.layout.simple_spinner_dropdown_item, listDetalleTipoProducto)
+            viewDialog?.spinnerDetalleTipoProducto!!.setAdapter(detalleTipoProductoArrayAdapter)
+            viewDialog?.spinnerDetalleTipoProducto!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+                if (listDetalleTipoProducto.get(position).Id!! > 0) {
+                    DetalleTipoProductoId = listDetalleTipoProducto.get(position).Id
+                    NombreDetalleTipoProducto = listDetalleTipoProducto.get(position).Nombre
+                }
+            }
+        }
+    }
+
     override fun setListUnidadMedidas(listUnidadMedida: List<Unidad_Medida>) {
         listUnidadMedidaGlobal = listUnidadMedida
+    }
+
+    override fun setListLotesSearch(listLotes: List<Lote>) {
+        spinnerLote?.visibility = View.VISIBLE
+        spinnerLote!!.setAdapter(null)
+        val loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, listLotes)
+        spinnerLote!!.setAdapter(loteArrayAdapter)
+        spinnerLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+            if (listLotes.get(position).Id > 0) {
+                Lote_Id = listLotes.get(position).Id
+            }
+        }
     }
 
     override fun setListLotes(listLotes: List<Lote>) {
@@ -412,6 +499,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         viewDialog?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
         viewDialog?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             if (listUnidadProductivaGlobal?.get(position)?.Id!! > 0) {
+                viewDialog?.spinnerLote?.setText("")
                 presenter?.loadLotesSpinner(listUnidadProductivaGlobal?.get(position)?.Id)
             }
         }
@@ -424,6 +512,18 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                 Unidad_Medida_Id = listUnidadMedidaGlobal?.get(position)?.Id
             }
         }
+
+        viewDialog?.spinnerTipoProducto!!.setAdapter(null)
+        val tipoProductoArrayAdapter = ArrayAdapter<TipoProducto>(activity, android.R.layout.simple_spinner_dropdown_item, listTipoProductoGlobal)
+        viewDialog?.spinnerTipoProducto!!.setAdapter(tipoProductoArrayAdapter)
+        viewDialog?.spinnerTipoProducto!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+            if (listTipoProductoGlobal?.get(position)?.Id!! > 0) {
+                viewDialog?.spinnerDetalleTipoProducto?.setText("")
+                presenter?.loadDetalleTipoProducto(listTipoProductoGlobal?.get(position)?.Id)
+            }
+        }
+
+
     }
 
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
@@ -441,7 +541,11 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     //region Métodos
     override fun onRefresh() {
         showProgress()
-        presenter?.getAllCultivos()
+        if (spinnerLote?.text?.toString()?.isEmpty()!!) {
+            presenter?.getAllCultivos()
+        } else {
+            presenter?.searchCultivos(Lote_Id)
+        }
     }
 
     //Fecha

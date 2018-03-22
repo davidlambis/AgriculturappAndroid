@@ -1,7 +1,9 @@
 package com.interedes.agriculturappv3.services.listas
 
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.asistencia_tecnica.models.DetalleTipoProducto
 import com.interedes.agriculturappv3.asistencia_tecnica.models.ItemLista
+import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.Rol
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
@@ -63,7 +65,7 @@ class Listas {
                     null,
                     null
             ))
-            listaUP.add(UnidadProductiva(2,"Unidad Productiva 2",null,null,null, null,
+            listaUP.add(UnidadProductiva(2, "Unidad Productiva 2", null, null, null, null,
                     null,
                     null,
                     null,
@@ -74,7 +76,7 @@ class Listas {
                     null,
                     null,
                     null))
-            listaUP.add(UnidadProductiva(3,"Unidad Productiva 3",null,null,null, null,
+            listaUP.add(UnidadProductiva(3, "Unidad Productiva 3", null, null, null, null,
                     null,
                     null,
                     null,
@@ -85,7 +87,7 @@ class Listas {
                     null,
                     null,
                     null))
-            listaUP.add(UnidadProductiva(4,"Unidad Productiva 4",null,null,null, null,
+            listaUP.add(UnidadProductiva(4, "Unidad Productiva 4", null, null, null, null,
                     null,
                     null,
                     null,
@@ -96,7 +98,7 @@ class Listas {
                     null,
                     null,
                     null))
-            listaUP.add(UnidadProductiva(5,"Unidad Productiva 5",null,null,null, null,
+            listaUP.add(UnidadProductiva(5, "Unidad Productiva 5", null, null, null, null,
                     null,
                     null,
                     null,
@@ -107,7 +109,7 @@ class Listas {
                     null,
                     null,
                     null))
-            listaUP.add(UnidadProductiva(6,"Unidad Productiva 6",null,null,null, null,
+            listaUP.add(UnidadProductiva(6, "Unidad Productiva 6", null, null, null, null,
                     null,
                     null,
                     null,
@@ -136,6 +138,23 @@ class Listas {
 
 
             return listaUnidadMedida
+        }
+
+
+        fun listaTipoProducto(): ArrayList<TipoProducto> {
+            val lista_tipo_producto = ArrayList<TipoProducto>()
+            lista_tipo_producto.add(TipoProducto(Id = 1, Nombre = "Aguacate"))
+            lista_tipo_producto.add(TipoProducto(Id = 2, Nombre = "Fríjol"))
+            lista_tipo_producto.add(TipoProducto(Id = 3, Nombre = "Plátano"))
+            return lista_tipo_producto
+        }
+
+        fun listaDetalleTipoProducto(): ArrayList<DetalleTipoProducto> {
+            val lista_detalle_tipo_producto = ArrayList<DetalleTipoProducto>()
+            lista_detalle_tipo_producto.add(DetalleTipoProducto(Id = 1, Descripcion = "Aguacate Hass", Nombre = "Aguacate hass", TipoProductoId = 1))
+            lista_detalle_tipo_producto.add(DetalleTipoProducto(Id = 2, Descripcion = "Fríjol Pinto", Nombre = "Fríjol pinto", TipoProductoId = 2))
+            lista_detalle_tipo_producto.add(DetalleTipoProducto(Id = 3, Descripcion = "Plátano Verde", Nombre = "Plátano verde", TipoProductoId = 3))
+            return lista_detalle_tipo_producto
         }
 
 

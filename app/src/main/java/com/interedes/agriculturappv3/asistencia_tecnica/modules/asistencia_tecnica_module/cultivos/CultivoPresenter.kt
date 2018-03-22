@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
+import com.interedes.agriculturappv3.asistencia_tecnica.models.*
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
 import com.interedes.agriculturappv3.libs.EventBus
@@ -67,6 +65,14 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
                 val list_unidad_productiva = cultivoEvent.mutableList as List<UnidadProductiva>
                 view?.setListUnidadProductiva(list_unidad_productiva)
             }
+            CultivoEvent.LIST_EVENT_TIPO_PRODUCTO -> {
+                val list_tipo_producto = cultivoEvent.mutableList as List<TipoProducto>
+                view?.setListTipoProducto(list_tipo_producto)
+            }
+            CultivoEvent.LIST_EVENT_DETALLE_TIPO_PRODUCTO -> {
+                val list_detalle_tipo_producto = cultivoEvent.mutableList as List<DetalleTipoProducto>
+                view?.setListDetalleTipoProducto(list_detalle_tipo_producto)
+            }
             CultivoEvent.LIST_EVENT_UNIDAD_MEDIDA -> {
                 val list_unidad_medida = cultivoEvent.mutableList as List<Unidad_Medida>
                 view?.setListUnidadMedidas(list_unidad_medida)
@@ -76,10 +82,17 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
                 val list_lotes = cultivoEvent.mutableList as List<Lote>
                 view?.setListLotes(list_lotes)
             }
+            CultivoEvent.LIST_EVENT_LOTES_SEARCH -> {
+                val list_lotes = cultivoEvent.mutableList as List<Lote>
+                view?.setListLotesSearch(list_lotes)
+            }
             CultivoEvent.SAVE_EVENT -> {
                 val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
                 view?.setListCultivos(list_cultivos)
                 view?.requestResponseOk()
+            }
+            CultivoEvent.ERROR_EVENT -> {
+                view?.requestResponseError(cultivoEvent.mensajeError)
             }
             CultivoEvent.ERROR_DIALOG_EVENT -> {
                 view?.requestResponseDialogError(cultivoEvent.mensajeError)
@@ -94,9 +107,13 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
                 view?.requestResponseOk()
             }
             CultivoEvent.DELETE_EVENT -> {
-                var list_cultivos = cultivoEvent.mutableList as List<Cultivo>
+                val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
                 view?.setListCultivos(list_cultivos)
                 view?.requestResponseOk()
+            }
+            CultivoEvent.SEARCH_EVENT -> {
+                val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
+                view?.setListCultivos(list_cultivos)
             }
 
         //EVENTS ON ITEM CLICK
@@ -117,6 +134,19 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
             }
 
         }
+    }
+
+    //Search
+    override fun validarCamposSearch(): Boolean {
+        if (view?.validarCamposSearch() == true) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    override fun searchCultivos(loteId: Long?) {
+        interactor?.searchCultivos(loteId)
     }
 
     override fun validarCampos(): Boolean {
@@ -151,6 +181,14 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
         view?.disableInputs()
         view?.hideLotes()
         interactor?.loadLotesSpinner(unidadProductivaId)
+    }
+
+    override fun loadLotesSpinnerSearch(unidadProductivaId: Long?) {
+        interactor?.loadLotesSpinnerSearch(unidadProductivaId)
+    }
+
+    override fun loadDetalleTipoProducto(tipoProductoId: Long?) {
+        interactor?.loadDetalleTipoProducto(tipoProductoId)
     }
 
     //endregion

@@ -36,5 +36,16 @@ class CultivoInteractor : ICultivo.Interactor {
         repository?.loadLotesSpinner(unidadProductivaId)
     }
 
+    override fun loadLotesSpinnerSearch(unidadProductivaId: Long?) {
+        repository?.loadLotesSpinnerSearch(unidadProductivaId)
+    }
+
+    override fun searchCultivos(loteId: Long?) {
+        repository?.searchCultivos(loteId)
+    }
+
+    override fun loadDetalleTipoProducto(tipoProductoId: Long?) {
+        repository?.loadDetalleTipoProducto(tipoProductoId)
+    }
 
 }

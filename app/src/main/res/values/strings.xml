@@ -44,7 +44,6 @@
     <string name="edit_text_nombre_finca">Nombre de Unidad Productiva</string>
     <string name="edit_text_localizacion_finca">Localización de Unidad Productiva</string>
     <string name="btn_registrar_productor">Registrar</string>
-    <string name="spinner_tipo_producto">Tipo de Producto(Cultivo)</string>
     <string name="edit_text_numero_hectareas">Número de Hectáreas</string>
     <string name="edit_text_mes_siembra">Mes de Siembra</string>
     <string name="edit_text_mes_cosecha">Mes de Cosecha</string>
@@ -130,7 +129,11 @@
     <string name="snackbar_error_unidad_productiva">Debes registrar primero tu Unidad Productiva</string>
     <string name="snackbar_error_up">Debes seleccionar unidad productiva</string>
     <string name="snackbar_error_lote">Debes seleccionar lote</string>
+    <string name="error_lotes">No hay lotes registrados</string>
     <string name="alert_delete_cultivo">¿Está seguro que desea eliminar el cultivo?</string>
+    <string name="spinner_tipo_producto">Tipo Producto</string>
+    <string name="spinner_detalle_tipo_producto">Detalle Tipo Producto</string>
+
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
     <string name="name">Nombre</string>
@@ -159,7 +162,6 @@
     <string name="error_request">Error en la petición</string>
     <string name="error_load_roles">No se pueden cargar los roles porque no hay internet</string>
     <string name="_3232_34_mts">3232.34 mts</string>
-
 
 
     <string-array name="array_type_get_location_with_conection">

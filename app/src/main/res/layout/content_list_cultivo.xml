@@ -59,10 +59,20 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/txtDescripcionCultivo"
+                            android:id="@+id/txtDetalleTipoProducto"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/txtNombreCultivo"
+                            android:text="Aguacate Hass"
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/text_size_18"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtDescripcionCultivo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/txtDetalleTipoProducto"
                             android:text="descripcion cultivo "
                             android:textColor="@color/purple"
                             android:textSize="@dimen/text_size_12"
@@ -120,8 +130,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="@dimen/margin_3"
-                                android:tint="@color/light_green_800"
                                 android:src="@android:drawable/ic_menu_edit"
+                                android:tint="@color/light_green_800"
                                 tools:ignore="ContentDescription" />
 
                             <ImageButton

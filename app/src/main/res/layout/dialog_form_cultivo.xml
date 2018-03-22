@@ -104,6 +104,41 @@
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
+            <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                android:id="@+id/spinnerTipoProducto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/ic_nombre_finca"
+                android:drawableStart="@drawable/ic_nombre_finca"
+                android:hint="@string/spinner_tipo_producto"
+                android:textAlignment="center"
+                android:textColorHint="@color/grey_luiyi"
+                android:textSize="@dimen/text_size_18"
+                app:met_baseColor="@color/grey_luiyi"
+                app:met_floatingLabel="normal"
+                app:met_floatingLabelTextColor="@color/grey_luiyi"
+                app:met_primaryColor="@color/grey_luiyi"
+                app:met_textColor="@color/grey_luiyi"
+                app:met_textColorHint="@color/black_alpha_40" />
+
+            <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                android:id="@+id/spinnerDetalleTipoProducto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/ic_nombre_finca"
+                android:drawableStart="@drawable/ic_nombre_finca"
+                android:hint="@string/spinner_detalle_tipo_producto"
+                android:textAlignment="center"
+                android:textColorHint="@color/grey_luiyi"
+                android:textSize="@dimen/text_size_18"
+                android:visibility="gone"
+                app:met_baseColor="@color/grey_luiyi"
+                app:met_floatingLabel="normal"
+                app:met_floatingLabelTextColor="@color/grey_luiyi"
+                app:met_primaryColor="@color/grey_luiyi"
+                app:met_textColor="@color/grey_luiyi"
+                app:met_textColorHint="@color/black_alpha_40" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

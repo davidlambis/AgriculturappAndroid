@@ -44,7 +44,10 @@ data class Cultivo(@PrimaryKey(autoincrement = true)
                    var Unidad_Medida_Id: Long? = null,
 
                    @Column(name = "Nombre_Unidad_Medida")
-                   var Nombre_Unidad_Medida: String? = null) {
+                   var Nombre_Unidad_Medida: String? = null,
+
+                   @Column(name = "Nombre_Detalle_Tipo_Producto")
+                   var Nombre_Detalle_Tipo_Producto: String? = null) {
 
     override fun toString(): String {
         return Nombre!!

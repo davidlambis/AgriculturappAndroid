@@ -58,6 +58,7 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: Cultivo, pos: Int) = with(itemView) {
             val txt_nombre_cultivo: TextView = itemView.findViewById(R.id.txtNombreCultivo)
+            val txt_detalle_tipo_producto: TextView = itemView.findViewById(R.id.txtDetalleTipoProducto)
             val txt_descripcion_cultivo: TextView = itemView.findViewById(R.id.txtDescripcionCultivo)
             val txt_cosecha_estimada: TextView = itemView.findViewById(R.id.txtCosechaEstimada)
             val txt_fecha_inicio: TextView = itemView.findViewById(R.id.txtFechaInicio)
@@ -66,6 +67,7 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
             val btn_delete_cultivo: ImageButton = itemView.findViewById(R.id.btn_delete_cultivo)
 
             txt_nombre_cultivo.text = data.Nombre
+            txt_detalle_tipo_producto.text = data.Nombre_Detalle_Tipo_Producto
             txt_descripcion_cultivo.text = data.Descripcion
             txt_cosecha_estimada.text = data.EstimadoCosecha.toString()
             txt_fecha_inicio.text = data.FechaIncio
