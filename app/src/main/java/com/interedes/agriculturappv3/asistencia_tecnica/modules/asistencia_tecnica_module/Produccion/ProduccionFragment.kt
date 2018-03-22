@@ -104,7 +104,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     //region ADAPTER
     private fun initAdapter() {
         recyclerView?.layoutManager = LinearLayoutManager(activity)
-        adapter = ProduccionAdapter(produccionList!!)
+        adapter = ProduccionAdapter(produccionList!!,activity)
         recyclerView?.adapter = adapter
     }
     //endregion
@@ -355,6 +355,21 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         })
         dialog?.show()
         _dialogRegisterUpdate=dialog
+    }
+
+
+    override fun confirmDelete(produccion: Produccion): AlertDialog? {
+        var builder = AlertDialog.Builder(activity!!)
+        builder.setTitle(getString(R.string.confirmation));
+        builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+
+        })
+        builder.setMessage(getString(R.string.title_alert_delete_produccion));
+        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            presenter?.deleteProduccion(produccion, Cultivo_Id)
+        })
+        builder.setIcon(R.drawable.ic_lote);
+        return builder.show();
     }
 
     override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?) {

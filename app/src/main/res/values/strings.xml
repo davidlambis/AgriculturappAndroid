@@ -5,6 +5,9 @@
     <string name="title_menu">Menu</string>
     <string name="title_lote">Lote</string>
 
+    <!--Titles Frfgaments-->
+    <string name="title_module_asistencia_tecnica">Asistencia Tecnica</string>
+
     <!-- GLOBALES -->
     <string name="results_global_search">Mostrando %d Resultados</string>
     <string name="error_field_required">Campo Requerido</string>
@@ -115,6 +118,7 @@
     <string name="title_date_end">Fecha de Fin</string>
     <string name="title_date_start">Fechas de Inicio</string>
     <string name="tittle_date_produccion">Fechas de Produccion</string>
+    <string name="title_alert_delete_produccion">Esta seguro que desea eliminar la produccion</string>
 
     <!-- Cultivos -->
     <string name="edit_text_nombre_cultivo"> Nombre del Cultivo</string>
@@ -151,6 +155,8 @@
     <string name="confirmation">Confirmacion</string>
     <string name="title_unidad">Unidad</string>
     <string name="cantidad">Cantidad</string>
+
+    <string name="cantidad_estimada">%1$,.0f / %2$s</string>
 
 
     <!-- INTERNET CONNECTION -->

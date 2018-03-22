@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragm
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -13,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.TextView
 
 import com.interedes.agriculturappv3.R
@@ -22,6 +24,7 @@ import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecni
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.presenter.MainMenuFragmentPresenter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.presenter.MainMenuFragmentPresenterImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.services.Resources_Menu
 import com.interedes.agriculturappv3.services.listas.Listas
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_main_menu.*
@@ -31,6 +34,7 @@ import kotlinx.android.synthetic.main.fragment_main_menu.*
  * A simple [Fragment] subclass.
  */
 class MainMenuFragment : Fragment(), MainMenuFragmentView {
+
 
 
     var presenter: MainMenuFragmentPresenter? = null
@@ -53,13 +57,42 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadItems()
+        setupInit()
+    }
+
+
+    private fun setupInit() {
+        (activity as MenuMainActivity).toolbar.title=getString(R.string.title_menu)
+        var sdk = android.os.Build.VERSION.SDK_INT;
+        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary) );
+
+        } else {
+            (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary));
+        }
+        (activity as MenuMainActivity).toolbar.setTitleTextColor(resources.getColor(R.color.white))
+        var iconMenu=(activity as MenuMainActivity).menuItemGlobal
+        iconMenu?.isVisible=false
+
+
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val window = (activity as MenuMainActivity).getWindow()
+            // clear FLAG_TRANSLUCENT_STATUS flag:
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            // finally change the color
+            window.statusBarColor = ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary)
+        }
+
     }
 
     //region Métodos Interfaz
     override fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
         val lista = Listas.listaMenuProductor()
-        val adapter = SingleAdapter(lista) { position ->
+        val adapter = SingleAdapter(lista,Resources_Menu.MENU_MAIN,activity) { position ->
             if (lista[position].Identificador.equals("asistencia_tecnica")) {
                 (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())
             } else if (lista[position].Identificador.equals("salir")) {

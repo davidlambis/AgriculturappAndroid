@@ -121,7 +121,7 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
             }
             RequestEventProduccion.ITEM_DELETE_EVENT -> {
                 var producccion = event.objectMutable as Produccion
-                //mainView?.confirmDelete(producccion)
+                mainView?.confirmDelete(producccion)
                 //// Toast.makeText(activity,"Eliminar: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
 
@@ -178,7 +178,7 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
     }
 
 
-    override fun deleteProduccion(producccion: Produccion, cultivo_id: Long) {
+    override fun deleteProduccion(producccion: Produccion, cultivo_id: Long?) {
         mainView?.showProgress()
         if (checkConnection()) {
             interactor?.deleteProducccion(producccion, cultivo_id)
@@ -200,7 +200,7 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
     //region METHODS VIEWS
     override fun setListSpinnerLote(unidad_productiva_id: Long?) {
         var list= listLoteGlobal?.filter { lote: Lote -> lote.Unidad_Productiva_Id==unidad_productiva_id }
-       mainView?.setListLotes(list)
+        mainView?.setListLotes(list)
     }
 
     override fun setListSpinnerCultivo(lote_id: Long?) {

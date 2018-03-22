@@ -64,7 +64,7 @@ class ProduccionRepository :IMainProduccion.Repository {
         postEventOk(RequestEventProduccion.UPDATE_EVENT, getProductions(unidad_productiva_id),produccion);
     }
 
-    override fun deleteProduccion(produccion: Produccion,cultivo_id: Long) {
+    override fun deleteProduccion(produccion: Produccion,cultivo_id: Long?) {
         produccion.delete()
         //SQLite.delete<Lote>(Lote::class.java).where(Lote_Table.Id.eq(lote.Id)).async().execute()
         postEventOk(RequestEventProduccion.DELETE_EVENT, getProductions(cultivo_id),produccion);

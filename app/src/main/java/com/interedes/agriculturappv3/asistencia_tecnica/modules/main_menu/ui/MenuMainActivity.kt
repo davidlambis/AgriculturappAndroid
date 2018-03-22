@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -23,7 +24,11 @@ import kotlinx.android.synthetic.main.activity_menu_main.*
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.presenter.MenuPresenterImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.ui.MainViewMenu
 import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.Resources_Menu
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import android.view.MenuInflater
+
+
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu {
@@ -32,6 +37,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     //var coordsGlobal:Coords?=null
     var presenter: MenuPresenterImpl? = null
     var usuario_logued: Usuario? = null
+    var inflaterGlobal:MenuInflater?=null
+    var menuItemGlobal:MenuItem?=null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -175,7 +183,20 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     override fun onMessageError(colorPrimary: Int, message: String?) {
+
         onMessageOk(colorPrimary, message)
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+      //getMenuInflater().inflate(R.menu.menu_main_fragment, menu)
+
+        inflaterGlobal= menuInflater
+        inflaterGlobal?.inflate(R.menu.menu_main_fragment, menu)
+        menuItemGlobal = menu?.findItem(R.id.action_menu_icon)
+        menuItemGlobal?.isVisible = false
+        return true
+        //return super.onCreateOptionsMenu(menu)
     }
 
     //endregion

@@ -59,6 +59,7 @@ interface IMainProduccion {
         //Dialog
         fun showAlertDialogAddProduccion(produccion: Produccion?)
         fun verificateConnection(): AlertDialog?
+        fun confirmDelete(producccion:Produccion):AlertDialog?
 
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
@@ -80,7 +81,7 @@ interface IMainProduccion {
         //Methods
         fun registerProdcuccion(produccin: Produccion,cultivo_id:Long)
         fun updateProducccion(produccin: Produccion,cultivo_id:Long)
-        fun deleteProduccion(produccin: Produccion,cultivo_id:Long)
+        fun deleteProduccion(produccin: Produccion,cultivo_id:Long?)
         fun getListProduccion(cultivo_id:Long?)
         fun getListas()
 
@@ -99,7 +100,7 @@ interface IMainProduccion {
     interface Interactor {
         fun registerProduccion(produccion: Produccion,cultivo_id:Long)
         fun updateProducccion(produccion: Produccion,cultivo_id:Long)
-        fun deleteProducccion(produccion: Produccion,cultivo_id:Long)
+        fun deleteProducccion(produccion: Produccion,cultivo_id:Long?)
         fun execute(cultivo_id:Long?)
         fun getListas()
     }
@@ -110,6 +111,6 @@ interface IMainProduccion {
         fun getProductions(cultivo_id:Long?): List<Produccion>
         fun saveProduccion(produccion: Produccion,cultivo_id:Long)
         fun updateProduccion(produccion: Produccion,cultivo_id:Long)
-        fun deleteProduccion(produccion: Produccion,cultivo_id:Long)
+        fun deleteProduccion(produccion: Produccion,cultivo_id:Long?)
     }
 }

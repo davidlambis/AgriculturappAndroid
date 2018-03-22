@@ -1,5 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.adapters
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +10,11 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.ItemLista
 import android.widget.ImageView
 import android.widget.TextView
+import com.interedes.agriculturappv3.services.Resources_Menu
 
 //Recibe directamente la lista y el listener del click
-class SingleAdapter(val lista: ArrayList<ItemLista>, val listener: (Int) -> Unit) : RecyclerView.Adapter<SingleAdapter.ViewHolder>() {
+class SingleAdapter(val lista: ArrayList<ItemLista>,var TYPE_MENU:Int,var context:Context?, val listener: (Int) -> Unit) : RecyclerView.Adapter<SingleAdapter.ViewHolder>() {
+
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -20,7 +24,7 @@ class SingleAdapter(val lista: ArrayList<ItemLista>, val listener: (Int) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.single_item, parent, false)
-        return ViewHolder(v)
+        return ViewHolder(v,TYPE_MENU,context )
     }
 
     override fun getItemCount(): Int {
@@ -28,13 +32,30 @@ class SingleAdapter(val lista: ArrayList<ItemLista>, val listener: (Int) -> Unit
     }
 
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, var TYPE_MENU: Int,var context:Context?) : RecyclerView.ViewHolder(itemView) {
+
         fun bindItems(data: ItemLista, pos: Int, listener: (Int) -> Unit) = with(itemView) {
             val image: ImageView = itemView.findViewById(R.id.imageView)
             val textNombre: TextView = itemView.findViewById(R.id.textView)
             //image.setImageBitmap(data.Imagen)
             image.setImageResource(data.Imagen)
             textNombre.text = data.Nombre
+
+            //Aplicar diseños al menu
+            if(Resources_Menu.MENU_MAIN==TYPE_MENU){
+                if(data.Identificador.equals("asistencia_tecnica")){
+                    textNombre.setTextColor(context.resources.getColor(R.color.purple))
+                }else if(data.Identificador.equals("comercial")){
+                    textNombre.setTextColor(context.resources.getColor(R.color.blue))
+                }else if(data.Identificador.equals("contabilidad")){
+                    textNombre.setTextColor(context.resources.getColor(R.color.green))
+                }
+
+
+            }else if(Resources_Menu.MENU_MODULE_ASISTENCIA_TECNICA==TYPE_MENU){
+                textNombre.setTextColor(context.resources.getColor(R.color.purple))
+            }
+
             //El listener en base a la posición
             itemView.setOnClickListener {
                 listener(pos)

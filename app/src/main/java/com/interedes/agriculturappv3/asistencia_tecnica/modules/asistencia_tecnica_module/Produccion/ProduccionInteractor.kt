@@ -21,7 +21,7 @@ class ProduccionInteractor:IMainProduccion.Interactor {
         repository?.updateProduccion(produccion,cultivo_id)
     }
 
-    override fun deleteProducccion(produccion: Produccion, cultivo_id: Long) {
+    override fun deleteProducccion(produccion: Produccion, cultivo_id: Long?) {
         repository?.deleteProduccion(produccion,cultivo_id)
     }
 
