@@ -1,10 +1,8 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module
 
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
@@ -25,12 +23,8 @@ import com.interedes.agriculturappv3.services.listas.Listas
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_general.*
 import android.view.WindowManager
-import android.R.attr.data
 import android.util.TypedValue
-
-
-
-
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.PlagaFragment
 
 
 /**
@@ -45,7 +39,7 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupInit()
+        setupInitDesign()
         ivBackButton?.setOnClickListener(this)
         loadItems()
 
@@ -53,17 +47,17 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
     }
 
 
-    private fun setupInit() {
-        (activity as MenuMainActivity).toolbar.title=getString(R.string.title_module_asistencia_tecnica)
-        (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.purple) );
-        var iconMenu=(activity as MenuMainActivity).menuItemGlobal
-        iconMenu?.isVisible=true
+    private fun setupInitDesign() {
+        (activity as MenuMainActivity).toolbar.title = getString(R.string.title_module_asistencia_tecnica)
+        (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.purple));
+        var iconMenu = (activity as MenuMainActivity).menuItemGlobal
+        iconMenu?.isVisible = true
 
-        var iconc =iconMenu?.setIcon(ContextCompat.getDrawable( (activity as MenuMainActivity), R.drawable.ic_action_menu_asistencia_tecnica))
-        var icon=iconc?.icon?.mutate()
+        var iconc = iconMenu?.setIcon(ContextCompat.getDrawable((activity as MenuMainActivity), R.drawable.ic_action_menu_asistencia_tecnica))
+        var icon = iconc?.icon?.mutate()
         icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val window = (activity as MenuMainActivity).getWindow()
             // clear FLAG_TRANSLUCENT_STATUS flag:
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -93,11 +87,10 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
     }
 
 
-
     private fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
         val lista = Listas.listaAsistenciaTecnicaProductor()
-        val adapter = SingleAdapter(lista,Resources_Menu.MENU_MODULE_ASISTENCIA_TECNICA,activity) { position ->
+        val adapter = SingleAdapter(lista, Resources_Menu.MENU_MODULE_ASISTENCIA_TECNICA, activity) { position ->
 
             if (lista[position].Identificador.equals("mis_lotes")) {
                 (activity as MenuMainActivity).replaceFragment(Lote_Fragment())
@@ -106,9 +99,10 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
                 (activity as MenuMainActivity).replaceFragment(UnidadProductiva_Fragment())
             } else if (lista[position].Identificador.equals("mis_cultivos")) {
                 (activity as MenuMainActivity).replaceFragment(Cultivo_Fragment())
-            }
-            else if (lista[position].Identificador.equals("produccion")) {
+            } else if (lista[position].Identificador.equals("produccion")) {
                 (activity as MenuMainActivity).replaceFragment(ProduccionFragment())
+            } else if (lista[position].Identificador.equals("plagas")) {
+                (activity as MenuMainActivity).replaceFragment(PlagaFragment())
             }
         }
         recyclerView?.adapter = adapter
