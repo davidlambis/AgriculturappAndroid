@@ -70,8 +70,8 @@ class TipoProductosAdapter(val lista: ArrayList<TipoProducto>) : RecyclerView.Ad
     }
 
     fun postEvent(type: Int, tipoProducto: TipoProducto?) {
-        val cultivoMutable = tipoProducto as Object
-        val event = PlagasEvent(type, null, cultivoMutable, null)
+        val tipoProducto = tipoProducto as Object
+        val event = PlagasEvent(type, null, tipoProducto, null)
         event.eventType = type
         eventBus?.post(event)
     }

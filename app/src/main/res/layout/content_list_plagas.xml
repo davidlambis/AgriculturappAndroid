@@ -88,9 +88,9 @@
                             android:textStyle="bold" />
 
                         <Button
-                            android:id="@+id/btnAplicarTratamiento"
+                            android:id="@+id/btnVerInsumos"
                             style="@style/button"
-                            android:text="Aplicar Tratamiento"
+                            android:text="@string/ver_insumos"
                             android:layout_margin="@dimen/margin_global"
                             android:background="@drawable/custom_button"
                             android:layout_width="match_parent"

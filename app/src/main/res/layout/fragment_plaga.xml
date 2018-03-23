@@ -30,6 +30,8 @@
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
+                android:clickable="false"
+                android:focusable="false"
                 android:background="@color/white"
                 android:fadingEdgeLength="3dp"
                 android:focusableInTouchMode="true" />

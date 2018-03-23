@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas
 
+import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.events.PlagasEvent
@@ -28,10 +29,15 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
 
     @Subscribe
     override fun onEventMainThread(plagasEvent: PlagasEvent?) {
-        when(plagasEvent?.eventType){
+        when (plagasEvent?.eventType) {
             PlagasEvent.READ_EVENT -> {
                 val list_plagas = plagasEvent.mutableList as List<TipoEnfermedad>
                 view?.setListPlagas(list_plagas)
+            }
+            PlagasEvent.ITEM_EVENT -> {
+                val tipo_producto = plagasEvent.objectMutable as TipoProducto
+                view?.hideDialog(tipo_producto)
+                view?.getPlagasByTipoProducto(tipo_producto.Id)
             }
         }
     }
