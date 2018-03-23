@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecn
 
 
 import android.content.DialogInterface
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -44,6 +45,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
     //Dialog Tipo Productos
     var dialogProducto: AlertDialog? = null
+    var viewDialogTipoProductos:View?= null;
 
     companion object {
         var instance: PlagaFragment? = null
@@ -125,39 +127,60 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         txtResults.setText(results)
     }
 
-    fun showAlertDialogTipoProduccion() {
-        val inflater = this.layoutInflater
-        val viewDialogTipoProductos = inflater.inflate(R.layout.dialog_list_general, null)
-
-        viewDialogTipoProductos.recyclerView?.layoutManager = GridLayoutManager(activity, 2)
-        val lista: java.util.ArrayList<TipoProducto>? = java.util.ArrayList<TipoProducto>()
-        val adapterLocal = TipoProductosAdapter(lista!!)
-        viewDialogTipoProductos.recyclerView?.adapter = adapterLocal
-
-        adapterLocal.setItems(Listas.listaTipoProducto())
-        val results = String.format(getString(R.string.results_global_search), lista.size)
-        viewDialogTipoProductos?.txtResults?.setText(results)
-
-        viewDialogTipoProductos.swipeRefreshLayout.setOnRefreshListener(this)
-        viewDialogTipoProductos.swipeRefreshLayout.isRefreshing = false
-        viewDialogTipoProductos.swipeRefreshLayout.isEnabled = false
-
-        viewDialogTipoProductos?.ivClosetDialogUp?.setOnClickListener(this)
 
 
-        //Set Events
-        val dialog = AlertDialog.Builder(context!!)
-        dialog
+     fun showAlertDialogTipoProduccion() {
+         val inflater = this.layoutInflater
+         viewDialogTipoProductos = inflater.inflate(R.layout.dialog_list_general, null)
+
+         viewDialogTipoProductos?.recyclerView?.layoutManager = GridLayoutManager(activity, 2)
+         val lista: java.util.ArrayList<TipoProducto>? = java.util.ArrayList<TipoProducto>()
+         val adapterLocal = TipoProductosAdapter(lista!!)
+         viewDialogTipoProductos?.recyclerView?.adapter = adapterLocal
+
+         adapterLocal.setItems(Listas.listaTipoProducto())
+         val results = String.format(getString(R.string.results_global_search), lista.size)
+         viewDialogTipoProductos?.txtResults?.setText(results)
+         viewDialogTipoProductos?.txtResults?.setTextColor(resources.getColor(R.color.white))
+
+         viewDialogTipoProductos?.swipeRefreshLayout?.setOnRefreshListener(this)
+         viewDialogTipoProductos?.swipeRefreshLayout?.isRefreshing = false
+         viewDialogTipoProductos?.swipeRefreshLayout?.isEnabled = false
+
+         viewDialogTipoProductos?.ivClosetDialogUp?.setOnClickListener(this)
+
+         //Config Style Dialog
+         var image = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.ic_produccion_cultivo)
+         var icon = image?.mutate()
+         icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN);
+         var title= getString(R.string.title_selected_tipo_productos)
+
+        val dialog = AlertDialog.Builder(context!!,R.style.Theme_Sphinx_Dialog_Alert)
                 .setView(viewDialogTipoProductos)
-                .setIcon(R.drawable.ic_produccion_cultivo)
-                .setTitle(getString(R.string.title_selected_tipo_productos))
+                .setIcon(icon)
+                . setTitle(title)
                 .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+
                 })
                 .create()
 
-        dialogProducto = dialog.show()
+         //var  resources = dialog.getContext().getResources();
+         var color = resources.getColor(R.color.colorPrimary) // your color here
+         var titleDividerId = dialog.context.resources.getIdentifier("titleDivider", "id", "android");
+         var titleDivider = dialog.getWindow().getDecorView().findViewById<View>(titleDividerId);
+         if (titleDivider != null) {
+             titleDivider.setBackgroundColor(color);
+         }
 
+        dialog?.show()
+         dialogProducto=dialog
     }
+
+
+
+
+
+
     //endregion
 
     //region Click

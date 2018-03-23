@@ -60,6 +60,13 @@ class TipoProductosAdapter(val lista: ArrayList<TipoProducto>) : RecyclerView.Ad
             val txtNombreTipoProducto: TextView = itemView.findViewById(R.id.txtNombreTipoProducto)
             val imgTipoProducto: ImageView = itemView.findViewById(R.id.imgTipoProducto)
 
+            if(data.Nombre.equals("Aguacate")){
+                imgTipoProducto.setImageResource(R.drawable.aguacate)
+            }else if(data.Nombre.equals("Fríjol")){
+                imgTipoProducto.setImageResource(R.drawable.frijol)
+            }else if(data.Nombre.equals("Plátano")){
+                imgTipoProducto.setImageResource(R.drawable.platano)
+            }
 
             txtNombreTipoProducto.text=data.Nombre
 

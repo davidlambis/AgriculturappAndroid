@@ -11,9 +11,9 @@
     app:cardUseCompatPadding="true"
     >
     <RelativeLayout
+
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/margin_3">
+        android:layout_height="match_parent">
         <ImageView
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
@@ -22,7 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/platanosverdes" />
+
+            />
 
         <TextView
             android:id="@+id/txtNombreTipoProducto"

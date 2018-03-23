@@ -34,8 +34,8 @@
                 android:textColorHint="@color/grey_luiyi"
                 android:textSize="@dimen/text_size_16"
                 android:textAlignment="textStart"
-                android:drawableLeft="@drawable/ic_localizacion_finca"
-                android:drawableStart="@drawable/ic_localizacion_finca"
+                android:drawableEnd="@drawable/ic_localizacion_finca"
+                android:drawableRight="@drawable/ic_localizacion_finca"
                 app:met_baseColor="@color/grey_luiyi"
                 app:met_floatingLabel="normal"
                 app:met_floatingLabelTextColor="@color/grey_luiyi"
@@ -57,8 +57,8 @@
                     android:textColorHint="@color/grey_luiyi"
                     android:textSize="@dimen/text_size_16"
                     android:textAlignment="textStart"
-                    android:drawableLeft="@drawable/ic_numero_hectareas"
-                    android:drawableStart="@drawable/ic_numero_hectareas"
+                    android:drawableEnd="@drawable/ic_numero_hectareas"
+                    android:drawableRight="@drawable/ic_numero_hectareas"
                     app:met_baseColor="@color/grey_luiyi"
                     app:met_floatingLabel="normal"
                     android:layout_weight="1"
@@ -75,8 +75,8 @@
                     android:textSize="@dimen/text_size_16"
                     android:textAlignment="textStart"
                     android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_apellidos"
-                    android:drawableStart="@drawable/ic_apellidos"
+                    android:drawableEnd="@drawable/ic_apellidos"
+                    android:drawableRight="@drawable/ic_apellidos"
                     app:met_baseColor="@color/grey_luiyi"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelTextColor="@color/grey_luiyi"
@@ -99,19 +99,6 @@
             app:backgroundTint="@color/light_green_800"
             android:tint="@color/white"
             android:src="@android:drawable/ic_input_add" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/dialogProductos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
-            android:layout_margin="@dimen/margin_global"
-            android:background="@drawable/fondo_general"
-            app:fabCustomSize="@dimen/size_60"
-            app:backgroundTint="@color/light_green_800"
-            android:tint="@color/white"
-            android:src="@android:drawable/ic_menu_send" />
-
     </android.support.design.widget.CoordinatorLayout>
 
 </FrameLayout>

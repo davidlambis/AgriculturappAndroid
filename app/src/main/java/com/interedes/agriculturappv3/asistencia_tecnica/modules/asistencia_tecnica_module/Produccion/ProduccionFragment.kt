@@ -5,7 +5,9 @@ import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -14,6 +16,10 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -102,7 +108,6 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         fabAddProduccion.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         ivBackButton.setOnClickListener(this)
-        dialogProductos.setOnClickListener(this)
         setupInjection()
     }
 
@@ -370,36 +375,6 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     }
 
 
-
-     fun showAlertDialogTipoProduccion() {
-        val inflater = this.layoutInflater
-        var viewDialogTipoProductos = inflater.inflate(R.layout.dialog_list_general, null)
-
-         viewDialogTipoProductos.recyclerView?.layoutManager = GridLayoutManager(activity,2)
-         var lista:ArrayList<TipoProducto>?=ArrayList<TipoProducto>()
-         var  adapterLocal = TipoProductosAdapter(lista!!)
-         viewDialogTipoProductos.recyclerView?.adapter = adapterLocal
-
-         adapterLocal.setItems(Listas.listaTipoProducto())
-
-         viewDialogTipoProductos.swipeRefreshLayout.isRefreshing=false
-
-
-
-        //Set Events
-        val dialog = AlertDialog.Builder(context!!)
-                .setView(viewDialogTipoProductos)
-                .setIcon(R.drawable.ic_produccion_cultivo)
-                . setTitle(getString(R.string.tittle_add_unidadproductiva))
-                .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
-                })
-                .create()
-
-        dialog?.show()
-
-    }
-
-
     override fun confirmDelete(produccion: Produccion): AlertDialog? {
         var builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.confirmation));
@@ -507,11 +482,6 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
             }
-
-            R.id.dialogProductos -> {
-               showAlertDialogTipoProduccion()
-            }
-
 
         }
     }

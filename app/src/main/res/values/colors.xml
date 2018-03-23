@@ -7,6 +7,7 @@
     <color name="white">#b4ffffff</color>
     <color name="black_alpha_40">#66000000</color>
     <color name="grey_600">#757575</color>
+    <color name="black_transparencia">#d20d0d0d</color>
     <color name="grey_900">#212121</color>
     <color name="black">@android:color/black</color>
 

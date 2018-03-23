@@ -57,7 +57,7 @@ class PlagasAdapter(val lista: ArrayList<TipoEnfermedad>) : RecyclerView.Adapter
             val txt_nombre_cientifico: TextView = itemView.findViewById(R.id.txtNombreCientifico)
             val image_enfermedad: ImageView = itemView.findViewById(R.id.imageViewEnfermedad)
             val txt_descripcion_enfermedad: TextView = itemView.findViewById(R.id.txtDescripcionEnfermedad)
-            val btn_aplicar_tratamiento: Button = itemView.findViewById(R.id.btnAplicarTratamiento)
+            val btn_aplicar_tratamiento: Button = itemView.findViewById(R.id.btnVerInsumos)
 
             txt_nombre_enfermedad.text = data.Nombre
             txt_nombre_cientifico.text = data.NombreCientifico
