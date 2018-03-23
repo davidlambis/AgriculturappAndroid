@@ -26,6 +26,7 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.produccion.Produccion
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.adapter.ProduccionAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -93,6 +94,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         (activity as MenuMainActivity).toolbar.title=getString(R.string.tittle_producccion)
         fabAddProduccion.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
+        ivBackButton.setOnClickListener(this)
         setupInjection()
     }
 
@@ -460,6 +462,10 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             R.id.txtFechaFin -> {
                 confFecha=false
                 updateDate()
+            }
+            R.id.ivBackButton -> {
+                ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
+                (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
             }
         }
     }

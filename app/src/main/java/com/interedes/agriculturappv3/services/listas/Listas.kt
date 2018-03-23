@@ -42,7 +42,7 @@ class Listas {
             lista_asistencia_tecnica_productor.add(ItemLista("Mis Unidades Productivas", Imagen = R.drawable.ic_unidad_productiva, Identificador = "mis_unidades_productivas"))
             lista_asistencia_tecnica_productor.add(ItemLista("Mis Lotes", Imagen = R.drawable.ic_lote, Identificador = "mis_lotes"))
             lista_asistencia_tecnica_productor.add(ItemLista("Mis Cultivos", Imagen = R.drawable.ic_cultivos, Identificador = "mis_cultivos"))
-            lista_asistencia_tecnica_productor.add(ItemLista("Produccion", Imagen = R.drawable.ic_productos, Identificador = "produccion"))
+            lista_asistencia_tecnica_productor.add(ItemLista("Produccion", Imagen = R.drawable.ic_produccion_cultivo, Identificador = "produccion"))
             return lista_asistencia_tecnica_productor
         }
 
@@ -135,6 +135,17 @@ class Listas {
             listaUnidadMedida.add(Unidad_Medida(2,
                     "Metros",
                     "Mts"))
+
+            listaUnidadMedida.add(Unidad_Medida(2,
+                    "Libras",
+                    "Li"))
+
+            listaUnidadMedida.add(Unidad_Medida(2,
+                    "Kilos",
+                    "Kl"))
+            listaUnidadMedida.add(Unidad_Medida(2,
+                    "Cargas",
+                    "Car"))
 
 
             return listaUnidadMedida

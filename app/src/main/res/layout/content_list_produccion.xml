@@ -19,6 +19,7 @@
          pour avoir une organisation verticale nous devons
          donc rajouter un LinearLayout -->
 <LinearLayout
+    android:padding="@dimen/margin_3"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -32,9 +33,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_icon_cant_produccion" />
+                android:src="@drawable/ic_produccion_cultivo" />
         </LinearLayout>
         <LinearLayout
             android:layout_marginStart="@dimen/text_size_25"
@@ -42,6 +43,20 @@
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtCantidadProduccion"
+                android:textSize="@dimen/text_size_18"
+                android:gravity="start"
+                android:textColor="@color/grey_luiyi"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="234.5 Metros"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/grey_luiyi" />
             <TextView
                 android:id="@+id/txtTitle"
                 android:textStyle="bold"
@@ -62,21 +77,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/text_size_25"
                 android:text=""/>
+
         </LinearLayout>
-        <LinearLayout
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/txtCantidadProduccion"
-                android:textSize="@dimen/text_size_18"
-                android:gravity="start"
-                android:textColor="@color/grey_luiyi"
-                android:textStyle="bold"
-                android:layout_width="@dimen/width"
-                android:layout_height="wrap_content"
-                android:text=""/>
-        </LinearLayout>
+
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -104,6 +107,5 @@
             android:layout_height="wrap_content"
             />
     </LinearLayout>
-
 </LinearLayout>
 </android.support.v7.widget.CardView>

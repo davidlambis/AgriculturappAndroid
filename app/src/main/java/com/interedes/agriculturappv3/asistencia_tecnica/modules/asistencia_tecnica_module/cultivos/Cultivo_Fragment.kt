@@ -22,6 +22,7 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.*
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo_Table.DetalleTipoProductoId
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote_Table.Unidad_Medida_Id
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.adapters.CultivoAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import kotlinx.android.synthetic.main.activity_menu_main.*
@@ -86,6 +87,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         fabAddCultivo.setOnClickListener(this)
         fabSearchCultivo.setOnClickListener(this)
         swipeRefreshLayout.setOnRefreshListener(this)
+        ivBackButton.setOnClickListener(this)
         setupInjection()
     }
 
@@ -129,6 +131,11 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             }
             R.id.btnCancelCultivo -> {
                 _dialogRegisterUpdate?.dismiss()
+            }
+
+            R.id.ivBackButton -> {
+                ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
+                (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
             }
 
         }

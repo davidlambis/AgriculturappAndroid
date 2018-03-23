@@ -29,7 +29,7 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@drawable/logo_agr_app"
@@ -37,9 +37,6 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_marginBottom="@dimen/margin_global"
-                    android:layout_marginStart="@dimen/margin_global"
-                    android:layout_marginEnd="@dimen/margin_global"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:src="@drawable/splash_text"
@@ -63,8 +60,8 @@
 
                         <ImageView
                             android:id="@+id/imageViewIngresar"
-                            android:layout_width="128dp"
-                            android:layout_height="128dp"
+                            android:layout_width="118dp"
+                            android:layout_height="118dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_ingresar"
                             tools:ignore="ContentDescription" />
@@ -91,8 +88,8 @@
 
                         <ImageView
                             android:id="@+id/imageViewRegistrarse"
-                            android:layout_width="128dp"
-                            android:layout_height="128dp"
+                            android:layout_width="118dp"
+                            android:layout_height="118dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_registro"
                             tools:ignore="ContentDescription" />
@@ -116,14 +113,13 @@
                     android:id="@+id/linearLayoutContactanos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_global"
                     android:gravity="center"
                     android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/imageViewContactanos"
-                        android:layout_width="128dp"
-                        android:layout_height="128dp"
+                        android:layout_width="118dp"
+                        android:layout_height="118dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_contactanos"
                         tools:ignore="ContentDescription" />

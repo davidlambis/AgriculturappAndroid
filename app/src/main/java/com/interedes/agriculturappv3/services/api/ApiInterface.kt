@@ -60,7 +60,7 @@ interface ApiInterface {
                 .connectTimeout(5, TimeUnit.MINUTES)
                 .build()
 
-        val BASE_URL = "http://34.207.18.23/"
+        val BASE_URL = "http://18.233.87.16/"
         fun create(): ApiInterface {
             val retrofit = Retrofit.Builder()
                     .baseUrl(BASE_URL)

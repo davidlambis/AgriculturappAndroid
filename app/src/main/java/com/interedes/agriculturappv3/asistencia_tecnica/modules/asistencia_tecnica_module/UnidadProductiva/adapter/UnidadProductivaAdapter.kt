@@ -57,8 +57,8 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: UnidadProductiva, pos: Int) = with(itemView) {
-            var txt_unidad_productiva: TextView = itemView.findViewById(R.id.txtNombreCultivo)
-            var txt_descripcion_unidadproductiva: TextView = itemView.findViewById(R.id.txtDescripcionCultivo)
+            var txt_unidad_productiva: TextView = itemView.findViewById(R.id.txtNombreUp)
+            var txt_descripcion_unidadproductiva: TextView = itemView.findViewById(R.id.txtDescripcionUp)
             var txt_area_unidad_productiva: TextView = itemView.findViewById(R.id.txtFechaInicio)
             var txtCiudaDepartamento: TextView = itemView.findViewById(R.id.txtCosechaEstimada)
 

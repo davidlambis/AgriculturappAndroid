@@ -19,10 +19,17 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/ivBackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_back_button" />
             <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                 android:id="@+id/spinnerUnidadProductiva"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/size_60"
                 android:hint="@string/spinner_unidad_productiva"
                 android:textColorHint="@color/grey_luiyi"
                 android:textSize="@dimen/text_size_16"
@@ -45,7 +52,7 @@
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                     android:id="@+id/spinnerLote"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/size_60"
                     android:hint="@string/spinner_lote"
                     android:textColorHint="@color/grey_luiyi"
                     android:textSize="@dimen/text_size_16"
@@ -62,7 +69,7 @@
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                     android:id="@+id/spinnerCultivo"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/size_60"
                     android:hint="@string/spinner_cultivo"
                     android:textColorHint="@color/grey_luiyi"
                     android:textSize="@dimen/text_size_16"

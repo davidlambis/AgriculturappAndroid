@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.events.RequestEventLote
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.adapter.ProduccionAdapter
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import kotlinx.android.synthetic.main.content_list_lotes.view.*
@@ -63,7 +64,7 @@ class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter
             var txt_description_lote: TextView = itemView.findViewById(R.id.txt_description_lote)
             var txtAreaLote: TextView = itemView.findViewById(R.id.txtAreaLote)
             var txtFechaLote: TextView = itemView.findViewById(R.id.txtFechaLote)
-            var txtCoordenada: TextView = itemView.findViewById(R.id.txtCoordenada)
+           // var txtCoordenada: TextView = itemView.findViewById(R.id.txtCoordenada)
 
 
             var deleteBtn: ImageButton = itemView.findViewById(R.id.btnDeleteLote)
@@ -71,9 +72,9 @@ class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter
             // image.setImageResource(data.Imagen)
             txt_name_lote.text = data.Nombre
             txt_description_lote.text = data.Descripcion
-            txtAreaLote.text = data.Area.toString()
+            txtAreaLote.text =String.format(context.getString(R.string.cantidad_estimada)!!,data.Area, data.Nombre_Unidad_Medida)
             txtFechaLote.text = ""
-            txtCoordenada.text = data.Coordenadas
+           // txtCoordenada.text = data.Coordenadas
 
             //El listener en base a la posición
             itemView.setOnClickListener {

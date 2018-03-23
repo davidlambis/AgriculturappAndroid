@@ -69,6 +69,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <include  layout="@layout/content_recyclerview"/>
+
+
     </LinearLayout>
 
 <!--
@@ -216,6 +218,18 @@
         android:src="@android:drawable/ic_media_play"
         app:layout_anchor="@id/fab"
         app:layout_anchorGravity="top" />-->
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/ivBackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_global"
+        android:tint="@color/white"
+        app:backgroundTint="@color/lime_900"
+        app:fabCustomSize="@dimen/text_size_30"
+        app:fabSize="normal"
+        app:layout_anchorGravity="top|start"
+        app:srcCompat="@drawable/ic_back_button" />
 
 </android.support.design.widget.CoordinatorLayout>
 

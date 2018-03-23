@@ -22,6 +22,7 @@ import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.up.adapter.UnidadProductivaAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -77,6 +78,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         (activity as MenuMainActivity).toolbar.title=getString(R.string.title_up)
         fabAddUnidadProductiva.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
+        ivBackButton.setOnClickListener(this)
         setupInjection()
     }
 
@@ -363,6 +365,11 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
 
             R.id.imageViewLocalizarUnidadProductiva->{
                 presenter?.startGps(activity as MenuMainActivity)
+            }
+
+            R.id.ivBackButton -> {
+                ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
+                (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
             }
         }
     }

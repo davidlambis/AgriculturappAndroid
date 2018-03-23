@@ -35,6 +35,7 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.adapter.LoteAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.presenter.LotePresenter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Lote.presenter.LotePresenterImpl
@@ -133,6 +134,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         fabLocationLote.setOnClickListener(this)
         fabUnidadProductiva.setOnClickListener(this)
         swipeRefreshLayout.setOnRefreshListener(this);
+        ivBackButton.setOnClickListener(this)
         mapViewLotes.onCreate(savedInstanceState)
         mapViewLotes.onResume()
         try {
@@ -707,7 +709,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         val dialog = AlertDialog.Builder(context!!)
                 .setView(viewDialog)
                 .setIcon(R.drawable.ic_lote)
-                . setTitle(getString(R.string.tittle_add_unidadproductiva))
+                . setTitle(getString(R.string.add_lote))
                 .setPositiveButton(getString(R.string.btn_save), null) //Set to null. We override the onclick
                 .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
                 })
@@ -862,6 +864,10 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             R.id.ivClosetDialogLote -> _dialogRegisterUpdate?.dismiss()
             R.id.fabLocationLote -> showAlertTypeLocationLote()
             R.id.fabUnidadProductiva -> showAlertDialogSelectUp()
+            R.id.ivBackButton -> {
+                ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
+                (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
+            }
         }
     }
 

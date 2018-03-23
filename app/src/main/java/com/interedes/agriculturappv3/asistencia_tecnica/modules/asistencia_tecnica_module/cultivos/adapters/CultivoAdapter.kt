@@ -63,7 +63,7 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
             val txt_cosecha_estimada: TextView = itemView.findViewById(R.id.txtCosechaEstimada)
             val txt_fecha_inicio: TextView = itemView.findViewById(R.id.txtFechaInicio)
             val txt_fecha_fin: TextView = itemView.findViewById(R.id.txtFechaFin)
-            val btn_edit_cultivo: ImageView = itemView.findViewById(R.id.btn_edit_cultivo)
+            val btn_edit_cultivo: ImageButton = itemView.findViewById(R.id.btn_edit_cultivo)
             val btn_delete_cultivo: ImageButton = itemView.findViewById(R.id.btn_delete_cultivo)
 
             txt_nombre_cultivo.text = data.Nombre
