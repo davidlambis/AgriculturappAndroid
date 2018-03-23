@@ -68,7 +68,7 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
                             userMap.put("Cedula", response.body()?.identification)
                             userMap.put("Correo", response.body()?.email)
                             userMap.put("Celular", response.body()?.phoneNumber)
-                            userMap.put("Foto", "")
+                            userMap.put("FotoEnfermedad", "")
                             // userMap.put("Token", token!!)
 
                             reference?.setValue(userMap)?.addOnCompleteListener { task ->

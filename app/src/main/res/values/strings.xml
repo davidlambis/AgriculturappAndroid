@@ -138,6 +138,8 @@
     <string name="spinner_tipo_producto">Tipo Producto</string>
     <string name="spinner_detalle_tipo_producto">Detalle Tipo Producto</string>
 
+    <!-- Plagas -->
+    <string name="title_plagas">Plagas</string>
 
     <!--Tipo Producto-->
 
