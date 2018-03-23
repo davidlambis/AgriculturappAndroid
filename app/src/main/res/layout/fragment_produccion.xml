@@ -100,6 +100,18 @@
             android:tint="@color/white"
             android:src="@android:drawable/ic_input_add" />
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/dialogProductos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="@dimen/margin_global"
+            android:background="@drawable/fondo_general"
+            app:fabCustomSize="@dimen/size_60"
+            app:backgroundTint="@color/light_green_800"
+            android:tint="@color/white"
+            android:src="@android:drawable/ic_menu_send" />
+
     </android.support.design.widget.CoordinatorLayout>
 
 </FrameLayout>

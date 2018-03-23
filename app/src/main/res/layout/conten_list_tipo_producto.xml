@@ -6,26 +6,18 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_3"
     app:cardBackgroundColor="@android:color/white"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="5dp">
-
-    <!-- Les CardView possèdent des attributs supplémentaires dont
-         - cardBackgroundColor
-         - cardElevation pour l'élévation (donc aussi l'ombre)
-         - cardCornerRadius pour arrondir les angles
-     -->
-
-    <!-- Les CardView agissent comme des FrameLayout,
-     pour avoir une organisation verticale nous devons
-     donc rajouter un LinearLayout -->
+    app:cardCornerRadius="6dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true"
+    >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/activity_horizontal_margin">
-
+        android:layout_margin="@dimen/margin_3">
         <ImageView
-
-            android:id="@+id/imgRecipe"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:id="@+id/imgTipoProducto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -33,65 +25,30 @@
             android:src="@drawable/platanosverdes" />
 
         <TextView
-            android:id="@+id/txtRecipeName"
+            android:id="@+id/txtNombreTipoProducto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imgRecipe"
+            android:layout_below="@+id/imgTipoProducto"
             android:layout_centerHorizontal="true"
             android:layout_weight="1"
-            android:padding="@dimen/activity_horizontal_margin"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold"
             android:text="Producto"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-        <!-- <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtRecipeName"
-            android:id="@+id/layoutButtons"
-            android:layout_centerHorizontal="true">
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_edit"
-                android:background="@android:color/transparent"
-                android:id="@+id/imgFav" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_delete"
-                android:tint="@android:color/darker_gray"
-                android:background="@android:color/transparent"
-                android:id="@+id/imgDelete" />
-
-        </LinearLayout>-->
 
 
         <TextView
+            android:id="@+id/btnSelectedTipoProducto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtRecipeName"
+            android:layout_below="@+id/txtNombreTipoProducto"
             android:layout_gravity="center"
             android:background="?android:selectableItemBackground"
             android:drawableEnd="@drawable/ic_hand_selected"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="5dp"
+            android:textSize="@dimen/text_size_12"
             android:text="@string/selected"
             android:textColor="@color/purple" />
     </RelativeLayout>
-    <!--<LinearLayout
-        android:orientation="horizontal"
-        android:background="?android:selectableItemBackground"
-        android:padding="10dp"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-       <TextView
-           android:background="?android:selectableItemBackground"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_gravity="center"
-           android:text="@string/selected"/>
-    </LinearLayout>
-</LinearLayout>-->
 </android.support.v7.widget.CardView>

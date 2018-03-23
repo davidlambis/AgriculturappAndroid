@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -23,15 +24,21 @@ import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
+import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.produccion.Produccion
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.adapter.ProduccionAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.adapters.TipoProductosAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.services.listas.Listas
 import com.kaopiz.kprogresshud.KProgressHUD
+import kotlinx.android.synthetic.main.activity_login.view.*
+import kotlinx.android.synthetic.main.dialog_list_general.*
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
+import kotlinx.android.synthetic.main.content_recyclerview.view.*
 import kotlinx.android.synthetic.main.dialog_form_produccion.*
 import kotlinx.android.synthetic.main.dialog_form_produccion.view.*
 import kotlinx.android.synthetic.main.fragment_produccion.*
@@ -95,6 +102,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         fabAddProduccion.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         ivBackButton.setOnClickListener(this)
+        dialogProductos.setOnClickListener(this)
         setupInjection()
     }
 
@@ -297,6 +305,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         onMessageOk(colorPrimary, message)
     }
 
+
+
     override fun showAlertDialogAddProduccion(produccion: Produccion?) {
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_produccion, null)
@@ -357,6 +367,36 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         })
         dialog?.show()
         _dialogRegisterUpdate=dialog
+    }
+
+
+
+     fun showAlertDialogTipoProduccion() {
+        val inflater = this.layoutInflater
+        var viewDialogTipoProductos = inflater.inflate(R.layout.dialog_list_general, null)
+
+         viewDialogTipoProductos.recyclerView?.layoutManager = GridLayoutManager(activity,2)
+         var lista:ArrayList<TipoProducto>?=ArrayList<TipoProducto>()
+         var  adapterLocal = TipoProductosAdapter(lista!!)
+         viewDialogTipoProductos.recyclerView?.adapter = adapterLocal
+
+         adapterLocal.setItems(Listas.listaTipoProducto())
+
+         viewDialogTipoProductos.swipeRefreshLayout.isRefreshing=false
+
+
+
+        //Set Events
+        val dialog = AlertDialog.Builder(context!!)
+                .setView(viewDialogTipoProductos)
+                .setIcon(R.drawable.ic_produccion_cultivo)
+                . setTitle(getString(R.string.tittle_add_unidadproductiva))
+                .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+                })
+                .create()
+
+        dialog?.show()
+
     }
 
 
@@ -467,6 +507,12 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
             }
+
+            R.id.dialogProductos -> {
+               showAlertDialogTipoProduccion()
+            }
+
+
         }
     }
 

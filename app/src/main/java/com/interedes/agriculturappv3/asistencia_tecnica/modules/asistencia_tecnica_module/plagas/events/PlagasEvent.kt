@@ -9,5 +9,12 @@ class PlagasEvent(var eventType: Int, var mutableList: MutableList<Object>? = nu
         val UPDATE_EVENT: Int = 2
         val DELETE_EVENT: Int = 3
         val ERROR_EVENT: Int = 4
+
+
+        //Events On item Click
+        val ITEM_EVENT: Int = 5
+        val ITEM_READ_EVENT: Int = 6
+        val ITEM_EDIT_EVENT: Int = 7
+        val ITEM_DELETE_EVENT: Int = 8
     }
 }
