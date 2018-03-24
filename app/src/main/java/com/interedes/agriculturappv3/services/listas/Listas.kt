@@ -1,10 +1,7 @@
 package com.interedes.agriculturappv3.services.listas
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.DetalleTipoProducto
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ItemLista
-import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
+import com.interedes.agriculturappv3.asistencia_tecnica.models.*
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.FotoEnfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
@@ -195,6 +192,12 @@ class Listas {
             lista_fotos_enfermedad.add(FotoEnfermedad(Id = 2, Codigo = "fotenf1fr", FechaCreacion = "03/22/2018", Hora = "17:36", Ruta = "", Titulo = "Foto mancha angular Fríjol", EnfermedadesId = 2))
             lista_fotos_enfermedad.add(FotoEnfermedad(Id = 3, Codigo = "fotenf1pl", FechaCreacion = "03/22/2018", Hora = "17:37", Ruta = "", Titulo = "Foto moko Plátano", EnfermedadesId = 3))
             return lista_fotos_enfermedad
+        }
+
+        fun listaInsumos(): ArrayList<Insumo> {
+            val lista_insumos = ArrayList<Insumo>()
+            lista_insumos.add(Insumo(Id = 1, Descripcion = "Polvo soluble. 10 a 20 cc/Bomba de 20 L. Hidróxido de Cobre 53,8 %", Nombre = "Kocide", EnfermedadId = 1, Imagen = R.drawable.kocide))
+            return lista_insumos
         }
 
         fun queryGeneral(criterio: String, valor: String): String {

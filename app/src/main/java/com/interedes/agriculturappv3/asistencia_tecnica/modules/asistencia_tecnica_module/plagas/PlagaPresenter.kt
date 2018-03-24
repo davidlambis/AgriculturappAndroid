@@ -39,6 +39,10 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
                 view?.hideDialog(tipo_producto)
                 view?.getPlagasByTipoProducto(tipo_producto.Id)
             }
+            PlagasEvent.OPEN_EVENT -> {
+                val tipo_enfermedad = plagasEvent.objectMutable as TipoEnfermedad
+                view?.verInsumos(tipo_enfermedad)
+            }
         }
     }
 

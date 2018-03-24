@@ -1,4 +1,59 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos
 
-class InsumosRepository {
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Insumo
+import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.Enfermedad
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos.events.InsumosEvent
+import com.interedes.agriculturappv3.libs.EventBus
+import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.services.listas.Listas
+
+class InsumosRepository : InterfaceInsumos.Repository {
+
+    var eventBus: EventBus? = null
+
+    init {
+        eventBus = GreenRobotEventBus()
+    }
+
+    //region Métodos Interfaz
+    override fun getInsumosByPlaga(tipoEnfermedadId: Long?) {
+        val lista_all_enfermedades = Listas.listaEnfermedad()
+        val lista_enfermedad = ArrayList<Enfermedad>()
+        val lista_all_insumos = Listas.listaInsumos()
+        val lista_insumos = ArrayList<Insumo>()
+        for (item in lista_all_enfermedades) {
+            if (item.TipoEnfermedadId == tipoEnfermedadId) {
+                lista_enfermedad.add(item)
+            }
+        }
+        for (item in lista_all_insumos) {
+            for (i in lista_enfermedad) {
+                if (item.EnfermedadId == i.Id) {
+                    lista_insumos.add(item)
+                }
+            }
+        }
+        postEventOk(InsumosEvent.READ_EVENT, lista_insumos, null)
+
+    }
+    //endregion
+
+    //region Events
+    //Main Post Event
+    private fun postEventOk(type: Int, listInsumos: List<Insumo>?, insumo: Insumo?) {
+        val insumoListMutable = listInsumos as MutableList<Object>
+        var insumoMutable: Object? = null
+        if (insumo != null) {
+            insumoMutable = insumo as Object
+        }
+        postEvent(type, insumoListMutable, insumoMutable, null)
+    }
+
+    private fun postEvent(type: Int, listModel: MutableList<Object>?, model: Object?, errorMessage: String?) {
+        val event = InsumosEvent(type, listModel, model, errorMessage)
+        event.eventType = type
+        eventBus?.post(event)
+    }
+    //endregion
+
 }

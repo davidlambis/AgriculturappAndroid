@@ -1,7 +1,6 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.events
+package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos.events
 
-
-class PlagasEvent(var eventType: Int, var mutableList: MutableList<Object>? = null, var objectMutable: Object? = null, var mensajeError: String?) {
+class InsumosEvent(var eventType: Int, var mutableList: MutableList<Object>? = null, var objectMutable: Object? = null, var mensajeError: String?)  {
 
     companion object {
         val READ_EVENT: Int = 0

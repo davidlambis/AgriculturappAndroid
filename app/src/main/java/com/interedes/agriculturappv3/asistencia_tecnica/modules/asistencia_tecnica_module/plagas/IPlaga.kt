@@ -13,6 +13,7 @@ interface IPlaga {
         fun setListPlagas(list_plagas: List<TipoEnfermedad>)
         fun setResults(plagas: Int)
         fun hideDialog(tipoProducto:TipoProducto)
+        fun verInsumos(tipoEnfermedad: TipoEnfermedad)
     }
 
     interface Presenter {

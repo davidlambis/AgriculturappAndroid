@@ -15,7 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.R.id.ivBackButton
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Insumo
 import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
@@ -45,7 +45,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
     //Dialog Tipo Productos
     var dialogProducto: AlertDialog? = null
-    var viewDialogTipoProductos:View?= null;
+    var viewDialogTipoProductos: View? = null;
 
     companion object {
         var instance: PlagaFragment? = null
@@ -74,7 +74,6 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         plagas_search_edit_frame?.setOnClickListener(this)
         plagas_search_view.clearFocus()
         plagas_search_view.setIconifiedByDefault(false)
-        btnVerInsumos?.setOnClickListener(this)
     }
 
     private fun initAdapter() {
@@ -99,6 +98,16 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         adapter?.setItems(list_plagas)
         hideRefresh()
         setResults(list_plagas.size)
+    }
+
+    override fun verInsumos(tipoEnfermedad: TipoEnfermedad) {
+        val bundle = Bundle()
+        bundle.putLong("tipoEnfermedadId", tipoEnfermedad.Id!!)
+        bundle.putString("nombreTipoEnfermedad", tipoEnfermedad.Nombre)
+        val insumosFragment: InsumosFragment
+        insumosFragment = InsumosFragment()
+        insumosFragment.arguments = bundle
+        (activity as MenuMainActivity).replaceFragment(insumosFragment)
     }
 
     override fun showRefresh() {
@@ -128,57 +137,52 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     }
 
 
+    fun showAlertDialogTipoProduccion() {
+        val inflater = this.layoutInflater
+        viewDialogTipoProductos = inflater.inflate(R.layout.dialog_list_general, null)
 
-     fun showAlertDialogTipoProduccion() {
-         val inflater = this.layoutInflater
-         viewDialogTipoProductos = inflater.inflate(R.layout.dialog_list_general, null)
+        viewDialogTipoProductos?.recyclerView?.layoutManager = GridLayoutManager(activity, 2)
+        val lista: java.util.ArrayList<TipoProducto>? = java.util.ArrayList<TipoProducto>()
+        val adapterLocal = TipoProductosAdapter(lista!!)
+        viewDialogTipoProductos?.recyclerView?.adapter = adapterLocal
 
-         viewDialogTipoProductos?.recyclerView?.layoutManager = GridLayoutManager(activity, 2)
-         val lista: java.util.ArrayList<TipoProducto>? = java.util.ArrayList<TipoProducto>()
-         val adapterLocal = TipoProductosAdapter(lista!!)
-         viewDialogTipoProductos?.recyclerView?.adapter = adapterLocal
+        adapterLocal.setItems(Listas.listaTipoProducto())
+        val results = String.format(getString(R.string.results_global_search), lista.size)
+        viewDialogTipoProductos?.txtResults?.setText(results)
+        viewDialogTipoProductos?.txtResults?.setTextColor(resources.getColor(R.color.white))
 
-         adapterLocal.setItems(Listas.listaTipoProducto())
-         val results = String.format(getString(R.string.results_global_search), lista.size)
-         viewDialogTipoProductos?.txtResults?.setText(results)
-         viewDialogTipoProductos?.txtResults?.setTextColor(resources.getColor(R.color.white))
+        viewDialogTipoProductos?.swipeRefreshLayout?.setOnRefreshListener(this)
+        viewDialogTipoProductos?.swipeRefreshLayout?.isRefreshing = false
+        viewDialogTipoProductos?.swipeRefreshLayout?.isEnabled = false
 
-         viewDialogTipoProductos?.swipeRefreshLayout?.setOnRefreshListener(this)
-         viewDialogTipoProductos?.swipeRefreshLayout?.isRefreshing = false
-         viewDialogTipoProductos?.swipeRefreshLayout?.isEnabled = false
+        viewDialogTipoProductos?.ivClosetDialogUp?.setOnClickListener(this)
 
-         viewDialogTipoProductos?.ivClosetDialogUp?.setOnClickListener(this)
+        //Config Style Dialog
+        var image = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.ic_produccion_cultivo)
+        var icon = image?.mutate()
+        icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN);
+        var title = getString(R.string.title_selected_tipo_productos)
 
-         //Config Style Dialog
-         var image = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.ic_produccion_cultivo)
-         var icon = image?.mutate()
-         icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN);
-         var title= getString(R.string.title_selected_tipo_productos)
-
-        val dialog = AlertDialog.Builder(context!!,R.style.Theme_Sphinx_Dialog_Alert)
+        val dialog = AlertDialog.Builder(context!!, R.style.Theme_Sphinx_Dialog_Alert)
                 .setView(viewDialogTipoProductos)
                 .setIcon(icon)
-                . setTitle(title)
+                .setTitle(title)
                 .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
 
                 })
                 .create()
 
-         //var  resources = dialog.getContext().getResources();
-         var color = resources.getColor(R.color.colorPrimary) // your color here
-         var titleDividerId = dialog.context.resources.getIdentifier("titleDivider", "id", "android");
-         var titleDivider = dialog.getWindow().getDecorView().findViewById<View>(titleDividerId);
-         if (titleDivider != null) {
-             titleDivider.setBackgroundColor(color);
-         }
+        //var  resources = dialog.getContext().getResources();
+        var color = resources.getColor(R.color.colorPrimary) // your color here
+        var titleDividerId = dialog.context.resources.getIdentifier("titleDivider", "id", "android");
+        var titleDivider = dialog.getWindow().getDecorView().findViewById<View>(titleDividerId);
+        if (titleDivider != null) {
+            titleDivider.setBackgroundColor(color);
+        }
 
         dialog?.show()
-         dialogProducto=dialog
+        dialogProducto = dialog
     }
-
-
-
-
 
 
     //endregion
@@ -195,9 +199,6 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
             }
             R.id.ivClosetDialogUp -> {
                 dialogProducto?.dismiss()
-            }
-            R.id.btnVerInsumos -> {
-                //(activity as MenuMainActivity).replaceFragment(InsumosFragment())
             }
         }
     }
