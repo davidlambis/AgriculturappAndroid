@@ -163,8 +163,9 @@ class Listas {
         fun listaDetalleTipoProducto(): ArrayList<DetalleTipoProducto> {
             val lista_detalle_tipo_producto = ArrayList<DetalleTipoProducto>()
             lista_detalle_tipo_producto.add(DetalleTipoProducto(Id = 1, Descripcion = "Aguacate Hass", Nombre = "Aguacate hass", TipoProductoId = 1))
-            lista_detalle_tipo_producto.add(DetalleTipoProducto(Id = 2, Descripcion = "Fríjol Pinto", Nombre = "Fríjol pinto", TipoProductoId = 2))
-            lista_detalle_tipo_producto.add(DetalleTipoProducto(Id = 3, Descripcion = "Plátano Verde", Nombre = "Plátano verde", TipoProductoId = 3))
+            lista_detalle_tipo_producto.add(DetalleTipoProducto(Id = 2, Descripcion = "Aguacate Hoss", Nombre = "Aguacate Hoss", TipoProductoId = 1))
+            lista_detalle_tipo_producto.add(DetalleTipoProducto(Id = 3, Descripcion = "Fríjol Pinto", Nombre = "Fríjol pinto", TipoProductoId = 2))
+            lista_detalle_tipo_producto.add(DetalleTipoProducto(Id = 4, Descripcion = "Plátano Verde", Nombre = "Plátano verde", TipoProductoId = 3))
             return lista_detalle_tipo_producto
         }
 

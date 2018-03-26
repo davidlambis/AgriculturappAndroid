@@ -23,7 +23,6 @@ interface IMainProduccion {
         fun validarCampos(): Boolean
         fun validarListasAddProduccion(): Boolean
 
-
         fun limpiarCampos()
 
         fun disableInputs()

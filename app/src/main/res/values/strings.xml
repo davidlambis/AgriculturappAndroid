@@ -141,6 +141,7 @@
     <string name="alert_delete_cultivo">¿Está seguro que desea eliminar el cultivo?</string>
     <string name="spinner_tipo_producto">Tipo Producto</string>
     <string name="spinner_detalle_tipo_producto">Detalle Tipo Producto</string>
+    <string name="tittle_select_lote">Seleccione el lote para agregar un cultivo</string>
 
     <!-- Plagas -->
     <string name="title_plagas">Plagas</string>
@@ -173,6 +174,7 @@
     <string name="filtrar">Filtrar</string>
     <string name="ubicar">Ubicar</string>
     <string name="tittle_filter">Filtros de busquedad</string>
+    <string name="error_results">No se encontraron resultados</string>
 
 
     <!-- INTERNET CONNECTION -->

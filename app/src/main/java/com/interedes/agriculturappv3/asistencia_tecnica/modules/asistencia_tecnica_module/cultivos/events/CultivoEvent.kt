@@ -13,8 +13,7 @@ class CultivoEvent(var eventType: Int, var mutableList: MutableList<Object>? = n
         val LIST_EVENT_UNIDAD_PRODUCTIVA: Int = 6
         val LIST_EVENT_UNIDAD_MEDIDA: Int = 7
         val LIST_EVENT_LOTES: Int = 8
-        val LIST_EVENT_LOTES_SEARCH : Int = 9
-        val SEARCH_EVENT : Int = 10
+
 
         //Events On item Click
         val ITEM_EVENT: Int = 11

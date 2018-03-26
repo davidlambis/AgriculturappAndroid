@@ -9,7 +9,7 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/margin_3"
+
         android:fillViewport="true">
 
         <LinearLayout
@@ -18,82 +18,39 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:padding="@dimen/margin_5"
+                android:background="@color/purple"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
                 <ImageView
+                    android:tint="@color/white"
                     android:id="@+id/ivBackButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@null"
+                    android:layout_gravity="center"
                     android:src="@drawable/ic_back_button" />
-                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/spinnerUnidadProductiva"
+                <LinearLayout
+                    android:id="@+id/plagas_search_edit_frame"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_60"
-                    android:drawableLeft="@drawable/ic_localizacion_finca"
-                    android:drawableStart="@drawable/ic_localizacion_finca"
-                    android:hint="@string/spinner_unidad_productiva"
-                    android:textAlignment="textStart"
-                    android:textColorHint="@color/grey_luiyi"
-                    android:textSize="@dimen/text_size_16"
-                    app:met_baseColor="@color/grey_luiyi"
-                    app:met_floatingLabel="normal"
-                    app:met_floatingLabelTextColor="@color/grey_luiyi"
-                    app:met_primaryColor="@color/grey_luiyi"
-                    app:met_textColor="@color/grey_luiyi"
-                    app:met_textColorHint="@color/black_alpha_40" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/spinnerLote"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_60"
-                    android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_numero_hectareas"
-                    android:drawableStart="@drawable/ic_numero_hectareas"
-                    android:hint="@string/spinner_lote"
-                    android:textAlignment="textStart"
-                    android:textColorHint="@color/grey_luiyi"
-                    android:textSize="@dimen/text_size_16"
-                    android:visibility="gone"
-                    app:met_baseColor="@color/grey_luiyi"
-                    app:met_floatingLabel="normal"
-                    app:met_floatingLabelTextColor="@color/grey_luiyi"
-                    app:met_primaryColor="@color/grey_luiyi"
-                    app:met_textColor="@color/grey_luiyi"
-                    app:met_textColorHint="@color/black_alpha_40" />
-
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:id="@+id/searchFilter"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:drawableStart="@drawable/ic_lupa_buscar_producto"
+                        android:layout_width="match_parent"
+                        android:hint="@string/filtrar"
+                        android:paddingStart="@dimen/margin_5"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/margin_3"
+                        android:background="@drawable/radius_edit_text" />
+                </LinearLayout>
 
             </LinearLayout>
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fabSearchCultivo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginBottom="@dimen/margin_global"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_search"
-                android:theme="@style/FloatingButton"
-                app:backgroundTint="@color/colorPrimary"
-                app:fabSize="normal"
-                app:rippleColor="@color/colorPrimaryDark" />
-
-            <TextView
-                android:id="@+id/textViewLote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/margin_global"
-                android:textColor="@color/grey_luiyi"
-                android:textSize="@dimen/text_size" />
 
             <include layout="@layout/content_recyclerview" />
 

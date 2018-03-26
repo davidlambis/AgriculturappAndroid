@@ -53,7 +53,8 @@ import kotlinx.android.synthetic.main.fragment_lote.*
 import java.util.ArrayList
 
 
-class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefreshLayout.OnRefreshListener, GoogleMap.OnMapClickListener, View.OnClickListener, GoogleMap.OnMyLocationButtonClickListener {
+class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefreshLayout.OnRefreshListener, GoogleMap.OnMapClickListener, View.OnClickListener, GoogleMap.OnMyLocationButtonClickListener,GoogleMap.OnMarkerDragListener {
+
 
     //Mapa
     private var mMap: GoogleMap? = null
@@ -261,6 +262,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     //On Map Reding
     override fun onMapReady(map: GoogleMap?) {
         mMap = map
+        mMap?.setOnMarkerDragListener(this);
         val positionInitial = LatLng(4.565473550710278, -74.058837890625)
         /// mMap.addMarker(new MarkerOptions().position(positionInitial).title("Ecuador"));
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(positionInitial, 6f))
@@ -280,6 +282,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             })
 
             animateLocationMap(lotesList!!)
+
 
         }
     }
@@ -310,7 +313,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             var  builder =  LatLngBounds.Builder()
             for (up in listUnidadProductivaGlobal!!) {
                 var latlngUp = LatLng(up.Latitud!!, up.Longitud!!);
-                var markerUP = addMarker(latlngUp, up.Nombre!!, up.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+
+                //var markerUP = addMarker(latlngUp, up.Nombre!!, up.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                var markerUP = addMarker(latlngUp, up.Nombre!!, up.Descripcion!!,BitmapDescriptorFactory .fromResource(R.drawable.ic_marker_unidad_productiva))
                 listMarkerUp.add(markerUP!!)
                 builder.include(latlngUp)
             }
@@ -322,7 +327,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         else if(DIALOG_SELECT_ALL_UP==false && lotes.size<=0){
             var  builder =  LatLngBounds.Builder()
             var latlngUp = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
-            var markerUP = addMarker(latlngUp, unidadProductivaGlobalDialog?.Nombre!!, unidadProductivaGlobalDialog?.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            var markerUP = addMarker(latlngUp, unidadProductivaGlobalDialog?.Nombre!!, unidadProductivaGlobalDialog?.Descripcion!!, BitmapDescriptorFactory .fromResource(R.drawable.ic_marker_unidad_productiva))
             listMarkerUp.add(markerUP!!)
             builder.include(latlngUp)
             var  bounds = builder.build()
@@ -340,23 +345,37 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 builder.include(centerLatLng)
             }
 
-            var  bounds = builder.build()
-            var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
-            mMap?.animateCamera(cu)
+
 
             //mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
             //mMap?.setPadding(0, getResources().getDrawable(R.drawable.logo_agr_app).getIntrinsicHeight(), 0, 0);
             for (lote in lotes) {
                 var latlngLote = LatLng(lote.Latitud!!, lote.Longitud!!);
-                var markerLote = addMarker(latlngLote, lote.Nombre!!, lote.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                var markerLote = addMarker(latlngLote, lote.Nombre!!, lote.Descripcion!!,  BitmapDescriptorFactory .fromResource(R.drawable.ic_marker_lote))
                 listMarkerLote.add(markerLote!!)
             }
 
             //Add Marker UP
-            if(unidadProductivaGlobalDialog!=null){
-                var centerLatLng: LatLng? = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
-                addMarker(centerLatLng!!, unidadProductivaGlobalDialog?.Nombre!!, unidadProductivaGlobalDialog?.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            if(DIALOG_SELECT_ALL_UP==true){
+                for (unidadPro in this!!.listUnidadProductivaGlobal!!) {
+                    var centerLatLng: LatLng? = LatLng(unidadPro?.Latitud!!, unidadPro?.Longitud!!)
+                    addMarker(centerLatLng!!, unidadPro?.Nombre!!, unidadPro?.Descripcion!!, BitmapDescriptorFactory .fromResource(R.drawable.ic_marker_unidad_productiva))
+                    builder.include(centerLatLng)
+                }
+            }else{
+                if(unidadProductivaGlobalDialog!=null){
+                    var centerLatLng: LatLng? = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
+                    addMarker(centerLatLng!!, unidadProductivaGlobalDialog?.Nombre!!, unidadProductivaGlobalDialog?.Descripcion!!, BitmapDescriptorFactory .fromResource(R.drawable.ic_marker_unidad_productiva))
+                    builder.include(centerLatLng)
+                }
             }
+
+
+
+
+            var  bounds = builder.build()
+            var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
+            mMap?.animateCamera(cu)
 
             // double area= calculateAreaOfGPSPolygonOnEarthInSquareMeters(locationsGlobals);
             //Toast.makeText(activity, "AREA: " + String.format("%.0f mts", area), Toast.LENGTH_LONG).show()
@@ -366,6 +385,23 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             val positionInitial = LatLng(4.565473550710278, -74.058837890625)
             mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(positionInitial, 6f))
         }
+    }
+
+    override fun onMarkerDragEnd(p0: Marker?) {
+        Log.d("System out", "onMarkerDragEnd..."+p0?.getPosition()?.latitude+"..."+p0?.getPosition()?.longitude);
+        mMap?.animateCamera(CameraUpdateFactory.newLatLng(p0?.getPosition()))
+        txtCoordsLote.setText(String.format(getString(R.string.coords), p0?.getPosition()?.latitude, p0?.getPosition()?.longitude))
+        //LastMarkerDrawingLote?.setPosition(LatLng(p0?.getPosition()?.latitude!!, p0?.getPosition()?.longitude!!))
+    }
+
+    override fun onMarkerDragStart(p0: Marker?) {
+        Log.d("System out", "onMarkerDragStart..."+p0?.getPosition()?.latitude+"..."+p0?.getPosition()?.longitude);
+        txtCoordsLote.setText(String.format(getString(R.string.coords), p0?.getPosition()?.latitude, p0?.getPosition()?.longitude))
+    }
+
+    override fun onMarkerDrag(p0: Marker?) {
+        Log.d("System out", "onMarkerDragStart..."+p0?.getPosition()?.latitude+"..."+p0?.getPosition()?.longitude);
+        txtCoordsLote.setText(String.format(getString(R.string.coords), p0?.getPosition()?.latitude, p0?.getPosition()?.longitude))
     }
 
 
@@ -568,6 +604,10 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         _dialogTypeLocation?.dismiss()
         Toast.makeText(activity, "Ubicacion Manual", Toast.LENGTH_SHORT).show()
         txtCoordsLote.setText("")
+
+        contentButtonsDrawingLoteMapa.visibility= View.VISIBLE
+        app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
+        app_bar.layoutParams.height=AppBarLayout.LayoutParams.MATCH_PARENT
     }
 
 
@@ -826,17 +866,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 else -> {
                     _dialogTypeLocation = dialog as AlertDialog?
                     setPropertiesTypeLocationManual()
-                    contentButtonsDrawingLoteMapa.visibility= View.VISIBLE
-                    app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
-                    app_bar.layoutParams.height=AppBarLayout.LayoutParams.MATCH_PARENT
-
-                    /*
-                    for (i in 0 until contentOptionsLote.getChildCount()) {
-                        // val view = contentOptionsLote.getChildAt(i)
-                        // view.setVisibility(View.GONE) // Or whatever you want to do with the view.
-                        val child = contentOptionsLote.getChildAt(i)
-                        child.setEnabled(false)
-                    }*/
+                    showAlertDialogSelectUp()
                 }
             }
         })
@@ -953,16 +983,13 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 }
             }
 
-
             R.id.checkCloseMapView->{
                 contentButtonsDrawingLoteMapa.visibility= View.GONE
                 app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
                 app_bar.layoutParams.height=resources.getDimensionPixelSize(R.dimen.height_mapa)
                 //app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
-
                //var layoutParams1 =  LinearLayout.LayoutParams(AppBarLayout.LayoutParams.MATCH_PARENT,
                                                               //R.dimen.height_mapa)
-
             }
         }
     }
@@ -1033,5 +1060,4 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         super.onResume()
     }
     //endregion
-
 }

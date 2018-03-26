@@ -24,28 +24,12 @@ class CultivoInteractor : ICultivo.Interactor {
         repository?.deleteCultivo(cultivo!!)
     }
 
-    override fun getAllCultivos() {
-        repository?.getListAllCultivos()
-    }
-
     override fun getListas() {
         repository?.getListas()
     }
 
-    override fun loadLotesSpinner(unidadProductivaId: Long?) {
-        repository?.loadLotesSpinner(unidadProductivaId)
-    }
-
-    override fun loadLotesSpinnerSearch(unidadProductivaId: Long?) {
-        repository?.loadLotesSpinnerSearch(unidadProductivaId)
-    }
-
-    override fun searchCultivos(loteId: Long?) {
-        repository?.searchCultivos(loteId)
-    }
-
-    override fun loadDetalleTipoProducto(tipoProductoId: Long?) {
-        repository?.loadDetalleTipoProducto(tipoProductoId)
+    override fun execute(cultivo_id:Long?) {
+        repository?.getListCultivos(cultivo_id)
     }
 
 }
