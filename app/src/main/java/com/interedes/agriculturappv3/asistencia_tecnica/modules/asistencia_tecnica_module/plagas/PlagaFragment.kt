@@ -13,6 +13,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.GravityEnum
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Insumo
@@ -44,7 +49,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     var plagasList: ArrayList<TipoEnfermedad>? = ArrayList<TipoEnfermedad>()
 
     //Dialog Tipo Productos
-    var dialogProducto: AlertDialog? = null
+    var dialogProducto: MaterialDialog? = null
     var viewDialogTipoProductos: View? = null;
 
     companion object {
@@ -141,6 +146,12 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         val inflater = this.layoutInflater
         viewDialogTipoProductos = inflater.inflate(R.layout.dialog_list_general, null)
 
+
+        ///var view=inflater.inflate(R.layout.dialog_list_general, null) as View
+
+
+
+
         viewDialogTipoProductos?.recyclerView?.layoutManager = GridLayoutManager(activity, 2)
         val lista: java.util.ArrayList<TipoProducto>? = java.util.ArrayList<TipoProducto>()
         val adapterLocal = TipoProductosAdapter(lista!!)
@@ -158,31 +169,74 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         viewDialogTipoProductos?.ivClosetDialogUp?.setOnClickListener(this)
 
         //Config Style Dialog
-        var image = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.ic_produccion_cultivo)
-        var icon = image?.mutate()
-        icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN);
-        var title = getString(R.string.title_selected_tipo_productos)
+        /*
+       var image = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.ic_produccion_cultivo)
+       var icon = image?.mutate()
+       icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN);
+       var title= getString(R.string.title_selected_tipo_productos)
+      val dialog = AlertDialog.Builder(context!!,R.style.Theme_Sphinx_Dialog_Alert)
+              .setView(viewDialogTipoProductos)
+              .setIcon(icon)
+              . setTitle(title)
+              .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
 
-        val dialog = AlertDialog.Builder(context!!, R.style.Theme_Sphinx_Dialog_Alert)
-                .setView(viewDialogTipoProductos)
-                .setIcon(icon)
-                .setTitle(title)
-                .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+              })
+              .create()
+       //var  resources = dialog.getContext().getResources();
+       var color = resources.getColor(R.color.colorPrimary) // your color here
+       var titleDividerId = dialog.context.resources.getIdentifier("titleDivider", "id", "android");
+       var titleDivider = dialog.getWindow().getDecorView().findViewById<View>(titleDividerId);
+       if (titleDivider != null) {
+           titleDivider.setBackgroundColor(color);
+       }
+      dialog?.show()
+       dialogProducto=dialog
 
+       */
+
+
+
+        val dialog = MaterialDialog.Builder(activity!!)
+                .title(getString(R.string.title_selected_tipo_productos))
+                .customView(viewDialogTipoProductos!!, true)
+                //.positiveText(R.string.btn_save)
+                .negativeText(android.R.string.cancel)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.light_green_800)
+                //.limitIconToDefaultSize()
+                //.maxIconSize(R.dimen.text_size_40)
+                .limitIconToDefaultSize()
+                // .positiveColorRes(R.color.material_red_400)
+                .backgroundColorRes(R.color.black_transparencia)
+                // .negativeColorRes(R.color.material_red_400)
+                .icon(resources.getDrawable(R.drawable.ic_produccion_cultivo))
+                .dividerColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                //.positiveColor(Color.WHITE)
+                .negativeColor(resources.getColor(R.color.white_solid))
+                .autoDismiss(false)
+                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .theme(Theme.DARK)
+                .onNegative({ dialog1, which ->
+                    dialog1.dismiss()
                 })
-                .create()
+                .build()
 
-        //var  resources = dialog.getContext().getResources();
-        var color = resources.getColor(R.color.colorPrimary) // your color here
-        var titleDividerId = dialog.context.resources.getIdentifier("titleDivider", "id", "android");
-        var titleDivider = dialog.getWindow().getDecorView().findViewById<View>(titleDividerId);
-        if (titleDivider != null) {
-            titleDivider.setBackgroundColor(color);
-        }
 
-        dialog?.show()
-        dialogProducto = dialog
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.show()
+        dialog.getWindow().setAttributes(lp)
+        dialogProducto=dialog
+
+
+
+
     }
+
 
 
     //endregion

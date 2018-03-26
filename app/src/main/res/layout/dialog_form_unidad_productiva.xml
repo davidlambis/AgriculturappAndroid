@@ -8,8 +8,7 @@
     android:layout_height="match_parent">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/margin_3">
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,6 +74,7 @@
 
 
                 <ImageView
+                    android:tint="@color/light_green_800"
                     android:id="@+id/imageViewLocalizarUnidadProductiva"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
@@ -98,11 +98,11 @@
                     <EditText
                         android:id="@+id/edtAreaUnidadProductiva"
                         style="@style/editText"
-                        android:hint="@string/edit_text_numero_hectareas"
+                        android:hint="@string/area"
                         android:inputType="numberDecimal"
                         android:drawableLeft="@drawable/ic_numero_hectareas"
                         android:drawableStart="@drawable/ic_numero_hectareas"
-                        android:textAlignment="center" />
+                        android:textAlignment="textStart" />
                 </android.support.design.widget.TextInputLayout>
 
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner

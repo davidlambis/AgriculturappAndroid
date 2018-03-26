@@ -6,85 +6,113 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.ProduccionFragment">
 
+
+
+
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/margin_3"
         android:fillViewport="true">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/ivBackButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_back_button" />
-            <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                android:id="@+id/spinnerUnidadProductiva"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/size_60"
-                android:hint="@string/spinner_unidad_productiva"
-                android:textColorHint="@color/grey_luiyi"
-                android:textSize="@dimen/text_size_16"
-                android:textAlignment="textStart"
-                android:drawableEnd="@drawable/ic_localizacion_finca"
-                android:drawableRight="@drawable/ic_localizacion_finca"
-                app:met_baseColor="@color/grey_luiyi"
-                app:met_floatingLabel="normal"
-                app:met_floatingLabelTextColor="@color/grey_luiyi"
-                app:met_primaryColor="@color/grey_luiyi"
-                app:met_textColor="@color/grey_luiyi"
-                app:met_textColorHint="@color/black_alpha_40" />
-        </LinearLayout>
             <LinearLayout
+                android:padding="@dimen/margin_5"
+                android:background="@color/purple"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-
-                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/spinnerLote"
+                <ImageView
+                    android:tint="@color/white"
+                    android:id="@+id/ivBackButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_back_button" />
+                <LinearLayout
+                    android:id="@+id/plagas_search_edit_frame"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_60"
-                    android:hint="@string/spinner_lote"
-                    android:textColorHint="@color/grey_luiyi"
-                    android:textSize="@dimen/text_size_16"
-                    android:textAlignment="textStart"
-                    android:drawableEnd="@drawable/ic_numero_hectareas"
-                    android:drawableRight="@drawable/ic_numero_hectareas"
-                    app:met_baseColor="@color/grey_luiyi"
-                    app:met_floatingLabel="normal"
-                    android:layout_weight="1"
-                    app:met_floatingLabelTextColor="@color/grey_luiyi"
-                    app:met_primaryColor="@color/grey_luiyi"
-                    app:met_textColor="@color/grey_luiyi"
-                    app:met_textColorHint="@color/black_alpha_40" />
-                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/spinnerCultivo"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_60"
-                    android:hint="@string/spinner_cultivo"
-                    android:textColorHint="@color/grey_luiyi"
-                    android:textSize="@dimen/text_size_16"
-                    android:textAlignment="textStart"
-                    android:layout_weight="1"
-                    android:drawableEnd="@drawable/ic_apellidos"
-                    android:drawableRight="@drawable/ic_apellidos"
-                    app:met_baseColor="@color/grey_luiyi"
-                    app:met_floatingLabel="normal"
-                    app:met_floatingLabelTextColor="@color/grey_luiyi"
-                    app:met_primaryColor="@color/grey_luiyi"
-                    app:met_textColor="@color/grey_luiyi"
-                    app:met_textColorHint="@color/black_alpha_40" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:id="@+id/searchFilter"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:drawableStart="@drawable/ic_lupa_buscar_producto"
+                        android:layout_width="match_parent"
+                        android:hint="@string/filtrar"
+                        android:paddingStart="@dimen/margin_5"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/margin_3"
+                        android:background="@drawable/radius_edit_text" />
+                </LinearLayout>
 
             </LinearLayout>
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/cultivoSeletedContainer"
+                android:paddingBottom="@dimen/margin_5"
+                android:paddingTop="@dimen/margin_5"
+                android:paddingRight="@dimen/margin_24"
+                android:background="@color/purple"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/activity_horizontal_margin">
+                <View
+                    android:id="@+id/indicator_element_sincronize_status"
+                    android:layout_width="10dp"
+                    android:layout_height="@dimen/size_60"
+                    android:layout_alignParentStart="true"
+                    android:background="@color/white" />
+                <RelativeLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/txtNombreCultivo"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_size_16"
+                        android:layout_marginStart="@dimen/margin_5"
+                        android:layout_width="wrap_content"
+                        android:textColor="@color/white"
+                        android:layout_height="wrap_content"
+                        android:text="Cultivo 1"/>
+                    <TextView
+                        android:layout_below="@+id/txtNombreCultivo"
+                        android:id="@+id/txtCantidad"
+                        android:textSize="@dimen/text_size_25"
+                        android:layout_marginStart="@dimen/margin_5"
+                        android:layout_width="match_parent"
+                        android:textColor="@color/white"
+                        android:layout_height="wrap_content"
+                        android:text="45.67"/>
+                    <TextView
+                        android:id="@+id/txtFechaInicioCultivo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/txtCantidad"
+                        android:layout_alignStart="@+id/txtNombreCultivo"
+                        android:gravity="end"
+                        android:text="12/12/2017"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/txtFechaFinCultivo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignStart="@+id/txtFechaInicioCultivo"
+                        android:layout_below="@+id/txtFechaInicioCultivo"
+                        android:text="12/12/2017"
+                        android:gravity="end"
+                        android:textColor="@color/white" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
             <include layout="@layout/content_recyclerview"/>
         </LinearLayout>
 

@@ -141,6 +141,12 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
             RequestEventProduccion.LIST_EVENT_CULTIVO -> {
                 listCultivosGlobal= event.mutableList as List<Cultivo>
             }
+
+            //Get Single
+            RequestEventProduccion.GET_EVENT_CULTIVO -> {
+                var cultivo = event.objectMutable as Cultivo
+                mainView?.setCultivo(cultivo)
+            }
         }
     }
     //endregion
@@ -193,6 +199,11 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
 
     override fun getListas() {
         interactor?.getListas()
+    }
+
+
+    override fun getCultivo(cultivo_id:Long?){
+        interactor?.getCultivo(cultivo_id)
     }
 
     //endregion

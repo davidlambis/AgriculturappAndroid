@@ -32,4 +32,8 @@ class ProduccionInteractor:IMainProduccion.Interactor {
     override fun getListas() {
         repository?.getListas()
     }
+
+    override fun getCultivo(cultivo_id:Long?){
+        repository?.getCultivo(cultivo_id)
+    }
 }

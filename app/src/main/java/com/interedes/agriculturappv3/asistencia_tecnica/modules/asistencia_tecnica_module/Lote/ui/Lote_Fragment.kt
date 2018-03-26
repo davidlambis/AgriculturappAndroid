@@ -23,7 +23,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.GravityEnum
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
@@ -69,7 +74,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     val handler = Handler()
 
     //Dialog
-    var _dialogRegisterUpdate: AlertDialog? = null
+    var _dialogRegisterUpdate: MaterialDialog? = null
     private var _dialogTypeLocation: AlertDialog? = null
     var viewDialog: View? = null;
 
@@ -104,6 +109,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     private var DIALOG_SELECT_ALL_UP: Boolean = true
     var Unidad_Productiva_Id_Selected: Long? = null
 
+
+    var INI_TASK_HANDLER: Boolean? = false
+
     companion object {
         var instance: Lote_Fragment? = null
     }
@@ -128,12 +136,14 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configAppBarLayout()
-        initCollapsingToolbar()
+        //initCollapsingToolbar()
         initAdapter()
         fabAddLote.setOnClickListener(this)
         fabLocationLote.setOnClickListener(this)
         fabUnidadProductiva.setOnClickListener(this)
-        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setOnRefreshListener(this)
+        checkDoneMapView.setOnClickListener(this)
+        checkCloseMapView.setOnClickListener(this)
         ivBackButton.setOnClickListener(this)
         mapViewLotes.onCreate(savedInstanceState)
         mapViewLotes.onResume()
@@ -183,16 +193,19 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     }
 
     fun loadInitTaskHandler() {
-        handler.postDelayed({
-            if ((activity as MenuMainActivity).presenter?.checkConnection()!!) {
-                hideElementsAndSetPropertiesOnConectionInternet()
-            } else {
-                if (LOADED_MAPA == false) {
-                    showElementsAndSetPropertiesOffConnectioninternet()
+        if(INI_TASK_HANDLER==true){
+            handler.postDelayed({
+                if ((activity as MenuMainActivity).presenter?.checkConnection()!!) {
+                    hideElementsAndSetPropertiesOnConectionInternet()
+                } else {
+                    if (LOADED_MAPA == false) {
+                        showElementsAndSetPropertiesOffConnectioninternet()
+                    }
+                    onMessageError(R.color.grey_luiyi, getString(R.string.sin_conexion))
                 }
-                onMessageError(R.color.grey_luiyi, getString(R.string.sin_conexion))
-            }
-        }, 10000)
+            }, 10000)
+        }
+
     }
 
 
@@ -216,6 +229,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         }
     }
 
+    /*
     private fun initCollapsingToolbar() {
         app_bar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             internal var isShow = false
@@ -239,7 +253,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 }
             }
         })
-    }
+    }*/
 
     //endregion
 
@@ -303,7 +317,6 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             var  bounds = builder.build()
             var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
             mMap?.animateCamera(cu)
-
         }
         //si se selecciona una up, y  no se encontraron lotes registrados
         else if(DIALOG_SELECT_ALL_UP==false && lotes.size<=0){
@@ -315,7 +328,6 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             var  bounds = builder.build()
             var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
             mMap?.animateCamera(cu)
-
         }
         //si se selecciona una up, y  se encontraron lotes regiostrados
         else if(DIALOG_SELECT_ALL_UP==false && lotes.size>0 || DIALOG_SELECT_ALL_UP==true && lotes.size>0){
@@ -527,6 +539,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         viewDialog?.coordenadas_lote?.setText("");
         if (LastMarkerDrawingLote != null) LastMarkerDrawingLote?.remove()
         LastMarkerDrawingLote = null
+        contentButtonsDrawingLoteMapa.visibility= View.GONE
+        app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
+        app_bar.layoutParams.height=resources.getDimensionPixelSize(R.dimen.height_mapa)
     }
 
 
@@ -706,6 +721,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             viewDialog?.spinnerUnidadMedidaLote?.setText(lote.Nombre_Unidad_Medida)
             viewDialog?.spinnerUnidadProductiva?.visibility = View.GONE
         }
+
+
+        /*
         val dialog = AlertDialog.Builder(context!!)
                 .setView(viewDialog)
                 .setIcon(R.drawable.ic_lote)
@@ -727,6 +745,53 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         })
         dialog?.show()
         _dialogRegisterUpdate=dialog
+        */
+
+
+
+
+        val dialog = MaterialDialog.Builder(activity!!)
+                .title(getString(R.string.add_lote))
+                .customView(viewDialog!!, true)
+                .positiveText(R.string.btn_save)
+                .negativeText(R.string.close)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.light_green_800)
+                .limitIconToDefaultSize()
+                //.maxIconSizeRes(R.dimen.text_size_40)
+                // .positiveColorRes(R.color.material_red_400)
+                .backgroundColorRes(R.color.white_solid)
+                // .negativeColorRes(R.color.material_red_400)
+                .iconRes(R.drawable.ic_lote)
+                .dividerColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                .positiveColor(Color.WHITE)
+                .autoDismiss(false)
+                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .theme(Theme.DARK)
+                .onPositive(
+                        { dialog1, which ->
+                            if(lote!=null){
+                                updateLote()
+                            }else{
+                                registerLote()
+                            }
+                        })
+                .onNegative({ dialog1, which ->
+                    dialog1.dismiss()
+                })
+                .build()
+
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.show()
+        dialog.getWindow().setAttributes(lp)
+        _dialogRegisterUpdate=dialog
+
 
     }
 
@@ -761,6 +826,17 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 else -> {
                     _dialogTypeLocation = dialog as AlertDialog?
                     setPropertiesTypeLocationManual()
+                    contentButtonsDrawingLoteMapa.visibility= View.VISIBLE
+                    app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
+                    app_bar.layoutParams.height=AppBarLayout.LayoutParams.MATCH_PARENT
+
+                    /*
+                    for (i in 0 until contentOptionsLote.getChildCount()) {
+                        // val view = contentOptionsLote.getChildAt(i)
+                        // view.setVisibility(View.GONE) // Or whatever you want to do with the view.
+                        val child = contentOptionsLote.getChildAt(i)
+                        child.setEnabled(false)
+                    }*/
                 }
             }
         })
@@ -853,12 +929,12 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             R.id.fabAddLote -> {
                 if (UBICATION_MANUAL == false && UBICATION_GPS == false) {
                     showAlertTypeLocationLote()
-                } else {
-                    if (UBICATION_MANUAL == true && LastMarkerDrawingLote == null) {
-                        Toast.makeText(activity, getString(R.string.message_location_lote_marker), Toast.LENGTH_LONG).show()
-                    } else {
-                        showAlertDialogAddLote(null)
-                    }
+                } else if(UBICATION_MANUAL==true){
+                    contentButtonsDrawingLoteMapa.visibility= View.VISIBLE
+                    app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
+                    app_bar.layoutParams.height=AppBarLayout.LayoutParams.MATCH_PARENT
+                }else if(UBICATION_GPS==true){
+                    showAlertDialogAddLote(null)
                 }
             }
             R.id.ivClosetDialogLote -> _dialogRegisterUpdate?.dismiss()
@@ -867,6 +943,26 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
+            }
+
+            R.id.checkDoneMapView->{
+                if (UBICATION_MANUAL == true && LastMarkerDrawingLote == null) {
+                    Toast.makeText(activity, getString(R.string.message_location_lote_marker), Toast.LENGTH_LONG).show()
+                } else {
+                    showAlertDialogAddLote(null)
+                }
+            }
+
+
+            R.id.checkCloseMapView->{
+                contentButtonsDrawingLoteMapa.visibility= View.GONE
+                app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
+                app_bar.layoutParams.height=resources.getDimensionPixelSize(R.dimen.height_mapa)
+                //app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
+
+               //var layoutParams1 =  LinearLayout.LayoutParams(AppBarLayout.LayoutParams.MATCH_PARENT,
+                                                              //R.dimen.height_mapa)
+
             }
         }
     }
@@ -891,7 +987,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 addMarkerLocation(latitud, longitud)
                 hideProgressHud()
                 txtCoordsLote.setText(String.format(getString(R.string.coords), latitud, longitud))
-                if (viewDialog != null) {
+                if (viewDialog != null && UBICATION_GPS==true) {
                     viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
                 }
                 //Toast.makeText(activity,"Broadcast: "+longitud.toString(), Toast.LENGTH_SHORT).show()
@@ -905,11 +1001,15 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     //call this method in your onCreateMethod
     override fun onDestroy() {
         super.onDestroy()
-        presenter?.onDestroy()
+
         handler.removeCallbacksAndMessages(null);
         if (mapViewLotes != null) {
             mapViewLotes.onDestroy();
         }
+
+        INI_TASK_HANDLER=false
+
+        presenter?.onDestroy()
     }
 
     override fun onLowMemory() {

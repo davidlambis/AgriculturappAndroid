@@ -37,14 +37,12 @@
          app:layout_behavior="@string/appbar_scrolling_view_behavior"
         -->
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:background="@drawable/fondo_general"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

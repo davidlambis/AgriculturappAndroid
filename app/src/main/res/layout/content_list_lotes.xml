@@ -6,8 +6,12 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_3"
     app:cardBackgroundColor="@android:color/white"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="5dp">
+    app:cardCornerRadius="6dp"
+    app:cardElevation="1dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardUseCompatPadding="true"
+    >
+
 <!--
     <View
         android:id="@+id/indicator_element_sincronize_status"

@@ -19,13 +19,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.GravityEnum
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
@@ -41,12 +42,12 @@ import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.Men
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_login.view.*
-import kotlinx.android.synthetic.main.dialog_list_general.*
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.content_recyclerview.view.*
 import kotlinx.android.synthetic.main.dialog_form_produccion.*
 import kotlinx.android.synthetic.main.dialog_form_produccion.view.*
+import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_produccion.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -64,8 +65,10 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     private var hud: KProgressHUD?=null
 
     //Dialog
-    var viewDialog:View?= null;
-    var _dialogRegisterUpdate: AlertDialog? = null
+    var viewDialog:View?= null
+    var _dialogRegisterUpdate: MaterialDialog? = null
+    var viewDialogFilter:View?= null
+    var _dialogFilter: MaterialDialog? = null
 
     //Globals
     //var produccionGlobal:Produccion?=null
@@ -108,12 +111,21 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         fabAddProduccion.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         ivBackButton.setOnClickListener(this)
+        searchFilter.setOnClickListener(this)
         setupInjection()
     }
 
     fun setupInjection(){
         presenter?.getListProduccion(Cultivo_Id)
-        presenter?.setListSpinnerUnidadProductiva()
+
+
+        /*
+        spinnerUnidadProductiva?.setOnClickListener {view->
+            spinnerUnidadProductiva?.error=null
+            var focusView: View? = null
+            focusView = spinnerUnidadProductiva
+        }*/
+
     }
 
     //region ADAPTER
@@ -160,18 +172,18 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     override fun validarListasAddProduccion(): Boolean {
         var cancel = false
         var focusView: View? = null
-        if (spinnerUnidadProductiva?.text.toString().isEmpty() ) {
-            spinnerUnidadProductiva?.setError(getString(R.string.error_field_required))
-            focusView = spinnerUnidadProductiva
+        if (viewDialogFilter?.spinnerUnidadProductiva?.text.toString().isEmpty() ) {
+            viewDialogFilter?.spinnerUnidadProductiva?.setError(getString(R.string.error_field_required))
+            focusView = viewDialogFilter?.spinnerUnidadProductiva
             cancel = true
-        } else if (spinnerLote?.text.toString().isEmpty()) {
-            spinnerLote?.setError(getString(R.string.error_field_required))
-            focusView =spinnerLote
+        } else if (viewDialogFilter?.spinnerLote?.text.toString().isEmpty()) {
+            viewDialogFilter?.spinnerLote?.setError(getString(R.string.error_field_required))
+            focusView =viewDialogFilter?.spinnerLote
             cancel = true
         }
-        else if (spinnerCultivo?.text.toString().isEmpty() ) {
-            spinnerCultivo?.setError(getString(R.string.error_field_required))
-            focusView = spinnerCultivo
+        else if (viewDialogFilter ?.spinnerCultivo?.text.toString().isEmpty() ) {
+            viewDialogFilter?.spinnerCultivo?.setError(getString(R.string.error_field_required))
+            focusView = viewDialogFilter?.spinnerCultivo
             cancel = true
         }
         if (cancel) {
@@ -348,6 +360,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         }
         //Set Events
         ivClosetDialog?.setOnClickListener(this)
+
+        /*
         val dialog = AlertDialog.Builder(context!!)
                 .setView(viewDialog)
                 .setIcon(R.drawable.ic_lote)
@@ -371,7 +385,138 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             }
         })
         dialog?.show()
+        _dialogRegisterUpdate=dialog*/
+
+
+        val dialog = MaterialDialog.Builder(activity!!)
+                .title(getString(R.string.tittle_add_producccion))
+                .customView(viewDialog!!, true)
+                .positiveText(R.string.btn_save)
+                .negativeText(R.string.close)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.light_green_800)
+                .limitIconToDefaultSize()
+                //.maxIconSizeRes(R.dimen.text_size_40)
+                // .positiveColorRes(R.color.material_red_400)
+                .backgroundColorRes(R.color.white_solid)
+                // .negativeColorRes(R.color.material_red_400)
+                .iconRes(R.drawable.ic_lote)
+                .dividerColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                .positiveColor(Color.WHITE)
+                .autoDismiss(false)
+                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .theme(Theme.DARK)
+                .onPositive(
+                        { dialog1, which ->
+                            if(produccion!=null){
+                                updateProduccion(produccion)
+                                //presenter?.getCultivo(Cultivo_Id)
+                            }else{
+                                registerProduccion()
+                                presenter?.getCultivo(Cultivo_Id)
+                            }
+                        })
+                .onNegative({ dialog1, which ->
+                    dialog1.dismiss()
+                })
+                .build()
+
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.show()
+        dialog.getWindow().setAttributes(lp)
         _dialogRegisterUpdate=dialog
+    }
+
+
+
+
+    override fun showAlertDialogFilterProduccion(isFilter:Boolean?) {
+        val inflater = this.layoutInflater
+        viewDialogFilter = inflater.inflate(R.layout.dialog_select_spinners, null)
+        presenter?.setListSpinnerUnidadProductiva()
+
+        var title:String?=null
+
+
+        if(isFilter==true){
+            title=getString(R.string.tittle_filter)
+        }else{
+            title=getString(R.string.tittle_select_cultivo)
+        }
+
+
+
+
+
+        if(unidadProductivaGlobal!=null && loteGlobal!=null && cultivoGlobal!=null){
+            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+
+            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.Nombre)
+            viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
+            viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.Nombre)
+
+        }
+
+
+
+
+        //Set Events
+        viewDialogFilter?.ivCloseButtonDialogFilter?.setOnClickListener(this)
+        val dialog = MaterialDialog.Builder(activity!!)
+                .title(title)
+                .customView(viewDialogFilter!!, true)
+                .positiveText(R.string.confirm)
+                .negativeText(R.string.close)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.light_green_800)
+                .limitIconToDefaultSize()
+                //.maxIconSizeRes(R.dimen.text_size_40)
+                // .positiveColorRes(R.color.material_red_400)
+                .backgroundColorRes(R.color.white_solid)
+                // .negativeColorRes(R.color.material_red_400)
+                .iconRes(R.drawable.ic_lote)
+                .dividerColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                .positiveColor(Color.WHITE)
+                .autoDismiss(false)
+                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .theme(Theme.DARK)
+                .onPositive(
+                        { dialog1, which ->
+                            if(isFilter==true){
+                                if(presenter?.validarListasAddProduccion()==true){
+                                    dialog1.dismiss()
+                                    presenter?.getListProduccion(Cultivo_Id)
+                                    presenter?.getCultivo(Cultivo_Id)
+                                }
+                            }else{
+                                if(presenter?.validarListasAddProduccion()==true){
+                                    dialog1.dismiss()
+                                    showAlertDialogAddProduccion(null)
+                                }
+                            }
+                        })
+                .onNegative({ dialog1, which ->
+                    dialog1.dismiss()
+                })
+                .build()
+
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.show()
+        dialog.getWindow().setAttributes(lp)
+        _dialogFilter=dialog
     }
 
 
@@ -390,48 +535,48 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     }
 
     override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?) {
-        spinnerUnidadProductiva.setAdapter(null)
-        var unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
-        spinnerUnidadProductiva.setAdapter(unidadProductivaArrayAdapter)
-        spinnerUnidadProductiva.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-            spinnerLote.setText("")
-            spinnerLote.setHint(String.format(getString(R.string.spinner_lote)))
+        if(viewDialogFilter!=null){
+            viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
+            var unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
+            viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
+            viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+                viewDialogFilter?.spinnerLote?.setText("")
+                viewDialogFilter?.spinnerLote?.setHint(String.format(getString(R.string.spinner_lote)))
 
-            spinnerCultivo.setText("")
-            spinnerCultivo.setHint(String.format(getString(R.string.spinner_cultivo)))
+                viewDialogFilter?.spinnerCultivo?.setText("")
+                viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
 
-            unidadProductivaGlobal= listUnidadProductiva!![position] as UnidadProductiva
-            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+                unidadProductivaGlobal= listUnidadProductiva!![position] as UnidadProductiva
+                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+            }
+            presenter?.setListSpinnerLote(null)
+            presenter?.setListSpinnerCultivo(null)
         }
-        presenter?.setListSpinnerLote(null)
-        presenter?.setListSpinnerCultivo(null)
     }
 
     override fun setListLotes(listLotes: List<Lote>?) {
-        spinnerLote.setAdapter(null)
-        spinnerLote.setText("")
-        spinnerLote.setHint(String.format(getString(R.string.spinner_lote)))
+        viewDialogFilter?.spinnerLote!!.setAdapter(null)
+        //viewDialogFilter?.spinnerLote?.setText("")
+        //viewDialogFilter?.spinnerLote?.setHint(String.format(getString(R.string.spinner_lote)))
         var loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, listLotes)
-        spinnerLote.setAdapter(loteArrayAdapter)
-        spinnerLote.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-            spinnerCultivo.setText("")
-            spinnerCultivo.setHint(String.format(getString(R.string.spinner_cultivo)))
+        viewDialogFilter?.spinnerLote!!.setAdapter(loteArrayAdapter)
+        viewDialogFilter?.spinnerLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+           viewDialogFilter?.spinnerCultivo?.setText("")
+           viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
             loteGlobal= listLotes!![position] as Lote
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
-
         }
     }
 
     override fun setListCultivos(listCultivos: List<Cultivo>?) {
-        spinnerCultivo.setAdapter(null)
-        spinnerCultivo.setText("")
-        spinnerCultivo.setHint(String.format(getString(R.string.spinner_cultivo)))
+        viewDialogFilter?.spinnerCultivo!!.setAdapter(null)
+        //viewDialogFilter?.spinnerCultivo?.setText("")
+        //viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
         val cultivoArrayAdapter = ArrayAdapter<Cultivo>(activity, android.R.layout.simple_spinner_dropdown_item, listCultivos)
-        spinnerCultivo.setAdapter(cultivoArrayAdapter)
-        spinnerCultivo.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+        viewDialogFilter?.spinnerCultivo!!.setAdapter(cultivoArrayAdapter)
+        viewDialogFilter?.spinnerCultivo!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             cultivoGlobal= listCultivos!![position] as Cultivo
             Cultivo_Id=cultivoGlobal?.Id
-            presenter?.getListProduccion(Cultivo_Id)
         }
     }
 
@@ -446,6 +591,17 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
                 //Toast.makeText(activity,""+ unidadMedidaGlobal!!.Id.toString(),Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+
+    override fun setCultivo(cultivo:Cultivo?){
+        if(cultivoSeletedContainer.visibility==View.GONE){
+            cultivoSeletedContainer.visibility=View.VISIBLE
+        }
+        txtNombreCultivo.setText(cultivo?.Nombre)
+        txtCantidad.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
+        txtFechaInicioCultivo.setText(cultivo?.FechaIncio)
+        txtFechaFinCultivo.setText(cultivo?.FechaFin)
     }
 
     override fun verificateConnection(): AlertDialog? {
@@ -464,9 +620,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fabAddProduccion -> {
-                if(presenter?.validarListasAddProduccion()==true){
-                    showAlertDialogAddProduccion(null)
-                }
+                showAlertDialogFilterProduccion(false)
             }
             R.id.ivClosetDialogUp->_dialogRegisterUpdate?.dismiss()
 
@@ -481,6 +635,16 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
+            }
+
+
+            R.id.ivCloseButtonDialogFilter -> {
+                _dialogFilter?.dismiss()
+            }
+
+
+            R.id.searchFilter -> {
+                showAlertDialogFilterProduccion(true)
             }
 
         }

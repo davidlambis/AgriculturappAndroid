@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import com.afollestad.materialdialogs.MaterialDialog
 import com.interedes.agriculturappv3.asistencia_tecnica.models.*
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
@@ -44,7 +45,7 @@ interface ICultivo {
         fun onMessageError(colorPrimary: Int, msg: String?)
 
         //Dialog
-        fun showAlertDialogCultivo(cultivo: Cultivo?): AlertDialog?
+        fun showAlertDialogCultivo(cultivo: Cultivo?): MaterialDialog?
 
         //Spinners y Date Pickers
         //Unidades Productivas

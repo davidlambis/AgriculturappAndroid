@@ -110,7 +110,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
             }
 
             ////EVENTS ONITEM CLICK
-            RequestEventUP.ITEM_EDIT_EVENT -> {
+            RequestEventUP.ITEM_EVENT -> {
                 var unidadProductiva= requestEvent.objectMutable as UnidadProductiva
                 UnidadProductiva_Fragment.instance?.unidadProductivaGlobal=unidadProductiva
                 IUpView?.showAlertDialogAddUnidadProductiva(UnidadProductiva_Fragment.instance?.unidadProductivaGlobal)

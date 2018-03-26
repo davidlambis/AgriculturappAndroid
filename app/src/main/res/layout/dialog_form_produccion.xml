@@ -104,7 +104,7 @@
                         android:inputType="numberDecimal"
                         android:drawableLeft="@drawable/ic_numero_hectareas"
                         android:drawableStart="@drawable/ic_numero_hectareas"
-                        android:textAlignment="center" />
+                        android:textAlignment="textStart" />
                 </android.support.design.widget.TextInputLayout>
 
                 <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner

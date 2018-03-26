@@ -55,19 +55,149 @@
                     android:adjustViewBounds="true"
                     android:src="@drawable/ic_sin_conexion"
                     android:tint="@color/lime_900" />
+
+
+
             </RelativeLayout>
-           <!-- <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbarLote"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />-->
+
+
+
+
+
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/contentButtonsDrawingLoteMapa"
+                android:orientation="vertical"
+                android:layout_gravity="bottom"
+                app:layout_anchorGravity="bottom|start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.FloatingActionButton
+
+                    android:id="@+id/checkDoneMapView"
+                    app:backgroundTint="@color/green"
+                    app:fabCustomSize="@dimen/size_40"
+                    app:fabSize="normal"
+                    android:tint="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_global"
+                    app:layout_anchor="@id/app_bar"
+                    android:layout_marginBottom="@dimen/margin_3"
+                    app:layout_anchorGravity="bottom|start"
+                    app:srcCompat="@drawable/ic_done_white" />
+
+                <android.support.design.widget.FloatingActionButton
+
+                    android:id="@+id/checkCloseMapView"
+                    app:backgroundTint="@color/red_900"
+                    app:fabCustomSize="@dimen/size_40"
+                    app:fabSize="normal"
+                    android:tint="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_global"
+                    android:layout_marginBottom="@dimen/margin_global"
+                    app:layout_anchor="@id/app_bar"
+                    app:layout_anchorGravity="bottom|start"
+                    app:srcCompat="@drawable/ic_close_white" />
+
+            </LinearLayout>
+
+            <!-- <android.support.v7.widget.Toolbar
+                 android:id="@+id/toolbarLote"
+                 android:layout_width="match_parent"
+                 android:layout_height="?attr/actionBarSize"
+                 app:layout_collapseMode="pin"
+                 app:popupTheme="@style/AppTheme.PopupOverlay" />-->
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
+
+
     <LinearLayout
+        android:id="@+id/contentOptionsLote"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <LinearLayout
+           android:paddingTop="@dimen/margin_3"
+            android:background="@color/white_solid"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_70">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1">
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fabAddLote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:backgroundTint="@color/red_900"
+                    app:fabCustomSize="@dimen/size_40"
+                    android:tint="@color/white"
+                    android:src="@android:drawable/ic_input_add" />
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/agregar"/>
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fabLocationLote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_apuntador"
+                    app:backgroundTint="@color/lime_900"
+                    app:fabCustomSize="@dimen/size_40"
+                    android:tint="@color/white"
+                    app:layout_anchorGravity="right" />
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/ubicar"/>
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fabUnidadProductiva"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fabCustomSize="@dimen/size_40"
+                    android:tint="@color/white"
+                    android:src="@drawable/ic_unidad_productiva"
+                    app:layout_anchorGravity="right" />
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filtrar"/>
+            </LinearLayout>
+
+
+
+
+
+        </LinearLayout>
         <include  layout="@layout/content_recyclerview"/>
 
 
@@ -128,7 +258,7 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|center"
         app:srcCompat="@drawable/ic_apuntador" />-->
-
+<!--
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabAddLote"
         app:layout_anchor="@id/app_bar"
@@ -193,7 +323,7 @@
         android:tint="@color/white"
         android:src="@drawable/ic_unidad_productiva"
         app:layout_anchor="@id/margin2"
-        app:layout_anchorGravity="right" />
+        app:layout_anchorGravity="right" />-->
 
 <!--
     <android.support.design.widget.FloatingActionButton

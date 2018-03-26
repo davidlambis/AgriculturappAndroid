@@ -1,32 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-        <dimen name="margin_3">3dp</dimen>
-        <dimen name="margin_5">5dp</dimen>
-        <dimen name="margin_10">10dp</dimen>
-        <dimen name="margin_global">16dp</dimen>
-        <dimen name="margin_24">24dp</dimen>
-        <dimen name="margin_80">80dp</dimen>
-        <dimen name="margin_70">70dp</dimen>
 
-        <dimen name="size_40">45dp</dimen>
-        <dimen name="size_60">60dp</dimen>
-
-
-        <dimen name="icon_productor_size">162dp</dimen>
-        <dimen name="text_size">22sp</dimen>
-        <dimen name="text_size_16">16dp</dimen>
-        <dimen name="text_size_18">18sp</dimen>
-        <dimen name="text_size_25">25sp</dimen>
-        <dimen name="text_size_40">40dp</dimen>
-        <dimen name="text_size_30">30dp</dimen>
-        <dimen name="text_size_12">12sp</dimen>
-
-
-        <dimen name="margin_global_10">10dp</dimen>
-
-
-        <dimen name="height_mapa">250dp</dimen>
-
-        <dimen name="width">90dp</dimen>
-        <dimen name="height_spinners">150dp</dimen>
 </resources>

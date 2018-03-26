@@ -8,6 +8,7 @@ import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -27,8 +28,7 @@ import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.Resources_Menu
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import android.view.MenuInflater
-
-
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu {
@@ -136,14 +136,22 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     //endregion
 
     fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = supportFragmentManager
-
+        /*val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager?.beginTransaction()
         fragmentTransaction?.replace(R.id.container, fragment)
         fragmentTransaction?.addToBackStack(fragment::class.java.getName())
-        fragmentTransaction?.commit()
-    }
+        fragmentTransaction?.commit()*/
 
+        val fragmentManager: FragmentManager
+        val fragmentTransaction: FragmentTransaction
+        fragmentManager = supportFragmentManager
+        fragmentTransaction = fragmentManager.beginTransaction()
+        val inboxFragment = fragment
+        fragmentTransaction.replace(R.id.container, inboxFragment)
+        fragmentTransaction?.addToBackStack(fragment::class.java.getName())
+        fragmentTransaction.commit()
+    }
+/*
     fun replaceCleanFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
@@ -151,6 +159,22 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         fragmentTransaction?.replace(R.id.container, fragment)
         fragmentTransaction?.addToBackStack(null)
         fragmentTransaction?.commit()
+    }*/
+
+
+
+    fun replaceCleanFragment(fragment: Fragment)
+    {
+        val fragmentManager: FragmentManager
+        val fragmentTransaction: FragmentTransaction
+
+        fragmentManager = supportFragmentManager
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        fragmentTransaction = fragmentManager.beginTransaction()
+        val inboxFragment = fragment
+        fragmentTransaction.replace(R.id.container, inboxFragment)
+        fragmentTransaction.commit()
+
     }
 
 

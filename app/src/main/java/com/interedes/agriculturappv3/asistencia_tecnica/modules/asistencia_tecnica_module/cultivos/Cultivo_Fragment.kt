@@ -15,7 +15,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.GravityEnum
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.*
@@ -43,7 +48,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
     //Dialog
     var viewDialog: View? = null
-    var _dialogRegisterUpdate: AlertDialog? = null
+    var _dialogRegisterUpdate: MaterialDialog? = null
 
     //adapter
     var adapter: CultivoAdapter? = null
@@ -384,7 +389,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         onMessageDialogOk(colorPrimary, msg)
     }
 
-    override fun showAlertDialogCultivo(cultivo: Cultivo?): AlertDialog? {
+    override fun showAlertDialogCultivo(cultivo: Cultivo?): MaterialDialog? {
         val dialog = AlertDialog.Builder(activity!!)
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_cultivo, null)
@@ -427,16 +432,58 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                 viewDialog?.spinnerDetalleTipoProducto?.visibility = View.GONE
             }
 
+            /*
             dialog.setView(viewDialog)
             dialog.setTitle(getString(R.string.title_add_cultivo))
             dialog.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
-                /*Snackbar.make(viewDialog?.coordenadas_lote!!, "No se realizaron cambios", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show()*/
             })
             // dialog?.setMessage(getString(R.string.message_add_lote))
             dialog.setIcon(R.drawable.ic_cultivos)
             _dialogRegisterUpdate = dialog.show()
             return _dialogRegisterUpdate
+*/
+
+
+
+
+            val dialog = MaterialDialog.Builder(activity!!)
+                    .title(getString(R.string.title_add_cultivo))
+                    .customView(viewDialog!!, true)
+                    //.positiveText(R.string.btn_save)
+                    .negativeText(R.string.close)
+                    .titleGravity(GravityEnum.CENTER)
+                    .titleColorRes(R.color.light_green_800)
+                    .limitIconToDefaultSize()
+                    //.maxIconSizeRes(R.dimen.text_size_40)
+                    // .positiveColorRes(R.color.material_red_400)
+                    .backgroundColorRes(R.color.white_solid)
+                    // .negativeColorRes(R.color.material_red_400)
+                    .iconRes(R.drawable.ic_cultivos)
+                    .dividerColorRes(R.color.colorPrimary)
+                    .contentColorRes(android.R.color.white)
+                    .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                    .positiveColor(Color.WHITE)
+                    .autoDismiss(false)
+                    //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                    .theme(Theme.DARK)
+                    .onNegative({ dialog1, which ->
+                        dialog1.dismiss()
+                    })
+                    .build()
+
+
+            val lp = WindowManager.LayoutParams()
+            lp.copyFrom(dialog.getWindow().getAttributes())
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT
+            lp.height = WindowManager.LayoutParams.MATCH_PARENT
+            dialog.show()
+            dialog.getWindow().setAttributes(lp)
+            _dialogRegisterUpdate=dialog
+
+            return _dialogRegisterUpdate
+
+
+
 
         } else {
             onMessageError(R.color.grey_luiyi, getString(R.string.snackbar_error_unidad_productiva))

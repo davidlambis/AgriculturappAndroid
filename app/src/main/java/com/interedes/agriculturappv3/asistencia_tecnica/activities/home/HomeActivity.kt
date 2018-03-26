@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.activities.home
 
 import android.content.Intent
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -14,6 +15,19 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.Usuario_T
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_home.*
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.GravityEnum
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
+import android.support.v7.widget.GridLayoutManager
+import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.adapters.TipoProductosAdapter
+import com.interedes.agriculturappv3.services.listas.Listas
+import kotlinx.android.synthetic.main.reciclerview_dialog.view.*
+import android.view.WindowManager
+
+
+
 
 class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -24,7 +38,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         linearLayoutIngresar?.setOnClickListener(this)
         linearLayoutRegistrar?.setOnClickListener(this)
         linearLayoutContactanos?.setOnClickListener(this)
-
     }
 
     //region Método Click
@@ -71,6 +84,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     private fun contactarnos() {
         imageViewContactanos?.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary))
         Snackbar.make(container, getString(R.string.title_contactanos), Snackbar.LENGTH_SHORT).show()
+
     }
 
     private fun limpiarCambios() {

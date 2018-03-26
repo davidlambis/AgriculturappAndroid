@@ -15,10 +15,15 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.GravityEnum
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
@@ -46,7 +51,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
     private var hud: KProgressHUD?=null
     //Dialog
     var viewDialog:View?= null;
-    var _dialogRegisterUpdate: AlertDialog? = null
+    var _dialogRegisterUpdate: MaterialDialog? = null
 
 
     //Globals
@@ -289,6 +294,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
 
     override fun showAlertDialogAddUnidadProductiva(unidadProductiva:UnidadProductiva?) {
 
+
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_unidad_productiva, null)
         setListUnidadMedidaAdapterSpinner()
@@ -313,13 +319,60 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         //Set Events
         btnCloseDialog?.setOnClickListener(this)
         imageViewLocalizarUnidadProductiva?.setOnClickListener(this)
+
+
+
+
+        val dialog = MaterialDialog.Builder(activity!!)
+                .title(getString(R.string.tittle_add_unidadproductiva))
+                .customView(viewDialog!!, true)
+                .positiveText(R.string.btn_save)
+                .negativeText(R.string.close)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.light_green_800)
+                .limitIconToDefaultSize()
+                //.maxIconSizeRes(R.dimen.text_size_40)
+               // .positiveColorRes(R.color.material_red_400)
+               .backgroundColorRes(R.color.white_solid)
+               // .negativeColorRes(R.color.material_red_400)
+                .iconRes(R.drawable.ic_lote)
+                .dividerColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                .positiveColor(Color.WHITE)
+                .autoDismiss(false)
+                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .theme(Theme.DARK)
+                .onPositive(
+                        { dialog1, which ->
+                            if(unidadProductiva!=null){
+                                updateUp()
+                            }else{
+                                registerUp()
+                            }
+                        })
+                .onNegative({ dialog1, which ->
+                   dialog1.dismiss()
+                })
+                .build()
+
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.show()
+        dialog.getWindow().setAttributes(lp)
+        _dialogRegisterUpdate=dialog
+
+
+        /*
         val dialog = AlertDialog.Builder(context!!)
                 .setView(viewDialog)
                 .setIcon(R.drawable.ic_lote)
                 . setTitle(getString(R.string.tittle_add_unidadproductiva))
                 .setPositiveButton(getString(R.string.btn_save), null) //Set to null. We override the onclick
                 .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
-
                 })
                 .create()
         dialog.setOnShowListener(DialogInterface.OnShowListener {
@@ -337,6 +390,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         })
         dialog?.show()
         _dialogRegisterUpdate=dialog
+        */
         //return  _dialogRegisterUpdate
     }
 

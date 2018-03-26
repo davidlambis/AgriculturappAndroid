@@ -34,11 +34,18 @@
         <activity
             android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
+        <!--<activity
             android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity"
             android:configChanges="screenSize|orientation"
             android:theme="@style/LoginTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden" />-->
+
+        <activity
+            android:name=".asistencia_tecnica.activities.login.ui.LoginActivity"
+            android:configChanges="screenSize|orientation"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
         <activity
             android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_rol.RegisterRolActivity"
             android:parentActivityName="com.interedes.agriculturappv3.asistencia_tecnica.activities.home.HomeActivity"

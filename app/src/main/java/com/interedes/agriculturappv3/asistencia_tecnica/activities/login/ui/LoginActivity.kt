@@ -45,6 +45,9 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        //Quitar Barra de Navegacion
+        if (getSupportActionBar() != null)
+            getSupportActionBar()?.hide();
         fabLogin?.setOnClickListener(this)
         if (intent.extras != null && intent.extras["correo"].equals(getString(R.string.snackbar_verificacion_correo))) {
             onMessageOk(R.color.colorPrimary, getString(R.string.snackbar_verificacion_correo))

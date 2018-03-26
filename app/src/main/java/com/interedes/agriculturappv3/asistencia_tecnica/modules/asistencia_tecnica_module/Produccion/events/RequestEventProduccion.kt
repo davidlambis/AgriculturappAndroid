@@ -28,5 +28,8 @@ data class RequestEventProduccion (var eventType: Int,
         val LIST_EVENT_UNIDAD_MEDIDA: Int = 10
         val LIST_EVENT_LOTE: Int = 11
         val LIST_EVENT_CULTIVO: Int = 12
+
+        //Query Single
+        val GET_EVENT_CULTIVO: Int = 13
     }
 }

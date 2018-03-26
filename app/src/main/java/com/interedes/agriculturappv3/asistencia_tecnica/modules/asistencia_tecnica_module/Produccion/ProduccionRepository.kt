@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion
 
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
+import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo_Table
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.produccion.Produccion
@@ -35,6 +36,12 @@ class ProduccionRepository :IMainProduccion.Repository {
     override fun getListProduccion(cultivo_id:Long?) {
         var listaProduccion = getProductions(cultivo_id)
         postEventOk(RequestEventProduccion.READ_EVENT,listaProduccion,null);
+    }
+
+
+    override fun getCultivo(cultivo_id:Long?) {
+        var cultivo = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+        postEventOkCultivo(RequestEventProduccion.GET_EVENT_CULTIVO,cultivo)
     }
 
     override fun getListas() {
@@ -101,6 +108,15 @@ class ProduccionRepository :IMainProduccion.Repository {
         }
         postEvent(type, produccionListMitable,ProducciconMutable,null)
     }
+
+    private fun postEventOkCultivo(type: Int,  cultivo:Cultivo?) {
+        var CultivoMutable:Object?=null
+        if(cultivo!=null){
+            CultivoMutable = cultivo as Object
+        }
+        postEvent(type,null,CultivoMutable,null)
+    }
+
 
     private fun postEventError(type: Int,messageError:String) {
         postEvent(type, null,null,messageError)

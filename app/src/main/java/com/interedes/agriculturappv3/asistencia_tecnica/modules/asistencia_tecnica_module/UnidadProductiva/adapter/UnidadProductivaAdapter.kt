@@ -69,7 +69,7 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
             var badge_notification_location_up: TextView = itemView.findViewById(R.id.badge_notification_location_up)
             var badge_notification_poligon_up: TextView = itemView.findViewById(R.id.badge_notification_poligon_up)
 
-            var btn_edit_up: ImageView = itemView.findViewById(R.id.btn_edit_up)
+            //var btn_edit_up: ImageView = itemView.findViewById(R.id.btn_edit_up)
             //var btn_delete_up: ImageView = itemView.findViewById(R.id.btn_delete_up)
 
 
@@ -123,10 +123,6 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
                 UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ADD_POLIGON_EVENT,data)
             }
 
-
-            btn_edit_up.setOnClickListener {
-                UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ITEM_EDIT_EVENT,data)
-            }
         }
     }
 

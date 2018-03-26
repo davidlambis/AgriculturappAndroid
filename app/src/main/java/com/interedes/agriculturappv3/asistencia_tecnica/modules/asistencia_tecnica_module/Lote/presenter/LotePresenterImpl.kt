@@ -46,7 +46,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     override fun onCreate() {
         eventBus?.register(this)
         loadListas()
-        loteMainView?.showAlertDialogSelectUp()
+        //loteMainView?.showAlertDialogSelectUp()
     }
 
     override fun onDestroy() {
@@ -111,19 +111,19 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
                 loteMainView?.setListLotes(loteList)
             }
             RequestEventLote.SAVE_EVENT ->{
+                onLoteSaveOk()
                 var loteList= eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
-                onLoteSaveOk()
             }
             RequestEventLote.UPDATE_EVENT -> {
+                onLoteUpdateOk()
                 var loteList= eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
-                onLoteUpdateOk()
             }
             RequestEventLote.DELETE_EVENT -> {
+                onLoteDeleteOk()
                 var loteList= eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
-                onLoteDeleteOk()
             }
             RequestEventLote.ERROR_EVENT -> {
                 onMessageError(eventLote.mensajeError)

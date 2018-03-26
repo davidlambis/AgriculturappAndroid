@@ -114,10 +114,14 @@
 
 
     <string name="tittle_producccion">Produccion</string>
+    <string name="tittle_add_producccion">Registrar Produccion</string>
+
     <string name="spinner_cultivo">Cultivo</string>
     <string name="title_date_end">Fecha de Fin</string>
     <string name="title_date_start">Fechas de Inicio</string>
     <string name="tittle_date_produccion">Fechas de Produccion</string>
+
+    <string name="tittle_select_cultivo">Seleccione el cultivo para agregar la produccion</string>
     <string name="title_alert_delete_produccion">Esta seguro que desea eliminar la produccion</string>
 
     <!-- Cultivos -->
@@ -163,6 +167,12 @@
 
     <string name="cantidad_estimada">%1$,.0f / %2$s</string>
     <string name="selected">Seleccionar</string>
+
+
+    <string name="agregar">Agregar</string>
+    <string name="filtrar">Filtrar</string>
+    <string name="ubicar">Ubicar</string>
+    <string name="tittle_filter">Filtros de busquedad</string>
 
 
     <!-- INTERNET CONNECTION -->

@@ -54,12 +54,14 @@ interface IMainProduccion {
         fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
         fun setListLotes(listLotes:List<Lote>?)
         fun setListCultivos(listCultivos:List<Cultivo>?)
+        fun setCultivo(cultivo:Cultivo?)
 
 
         //Dialog
         fun showAlertDialogAddProduccion(produccion: Produccion?)
         fun verificateConnection(): AlertDialog?
         fun confirmDelete(producccion:Produccion):AlertDialog?
+        fun showAlertDialogFilterProduccion(isFilter:Boolean?)
 
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
@@ -78,12 +80,14 @@ interface IMainProduccion {
         fun validarCampos(): Boolean?
         fun validarListasAddProduccion(): Boolean?
 
+
         //Methods
         fun registerProdcuccion(produccin: Produccion,cultivo_id:Long)
         fun updateProducccion(produccin: Produccion,cultivo_id:Long)
         fun deleteProduccion(produccin: Produccion,cultivo_id:Long?)
         fun getListProduccion(cultivo_id:Long?)
         fun getListas()
+        fun getCultivo(cultivo_id:Long?)
 
 
         //Methods View
@@ -103,6 +107,7 @@ interface IMainProduccion {
         fun deleteProducccion(produccion: Produccion,cultivo_id:Long?)
         fun execute(cultivo_id:Long?)
         fun getListas()
+        fun getCultivo(cultivo_id:Long?)
     }
 
     interface Repository {
@@ -112,5 +117,6 @@ interface IMainProduccion {
         fun saveProduccion(produccion: Produccion,cultivo_id:Long)
         fun updateProduccion(produccion: Produccion,cultivo_id:Long)
         fun deleteProduccion(produccion: Produccion,cultivo_id:Long?)
+        fun getCultivo(cultivo_id:Long?)
     }
 }

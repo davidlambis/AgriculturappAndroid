@@ -23,7 +23,7 @@
                 android:tint="@color/grey_luiyi"
                 android:src="@drawable/ic_close_white"/>
 
-            <include layout="@layout/content_recyclerview"/>
+            <include layout="@layout/reciclerview_dialog"/>
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 </android.support.design.widget.CoordinatorLayout>
