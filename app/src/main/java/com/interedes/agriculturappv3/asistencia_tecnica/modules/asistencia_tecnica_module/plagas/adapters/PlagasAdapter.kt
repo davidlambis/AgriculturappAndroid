@@ -9,12 +9,15 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.events.PlagasEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.robertlevonyan.views.expandable.Expandable
+import com.robertlevonyan.views.expandable.ExpandingListener
+import com.interedes.agriculturappv3.R.id.expandable
+
+
 
 class PlagasAdapter(val lista: ArrayList<TipoEnfermedad>) : RecyclerView.Adapter<PlagasAdapter.ViewHolder>() {
 
@@ -61,6 +64,7 @@ class PlagasAdapter(val lista: ArrayList<TipoEnfermedad>) : RecyclerView.Adapter
             val image_enfermedad: ImageView = itemView.findViewById(R.id.imageViewEnfermedad)
             val txt_descripcion_enfermedad: TextView = itemView.findViewById(R.id.txtDescripcionEnfermedad)
             val btn_ver_insumos: Button = itemView.findViewById(R.id.btnVerInsumos)
+            val expandable : Expandable = itemView.findViewById(R.id.expandable)
 
             txt_nombre_enfermedad.text = data.Nombre
             txt_nombre_cientifico.text = data.NombreCientifico
@@ -68,9 +72,19 @@ class PlagasAdapter(val lista: ArrayList<TipoEnfermedad>) : RecyclerView.Adapter
             txt_descripcion_enfermedad.text = data.Descripcion
 
             btn_ver_insumos.setOnClickListener {
-                PlagasAdapter.instance?.postEvent(PlagasEvent.OPEN_EVENT, data)
+                PlagasAdapter.instance?.postEvent(PlagasEvent.ITEM_OPEN_EVENT, data)
             }
 
+
+            expandable.setExpandingListener(object : ExpandingListener {
+                override fun onExpanded() {
+                   txt_descripcion_enfermedad.visibility = View.VISIBLE
+                }
+
+                override fun onCollapsed() {
+                    txt_descripcion_enfermedad.visibility = View.GONE
+                }
+            })
 
         }
     }

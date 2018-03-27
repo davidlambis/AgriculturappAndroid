@@ -21,21 +21,23 @@
             android:id="@+id/plagas_search_edit_frame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_global"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.SearchView
-                android:id="@+id/plagas_search_view"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:clickable="false"
+            <EditText
+                android:id="@+id/searchFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/radius_edit_text"
+                android:drawableStart="@drawable/ic_lupa_buscar_producto"
                 android:focusable="false"
-                android:background="@color/white"
-                android:fadingEdgeLength="3dp"
-                android:focusableInTouchMode="true" />
+                android:focusableInTouchMode="false"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:hint="@string/filtrar"
+                android:padding="@dimen/margin_3"
+                android:paddingStart="@dimen/margin_5" />
         </LinearLayout>
+
+
 
     </LinearLayout>
 

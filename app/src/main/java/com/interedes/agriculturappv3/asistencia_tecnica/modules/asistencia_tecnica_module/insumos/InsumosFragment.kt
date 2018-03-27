@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos
 
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -9,10 +10,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Insumo
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
+import com.interedes.agriculturappv3.asistencia_tecnica.models.insumos.Insumo
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos.adapters.InsumosAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.PlagaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
@@ -32,9 +35,12 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
     //List Insumos
     var insumosList: ArrayList<Insumo>? = ArrayList<Insumo>()
 
+    var dialogInsumo: MaterialDialog? = null
+
     //Variables Globales
     var tipoEnfermedadId: Long? = 0
     var nombreTipoEnfermedad: String? = null
+    var nombreTipoProducto: String? = null
 
     companion object {
         var instance: InsumosFragment? = null
@@ -60,10 +66,11 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
         if (b != null) {
             tipoEnfermedadId = b.getLong("tipoEnfermedadId")
             nombreTipoEnfermedad = b.getString("nombreTipoEnfermedad")
+            nombreTipoProducto = b.getString("nombreTipoProducto")
         }
         initAdapter()
         setupInjection()
-        (activity as MenuMainActivity).toolbar.title = nombreTipoEnfermedad
+        (activity as MenuMainActivity).toolbar.title = nombreTipoEnfermedad + "(" + nombreTipoProducto + ")"
         swipeRefreshLayout?.setOnRefreshListener(this)
         ivBackButton?.setOnClickListener(this)
     }
@@ -85,12 +92,36 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
     }
 
     override fun setInsumosList(listInsumos: List<Insumo>) {
+        dialogInsumo?.dismiss()
         adapter?.clear()
         insumosList?.clear()
         adapter?.setItems(listInsumos)
         hideRefresh()
         setResults(listInsumos.size)
     }
+
+    /*
+    override fun setDialogListInsumos(listInsumos: List<Insumo>) {
+        if (listInsumos.size > 0) {
+            var item_id: Long? = 0
+            val adapter = MaterialSimpleListAdapter { dialog, index1, item -> presenter?.setInsumo(item_id) }
+            for (item in listInsumos) {
+                item_id = item.Id
+                adapter.add(
+                        MaterialSimpleListItem.Builder(activity)
+                                .content(item.Nombre)
+                                .icon(R.drawable.ic_insumos)
+                                .backgroundColor(Color.WHITE)
+                                .build())
+            }
+
+            val dialog = MaterialDialog.Builder(activity!!).title(R.string.title_selected_insumo).adapter(adapter, null).build()
+            dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(false)
+            dialog.show()
+            dialogInsumo = dialog
+        }
+    } */
 
     override fun showRefresh() {
         swipeRefreshLayout.isRefreshing = true
@@ -112,7 +143,13 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
         when (p0?.id) {
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
-                (activity as MenuMainActivity).replaceCleanFragment(PlagaFragment())
+                val bundle = Bundle()
+                bundle.putLong("tipoEnfermedadId", tipoEnfermedadId!!)
+                bundle.putString("nombreTipoProducto", nombreTipoProducto)
+                val plagaFragment : PlagaFragment
+                plagaFragment = PlagaFragment()
+                plagaFragment.arguments = bundle
+                (activity as MenuMainActivity).replaceCleanFragment(plagaFragment)
             }
         }
     }

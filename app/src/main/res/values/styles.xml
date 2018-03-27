@@ -73,16 +73,17 @@
     </style>
 
 
-
     <style name="small_button">
         <item name="android:padding">@dimen/margin_global_10</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/text_size_16</item>
     </style>
 
-
-
-
+    <style name="spinner_button" parent="android:Widget.Holo.Spinner">
+        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
 
 
 </resources>

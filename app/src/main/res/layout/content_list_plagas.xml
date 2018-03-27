@@ -72,22 +72,53 @@
                             android:textStyle="bold" />
 
                         <ImageView
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop"
                             android:id="@+id/imageViewEnfermedad"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/txtNombreCientifico"
                             android:src="@drawable/aguacate" />
 
+                        <com.robertlevonyan.views.expandable.Expandable
+                            android:id="@+id/expandable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/imageViewEnfermedad"
+                            android:layout_marginTop="@dimen/margin_global"
+                            app:exp_backgroundColor="@color/amber_luiyi"
+                            app:exp_expandIndicator="@drawable/ic_down_arrow"
+                            app:exp_headerBackgroundColor="@color/amber_luiyi">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="DESCRIPCIÓN"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/text_size"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone" />
+
+
+                        </com.robertlevonyan.views.expandable.Expandable>
+
+
                         <TextView
                             android:id="@+id/txtDescripcionEnfermedad"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/imageViewEnfermedad"
+                            android:layout_below="@+id/expandable"
                             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum "
                             android:textAlignment="center"
                             android:textColor="@color/purple"
                             android:textSize="@dimen/text_size_16"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone" />
 
                         <Button
                             android:id="@+id/btnVerInsumos"

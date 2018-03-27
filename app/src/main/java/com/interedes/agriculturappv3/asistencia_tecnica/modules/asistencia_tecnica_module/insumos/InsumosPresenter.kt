@@ -1,7 +1,6 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Insumo
-import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
+import com.interedes.agriculturappv3.asistencia_tecnica.models.insumos.Insumo
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos.events.InsumosEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
@@ -31,10 +30,19 @@ class InsumosPresenter(var view: InterfaceInsumos.View?) : InterfaceInsumos.Pres
         interactor?.getInsumosByPlaga(tipoEnfermedadId)
     }
 
+    /*
+    override fun setInsumo(insumoId: Long?) {
+        interactor?.setInsumo(insumoId)
+    }*/
+
     @Subscribe
     override fun onEventMainThread(insumosEvent: InsumosEvent?) {
         when (insumosEvent?.eventType) {
             InsumosEvent.READ_EVENT -> {
+                val list_insumos = insumosEvent.mutableList as List<Insumo>
+                view?.setInsumosList(list_insumos)
+            }
+            InsumosEvent.SET_EVENT -> {
                 val list_insumos = insumosEvent.mutableList as List<Insumo>
                 view?.setInsumosList(list_insumos)
             }

@@ -13,5 +13,11 @@ class PlagaInteractor : IPlaga.Interactor {
     override fun getPlagasByTipoProducto(tipoProductoId: Long?) {
         repository?.getPlagasByTipoProducto(tipoProductoId)
     }
+
+
+
+    override fun setPlaga(tipoEnfermedadId: Long?) {
+        repository?.setPlaga(tipoEnfermedadId)
+    }
     //endregion
 }

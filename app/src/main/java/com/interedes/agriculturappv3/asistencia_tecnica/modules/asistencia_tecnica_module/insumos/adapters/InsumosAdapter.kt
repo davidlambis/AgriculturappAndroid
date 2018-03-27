@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Insumo
+import com.interedes.agriculturappv3.asistencia_tecnica.models.insumos.Insumo
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.robertlevonyan.views.expandable.Expandable
+import com.robertlevonyan.views.expandable.ExpandingListener
 
 class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<InsumosAdapter.ViewHolder>() {
 
@@ -54,11 +56,22 @@ class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<Insumo
             val txt_nombre_insumo: TextView = itemView.findViewById(R.id.txtNombreInsumo)
             val image_view_insumo: ImageView = itemView.findViewById(R.id.imageViewInsumo)
             val text_descripcion_insumo: TextView = itemView.findViewById(R.id.txtDescripcionInsumo)
+            val expandable: Expandable = itemView.findViewById(R.id.expandable)
+            val txt_descripcion_insumo: TextView = itemView.findViewById(R.id.txtDescripcionInsumo)
 
             txt_nombre_insumo.text = data.Nombre
             image_view_insumo.setImageResource(data.Imagen!!)
             text_descripcion_insumo.text = data.Descripcion
 
+            expandable.setExpandingListener(object : ExpandingListener {
+                override fun onExpanded() {
+                    txt_descripcion_insumo.visibility = View.VISIBLE
+                }
+
+                override fun onCollapsed() {
+                    txt_descripcion_insumo.visibility = View.GONE
+                }
+            })
         }
     }
 }

@@ -23,5 +23,7 @@ data class TipoEnfermedad(@PrimaryKey(autoincrement = true)
                           @SerializedName("TipoProductoId")
                           @Column(name = "TipoProductoId")
                           var TipoProductoId: Long? = 0,
+                          @Column(name = "NombreTipoProducto")
+                          var NombreTipoProducto: String? = null,
                           @Column(name = "Imagen")
                           var Imagen: Int? = 0) {}

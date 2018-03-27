@@ -30,7 +30,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-
     //Design
     //noinspection GradleCompatible
     implementation "com.android.support:support-v4:$rootProject.ext.supportLibraryVersion"
@@ -96,10 +95,12 @@ dependencies {
     //Maps MapDrawingTools
     compile "com.github.bkhezry:MapDrawingTools:$mapDrawingVersion"
 
-
     //DIALOGS
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+
+    //Material Expansion Panel
+    implementation 'com.robertlevonyan.view:MaterialExpansionPanel:1.2.0'
 
     /*
     //Extenciones Kotlin (QUERYS LIST)

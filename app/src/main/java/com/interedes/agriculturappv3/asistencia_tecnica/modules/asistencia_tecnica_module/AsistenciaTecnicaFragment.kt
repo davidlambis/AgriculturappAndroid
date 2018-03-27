@@ -103,6 +103,8 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
                 (activity as MenuMainActivity).replaceFragment(ProduccionFragment())
             } else if (lista[position].Identificador.equals("plagas")) {
                 (activity as MenuMainActivity).replaceFragment(PlagaFragment())
+            } else if (lista[position].Identificador.equals("control_plagas")) {
+                //(activity as MenuMainActivity).replaceFragment(ControlPlagasFragment())
             }
         }
         recyclerView?.adapter = adapter

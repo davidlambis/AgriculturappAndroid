@@ -144,13 +144,21 @@
 
     <!-- Plagas -->
     <string name="title_plagas">Plagas</string>
+    <string name="title_plaga">Plaga</string>
     <string name="title_selected_tipo_productos">Seleccione el producto</string>
+    <string name="title_selected_plaga">Selecciona la Plaga</string>
+    <string name="title_selected_insumo">Selecciona el Insumo</string>
+
+    <!-- Insumos -->
+    <string name="ver_insumos">Ver Insumos</string>
+    <string name="ver_tratamiento">Ver Tratamiento</string>
+
     <!--Tipo Producto-->
 
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
     <string name="name">Nombre</string>
-    <string name="description">Descripcion</string>
+    <string name="description">Descripción</string>
     <string name="area">Area</string>
     <string name="department">Departamento</string>
     <string name="city">Ciudad</string>
@@ -184,7 +192,7 @@
     <string name="error_request">Error en la petición</string>
     <string name="error_load_roles">No se pueden cargar los roles porque no hay internet</string>
     <string name="_3232_34_mts">3232.34 mts</string>
-    <string name="ver_insumos">Ver Insumos</string>
+
 
 
     <string-array name="array_type_get_location_with_conection">

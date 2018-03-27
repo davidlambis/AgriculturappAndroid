@@ -1,7 +1,6 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas
 
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.events.PlagasEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
@@ -26,6 +25,18 @@ class PlagaRepository : IPlaga.Repository {
             }
         }
         postEventOk(PlagasEvent.READ_EVENT, lista, null)
+    }
+
+
+    override fun setPlaga(tipoEnfermedadId: Long?) {
+        val lista_tipo_enfermedad = Listas.listaTipoEnfermedad()
+        val lista = ArrayList<TipoEnfermedad>()
+        for (item in lista_tipo_enfermedad) {
+            if (item.Id == tipoEnfermedadId) {
+                lista.add(item)
+            }
+        }
+        postEventOk(PlagasEvent.SET_EVENT, lista, null)
     }
     //endregion
 

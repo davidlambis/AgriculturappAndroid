@@ -1,13 +1,11 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas
 
 
-import android.content.DialogInterface
-import android.graphics.PorterDuff
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -18,9 +16,9 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Insumo
 import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
@@ -30,11 +28,12 @@ import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecni
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.listas.Listas
 import kotlinx.android.synthetic.main.activity_menu_main.*
-import kotlinx.android.synthetic.main.content_list_plagas.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.content_recyclerview.view.*
 import kotlinx.android.synthetic.main.dialog_list_general.view.*
 import kotlinx.android.synthetic.main.fragment_plaga.*
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.adapters.SelectPlagasAdapter
 
 
 class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
@@ -50,7 +49,13 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
     //Dialog Tipo Productos
     var dialogProducto: MaterialDialog? = null
+    var dialogPlaga: MaterialDialog? = null
     var viewDialogTipoProductos: View? = null;
+    var viewDialogPlagas: View? = null
+
+    var Tipo_Producto_id: Long? = 0
+    var Tipo_Producto_Nombre: String? = null
+    var Tipo_Enfermedad_id: Long? = 0
 
     companion object {
         var instance: PlagaFragment? = null
@@ -76,9 +81,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         (activity as MenuMainActivity).toolbar.title = getString(R.string.title_plagas)
         swipeRefreshLayout?.setOnRefreshListener(this)
         ivBackButton?.setOnClickListener(this)
-        plagas_search_edit_frame?.setOnClickListener(this)
-        plagas_search_view.clearFocus()
-        plagas_search_view.setIconifiedByDefault(false)
+        searchFilter?.setOnClickListener(this)
     }
 
     private fun initAdapter() {
@@ -88,7 +91,15 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     }
 
     private fun setupInjection() {
-        getPlagasByTipoProducto(1)
+        val a = this.arguments
+        if (a != null) {
+            Tipo_Enfermedad_id = a.getLong("tipoEnfermedadId")
+            Tipo_Producto_Nombre = a.getString("nombreTipoProducto")
+            searchFilter.setText(Tipo_Producto_Nombre)
+            presenter?.setPlaga(Tipo_Enfermedad_id)
+        } else {
+            showAlertDialogTipoProduccion()
+        }
     }
 
 
@@ -97,7 +108,8 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         presenter?.getPlagasByTipoProducto(tipoProductoId)
     }
 
-    override fun setListPlagas(list_plagas: List<TipoEnfermedad>) {
+    override fun setListPlagas(list_plagas: ArrayList<TipoEnfermedad>) {
+        dialogPlaga?.dismiss()
         adapter?.clear()
         plagasList?.clear()
         adapter?.setItems(list_plagas)
@@ -105,10 +117,85 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         setResults(list_plagas.size)
     }
 
+    override fun setDialogListPlagas(list_plagas: ArrayList<TipoEnfermedad>) {
+        val inflater = this.layoutInflater
+        viewDialogPlagas = inflater.inflate(R.layout.dialog_list_general, null)
+
+        viewDialogPlagas?.recyclerView?.layoutManager = LinearLayoutManager(activity)
+        val adapterLocal = SelectPlagasAdapter(list_plagas)
+        viewDialogPlagas?.recyclerView?.adapter = adapterLocal
+
+        //adapterLocal.setItems(Listas.listaTipoProducto())
+        val results = String.format(getString(R.string.results_global_search), list_plagas.size)
+        viewDialogPlagas?.txtResults?.setText(results)
+        viewDialogPlagas?.txtResults?.setTextColor(resources.getColor(R.color.white))
+
+        viewDialogPlagas?.swipeRefreshLayout?.setOnRefreshListener(this)
+        viewDialogPlagas?.swipeRefreshLayout?.isRefreshing = false
+        viewDialogPlagas?.swipeRefreshLayout?.isEnabled = false
+
+        viewDialogPlagas?.ivClosetDialogUp?.setOnClickListener(this)
+
+        val dialog = MaterialDialog.Builder(activity!!)
+                .title(getString(R.string.title_selected_plaga))
+                .customView(viewDialogPlagas!!, true)
+                //.positiveText(R.string.btn_save)
+                .negativeText(android.R.string.cancel)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.light_green_800)
+                //.limitIconToDefaultSize()
+                //.maxIconSize(R.dimen.text_size_40)
+                .limitIconToDefaultSize()
+                // .positiveColorRes(R.color.material_red_400)
+                .backgroundColorRes(R.color.black_transparencia)
+                // .negativeColorRes(R.color.material_red_400)
+                .icon(resources.getDrawable(R.drawable.ic_plagas))
+                .dividerColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                //.positiveColor(Color.WHITE)
+                .negativeColor(resources.getColor(R.color.white_solid))
+                .autoDismiss(false)
+                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .theme(Theme.DARK)
+                .onNegative({ dialog1, which ->
+                    dialog1.dismiss()
+                })
+                .build()
+
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.show()
+        dialog.getWindow().setAttributes(lp)
+        dialogPlaga = dialog
+        /*var item_id: Long? = 0
+        val adapter = MaterialSimpleListAdapter { dialog, index1, item -> presenter?.setPlaga(item_id) }
+        for (item in list_plagas) {
+            item_id = item.Id
+            adapter.add(
+                    MaterialSimpleListItem.Builder(activity)
+                            .content(item.Nombre)
+                            .icon(R.drawable.ic_plagas)
+                            .backgroundColor(Color.WHITE)
+                            .build())
+        }
+
+        val dialog = MaterialDialog.Builder(activity!!).title(R.string.title_selected_plaga).adapter(adapter, null).build()
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.show()
+        dialogPlaga = dialog*/
+    }
+
     override fun verInsumos(tipoEnfermedad: TipoEnfermedad) {
         val bundle = Bundle()
-        bundle.putLong("tipoEnfermedadId", tipoEnfermedad.Id!!)
+        Tipo_Enfermedad_id = tipoEnfermedad.Id
+        bundle.putLong("tipoEnfermedadId", Tipo_Enfermedad_id!!)
         bundle.putString("nombreTipoEnfermedad", tipoEnfermedad.Nombre)
+        bundle.putString("nombreTipoProducto", tipoEnfermedad.NombreTipoProducto)
         val insumosFragment: InsumosFragment
         insumosFragment = InsumosFragment()
         insumosFragment.arguments = bundle
@@ -125,14 +212,23 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
     override fun hideDialog(tipoProducto: TipoProducto) {
         dialogProducto?.dismiss()
-        plagas_search_view.setQuery(tipoProducto.Nombre, false)
+        searchFilter.setText(tipoProducto.Nombre)
+        Tipo_Producto_id = tipoProducto.Id
+        Tipo_Producto_Nombre = tipoProducto.Nombre
+        // plagas_search_view.setQuery(tipoProducto.Nombre, false)
     }
     //endregion
 
     //region Métodos
     override fun onRefresh() {
         showRefresh()
-        getPlagasByTipoProducto(1)
+        if (Tipo_Producto_id!! > 0) {
+            presenter?.getPlagasByTipoProducto(Tipo_Producto_id)
+        } else {
+            hideRefresh()
+        }
+        //showAlertDialogTipoProduccion()
+        // presenter?.setPlaga(1)
     }
 
     override fun setResults(plagas: Int) {
@@ -150,8 +246,6 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         ///var view=inflater.inflate(R.layout.dialog_list_general, null) as View
 
 
-
-
         viewDialogTipoProductos?.recyclerView?.layoutManager = GridLayoutManager(activity, 2)
         val lista: java.util.ArrayList<TipoProducto>? = java.util.ArrayList<TipoProducto>()
         val adapterLocal = TipoProductosAdapter(lista!!)
@@ -167,34 +261,6 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         viewDialogTipoProductos?.swipeRefreshLayout?.isEnabled = false
 
         viewDialogTipoProductos?.ivClosetDialogUp?.setOnClickListener(this)
-
-        //Config Style Dialog
-        /*
-       var image = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.ic_produccion_cultivo)
-       var icon = image?.mutate()
-       icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN);
-       var title= getString(R.string.title_selected_tipo_productos)
-      val dialog = AlertDialog.Builder(context!!,R.style.Theme_Sphinx_Dialog_Alert)
-              .setView(viewDialogTipoProductos)
-              .setIcon(icon)
-              . setTitle(title)
-              .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
-
-              })
-              .create()
-       //var  resources = dialog.getContext().getResources();
-       var color = resources.getColor(R.color.colorPrimary) // your color here
-       var titleDividerId = dialog.context.resources.getIdentifier("titleDivider", "id", "android");
-       var titleDivider = dialog.getWindow().getDecorView().findViewById<View>(titleDividerId);
-       if (titleDivider != null) {
-           titleDivider.setBackgroundColor(color);
-       }
-      dialog?.show()
-       dialogProducto=dialog
-
-       */
-
-
 
         val dialog = MaterialDialog.Builder(activity!!)
                 .title(getString(R.string.title_selected_tipo_productos))
@@ -230,13 +296,10 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
         dialog.show()
         dialog.getWindow().setAttributes(lp)
-        dialogProducto=dialog
-
-
+        dialogProducto = dialog
 
 
     }
-
 
 
     //endregion
@@ -248,14 +311,20 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
             }
-            R.id.plagas_search_edit_frame -> {
+            R.id.searchFilter -> {
                 showAlertDialogTipoProduccion()
             }
             R.id.ivClosetDialogUp -> {
                 dialogProducto?.dismiss()
+                dialogPlaga?.dismiss()
             }
         }
     }
     //endregion
+
+    //region Ciclo de Vida Fragment
+
+    //endregion
+
 
 }

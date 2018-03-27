@@ -1,6 +1,6 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Insumo
+import com.interedes.agriculturappv3.asistencia_tecnica.models.insumos.Insumo
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos.events.InsumosEvent
 import com.interedes.agriculturappv3.libs.EventBus
@@ -36,6 +36,18 @@ class InsumosRepository : InterfaceInsumos.Repository {
         postEventOk(InsumosEvent.READ_EVENT, lista_insumos, null)
 
     }
+
+    /*
+    override fun setInsumo(insumoId: Long?) {
+        val lista_all_insumos = Listas.listaInsumos()
+        val lista_insumos = ArrayList<Insumo>()
+        for (item in lista_all_insumos) {
+            if (item.Id == insumoId) {
+                lista_insumos.add(item)
+            }
+        }
+        postEventOk(InsumosEvent.SET_EVENT, lista_insumos, null)
+    }*/
     //endregion
 
     //region Events
