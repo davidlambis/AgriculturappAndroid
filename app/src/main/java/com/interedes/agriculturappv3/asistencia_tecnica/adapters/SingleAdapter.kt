@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.ItemLista
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.interedes.agriculturappv3.services.Resources_Menu
 
@@ -37,9 +38,11 @@ class SingleAdapter(val lista: ArrayList<ItemLista>,var TYPE_MENU:Int,var contex
         fun bindItems(data: ItemLista, pos: Int, listener: (Int) -> Unit) = with(itemView) {
             val image: ImageView = itemView.findViewById(R.id.imageView)
             val textNombre: TextView = itemView.findViewById(R.id.textView)
+            val content: LinearLayout = itemView.findViewById(R.id.content)
             //image.setImageBitmap(data.Imagen)
             image.setImageResource(data.Imagen)
             textNombre.text = data.Nombre
+            content.setBackgroundResource(R.drawable.sombra_drawing)
 
             //Aplicar diseños al menu
             if(Resources_Menu.MENU_MAIN==TYPE_MENU){
