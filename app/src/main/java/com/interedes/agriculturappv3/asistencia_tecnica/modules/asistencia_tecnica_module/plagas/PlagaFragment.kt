@@ -140,6 +140,8 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
         viewDialogPlagas?.title?.setText(getString(R.string.title_selected_plaga))
 
+       // val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar_Fullscreen)
+
         val dialog = AlertDialog.Builder(context!!)
                 .setView(viewDialogPlagas!! )
                 .create()
