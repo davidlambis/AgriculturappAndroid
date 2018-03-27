@@ -450,10 +450,6 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             title=getString(R.string.tittle_select_cultivo)
         }
 
-
-
-
-
         if(unidadProductivaGlobal!=null && loteGlobal!=null && cultivoGlobal!=null){
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)

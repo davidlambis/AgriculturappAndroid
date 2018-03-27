@@ -2,6 +2,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:id="@+id/container_unidad_productiva"
     xmlns:android="http://schemas.android.com/apk/res/android">
 <!--
     <LinearLayout

@@ -11,6 +11,12 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.events.PlagasEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+
+
+
+
 
 /**
  * Created by usuario on 23/03/2018.
@@ -60,12 +66,28 @@ class TipoProductosAdapter(val lista: ArrayList<TipoProducto>) : RecyclerView.Ad
             val txtNombreTipoProducto: TextView = itemView.findViewById(R.id.txtNombreTipoProducto)
             val imgTipoProducto: ImageView = itemView.findViewById(R.id.imgTipoProducto)
 
+
+
+
             if(data.Nombre.equals("Aguacate")){
-                imgTipoProducto.setImageResource(R.drawable.aguacate)
+
+                val options = BitmapFactory.Options()
+                options.inSampleSize = 8
+                val icon = BitmapFactory.decodeResource(context.resources,
+                        R.drawable.aguacate,options)
+                imgTipoProducto.setImageBitmap(icon)
             }else if(data.Nombre.equals("Fríjol")){
-                imgTipoProducto.setImageResource(R.drawable.frijol)
+                val options = BitmapFactory.Options()
+                options.inSampleSize = 8
+                val icon = BitmapFactory.decodeResource(context.resources,
+                        R.drawable.frijol,options)
+                imgTipoProducto.setImageBitmap(icon)
             }else if(data.Nombre.equals("Plátano")){
-                imgTipoProducto.setImageResource(R.drawable.platano)
+                val options = BitmapFactory.Options()
+                options.inSampleSize = 8
+                val icon = BitmapFactory.decodeResource(context.resources,
+                        R.drawable.platano,options)
+                imgTipoProducto.setImageBitmap(icon)
             }
 
             txtNombreTipoProducto.text=data.Nombre

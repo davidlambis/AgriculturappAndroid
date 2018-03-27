@@ -12,11 +12,20 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
+import java.util.ArrayList
 
 class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
 
+
+
     var interactor: ICultivo.Interactor? = null
     var eventBus: EventBus? = null
+    var listUnidadProductivaGlobal:List<UnidadProductiva>?= ArrayList<UnidadProductiva>()
+    var listLoteGlobal:List<Lote>?= ArrayList<Lote>()
+
+    var listTipoProductosGlobal:List<TipoProducto>?= ArrayList<TipoProducto>()
+    var listDetalleTipoProductosGlobal:List<DetalleTipoProducto>?= ArrayList<DetalleTipoProducto>()
+    var listUnidadMedidasGlobal:List<Unidad_Medida>?= ArrayList<Unidad_Medida>()
 
     init {
         interactor = CultivoInteractor()
@@ -63,29 +72,27 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
         when (cultivoEvent?.eventType) {
             CultivoEvent.LIST_EVENT_UNIDAD_PRODUCTIVA -> {
                 val list_unidad_productiva = cultivoEvent.mutableList as List<UnidadProductiva>
-                view?.setListUnidadProductiva(list_unidad_productiva)
+                listUnidadProductivaGlobal=list_unidad_productiva
             }
+
             CultivoEvent.LIST_EVENT_TIPO_PRODUCTO -> {
                 val list_tipo_producto = cultivoEvent.mutableList as List<TipoProducto>
-                view?.setListTipoProducto(list_tipo_producto)
+                listTipoProductosGlobal=list_tipo_producto
             }
+
             CultivoEvent.LIST_EVENT_DETALLE_TIPO_PRODUCTO -> {
                 val list_detalle_tipo_producto = cultivoEvent.mutableList as List<DetalleTipoProducto>
-                view?.setListDetalleTipoProducto(list_detalle_tipo_producto)
+                listDetalleTipoProductosGlobal=list_detalle_tipo_producto
             }
             CultivoEvent.LIST_EVENT_UNIDAD_MEDIDA -> {
                 val list_unidad_medida = cultivoEvent.mutableList as List<Unidad_Medida>
-                view?.setListUnidadMedidas(list_unidad_medida)
+                listUnidadMedidasGlobal=list_unidad_medida
             }
             CultivoEvent.LIST_EVENT_LOTES -> {
-                view?.enableInputs()
                 val list_lotes = cultivoEvent.mutableList as List<Lote>
-                view?.setListLotes(list_lotes)
+                listLoteGlobal= list_lotes
             }
-            CultivoEvent.LIST_EVENT_LOTES_SEARCH -> {
-                val list_lotes = cultivoEvent.mutableList as List<Lote>
-                view?.setListLotesSearch(list_lotes)
-            }
+
             CultivoEvent.SAVE_EVENT -> {
                 val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
                 view?.setListCultivos(list_cultivos)
@@ -95,7 +102,7 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
                 view?.requestResponseError(cultivoEvent.mensajeError)
             }
             CultivoEvent.ERROR_DIALOG_EVENT -> {
-                view?.requestResponseDialogError(cultivoEvent.mensajeError)
+                view?.messageErrorDialog(cultivoEvent.mensajeError)
             }
             CultivoEvent.READ_EVENT -> {
                 val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
@@ -111,12 +118,8 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
                 view?.setListCultivos(list_cultivos)
                 view?.requestResponseOk()
             }
-            CultivoEvent.SEARCH_EVENT -> {
-                val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
-                view?.setListCultivos(list_cultivos)
-            }
 
-        //EVENTS ON ITEM CLICK
+            //EVENTS ON ITEM CLICK
             CultivoEvent.ITEM_EVENT -> {
                 val cultivo = cultivoEvent.objectMutable as Cultivo
                 view?.onMessageOk(R.color.colorPrimary, "Item: " + cultivo.Nombre)
@@ -132,21 +135,16 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
                 val cultivo = cultivoEvent.objectMutable as Cultivo
                 view?.deleteCultivo(cultivo)
             }
-
         }
     }
 
     //Search
-    override fun validarCamposSearch(): Boolean {
-        if (view?.validarCamposSearch() == true) {
+    override fun validarListasFilterLote(): Boolean {
+        if (view?.validarListasFilterLote() == true) {
             return true
         } else {
             return false
         }
-    }
-
-    override fun searchCultivos(loteId: Long?) {
-        interactor?.searchCultivos(loteId)
     }
 
     override fun validarCampos(): Boolean {
@@ -169,26 +167,35 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
         interactor?.deleteCultivo(cultivo)
     }
 
-    override fun getAllCultivos() {
-        interactor?.getAllCultivos()
-    }
 
     override fun getListas() {
         interactor?.getListas()
     }
 
-    override fun loadLotesSpinner(unidadProductivaId: Long?) {
-        view?.disableInputs()
-        view?.hideLotes()
-        interactor?.loadLotesSpinner(unidadProductivaId)
+    override fun getListCultivos(lote_id: Long?) {
+        interactor?.execute(null)
     }
 
-    override fun loadLotesSpinnerSearch(unidadProductivaId: Long?) {
-        interactor?.loadLotesSpinnerSearch(unidadProductivaId)
+    override fun setListSpinnerUnidadProductiva() {
+        view?.setListUnidadProductiva(listUnidadProductivaGlobal)
     }
 
-    override fun loadDetalleTipoProducto(tipoProductoId: Long?) {
-        interactor?.loadDetalleTipoProducto(tipoProductoId)
+    override fun setListSpinnerLote(unidad_productiva_id: Long?) {
+        var list= listLoteGlobal?.filter { lote: Lote -> lote.Unidad_Productiva_Id==unidad_productiva_id }
+        view?.setListLotes(list)
+    }
+
+    override fun setListSpinnerTipoProducto() {
+        view?.setListTipoProducto(listTipoProductosGlobal)
+    }
+
+    override fun setListSpinnerDetalleTipoProducto(detalle_tipo_produto_id: Long?) {
+        var list= listDetalleTipoProductosGlobal?.filter { detalleTipoProducto: DetalleTipoProducto -> detalleTipoProducto.TipoProductoId==detalle_tipo_produto_id }
+        view?.setListDetalleTipoProducto(list)
+    }
+
+    override fun setListSpinnerUnidadMedida() {
+        view?.setListUnidadMedidas(listUnidadMedidasGlobal)
     }
 
     //endregion

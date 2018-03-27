@@ -29,76 +29,54 @@ class CultivoRepository : ICultivo.Repository {
         } else {
             postEventError(CultivoEvent.ERROR_DIALOG_EVENT, "No hay Unidades productivas registradas")
         }
+
+        var listLotes = SQLite.select().from(Lote::class.java!!).queryList()
+        postEventListLotes(CultivoEvent.LIST_EVENT_LOTES,listLotes,null);
+
         val listTipoProducto = Listas.listaTipoProducto()
         postEventListTipoProducto(CultivoEvent.LIST_EVENT_TIPO_PRODUCTO, listTipoProducto, null)
+
         val listUnidadMedida = Listas.listaUnidadMedida()
         postEventListUnidadMedida(CultivoEvent.LIST_EVENT_UNIDAD_MEDIDA, listUnidadMedida, null)
-    }
 
-    override fun loadLotesSpinner(unidadProductivaId: Long?) {
-        val listLotes: List<Lote> = SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(unidadProductivaId)).queryList()
-        if (listLotes.size > 0) {
-            postEventListLotes(CultivoEvent.LIST_EVENT_LOTES, listLotes, null)
-        } else {
-            postEventError(CultivoEvent.ERROR_DIALOG_EVENT, "No hay lotes Registrados")
-        }
-    }
 
-    override fun loadLotesSpinnerSearch(unidadProductivaId: Long?) {
-        val listLotes: List<Lote> = SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(unidadProductivaId)).queryList()
-        if (listLotes.size > 0) {
-            postEventListLotes(CultivoEvent.LIST_EVENT_LOTES_SEARCH, listLotes, null)
-        } else {
-            postEventError(CultivoEvent.ERROR_EVENT, "No hay lotes Registrados")
-        }
-    }
-
-    override fun loadDetalleTipoProducto(tipoProductoId: Long?) {
-        val listDetalleTipoProducto = ArrayList<DetalleTipoProducto>()
-        for (item in Listas.listaDetalleTipoProducto()) {
-            if (item.TipoProductoId == tipoProductoId) {
-                listDetalleTipoProducto.add(item)
-            }
-        }
+        val listDetalleTipoProducto =Listas.listaDetalleTipoProducto()
         postEventListDetalleTipoProducto(CultivoEvent.LIST_EVENT_DETALLE_TIPO_PRODUCTO, listDetalleTipoProducto, null)
-
     }
 
-    override fun searchCultivos(loteId: Long?) {
-        val list_cultivos = getCultivosByLote(loteId)
-        postEventOk(CultivoEvent.SEARCH_EVENT, list_cultivos, null)
+
+    override fun getListCultivos(lote_id: Long?) {
+       var cultivos= getCultivos(lote_id)
+        postEventOk(CultivoEvent.READ_EVENT, cultivos, null)
     }
 
-    override fun getListAllCultivos() {
-        val list_all_cultivos = getAllCultivos()
-        postEventOk(CultivoEvent.READ_EVENT, list_all_cultivos, null)
+    override fun getCultivos(loteId:Long?):List<Cultivo> {
+        var listResponse:List<Cultivo>?=null
+        if(loteId==null){
+            listResponse = SQLite.select().from(Cultivo::class.java!!).queryList()
+        }else{
+            listResponse = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.LoteId.eq(loteId)).queryList()
+        }
+        return listResponse;
     }
 
     override fun saveCultivo(cultivo: Cultivo) {
         cultivo.save()
-        postEventOk(CultivoEvent.SAVE_EVENT, getAllCultivos(), cultivo)
+        postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(cultivo.LoteId), cultivo)
     }
 
-    override fun getCultivosByLote(loteId: Long?): List<Cultivo> {
-        return SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(loteId)).queryList()
-    }
 
     override fun updateCultivo(cultivo: Cultivo) {
         cultivo.update()
-        postEventOk(CultivoEvent.UPDATE_EVENT, getCultivosByLote(cultivo.LoteId), cultivo)
+        postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(cultivo.LoteId), cultivo)
     }
 
     override fun deleteCultivo(cultivo: Cultivo) {
         cultivo.delete()
-        postEventOk(CultivoEvent.DELETE_EVENT, getCultivosByLote(cultivo.LoteId), cultivo)
+        postEventOk(CultivoEvent.DELETE_EVENT, getCultivos(cultivo.LoteId), cultivo)
     }
     //endregion
 
-    //region Métodos
-    fun getAllCultivos(): List<Cultivo> {
-        return SQLite.select().from(Cultivo::class.java).queryList()
-    }
-    //endregion
 
     //region Events
     private fun postEventListUnidadProductiva(type: Int, listUnidadProductiva: List<UnidadProductiva>?, messageError: String?) {
@@ -126,6 +104,7 @@ class CultivoRepository : ICultivo.Repository {
         postEvent(type, loteMutable, null, messageError)
     }
 
+
     private fun postEventError(type: Int, messageError: String?) {
         val event = CultivoEvent(type, null, null, messageError)
         event.eventType = type
@@ -147,7 +126,6 @@ class CultivoRepository : ICultivo.Repository {
         event.eventType = type
         eventBus?.post(event)
     }
-
     //endregion
 
 }

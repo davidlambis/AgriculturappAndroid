@@ -46,6 +46,19 @@ data class Cultivo(@PrimaryKey(autoincrement = true)
                    @Column(name = "Nombre_Unidad_Medida")
                    var Nombre_Unidad_Medida: String? = null,
 
+
+                   @Column(name = "NombreUnidadProductiva")
+                   var NombreUnidadProductiva: String? = null,
+
+                   @Column(name = "NombreLote")
+                   var NombreLote: String? = null,
+
+                   @Column(name = "Nombre_Tipo_Producto")
+                   var Nombre_Tipo_Producto: String? = null,
+
+                   @Column(name = "Id_Tipo_Producto")
+                   var Id_Tipo_Producto: Long? = null,
+
                    @Column(name = "Nombre_Detalle_Tipo_Producto")
                    var Nombre_Detalle_Tipo_Producto: String? = null) {
 

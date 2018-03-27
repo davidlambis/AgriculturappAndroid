@@ -33,7 +33,6 @@ import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.Men
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
-import kotlinx.android.synthetic.main.dialog_form_unidad_productiva.*
 import kotlinx.android.synthetic.main.dialog_form_unidad_productiva.view.*
 import kotlinx.android.synthetic.main.fragment_unidad_productiva.*
 
@@ -207,7 +206,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
     override fun onMessageOk(colorPrimary: Int, message: String?) {
         val color = Color.WHITE
         val snackbar = Snackbar
-                .make(container_fragment, message!!, Snackbar.LENGTH_LONG)
+                .make(container_unidad_productiva, message!!, Snackbar.LENGTH_LONG)
         val sbView = snackbar.view
         sbView.setBackgroundColor(ContextCompat.getColor(activity!!.applicationContext, colorPrimary))
         val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
