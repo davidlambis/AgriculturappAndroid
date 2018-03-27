@@ -141,8 +141,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
             }
             RequestEventLote.ITEM_EDIT_EVENT -> {
                 var lote= eventLote.objectMutable as Lote
-                Lote_Fragment.instance?.loteGlobal=lote
-                loteMainView?.showAlertDialogAddLote(Lote_Fragment.instance?.loteGlobal)
+                loteMainView?.showAlertDialogAddLote(lote)
             }
             RequestEventLote.ITEM_DELETE_EVENT -> {
                 var lote= eventLote.objectMutable as Lote

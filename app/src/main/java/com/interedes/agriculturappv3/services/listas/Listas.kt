@@ -159,6 +159,9 @@ class Listas {
             lista_tipo_producto.add(TipoProducto(Id = 1, Nombre = "Aguacate"))
             lista_tipo_producto.add(TipoProducto(Id = 2, Nombre = "Fríjol"))
             lista_tipo_producto.add(TipoProducto(Id = 3, Nombre = "Plátano"))
+            lista_tipo_producto.add(TipoProducto(Id = 4, Nombre = "Aguacate"))
+            lista_tipo_producto.add(TipoProducto(Id = 5, Nombre = "Fríjol"))
+            lista_tipo_producto.add(TipoProducto(Id = 6, Nombre = "Plátano"))
             return lista_tipo_producto
         }
 

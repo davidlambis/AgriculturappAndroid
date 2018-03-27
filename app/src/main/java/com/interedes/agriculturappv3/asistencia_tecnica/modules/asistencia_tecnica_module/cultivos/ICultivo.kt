@@ -39,7 +39,7 @@ interface ICultivo {
         fun onMessageError(colorPrimary: Int, msg: String?)
 
         //Dialog
-        fun showAlertDialogCultivo(cultivo: Cultivo?): MaterialDialog?
+        fun showAlertDialogCultivo(cultivo: Cultivo?): AlertDialog?
 
         //Spinners y Date Pickers
         //Unidades Productivas

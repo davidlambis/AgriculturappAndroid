@@ -127,8 +127,7 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
 
             CultivoEvent.ITEM_EDIT_EVENT -> {
                 val cultivo = cultivoEvent.objectMutable as Cultivo
-                Cultivo_Fragment.instance?.cultivoGlobal = cultivo
-                view?.showAlertDialogCultivo(Cultivo_Fragment.instance?.cultivoGlobal)
+                view?.showAlertDialogCultivo(cultivo)
             }
 
             CultivoEvent.ITEM_DELETE_EVENT -> {

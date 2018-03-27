@@ -4,21 +4,58 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_marginStart="@dimen/margin_10"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/ivClosetDialogUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/grey_luiyi"
+            android:src="@drawable/ic_back_button"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="11dp"
+            android:layout_toEndOf="@+id/ivClosetDialogUp"
+            android:gravity="center"
+            android:text="@string/tittle_add_unidadproductiva"
+            android:textColor="@color/purple"
+            android:textSize="@dimen/text_size_18"
+            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_marginTop="-15dp"
+            android:layout_marginBottom="-15dp"
+            android:layout_below="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="90sp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_unidad_productiva" />
+        <View
+            android:id="@+id/division"
+            android:layout_below="@+id/logo"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/purple" />
+    </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
+            android:paddingBottom="@dimen/text_size_18"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/ivClosetDialogUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tint="@color/grey_luiyi"
-                android:src="@drawable/ic_close_white"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -123,6 +160,13 @@
 
             </LinearLayout>
 
+            <Button
+                android:id="@+id/btnSaveUnidadProductiva"
+                style="@style/button"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_global"
+                android:background="@color/purple"
+                android:text="@string/btn_save" />
 
         </LinearLayout>
     </ScrollView>

@@ -75,7 +75,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     val handler = Handler()
 
     //Dialog
-    var _dialogRegisterUpdate: MaterialDialog? = null
+    var _dialogRegisterUpdate: AlertDialog? = null
     private var _dialogTypeLocation: AlertDialog? = null
     var viewDialog: View? = null;
 
@@ -733,9 +733,13 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         val coordsLote = viewDialog?.coordenadas_lote
         val btnClosetDialogLote = viewDialog?.ivClosetDialogLote
 
+
+
         setListUPAdapterSpinner()
         setListUnidadMedidaAdapterSpinner()
         btnClosetDialogLote?.setOnClickListener(this)
+        viewDialog?.btnSaveLote?.setOnClickListener(this)
+        loteGlobal= lote
         //REGISTER
         if (lote == null) {
             if (UBICATION_MANUAL == true) {
@@ -762,7 +766,6 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             viewDialog?.spinnerUnidadProductiva?.visibility = View.GONE
         }
 
-
         /*
         val dialog = AlertDialog.Builder(context!!)
                 .setView(viewDialog)
@@ -786,43 +789,17 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         dialog?.show()
         _dialogRegisterUpdate=dialog
         */
-
-
-
-
+        /*
         val dialog = MaterialDialog.Builder(activity!!)
-                .title(getString(R.string.add_lote))
                 .customView(viewDialog!!, true)
-                .positiveText(R.string.btn_save)
-                .negativeText(R.string.close)
-                .titleGravity(GravityEnum.CENTER)
-                .titleColorRes(R.color.light_green_800)
-                .limitIconToDefaultSize()
-                //.maxIconSizeRes(R.dimen.text_size_40)
-                // .positiveColorRes(R.color.material_red_400)
                 .backgroundColorRes(R.color.white_solid)
-                // .negativeColorRes(R.color.material_red_400)
-                .iconRes(R.drawable.ic_lote)
-                .dividerColorRes(R.color.colorPrimary)
-                .contentColorRes(android.R.color.white)
-                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
-                .positiveColor(Color.WHITE)
                 .autoDismiss(false)
-                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
-                .theme(Theme.DARK)
-                .onPositive(
-                        { dialog1, which ->
-                            if(lote!=null){
-                                updateLote()
-                            }else{
-                                registerLote()
-                            }
-                        })
-                .onNegative({ dialog1, which ->
-                    dialog1.dismiss()
-                })
-                .build()
+                .theme(Theme.LIGHT)
+                .build()*/
 
+        val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar)
+                .setView(viewDialog)
+                .create()
 
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())
@@ -899,7 +876,6 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         })
         builder.setMessage(getString(R.string.alert_delete_lote));
         builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
-            loteGlobal = lote
             presenter?.deleteLote(lote, Unidad_Productiva_Id_Selected)
         })
         builder.setIcon(R.drawable.ic_lote);
@@ -990,6 +966,14 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 //app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
                //var layoutParams1 =  LinearLayout.LayoutParams(AppBarLayout.LayoutParams.MATCH_PARENT,
                                                               //R.dimen.height_mapa)
+            }
+
+            R.id.btnSaveLote->{
+                if(loteGlobal!=null){
+                    updateLote()
+                }else{
+                    registerLote()
+                }
             }
         }
     }

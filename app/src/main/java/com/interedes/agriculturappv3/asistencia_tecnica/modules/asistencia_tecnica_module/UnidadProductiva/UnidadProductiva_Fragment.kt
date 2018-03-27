@@ -12,10 +12,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
@@ -50,7 +47,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
     private var hud: KProgressHUD?=null
     //Dialog
     var viewDialog:View?= null;
-    var _dialogRegisterUpdate: MaterialDialog? = null
+    var _dialogRegisterUpdate: AlertDialog? = null
 
 
     //Globals
@@ -77,6 +74,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        _dialogRegisterUpdate?.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         (activity as MenuMainActivity).toolbar.title=getString(R.string.title_up)
@@ -299,6 +297,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         setListUnidadMedidaAdapterSpinner()
         val imageViewLocalizarUnidadProductiva= viewDialog?.imageViewLocalizarUnidadProductiva
         val btnCloseDialog= viewDialog?.ivClosetDialogUp
+        unidadProductivaGlobal=unidadProductiva
         //REGISTER
         if (unidadProductiva == null) {
 
@@ -318,52 +317,21 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         //Set Events
         btnCloseDialog?.setOnClickListener(this)
         imageViewLocalizarUnidadProductiva?.setOnClickListener(this)
+        viewDialog?.btnSaveUnidadProductiva?.setOnClickListener(this)
 
 
-
-
-        val dialog = MaterialDialog.Builder(activity!!)
-                .title(getString(R.string.tittle_add_unidadproductiva))
-                .customView(viewDialog!!, true)
-                .positiveText(R.string.btn_save)
-                .negativeText(R.string.close)
-                .titleGravity(GravityEnum.CENTER)
-                .titleColorRes(R.color.light_green_800)
-                .limitIconToDefaultSize()
-                //.maxIconSizeRes(R.dimen.text_size_40)
-               // .positiveColorRes(R.color.material_red_400)
-               .backgroundColorRes(R.color.white_solid)
-               // .negativeColorRes(R.color.material_red_400)
-                .iconRes(R.drawable.ic_lote)
-                .dividerColorRes(R.color.colorPrimary)
-                .contentColorRes(android.R.color.white)
-                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
-                .positiveColor(Color.WHITE)
-                .autoDismiss(false)
-                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
-                .theme(Theme.DARK)
-                .onPositive(
-                        { dialog1, which ->
-                            if(unidadProductiva!=null){
-                                updateUp()
-                            }else{
-                                registerUp()
-                            }
-                        })
-                .onNegative({ dialog1, which ->
-                   dialog1.dismiss()
-                })
-                .build()
+        val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar)
+                .setView(viewDialog)
+                .create()
 
 
         val lp = WindowManager.LayoutParams()
-        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.copyFrom(dialog.getWindow()?.getAttributes())
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.getWindow()?.setAttributes(lp)
         dialog.show()
-        dialog.getWindow().setAttributes(lp)
         _dialogRegisterUpdate=dialog
-
 
         /*
         val dialog = AlertDialog.Builder(context!!)
@@ -423,6 +391,14 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
+            }
+
+            R.id.btnSaveUnidadProductiva->{
+                if(unidadProductivaGlobal!=null){
+                    updateUp()
+                }else{
+                    registerUp()
+                }
             }
         }
     }

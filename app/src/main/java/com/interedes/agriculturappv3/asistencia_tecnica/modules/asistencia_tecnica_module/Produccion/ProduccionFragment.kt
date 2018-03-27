@@ -39,13 +39,9 @@ import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecni
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.adapter.ProduccionAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.adapters.TipoProductosAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
-import com.interedes.agriculturappv3.services.listas.Listas
 import com.kaopiz.kprogresshud.KProgressHUD
-import kotlinx.android.synthetic.main.activity_login.view.*
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
-import kotlinx.android.synthetic.main.content_recyclerview.view.*
-import kotlinx.android.synthetic.main.dialog_form_produccion.*
 import kotlinx.android.synthetic.main.dialog_form_produccion.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_produccion.*
@@ -66,7 +62,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
     //Dialog
     var viewDialog:View?= null
-    var _dialogRegisterUpdate: MaterialDialog? = null
+    var _dialogRegisterUpdate: AlertDialog? = null
     var viewDialogFilter:View?= null
     var _dialogFilter: MaterialDialog? = null
 
@@ -84,6 +80,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     var cultivoGlobal:Cultivo?=null
     var unidadProductivaGlobal:UnidadProductiva?=null
     var loteGlobal:Lote?=null
+    var produccionGlobal:Produccion?=null
 
     var dateTime = Calendar.getInstance()
 
@@ -328,12 +325,13 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_produccion, null)
         presenter?.setListSpinnerUnidadMedida()
-
-
-        viewDialog?.ivClosetDialog?.setOnClickListener(this)
+        viewDialog?.ivClosetDialogProduccion?.setOnClickListener(this)
         viewDialog?.txtFechaInicio?.setOnClickListener(this)
         viewDialog?.txtFechaFin?.setOnClickListener(this)
+        viewDialog?.txtFechaFin?.setOnClickListener(this)
+        viewDialog?.btnSaveProduccion?.setOnClickListener(this)
 
+        produccionGlobal=produccion
 
         //REGISTER
         if (produccion == null) {
@@ -359,16 +357,13 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             fechaFin=produccion.FechaFin
         }
         //Set Events
-        ivClosetDialog?.setOnClickListener(this)
-
         /*
-        val dialog = AlertDialog.Builder(context!!)
+        val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Black_NoTitleBar_Fullscreen)
                 .setView(viewDialog)
                 .setIcon(R.drawable.ic_lote)
                 . setTitle(getString(R.string.tittle_add_unidadproductiva))
                 .setPositiveButton(getString(R.string.btn_save), null) //Set to null. We override the onclick
                 .setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
-
                 })
                 .create()
         dialog.setOnShowListener(DialogInterface.OnShowListener {
@@ -386,43 +381,18 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         })
         dialog?.show()
         _dialogRegisterUpdate=dialog*/
-
-
+        /*
         val dialog = MaterialDialog.Builder(activity!!)
-                .title(getString(R.string.tittle_add_producccion))
-                .customView(viewDialog!!, true)
-                .positiveText(R.string.btn_save)
-                .negativeText(R.string.close)
-                .titleGravity(GravityEnum.CENTER)
-                .titleColorRes(R.color.light_green_800)
-                .limitIconToDefaultSize()
-                //.maxIconSizeRes(R.dimen.text_size_40)
-                // .positiveColorRes(R.color.material_red_400)
+                .customView(viewDialog!!, false)
                 .backgroundColorRes(R.color.white_solid)
-                // .negativeColorRes(R.color.material_red_400)
-                .iconRes(R.drawable.ic_lote)
-                .dividerColorRes(R.color.colorPrimary)
-                .contentColorRes(android.R.color.white)
-                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
-                .positiveColor(Color.WHITE)
                 .autoDismiss(false)
-                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
-                .theme(Theme.DARK)
-                .onPositive(
-                        { dialog1, which ->
-                            if(produccion!=null){
-                                updateProduccion(produccion)
-                                //presenter?.getCultivo(Cultivo_Id)
-                            }else{
-                                registerProduccion()
-                                presenter?.getCultivo(Cultivo_Id)
-                            }
-                        })
-                .onNegative({ dialog1, which ->
-                    dialog1.dismiss()
-                })
+                .theme(Theme.LIGHT)
                 .build()
+        */
 
+        val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar)
+                .setView(viewDialog)
+                .create()
 
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())
@@ -465,6 +435,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
         //Set Events
         viewDialogFilter?.ivCloseButtonDialogFilter?.setOnClickListener(this)
+
         val dialog = MaterialDialog.Builder(activity!!)
                 .title(title)
                 .customView(viewDialogFilter!!, true)
@@ -506,12 +477,14 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
                 .build()
 
 
+
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
         dialog.show()
         dialog.getWindow().setAttributes(lp)
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         _dialogFilter=dialog
     }
 
@@ -618,7 +591,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             R.id.fabAddProduccion -> {
                 showAlertDialogFilterProduccion(false)
             }
-            R.id.ivClosetDialogUp->_dialogRegisterUpdate?.dismiss()
+            R.id.ivClosetDialogProduccion->_dialogRegisterUpdate?.dismiss()
 
             R.id.txtFechaInicio -> {
                 confFecha=true
@@ -639,8 +612,18 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             }
 
 
+
             R.id.searchFilter -> {
                 showAlertDialogFilterProduccion(true)
+            }
+
+            R.id.btnSaveProduccion->{
+                if(produccionGlobal!=null){
+                    updateProduccion(produccionGlobal!!)
+                }else{
+                    registerProduccion()
+                    presenter?.getCultivo(Cultivo_Id)
+                }
             }
 
         }

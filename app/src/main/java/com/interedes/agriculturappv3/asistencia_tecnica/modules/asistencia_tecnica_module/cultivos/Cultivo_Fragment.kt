@@ -48,7 +48,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
     //Dialog
     var viewDialog: View? = null
-    var _dialogRegisterUpdate: MaterialDialog? = null
+    var _dialogRegisterUpdate: AlertDialog? = null
 
     var viewDialogFilter:View?= null
     var _dialogFilter: MaterialDialog? = null
@@ -142,6 +142,13 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                 showAlertDialogFilterCultivo(true)
             }
 
+            R.id.btnSaveCultivo->{
+                if(cultivoGlobal==null){
+                    registerCultivo()
+                }else{
+                    updateCultivo()
+                }
+            }
 
 
         }
@@ -300,7 +307,6 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         })
         builder.setMessage(getString(R.string.alert_delete_cultivo));
         builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
-            cultivoGlobal = cultivo
             presenter?.deleteCultivo(cultivo)
         })
         builder.setIcon(R.drawable.ic_cultivos);
@@ -360,7 +366,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     }
 
     //Dialog
-    override fun showAlertDialogCultivo(cultivo: Cultivo?): MaterialDialog? {
+    override fun showAlertDialogCultivo(cultivo: Cultivo?): AlertDialog? {
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_cultivo, null)
             val btnCloseDialog = viewDialog?.ivClosetDialogCultivo
@@ -372,6 +378,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             btnCloseDialog?.setOnClickListener(this)
             edtFechaInicio?.setOnClickListener(this)
             edtFechaFin?.setOnClickListener(this)
+            viewDialog?.btnSaveCultivo?.setOnClickListener(this)
 
             //REGISTER
             if (cultivo == null) {
@@ -395,37 +402,9 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                 detalleTipoProductoGlobal=DetalleTipoProducto(cultivo.DetalleTipoProductoId,cultivo.Nombre_Detalle_Tipo_Producto)
             }
 
-            val dialog = MaterialDialog.Builder(activity!!)
-                    .title(getString(R.string.title_add_cultivo))
-                    .customView(viewDialog!!, true)
-                    .positiveText(R.string.btn_save)
-                    .negativeText(R.string.close)
-                    .titleGravity(GravityEnum.CENTER)
-                    .titleColorRes(R.color.light_green_800)
-                    .limitIconToDefaultSize()
-                    //.maxIconSizeRes(R.dimen.text_size_40)
-                    // .positiveColorRes(R.color.material_red_400)
-                    .backgroundColorRes(R.color.white_solid)
-                    // .negativeColorRes(R.color.material_red_400)
-                    .iconRes(R.drawable.ic_cultivos)
-                    .dividerColorRes(R.color.colorPrimary)
-                    .contentColorRes(android.R.color.white)
-                    .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
-                    .positiveColor(Color.WHITE)
-                    .autoDismiss(false)
-                    //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
-                    .theme(Theme.DARK)
-                    .onNegative({ dialog1, which ->
-                        dialog1.dismiss()
-                    })
-                    .onPositive({ dialog1, which ->
-                       if(cultivo==null){
-                           registerCultivo()
-                       }else{
-                           updateCultivo()
-                       }
-                    })
-                    .build()
+            val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar)
+                .setView(viewDialog)
+                .create()
 
             val lp = WindowManager.LayoutParams()
             lp.copyFrom(dialog.getWindow().getAttributes())

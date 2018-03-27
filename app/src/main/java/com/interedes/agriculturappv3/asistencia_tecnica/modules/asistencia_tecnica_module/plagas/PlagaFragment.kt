@@ -2,10 +2,12 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecn
 
 
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -48,8 +50,8 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     var plagasList: ArrayList<TipoEnfermedad>? = ArrayList<TipoEnfermedad>()
 
     //Dialog Tipo Productos
-    var dialogProducto: MaterialDialog? = null
-    var dialogPlaga: MaterialDialog? = null
+    var dialogProducto: AlertDialog? = null
+    var dialogPlaga: AlertDialog? = null
     var viewDialogTipoProductos: View? = null;
     var viewDialogPlagas: View? = null
 
@@ -134,34 +136,14 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         viewDialogPlagas?.swipeRefreshLayout?.isRefreshing = false
         viewDialogPlagas?.swipeRefreshLayout?.isEnabled = false
 
-        viewDialogPlagas?.ivClosetDialogUp?.setOnClickListener(this)
+        viewDialogPlagas?.ivClosetDialogGeneral?.setOnClickListener(this)
 
-        val dialog = MaterialDialog.Builder(activity!!)
-                .title(getString(R.string.title_selected_plaga))
-                .customView(viewDialogPlagas!!, true)
-                //.positiveText(R.string.btn_save)
-                .negativeText(android.R.string.cancel)
-                .titleGravity(GravityEnum.CENTER)
-                .titleColorRes(R.color.light_green_800)
-                //.limitIconToDefaultSize()
-                //.maxIconSize(R.dimen.text_size_40)
-                .limitIconToDefaultSize()
-                // .positiveColorRes(R.color.material_red_400)
-                .backgroundColorRes(R.color.black_transparencia)
-                // .negativeColorRes(R.color.material_red_400)
-                .icon(resources.getDrawable(R.drawable.ic_plagas))
-                .dividerColorRes(R.color.colorPrimary)
-                .contentColorRes(android.R.color.white)
-                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
-                //.positiveColor(Color.WHITE)
-                .negativeColor(resources.getColor(R.color.white_solid))
-                .autoDismiss(false)
-                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
-                .theme(Theme.DARK)
-                .onNegative({ dialog1, which ->
-                    dialog1.dismiss()
-                })
-                .build()
+        viewDialogPlagas?.title?.setText(getString(R.string.title_selected_plaga))
+
+        val dialog = AlertDialog.Builder(context!!)
+                .setView(viewDialogPlagas!! )
+                .create()
+        dialog.getWindow().setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.black_transparencia)))
 
 
         val lp = WindowManager.LayoutParams()
@@ -244,8 +226,6 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
 
         ///var view=inflater.inflate(R.layout.dialog_list_general, null) as View
-
-
         viewDialogTipoProductos?.recyclerView?.layoutManager = GridLayoutManager(activity, 2)
         val lista: java.util.ArrayList<TipoProducto>? = java.util.ArrayList<TipoProducto>()
         val adapterLocal = TipoProductosAdapter(lista!!)
@@ -260,9 +240,16 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         viewDialogTipoProductos?.swipeRefreshLayout?.isRefreshing = false
         viewDialogTipoProductos?.swipeRefreshLayout?.isEnabled = false
 
-        viewDialogTipoProductos?.ivClosetDialogUp?.setOnClickListener(this)
+        viewDialogTipoProductos?.ivClosetDialogGeneral?.setOnClickListener(this)
 
-        val dialog = MaterialDialog.Builder(activity!!)
+        viewDialogTipoProductos?.title?.setText(getString(R.string.title_selected_tipo_productos))
+
+        val dialog = AlertDialog.Builder(context!!)
+                .setView(viewDialogTipoProductos!! )
+                .create()
+        dialog.getWindow().setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.black_transparencia)))
+
+/*        val dialog = MaterialDialog.Builder(activity!!)
                 .title(getString(R.string.title_selected_tipo_productos))
                 .customView(viewDialogTipoProductos!!, true)
                 //.positiveText(R.string.btn_save)
@@ -289,6 +276,8 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
                 })
                 .build()
 
+        */
+
 
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())
@@ -314,7 +303,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
             R.id.searchFilter -> {
                 showAlertDialogTipoProduccion()
             }
-            R.id.ivClosetDialogUp -> {
+            R.id.ivClosetDialogGeneral -> {
                 dialogProducto?.dismiss()
                 dialogPlaga?.dismiss()
             }
