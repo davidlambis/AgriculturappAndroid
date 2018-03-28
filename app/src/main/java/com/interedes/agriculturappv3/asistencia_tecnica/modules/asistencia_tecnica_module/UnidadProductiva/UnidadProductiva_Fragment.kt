@@ -390,7 +390,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
 
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
-                (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
+                (activity as MenuMainActivity).onBackPressed()
             }
 
             R.id.btnSaveUnidadProductiva->{

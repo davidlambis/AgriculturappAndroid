@@ -12,6 +12,7 @@ interface InterfaceInsumos {
         fun getInsumosByPlaga(tipoEnfermedadId: Long?)
         fun setInsumosList(listInsumos: List<Insumo>)
         fun setResults(insumos: Int)
+        fun verTratamiento(insumoId : Long?)
        // fun setDialogListInsumos(listInsumos: List<Insumo>)
     }
 

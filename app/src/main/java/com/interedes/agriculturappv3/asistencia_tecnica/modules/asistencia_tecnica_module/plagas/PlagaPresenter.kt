@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas
 
 import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
+import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.events.PlagasEvent
 import com.interedes.agriculturappv3.libs.EventBus
@@ -39,6 +40,18 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
                 view?.setListPlagas(list_plagas)
             }
 
+            PlagasEvent.SET_ENFERMEDAD_EVENT -> {
+                val enfermedad = plagasEvent.objectMutable as Enfermedad
+                view?.setIdEnfermedad(enfermedad.Id)
+            }
+
+            PlagasEvent.LOAD_LIST_TIPO_PRODUCTO -> {
+                val lista_tipo_producto = plagasEvent.mutableList as ArrayList<TipoProducto>
+                view?.loadListTipoProducto(lista_tipo_producto)
+            }
+
+            ///
+
             PlagasEvent.ITEM_SELECT_PLAGA_EVENT -> {
                 val plaga = plagasEvent.objectMutable as TipoEnfermedad
                 val list_plagas = ArrayList<TipoEnfermedad>()
@@ -64,6 +77,10 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
 
     override fun setPlaga(tipoEnfermedadId: Long?) {
         interactor?.setPlaga(tipoEnfermedadId)
+    }
+
+    override fun getTiposProducto() {
+        interactor?.getTiposProducto()
     }
     //endregion
 }

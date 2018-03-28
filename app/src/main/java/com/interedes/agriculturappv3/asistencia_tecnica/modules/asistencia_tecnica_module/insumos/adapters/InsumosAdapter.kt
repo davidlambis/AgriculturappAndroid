@@ -4,10 +4,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.insumos.Insumo
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos.events.InsumosEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.robertlevonyan.views.expandable.Expandable
@@ -53,11 +55,12 @@ class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<Insumo
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: Insumo, pos: Int) = with(itemView) {
-            val txt_nombre_insumo: TextView = itemView.findViewById(R.id.txtNombreInsumo)
+            val txt_nombre_insumo: TextView = itemView.findViewById(R.id.txtNombreComercial)
             val image_view_insumo: ImageView = itemView.findViewById(R.id.imageViewInsumo)
-            val text_descripcion_insumo: TextView = itemView.findViewById(R.id.txtDescripcionInsumo)
+            val text_descripcion_insumo: TextView = itemView.findViewById(R.id.txtIngredienteActivo)
             val expandable: Expandable = itemView.findViewById(R.id.expandable)
-            val txt_descripcion_insumo: TextView = itemView.findViewById(R.id.txtDescripcionInsumo)
+            val txt_descripcion_insumo: TextView = itemView.findViewById(R.id.txtIngredienteActivo)
+            val btn_ver_tratamiento: Button = itemView.findViewById(R.id.btnVerTratamiento)
 
             txt_nombre_insumo.text = data.Nombre
             image_view_insumo.setImageResource(data.Imagen!!)
@@ -72,6 +75,17 @@ class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<Insumo
                     txt_descripcion_insumo.visibility = View.GONE
                 }
             })
+
+            btn_ver_tratamiento.setOnClickListener {
+                InsumosAdapter.instance?.postEvent(InsumosEvent.ITEM_EVENT, data)
+            }
         }
+    }
+
+    fun postEvent(type: Int, insumo: Insumo?) {
+        val insumoMutable = insumo as Object
+        val event = InsumosEvent(type, null, insumoMutable, null)
+        event.eventType = type
+        eventBus?.post(event)
     }
 }

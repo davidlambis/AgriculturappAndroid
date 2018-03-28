@@ -134,7 +134,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
-                (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
+                (activity as MenuMainActivity).onBackPressed()
             }
 
 

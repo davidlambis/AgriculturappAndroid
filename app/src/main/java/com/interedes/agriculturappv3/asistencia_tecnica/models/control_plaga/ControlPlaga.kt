@@ -5,6 +5,8 @@ import com.interedes.agriculturappv3.config.DataSource
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Table(database = DataSource::class)
 data class ControlPlaga(@PrimaryKey(autoincrement = true)
@@ -22,13 +24,18 @@ data class ControlPlaga(@PrimaryKey(autoincrement = true)
                         var EnfermedadesId: Long? = 0,
                         @SerializedName("Fecha_aplicacion")
                         @Column(name = "Fecha_aplicacion")
-                        var Fecha_aplicacion: String? = null,
+                        var Fecha_aplicacion: Date? = null,
                         @SerializedName("TratamientoId")
                         @Column(name = "TratamientoId")
                         var TratamientoId: Long? = 0,
                         @SerializedName("UnidadMedidaId")
                         @Column(name = "UnidadMedidaId")
                         var UnidadMedidaId: Long? = 0) {
+
+    fun getFechaAplicacionFormat(): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return sdf.format(Fecha_aplicacion)
+    }
 
 
 }

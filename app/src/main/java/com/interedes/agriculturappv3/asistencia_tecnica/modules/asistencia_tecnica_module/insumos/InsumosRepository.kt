@@ -6,6 +6,8 @@ import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecni
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.sql.language.SQLite
 
 class InsumosRepository : InterfaceInsumos.Repository {
 
@@ -17,7 +19,7 @@ class InsumosRepository : InterfaceInsumos.Repository {
 
     //region Métodos Interfaz
     override fun getInsumosByPlaga(tipoEnfermedadId: Long?) {
-        val lista_all_enfermedades = Listas.listaEnfermedad()
+        /*val lista_all_enfermedades = Listas.listaEnfermedad()
         val lista_enfermedad = ArrayList<Enfermedad>()
         val lista_all_insumos = Listas.listaInsumos()
         val lista_insumos = ArrayList<Insumo>()
@@ -33,8 +35,29 @@ class InsumosRepository : InterfaceInsumos.Repository {
                 }
             }
         }
-        postEventOk(InsumosEvent.READ_EVENT, lista_insumos, null)
+        postEventOk(InsumosEvent.READ_EVENT, lista_insumos, null) */
+        for (item in Listas.listaInsumos()) {
+            item.save()
+        }
 
+        val lista_all_enfermedades = SQLite.select().from(Enfermedad::class.java).queryList()
+        val lista_enfermedad = ArrayList<Enfermedad>()
+        val lista_all_insumos = SQLite.select().from(Insumo::class.java).queryList()
+        val lista_insumos = ArrayList<Insumo>()
+        for (item in lista_all_enfermedades) {
+            if (item.TipoEnfermedadId == tipoEnfermedadId) {
+                lista_enfermedad.add(item)
+            }
+        }
+        for (a in lista_all_insumos) {
+            for (b in lista_enfermedad) {
+                if (a.EnfermedadId == b.Id) {
+                    lista_insumos.add(a)
+                }
+            }
+        }
+
+        postEventOk(InsumosEvent.READ_EVENT, lista_insumos, null)
     }
 
     /*

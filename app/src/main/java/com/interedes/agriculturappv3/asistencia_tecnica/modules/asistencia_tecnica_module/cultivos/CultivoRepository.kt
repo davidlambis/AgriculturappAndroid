@@ -30,31 +30,37 @@ class CultivoRepository : ICultivo.Repository {
             postEventError(CultivoEvent.ERROR_DIALOG_EVENT, "No hay Unidades productivas registradas")
         }
 
-        var listLotes = SQLite.select().from(Lote::class.java!!).queryList()
-        postEventListLotes(CultivoEvent.LIST_EVENT_LOTES,listLotes,null);
+        val listLotes = SQLite.select().from(Lote::class.java).queryList()
+        postEventListLotes(CultivoEvent.LIST_EVENT_LOTES, listLotes, null);
 
-        val listTipoProducto = Listas.listaTipoProducto()
+        val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
+        for (item in listTipoProducto) {
+            item.save()
+        }
         postEventListTipoProducto(CultivoEvent.LIST_EVENT_TIPO_PRODUCTO, listTipoProducto, null)
 
         val listUnidadMedida = Listas.listaUnidadMedida()
         postEventListUnidadMedida(CultivoEvent.LIST_EVENT_UNIDAD_MEDIDA, listUnidadMedida, null)
 
 
-        val listDetalleTipoProducto =Listas.listaDetalleTipoProducto()
+        val listDetalleTipoProducto: ArrayList<DetalleTipoProducto> = Listas.listaDetalleTipoProducto()
+        for (item in listDetalleTipoProducto) {
+            item.save()
+        }
         postEventListDetalleTipoProducto(CultivoEvent.LIST_EVENT_DETALLE_TIPO_PRODUCTO, listDetalleTipoProducto, null)
     }
 
 
     override fun getListCultivos(lote_id: Long?) {
-       var cultivos= getCultivos(lote_id)
+        var cultivos = getCultivos(lote_id)
         postEventOk(CultivoEvent.READ_EVENT, cultivos, null)
     }
 
-    override fun getCultivos(loteId:Long?):List<Cultivo> {
-        var listResponse:List<Cultivo>?=null
-        if(loteId==null){
+    override fun getCultivos(loteId: Long?): List<Cultivo> {
+        var listResponse: List<Cultivo>? = null
+        if (loteId == null) {
             listResponse = SQLite.select().from(Cultivo::class.java!!).queryList()
-        }else{
+        } else {
             listResponse = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.LoteId.eq(loteId)).queryList()
         }
         return listResponse;

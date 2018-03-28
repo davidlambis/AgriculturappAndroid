@@ -42,10 +42,15 @@ class InsumosPresenter(var view: InterfaceInsumos.View?) : InterfaceInsumos.Pres
                 val list_insumos = insumosEvent.mutableList as List<Insumo>
                 view?.setInsumosList(list_insumos)
             }
-            InsumosEvent.SET_EVENT -> {
-                val list_insumos = insumosEvent.mutableList as List<Insumo>
-                view?.setInsumosList(list_insumos)
+            InsumosEvent.ITEM_EVENT -> {
+                val insumo = insumosEvent.objectMutable as Insumo
+                view?.verTratamiento(insumo.Id)
             }
+        /*
+        InsumosEvent.SET_EVENT -> {
+            val list_insumos = insumosEvent.mutableList as List<Insumo>
+            view?.setInsumosList(list_insumos)
+        }*/
         }
     }
     //endregion

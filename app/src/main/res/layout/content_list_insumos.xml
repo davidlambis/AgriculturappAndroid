@@ -51,7 +51,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/txtNombreInsumo"
+                            android:id="@+id/txtNombreComercial"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Insumo 1"
@@ -64,7 +64,7 @@
                             android:id="@+id/imageViewInsumo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/txtNombreInsumo"
+                            android:layout_below="@+id/txtNombreComercial"
                             android:adjustViewBounds="true"
                             android:scaleType="centerCrop"
                             android:src="@drawable/aguacate" />
@@ -97,7 +97,7 @@
                         </com.robertlevonyan.views.expandable.Expandable>
 
                         <TextView
-                            android:id="@+id/txtDescripcionInsumo"
+                            android:id="@+id/txtIngredienteActivo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/expandable"
@@ -112,7 +112,7 @@
                             android:id="@+id/linearLayoutRatingBar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/txtDescripcionInsumo"
+                            android:layout_below="@+id/txtIngredienteActivo"
                             android:gravity="center"
                             android:orientation="horizontal">
 

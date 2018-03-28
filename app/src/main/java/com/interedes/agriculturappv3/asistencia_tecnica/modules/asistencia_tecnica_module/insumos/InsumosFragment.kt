@@ -18,6 +18,7 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.insumos.Insumo
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos.adapters.InsumosAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.PlagaFragment
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.tratamiento.TratamientoFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
@@ -41,6 +42,8 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
     var tipoEnfermedadId: Long? = 0
     var nombreTipoEnfermedad: String? = null
     var nombreTipoProducto: String? = null
+    var tipoProductoId: Long? = 0
+    var enfermedadId: Long? = 0
 
     companion object {
         var instance: InsumosFragment? = null
@@ -67,10 +70,12 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
             tipoEnfermedadId = b.getLong("tipoEnfermedadId")
             nombreTipoEnfermedad = b.getString("nombreTipoEnfermedad")
             nombreTipoProducto = b.getString("nombreTipoProducto")
+            tipoProductoId = b.getLong("tipoProductoId")
+            enfermedadId = b.getLong("enfermedadId")
         }
         initAdapter()
         setupInjection()
-        (activity as MenuMainActivity).toolbar.title = nombreTipoEnfermedad + "(" + nombreTipoProducto + ")"
+        (activity as MenuMainActivity).toolbar.title = "Insumos-" + nombreTipoEnfermedad + "(" + nombreTipoProducto + ")"
         swipeRefreshLayout?.setOnRefreshListener(this)
         ivBackButton?.setOnClickListener(this)
     }
@@ -98,6 +103,17 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
         adapter?.setItems(listInsumos)
         hideRefresh()
         setResults(listInsumos.size)
+    }
+
+    override fun verTratamiento(insumoId: Long?) {
+        val bundle = Bundle()
+        bundle.putLong("insumoId", insumoId!!)
+        bundle.putLong("tipoProductoId", tipoProductoId!!)
+        bundle.putLong("enfermedadId", enfermedadId!!)
+        val tratamientoFragment: TratamientoFragment
+        tratamientoFragment = TratamientoFragment()
+        tratamientoFragment.arguments = bundle
+        (activity as MenuMainActivity).replaceFragment(tratamientoFragment)
     }
 
     /*
@@ -143,13 +159,14 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
         when (p0?.id) {
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
-                val bundle = Bundle()
-                bundle.putLong("tipoEnfermedadId", tipoEnfermedadId!!)
-                bundle.putString("nombreTipoProducto", nombreTipoProducto)
-                val plagaFragment : PlagaFragment
-                plagaFragment = PlagaFragment()
-                plagaFragment.arguments = bundle
-                (activity as MenuMainActivity).replaceCleanFragment(plagaFragment)
+                /* val bundle = Bundle()
+                 bundle.putLong("tipoEnfermedadId", tipoEnfermedadId!!)
+                 bundle.putString("nombreTipoProducto", nombreTipoProducto)
+                 val plagaFragment: PlagaFragment
+                 plagaFragment = PlagaFragment()
+                 plagaFragment.arguments = bundle
+                 (activity as MenuMainActivity).replaceCleanFragment(plagaFragment)*/
+                (activity as MenuMainActivity).onBackPressed()
             }
         }
     }
