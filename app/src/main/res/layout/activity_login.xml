@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/fondo_general"
+            android:src="@drawable/fondo_login_opt"
             tools:ignore="ContentDescription" />
 
         <ScrollView
@@ -55,6 +55,7 @@
 
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/textInputLayoutCorreo"
+                            android:background="@drawable/sombra_drawing_up"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/grey_luiyi"
@@ -70,6 +71,7 @@
                         </android.support.design.widget.TextInputLayout>
 
                         <android.support.design.widget.TextInputLayout
+                            android:background="@drawable/sombra_drawing_up"
                             android:id="@+id/textInputLayoutContrasena"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -111,9 +113,7 @@
                             android:indeterminateTintMode="src_atop"
                             android:visibility="gone" />
 
-
                     </LinearLayout>
-
                 </LinearLayout>
 
             </LinearLayout>
