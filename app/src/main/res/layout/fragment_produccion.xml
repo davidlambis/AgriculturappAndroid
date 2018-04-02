@@ -83,7 +83,7 @@
                         android:text="Cultivo 1"/>
                     <TextView
                         android:layout_below="@+id/txtNombreCultivo"
-                        android:id="@+id/txtCantidad"
+                        android:id="@+id/txtNombreTipoProducto"
                         android:textSize="@dimen/text_size_25"
                         android:layout_marginStart="@dimen/margin_5"
                         android:layout_width="match_parent"
@@ -94,7 +94,7 @@
                         android:id="@+id/txtFechaInicioCultivo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/txtCantidad"
+                        android:layout_above="@+id/txtNombreTipoProducto"
                         android:layout_alignStart="@+id/txtNombreCultivo"
                         android:gravity="end"
                         android:text="12/12/2017"

@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas
 
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -14,28 +15,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import com.afollestad.materialdialogs.DialogAction
-import com.afollestad.materialdialogs.GravityEnum
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.Theme
-import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos.InsumosFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.adapters.PlagasAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.adapters.TipoProductosAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
-import com.interedes.agriculturappv3.services.listas.Listas
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.content_recyclerview.view.*
 import kotlinx.android.synthetic.main.dialog_list_general.view.*
 import kotlinx.android.synthetic.main.fragment_plaga.*
-import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
-import com.interedes.agriculturappv3.asistencia_tecnica.models.insumos.Insumo_Table.EnfermedadId
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.adapters.SelectPlagasAdapter
 
 
@@ -204,6 +196,15 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     override fun setIdEnfermedad(enfermedadId: Long?) {
         Enfermedad_Id = enfermedadId
     }
+
+    //Escuchador de eventos
+    override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
+        if(extras!=null){
+            if (extras.containsKey("state_conectivity")) {
+                var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
+            }
+        }
+    }
     //endregion
 
     //region Métodos
@@ -322,6 +323,20 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     //endregion
 
     //region Ciclo de Vida Fragment
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter?.onDestroy()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter?.onPause( activity!!.applicationContext)
+    }
+
+    override fun onResume() {
+        presenter?.onResume(activity!!.applicationContext)
+        super.onResume()
+    }
 
     //endregion
 

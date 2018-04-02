@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_general.*
 import android.view.WindowManager
 import android.util.TypedValue
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.control_plagas.ControlPlagasFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.PlagaFragment
 
 
@@ -104,7 +105,7 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
             } else if (lista[position].Identificador.equals("plagas")) {
                 (activity as MenuMainActivity).replaceFragment(PlagaFragment())
             } else if (lista[position].Identificador.equals("control_plagas")) {
-                //(activity as MenuMainActivity).replaceFragment(ControlPlagasFragment())
+                (activity as MenuMainActivity).replaceFragment(ControlPlagasFragment())
             }
         }
         recyclerView?.adapter = adapter

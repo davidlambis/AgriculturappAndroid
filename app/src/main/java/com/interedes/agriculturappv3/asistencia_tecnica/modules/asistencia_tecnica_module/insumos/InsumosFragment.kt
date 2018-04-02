@@ -1,7 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos
 
 
-import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -11,13 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
-import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.insumos.Insumo
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos.adapters.InsumosAdapter
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.PlagaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.tratamiento.TratamientoFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import kotlinx.android.synthetic.main.activity_menu_main.*
@@ -109,6 +106,7 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
         val bundle = Bundle()
         bundle.putLong("insumoId", insumoId!!)
         bundle.putLong("tipoProductoId", tipoProductoId!!)
+        bundle.putString("nombreTipoEnfermedad", nombreTipoEnfermedad)
         bundle.putLong("enfermedadId", enfermedadId!!)
         val tratamientoFragment: TratamientoFragment
         tratamientoFragment = TratamientoFragment()
@@ -152,6 +150,15 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
                 insumos)
         txtResults.setText(results)
     }
+
+    //Escuchador de eventos
+    override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
+        if (extras != null) {
+            if (extras.containsKey("state_conectivity")) {
+                var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
+            }
+        }
+    }
     //endregion
 
     //region Método Click
@@ -176,6 +183,23 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
     override fun onRefresh() {
         showRefresh()
         getInsumosByPlaga(tipoEnfermedadId)
+    }
+    //endregion
+
+    //region ciclo de vida
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter?.onDestroy()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter?.onPause(activity!!.applicationContext)
+    }
+
+    override fun onResume() {
+        presenter?.onResume(activity!!.applicationContext)
+        super.onResume()
     }
     //endregion
 }

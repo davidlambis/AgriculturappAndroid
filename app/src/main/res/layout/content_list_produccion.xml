@@ -48,7 +48,7 @@
             android:orientation="vertical"
             android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/txtCantidadProduccion"
+                android:id="@+id/txtNombrePlaga"
                 android:textSize="@dimen/text_size_18"
                 android:gravity="start"
                 android:textColor="@color/grey_luiyi"

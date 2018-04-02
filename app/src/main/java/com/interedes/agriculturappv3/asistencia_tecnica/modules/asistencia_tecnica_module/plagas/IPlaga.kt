@@ -1,5 +1,8 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
@@ -18,6 +21,8 @@ interface IPlaga {
         fun setDialogListPlagas(list_plagas: ArrayList<TipoEnfermedad>)
         fun setIdEnfermedad(enfermedadId: Long?)
         fun loadListTipoProducto(listTipoProducto: ArrayList<TipoProducto>)
+        //Events
+        fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
     }
 
     interface Presenter {
@@ -27,6 +32,11 @@ interface IPlaga {
         fun setPlaga(tipoEnfermedadId: Long?)
         fun onEventMainThread(plagasEvent: PlagasEvent?)
         fun getTiposProducto()
+
+        fun onResume(context: Context)
+        fun onPause(context: Context)
+        //Conection
+        fun checkConnection(): Boolean
     }
 
     interface Interactor {

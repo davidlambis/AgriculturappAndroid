@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecn
 
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -27,6 +28,7 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.Tratamiento
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.control_plagas.ControlPlagasFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
@@ -94,6 +96,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             insumoId = c.getLong("insumoId")
             tipoProductoId = c.getLong("tipoProductoId")
             enfermedadId = c.getLong("enfermedadId")
+            nombreTipoEnfermedad = c.getString("nombreTipoEnfermedad")
         }
         setupInjection()
         ivBackButton?.setOnClickListener(this)
@@ -142,7 +145,13 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
 
     override fun loadControlPlagas(listControlPlaga: List<ControlPlaga>) {
         hideProgressHud()
-        Toast.makeText(activity, "Se ha registrado el control de plaga", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(activity, "Se ha registrado el control de plaga", Toast.LENGTH_SHORT).show()
+        val bundle = Bundle()
+        bundle.putLong("cultivoId", cultivoGlobal?.Id!!)
+        val controlPlagasFragment: ControlPlagasFragment
+        controlPlagasFragment = ControlPlagasFragment()
+        controlPlagasFragment.arguments = bundle
+        (activity as MenuMainActivity).replaceFragment(controlPlagasFragment)
     }
 
     override fun setTratamiento(tratamiento: Tratamiento?) {
@@ -272,6 +281,8 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             controlPlaga.Fecha_aplicacion = fechaAplicacion
             controlPlaga.TratamientoId = tratamientoId
             controlPlaga.EnfermedadesId = enfermedadId
+            controlPlaga.NombrePlaga = nombreTipoEnfermedad
+            controlPlaga.EstadoErradicacion = false
             presenter?.registerControlPlaga(controlPlaga, cultivoGlobal?.Id)
         }
     }
@@ -363,6 +374,15 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         dialog.getWindow().setAttributes(lp)
         _dialogRegisterControlPlaga = dialog
     }
+
+    //Escuchador de eventos
+    override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
+        if (extras != null) {
+            if (extras.containsKey("state_conectivity")) {
+                var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
+            }
+        }
+    }
     //endregion
 
     //region Método on Click
@@ -384,6 +404,10 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             R.id.ivClosetDialogControlPlaga -> {
                 _dialogRegisterControlPlaga?.dismiss()
             }
+            R.id.ivCloseButtonDialogFilter -> {
+                _dialogFilter?.dismiss()
+            }
+
         }
 
     }
@@ -407,6 +431,23 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         val formatted = format1.format(dateTime.time)
         fechaAplicacion = dateTime.time
         viewDialog?.txtFechaAplicacion?.setText(formatted)
+    }
+    //endregion
+
+    //region ciclo de vida
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter?.onDestroy()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter?.onPause(activity!!.applicationContext)
+    }
+
+    override fun onResume() {
+        presenter?.onResume(activity!!.applicationContext)
+        super.onResume()
     }
     //endregion
 

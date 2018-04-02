@@ -1,7 +1,6 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.adapter
 
 import android.content.Context
-import android.support.v4.content.res.TypedArrayUtils.getString
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -61,7 +60,7 @@ class ProduccionAdapter(var lista: ArrayList<Produccion>,contextL:Context?) : Re
         fun bindItems(data: Produccion, pos: Int) = with(itemView) {
             var txtFechaInicioProduccion: TextView = itemView.findViewById(R.id.txtFechaInicio)
             var txtFechaFinProducccion: TextView = itemView.findViewById(R.id.txtFechaFin)
-            var txtCantidadProduccion: TextView = itemView.findViewById(R.id.txtCantidadProduccion)
+            var txtCantidadProduccion: TextView = itemView.findViewById(R.id.txtNombrePlaga)
             var btnEditProducccion: ImageButton = itemView.findViewById(R.id.btnEditProducccion)
             var btnDeleteProduccion: ImageButton = itemView.findViewById(R.id.btnDeleteProduccion)
 

@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.models.control_plaga
 
 import com.google.gson.annotations.SerializedName
+import com.interedes.agriculturappv3.asistencia_tecnica.models.control_plaga.ControlPlaga_Table.Fecha_aplicacion
 import com.interedes.agriculturappv3.config.DataSource
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
@@ -30,12 +31,22 @@ data class ControlPlaga(@PrimaryKey(autoincrement = true)
                         var TratamientoId: Long? = 0,
                         @SerializedName("UnidadMedidaId")
                         @Column(name = "UnidadMedidaId")
-                        var UnidadMedidaId: Long? = 0) {
+                        var UnidadMedidaId: Long? = 0,
+                        @Column(name = "NombrePlaga")
+                        var NombrePlaga: String? = null,
+                        @Column(name = "Fecha_Erradicacion")
+                        var Fecha_Erradicacion: Date? = null,
+                        @Column(getterName = "getEstadoErradicacion")
+                        var EstadoErradicacion: Boolean? = false) {
 
     fun getFechaAplicacionFormat(): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return sdf.format(Fecha_aplicacion)
     }
 
+    fun getFechaErradicacionFormat(): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return sdf.format(Fecha_Erradicacion)
+    }
 
 }

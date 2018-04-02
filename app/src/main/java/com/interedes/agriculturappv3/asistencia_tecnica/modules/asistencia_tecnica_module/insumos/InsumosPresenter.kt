@@ -1,9 +1,15 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import com.interedes.agriculturappv3.asistencia_tecnica.models.insumos.Insumo
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.insumos.events.InsumosEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 
 
@@ -23,11 +29,34 @@ class InsumosPresenter(var view: InterfaceInsumos.View?) : InterfaceInsumos.Pres
     }
 
     override fun onDestroy() {
+        view = null
         eventBus?.unregister(this)
     }
 
     override fun getInsumosByPlaga(tipoEnfermedadId: Long?) {
         interactor?.getInsumosByPlaga(tipoEnfermedadId)
+    }
+
+    //region Conectividad
+    private val mNotificationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            var extras = intent.extras
+            if (extras != null) {
+                view?.onEventBroadcastReceiver(extras, intent)
+            }
+        }
+    }
+
+    override fun checkConnection(): Boolean {
+        return ConnectivityReceiver.isConnected
+    }
+
+    override fun onResume(context: Context) {
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
+    }
+
+    override fun onPause(context: Context) {
+        context.unregisterReceiver(this.mNotificationReceiver);
     }
 
     /*

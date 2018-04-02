@@ -1,5 +1,8 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.tratamiento
 
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Tratamiento
@@ -35,6 +38,9 @@ interface ITratamiento {
         fun disableInputs()
         fun enableInputs()
         fun loadControlPlagas(listControlPlaga: List<ControlPlaga>)
+
+        //Events
+        fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
     }
 
     interface Presenter {
@@ -50,6 +56,10 @@ interface ITratamiento {
         fun setListSpinnerUnidadMedida()
         fun validarCampos(): Boolean?
         fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?)
+        fun onResume(context: Context)
+        fun onPause(context: Context)
+        //Conection
+        fun checkConnection(): Boolean
     }
 
     interface Interactor {

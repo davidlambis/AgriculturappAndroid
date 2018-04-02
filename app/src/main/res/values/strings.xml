@@ -167,6 +167,15 @@
     <string name="edit_text_fecha_aplicacion">Fecha de Aplicación</string>
     <string name="edit_text_dosis">Dosis</string>
 
+    <!--Control Plagas-->
+    <string name="title_control_plagas">Control Plagas</string>
+    <string name="title_fecha_aplicacion">Fecha de Aplicación</string>
+    <string name="title_dosis">Dosis</string>
+    <string name="title_alert_control_plaga">¿Está seguro que desea eliminar el control para esta plaga?</string>
+    <string name="title_vigente">Vigente</string>
+    <string name="btn_erradicar">Erradicar</string>
+    <string name="title_erradicada">Erradicada</string>
+
     <!--Tipo Producto-->
 
     <!--GLobals-->
