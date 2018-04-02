@@ -78,10 +78,12 @@
                         android:text=""/>
 
                     <TextView
+                        android:paddingStart="@dimen/margin_10"
                         android:layout_weight="1"
                         android:id="@+id/txtDate"
+                        android:textColor="@color/green_900"
                         android:layout_width="wrap_content"
-                        android:textSize="@dimen/text_size_16"
+                        android:textSize="@dimen/text_size_12"
                         android:layout_height="wrap_content"
                         android:text=""/>
                 </LinearLayout>
