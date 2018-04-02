@@ -19,6 +19,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -175,8 +176,8 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     }
 
     private fun initAdapter() {
-        //recyclerView?.layoutManager = LinearLayoutManager(activity)
-        recyclerView?.layoutManager = GridLayoutManager(activity, 2)
+        recyclerView?.layoutManager = LinearLayoutManager(activity)
+        // recyclerView?.layoutManager = GridLayoutManager(activity, 2)
         adapter = LoteAdapter(lotesList!!)
         recyclerView?.adapter = adapter
         /*
@@ -742,6 +743,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         loteGlobal= lote
         //REGISTER
         if (lote == null) {
+
+            viewDialog?.txtTitle?.setText(getString(R.string.add_lote))
+
             if (UBICATION_MANUAL == true) {
                 if (LastMarkerDrawingLote != null) {
                     locationLote.latitude = LastMarkerDrawingLote!!.getPosition().latitude
@@ -756,6 +760,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         }
         //UPDATE
         else {
+            viewDialog?.txtTitle?.setText(getString(R.string.edit_lote))
             unidadMedidaGlobal = Unidad_Medida(lote.Id, lote.Nombre_Unidad_Medida, null)
             viewDialog?.name_lote?.setText(lote.Nombre)
             viewDialog?.description_lote?.setText(lote.Descripcion)
@@ -805,6 +810,8 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         lp.copyFrom(dialog.getWindow().getAttributes())
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        //Hide KeyBoard
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.show()
         dialog.getWindow().setAttributes(lp)
         _dialogRegisterUpdate=dialog

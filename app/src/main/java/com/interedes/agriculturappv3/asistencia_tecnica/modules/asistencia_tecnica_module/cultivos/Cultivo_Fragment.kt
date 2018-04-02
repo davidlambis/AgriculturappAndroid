@@ -380,13 +380,18 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             edtFechaFin?.setOnClickListener(this)
             viewDialog?.btnSaveCultivo?.setOnClickListener(this)
 
+            var title:String?=null
+
             //REGISTER
             if (cultivo == null) {
                 viewDialog?.txtUnidadProductivaSelected?.text=unidadProductivaGlobal?.Nombre
                 viewDialog?.txtLoteSelected?.text=loteGlobal?.Nombre
+                viewDialog?.txtTitle?.text=getString(R.string.title_add_cultivo)
+                title
             }
             //UPDATE
             else {
+                viewDialog?.txtTitle?.text=getString(R.string.tittle_edit_cultivo)
                 presenter?.setListSpinnerDetalleTipoProducto(cultivo.Id_Tipo_Producto)
                 viewDialog?.txtUnidadProductivaSelected?.text=cultivo.NombreUnidadProductiva
                 viewDialog?.txtLoteSelected?.text=cultivo?.NombreLote
@@ -410,6 +415,8 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             lp.copyFrom(dialog.getWindow().getAttributes())
             lp.width = WindowManager.LayoutParams.MATCH_PARENT
             lp.height = WindowManager.LayoutParams.MATCH_PARENT
+            //Hide KeyBoard
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             dialog.show()
             dialog.getWindow().setAttributes(lp)
             _dialogRegisterUpdate=dialog

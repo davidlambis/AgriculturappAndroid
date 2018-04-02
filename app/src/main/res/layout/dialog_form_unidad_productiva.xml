@@ -6,6 +6,8 @@
     android:orientation="vertical"
     android:background="@drawable/fondo_general"
     android:fitsSystemWindows="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:layout_height="match_parent">
     <RelativeLayout
         android:layout_marginStart="@dimen/margin_10"
@@ -20,7 +22,7 @@
             android:src="@drawable/ic_back_button"/>
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/txtTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -35,7 +37,7 @@
             android:id="@+id/logo"
             android:layout_marginTop="-15dp"
             android:layout_marginBottom="-15dp"
-            android:layout_below="@+id/title"
+            android:layout_below="@+id/txtTitle"
             android:layout_width="match_parent"
             android:layout_height="90sp"
             android:layout_gravity="center"

@@ -93,6 +93,7 @@
 
     <!--NAMES LOTE-->
     <string name="add_lote">Agregar Lote</string>
+    <string name="edit_lote">Editar Lote</string>
     <string name="message_add_lote">Digite los todos lo campos</string>
     <string name="location_lote_select_type">Como desea ubicar el lote?</string>
     <string name="tittle_add_coord_lote_gps">Agregar Lote</string>
@@ -109,12 +110,14 @@
 
     <!--Unidad Prodductiva-->
     <string name="tittle_add_unidadproductiva">Agregar Unidad Productiva</string>
+    <string name="tittle_edit_unidadproductiva">Editar Unidad Productiva</string>
     <string name="title_up">Unidad Productiva</string>
     <!--Produccion-->
 
 
     <string name="tittle_producccion">Produccion</string>
     <string name="tittle_add_producccion">Registrar Produccion</string>
+    <string name="tittle_edit_producccion">Editar Produccion</string>
 
     <string name="spinner_cultivo">Cultivo</string>
     <string name="title_date_end">Fecha de Fin</string>
@@ -142,7 +145,7 @@
     <string name="spinner_tipo_producto">Tipo Producto</string>
     <string name="spinner_detalle_tipo_producto">Detalle Tipo Producto</string>
     <string name="tittle_select_lote">Seleccione el lote para agregar un cultivo</string>
-
+    <string name="tittle_edit_cultivo">Editar cultivo</string>
     <!-- Plagas -->
     <string name="title_plagas">Plagas</string>
     <string name="title_plaga">Plaga</string>
@@ -181,7 +184,12 @@
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
     <string name="name">Nombre</string>
+
+    <string name="title">Titulo</string>
     <string name="description">Descripción</string>
+    <string name="quantity">Cantidad</string>
+    <string name="date">Fecha</string>
+    <string name="description_additional">Descripción Adicional</string>
     <string name="area">Area</string>
     <string name="department">Departamento</string>
     <string name="city">Ciudad</string>
@@ -205,6 +213,11 @@
     <string name="ubicar">Ubicar</string>
     <string name="tittle_filter">Filtros de busquedad</string>
     <string name="error_results">No se encontraron resultados</string>
+
+    <string name="range_dates">De %1$s A %2$s</string>
+
+
+
 
 
     <!-- INTERNET CONNECTION -->

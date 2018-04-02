@@ -5,13 +5,20 @@ import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -24,10 +31,13 @@ import com.afollestad.materialdialogs.Theme
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
+import com.interedes.agriculturappv3.asistencia_tecnica.models.TipoProducto
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.produccion.Produccion
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.adapter.ProduccionAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.adapters.TipoProductosAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
@@ -42,40 +52,40 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, IMainProduccion.MainView {
+class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.OnRefreshListener,  IMainProduccion.MainView {
 
     var presenter: IMainProduccion.Presenter? = null
-    var adapter: ProduccionAdapter? = null
+    var adapter:ProduccionAdapter?=null
 
     //Progress
-    private var hud: KProgressHUD? = null
+    private var hud: KProgressHUD?=null
 
     //Dialog
-    var viewDialog: View? = null
+    var viewDialog:View?= null
     var _dialogRegisterUpdate: AlertDialog? = null
-    var viewDialogFilter: View? = null
+    var viewDialogFilter:View?= null
     var _dialogFilter: MaterialDialog? = null
 
     //Globals
     //var produccionGlobal:Produccion?=null
-    var produccionList: ArrayList<Produccion>? = ArrayList<Produccion>()
+    var produccionList:ArrayList<Produccion>?=ArrayList<Produccion>()
     var Cultivo_Id: Long? = null
-    var unidadMedidaGlobal: Unidad_Medida? = null
-    var fechaInicio: Date? = null
-    var fechaFin: Date? = null
+    var unidadMedidaGlobal:Unidad_Medida?=null
+    var fechaInicio: Date?=null
+    var fechaFin: Date?=null
 
-    var confFecha: Boolean? = false
+    var confFecha:Boolean?=false
 
     //Listas
-    var cultivoGlobal: Cultivo? = null
-    var unidadProductivaGlobal: UnidadProductiva? = null
-    var loteGlobal: Lote? = null
-    var produccionGlobal: Produccion? = null
+    var cultivoGlobal:Cultivo?=null
+    var unidadProductivaGlobal:UnidadProductiva?=null
+    var loteGlobal:Lote?=null
+    var produccionGlobal:Produccion?=null
 
     var dateTime = Calendar.getInstance()
 
     companion object {
-        var instance: ProduccionFragment? = null
+        var instance:  ProduccionFragment? = null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -86,15 +96,15 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ProduccionFragment.instance = this
-        presenter = ProduccionPresenter(this);
+        ProduccionFragment.instance =this
+        presenter =  ProduccionPresenter(this);
         presenter?.onCreate();
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
-        (activity as MenuMainActivity).toolbar.title = getString(R.string.tittle_producccion)
+        (activity as MenuMainActivity).toolbar.title=getString(R.string.tittle_producccion)
         fabAddProduccion.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         ivBackButton.setOnClickListener(this)
@@ -102,7 +112,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
         setupInjection()
     }
 
-    fun setupInjection() {
+    fun setupInjection(){
         presenter?.getListProduccion(Cultivo_Id)
 
 
@@ -118,7 +128,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
     //region ADAPTER
     private fun initAdapter() {
         recyclerView?.layoutManager = LinearLayoutManager(activity)
-        adapter = ProduccionAdapter(produccionList!!, activity)
+        adapter = ProduccionAdapter(produccionList!!,activity)
         recyclerView?.adapter = adapter
     }
     //endregion
@@ -127,7 +137,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
     override fun validarCampos(): Boolean {
         var cancel = false
         var focusView: View? = null
-        if (viewDialog?.txtFechaInicio?.text.toString().isEmpty()) {
+       if (viewDialog?.txtFechaInicio?.text.toString().isEmpty()) {
             viewDialog?.txtFechaInicio?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.txtFechaInicio
             cancel = true
@@ -139,7 +149,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
             viewDialog?.txtCantidadProduccionReal?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.txtCantidadProduccionReal
             cancel = true
-        } else if (viewDialog?.spinnerUnidadMedidaProduccion?.text.toString().isEmpty() && viewDialog?.spinnerUnidadMedidaProduccion?.visibility == View.VISIBLE) {
+        } else  if (viewDialog?.spinnerUnidadMedidaProduccion?.text.toString().isEmpty() && viewDialog?.spinnerUnidadMedidaProduccion?.visibility == View.VISIBLE) {
             viewDialog?.spinnerUnidadMedidaProduccion?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerUnidadMedidaProduccion
             cancel = true
@@ -159,15 +169,16 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
     override fun validarListasAddProduccion(): Boolean {
         var cancel = false
         var focusView: View? = null
-        if (viewDialogFilter?.spinnerUnidadProductiva?.text.toString().isEmpty()) {
+        if (viewDialogFilter?.spinnerUnidadProductiva?.text.toString().isEmpty() ) {
             viewDialogFilter?.spinnerUnidadProductiva?.setError(getString(R.string.error_field_required))
             focusView = viewDialogFilter?.spinnerUnidadProductiva
             cancel = true
         } else if (viewDialogFilter?.spinnerLote?.text.toString().isEmpty()) {
             viewDialogFilter?.spinnerLote?.setError(getString(R.string.error_field_required))
-            focusView = viewDialogFilter?.spinnerLote
+            focusView =viewDialogFilter?.spinnerLote
             cancel = true
-        } else if (viewDialogFilter?.spinnerCultivo?.text.toString().isEmpty()) {
+        }
+        else if (viewDialogFilter ?.spinnerCultivo?.text.toString().isEmpty() ) {
             viewDialogFilter?.spinnerCultivo?.setError(getString(R.string.error_field_required))
             focusView = viewDialogFilter?.spinnerCultivo
             cancel = true
@@ -181,7 +192,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
     }
 
     override fun limpiarCampos() {
-        if (viewDialog != null) {
+        if(viewDialog!=null){
             viewDialog?.txtFechaInicio?.setText("");
             viewDialog?.txtFechaFin?.setText("");
             viewDialog?.txtCultivoSelected?.setText("");
@@ -205,67 +216,64 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
     override fun disableInputs() {
         setInputs(false)
     }
-
     override fun enableInputs() {
         setInputs(true)
     }
-
     private fun setInputs(b: Boolean) {
-        if (viewDialog != null) {
+        if( viewDialog!=null){
             viewDialog?.txtFechaFin?.isEnabled = b
             viewDialog?.txtFechaFin?.isEnabled = b
             viewDialog?.spinnerUnidadMedidaProduccion?.isEnabled = b
             viewDialog?.txtCantidadProduccionReal?.isEnabled = b
         }
     }
-
-    override fun showProgressHud() {
+    override fun showProgressHud(){
         hud = KProgressHUD.create(activity)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setWindowColor(getResources().getColor(R.color.colorPrimary))
         hud?.show()
     }
 
-    override fun hideProgressHud() {
+    override fun hideProgressHud(){
         hud?.dismiss()
     }
 
     override fun registerProduccion() {
         if (presenter?.validarCampos() == true) {
-            val producccion = Produccion()
-            producccion.FechaInicio = fechaInicio
-            producccion.FechaFin = fechaFin
-            producccion.ProduccionReal = viewDialog?.txtCantidadProduccionReal?.text.toString().toDoubleOrNull()
-            producccion.CultivoId = Cultivo_Id
-            producccion.UnidadMedidaId = unidadMedidaGlobal?.Id
-            producccion.NombreUnidadMedida = unidadMedidaGlobal?.Descripcion
+            val producccion =  Produccion()
+            producccion.FechaInicio=fechaInicio
+            producccion.FechaFin=fechaFin
+            producccion.ProduccionReal=viewDialog?.txtCantidadProduccionReal?.text.toString().toDoubleOrNull()
+            producccion.CultivoId=Cultivo_Id
+            producccion.UnidadMedidaId=unidadMedidaGlobal?.Id
+            producccion.NombreUnidadMedida=unidadMedidaGlobal?.Descripcion
 
 
-            producccion.NombreUnidadProductiva = viewDialog?.txtUnidadProductivaSelected?.text.toString()
-            producccion.NombreLote = viewDialog?.txtLoteSelected?.text.toString()
-            producccion.NombreCultivo = viewDialog?.txtCultivoSelected?.text.toString()
-            presenter?.registerProdcuccion(producccion, Cultivo_Id!!)
+            producccion.NombreUnidadProductiva=viewDialog?.txtUnidadProductivaSelected?.text.toString()
+            producccion.NombreLote= viewDialog?.txtLoteSelected?.text.toString()
+            producccion.NombreCultivo=viewDialog?.txtCultivoSelected?.text.toString()
+            presenter?.registerProdcuccion(producccion,Cultivo_Id!! )
 
 
         }
     }
 
-    override fun updateProduccion(produccion: Produccion) {
+    override fun updateProduccion(produccion:Produccion) {
         if (presenter?.validarCampos() == true) {
-            val producccion = Produccion()
-            producccion.Id = produccion.Id
-            producccion.FechaInicio = fechaInicio
-            producccion.FechaFin = fechaFin
-            producccion.ProduccionReal = viewDialog?.txtCantidadProduccionReal?.text.toString().toDoubleOrNull()
-            producccion.CultivoId = Cultivo_Id
-            producccion.UnidadMedidaId = unidadMedidaGlobal?.Id
-            producccion.NombreUnidadMedida = unidadMedidaGlobal?.Descripcion
+            val producccion =  Produccion()
+            producccion.Id=produccion.Id
+            producccion.FechaInicio=fechaInicio
+            producccion.FechaFin=fechaFin
+            producccion.ProduccionReal=viewDialog?.txtCantidadProduccionReal?.text.toString().toDoubleOrNull()
+            producccion.CultivoId=Cultivo_Id
+            producccion.UnidadMedidaId=unidadMedidaGlobal?.Id
+            producccion.NombreUnidadMedida=unidadMedidaGlobal?.Descripcion
 
 
-            producccion.NombreUnidadProductiva = viewDialog?.txtUnidadProductivaSelected?.text.toString()
-            producccion.NombreLote = viewDialog?.txtLoteSelected?.text.toString()
-            producccion.NombreCultivo = viewDialog?.txtCultivoSelected?.text.toString()
-            presenter?.registerProdcuccion(producccion, Cultivo_Id!!)
+            producccion.NombreUnidadProductiva=viewDialog?.txtUnidadProductivaSelected?.text.toString()
+            producccion.NombreLote= viewDialog?.txtLoteSelected?.text.toString()
+            producccion.NombreCultivo=viewDialog?.txtCultivoSelected?.text.toString()
+            presenter?.registerProdcuccion(producccion,Cultivo_Id!! )
         }
     }
 
@@ -284,10 +292,10 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
     }
 
     override fun requestResponseOK() {
-        if (_dialogRegisterUpdate != null) {
+        if(_dialogRegisterUpdate!=null){
             _dialogRegisterUpdate?.dismiss()
         }
-        onMessageOk(R.color.colorPrimary, getString(R.string.request_ok));
+        onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
     }
 
     override fun requestResponseError(error: String?) {
@@ -312,6 +320,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
     }
 
 
+
     override fun showAlertDialogAddProduccion(produccion: Produccion?) {
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_produccion, null)
@@ -322,30 +331,31 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
         viewDialog?.txtFechaFin?.setOnClickListener(this)
         viewDialog?.btnSaveProduccion?.setOnClickListener(this)
 
-        produccionGlobal = produccion
+        produccionGlobal=produccion
 
         //REGISTER
         if (produccion == null) {
+            viewDialog?.txtTitle?.setText(getString(R.string.tittle_add_producccion))
             viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.Nombre)
             viewDialog?.txtLoteSelected?.setText(loteGlobal?.Nombre)
             viewDialog?.txtCultivoSelected?.setText(cultivoGlobal?.Nombre)
         }
         //UPDATE
         else {
-
+            viewDialog?.txtTitle?.setText(getString(R.string.tittle_edit_producccion))
             viewDialog?.txtUnidadProductivaSelected?.setText(produccion.NombreUnidadProductiva)
             viewDialog?.txtLoteSelected?.setText(produccion.NombreLote)
             viewDialog?.txtCultivoSelected?.setText(produccion.NombreCultivo)
 
-            Cultivo_Id = produccion.CultivoId
+            Cultivo_Id=produccion.CultivoId
             unidadMedidaGlobal = Unidad_Medida(produccion.UnidadMedidaId, produccion.NombreUnidadMedida, null)
             viewDialog?.txtFechaInicio?.setText(produccion.getFechaInicioFormat())
             viewDialog?.txtFechaFin?.setText(produccion.getFechafinFormat())
             viewDialog?.txtCantidadProduccionReal?.setText(produccion.ProduccionReal.toString())
             viewDialog?.spinnerUnidadMedidaProduccion?.setText(produccion.NombreUnidadMedida)
 
-            fechaInicio = produccion.FechaInicio
-            fechaFin = produccion.FechaFin
+            fechaInicio= produccion.FechaInicio
+            fechaFin=produccion.FechaFin
         }
         //Set Events
         /*
@@ -381,7 +391,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
                 .build()
         */
 
-        val dialog = AlertDialog.Builder(context!!, android.R.style.Theme_Light_NoTitleBar)
+        val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar)
                 .setView(viewDialog)
                 .create()
 
@@ -389,27 +399,31 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
         lp.copyFrom(dialog.getWindow().getAttributes())
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        //Hide KeyBoard
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.show()
         dialog.getWindow().setAttributes(lp)
-        _dialogRegisterUpdate = dialog
+        _dialogRegisterUpdate=dialog
     }
 
 
-    override fun showAlertDialogFilterProduccion(isFilter: Boolean?) {
+
+
+    override fun showAlertDialogFilterProduccion(isFilter:Boolean?) {
         val inflater = this.layoutInflater
         viewDialogFilter = inflater.inflate(R.layout.dialog_select_spinners, null)
         presenter?.setListSpinnerUnidadProductiva()
 
-        var title: String? = null
+        var title:String?=null
 
 
-        if (isFilter == true) {
-            title = getString(R.string.tittle_filter)
-        } else {
-            title = getString(R.string.tittle_select_cultivo)
+        if(isFilter==true){
+            title=getString(R.string.tittle_filter)
+        }else{
+            title=getString(R.string.tittle_select_cultivo)
         }
 
-        if (unidadProductivaGlobal != null && loteGlobal != null && cultivoGlobal != null) {
+        if(unidadProductivaGlobal!=null && loteGlobal!=null && cultivoGlobal!=null){
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
 
@@ -418,6 +432,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
             viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.Nombre)
 
         }
+
+
 
 
         //Set Events
@@ -445,14 +461,14 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
                 .theme(Theme.DARK)
                 .onPositive(
                         { dialog1, which ->
-                            if (isFilter == true) {
-                                if (presenter?.validarListasAddProduccion() == true) {
+                            if(isFilter==true){
+                                if(presenter?.validarListasAddProduccion()==true){
                                     dialog1.dismiss()
                                     presenter?.getListProduccion(Cultivo_Id)
                                     presenter?.getCultivo(Cultivo_Id)
                                 }
-                            } else {
-                                if (presenter?.validarListasAddProduccion() == true) {
+                            }else{
+                                if(presenter?.validarListasAddProduccion()==true){
                                     dialog1.dismiss()
                                     showAlertDialogAddProduccion(null)
                                 }
@@ -464,6 +480,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
                 .build()
 
 
+
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
@@ -471,7 +488,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
         dialog.show()
         dialog.getWindow().setAttributes(lp)
 //        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        _dialogFilter = dialog
+        _dialogFilter=dialog
     }
 
 
@@ -490,7 +507,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
     }
 
     override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?) {
-        if (viewDialogFilter != null) {
+        if(viewDialogFilter!=null){
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
             var unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
@@ -501,7 +518,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
                 viewDialogFilter?.spinnerCultivo?.setText("")
                 viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
 
-                unidadProductivaGlobal = listUnidadProductiva!![position] as UnidadProductiva
+                unidadProductivaGlobal= listUnidadProductiva!![position] as UnidadProductiva
                 presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             }
             presenter?.setListSpinnerLote(null)
@@ -516,9 +533,9 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
         var loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, listLotes)
         viewDialogFilter?.spinnerLote!!.setAdapter(loteArrayAdapter)
         viewDialogFilter?.spinnerLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-            viewDialogFilter?.spinnerCultivo?.setText("")
-            viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
-            loteGlobal = listLotes!![position] as Lote
+           viewDialogFilter?.spinnerCultivo?.setText("")
+           viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
+            loteGlobal= listLotes!![position] as Lote
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
         }
     }
@@ -530,31 +547,31 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
         val cultivoArrayAdapter = ArrayAdapter<Cultivo>(activity, android.R.layout.simple_spinner_dropdown_item, listCultivos)
         viewDialogFilter?.spinnerCultivo!!.setAdapter(cultivoArrayAdapter)
         viewDialogFilter?.spinnerCultivo!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-            cultivoGlobal = listCultivos!![position] as Cultivo
-            Cultivo_Id = cultivoGlobal?.Id
+            cultivoGlobal= listCultivos!![position] as Cultivo
+            Cultivo_Id=cultivoGlobal?.Id
         }
     }
 
     override fun setListUnidadMedida(listUnidadMedida: List<Unidad_Medida>?) {
-        if (viewDialog != null) {
+        if(viewDialog!=null){
             ///Adapaters
             viewDialog?.spinnerUnidadMedidaProduccion!!.setAdapter(null)
             var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedida);
             viewDialog?.spinnerUnidadMedidaProduccion!!.setAdapter(uMedidaArrayAdapter);
             viewDialog?.spinnerUnidadMedidaProduccion!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                unidadMedidaGlobal = listUnidadMedida!![position] as Unidad_Medida
+                unidadMedidaGlobal= listUnidadMedida!![position] as Unidad_Medida
                 //Toast.makeText(activity,""+ unidadMedidaGlobal!!.Id.toString(),Toast.LENGTH_SHORT).show()
             }
         }
     }
 
 
-    override fun setCultivo(cultivo: Cultivo?) {
-        if (cultivoSeletedContainer.visibility == View.GONE) {
-            cultivoSeletedContainer.visibility = View.VISIBLE
+    override fun setCultivo(cultivo:Cultivo?){
+        if(cultivoSeletedContainer.visibility==View.GONE){
+            cultivoSeletedContainer.visibility=View.VISIBLE
         }
-        txtNombreCultivo.setText(cultivo?.Nombre)
-        txtNombreTipoProducto.setText(cultivo?.Nombre_Tipo_Producto)
+        txtNombreCultivo.setText(cultivo?.Nombre_Detalle_Tipo_Producto)
+        txtCantidad.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
         txtFechaInicioCultivo.setText(cultivo?.FechaIncio)
         txtFechaFinCultivo.setText(cultivo?.FechaFin)
     }
@@ -577,14 +594,14 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
             R.id.fabAddProduccion -> {
                 showAlertDialogFilterProduccion(false)
             }
-            R.id.ivClosetDialogProduccion -> _dialogRegisterUpdate?.dismiss()
+            R.id.ivClosetDialogProduccion->_dialogRegisterUpdate?.dismiss()
 
             R.id.txtFechaInicio -> {
-                confFecha = true
+                confFecha=true
                 updateDate()
             }
             R.id.txtFechaFin -> {
-                confFecha = false
+                confFecha=false
                 updateDate()
             }
             R.id.ivBackButton -> {
@@ -598,14 +615,15 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
             }
 
 
+
             R.id.searchFilter -> {
                 showAlertDialogFilterProduccion(true)
             }
 
-            R.id.btnSaveProduccion -> {
-                if (produccionGlobal != null) {
+            R.id.btnSaveProduccion->{
+                if(produccionGlobal!=null){
                     updateProduccion(produccionGlobal!!)
-                } else {
+                }else{
                     registerProduccion()
                     presenter?.getCultivo(Cultivo_Id)
                 }
@@ -633,20 +651,20 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
     private fun mostrarResultadosFechaInicio() {
         val format1 = SimpleDateFormat("MM/dd/yyyy")
         val formatted = format1.format(dateTime.time)
-        fechaInicio = dateTime.time
+        fechaInicio=dateTime.time
         viewDialog?.txtFechaInicio?.setText(formatted)
     }
 
     private fun mostrarResultadosFechaFin() {
         val format1 = SimpleDateFormat("MM/dd/yyyy")
         val formatted = format1.format(dateTime.time)
-        fechaFin = dateTime.time
+        fechaFin=dateTime.time
         viewDialog?.txtFechaFin?.setText(formatted)
     }
 
     //Escuchador de eventos
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
-        if (extras != null) {
+        if(extras!=null){
             if (extras.containsKey("state_conectivity")) {
                 var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
             }
@@ -669,7 +687,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.
 
     override fun onPause() {
         super.onPause()
-        presenter?.onPause(activity!!.applicationContext)
+        presenter?.onPause( activity!!.applicationContext)
     }
 
     override fun onResume() {
