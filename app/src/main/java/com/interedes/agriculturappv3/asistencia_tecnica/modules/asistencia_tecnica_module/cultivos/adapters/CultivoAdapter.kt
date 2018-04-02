@@ -14,7 +14,6 @@ import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecni
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import kotlinx.android.synthetic.main.content_list_cultivo.view.*
 
 
 class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<CultivoAdapter.ViewHolder>() {

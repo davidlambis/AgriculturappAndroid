@@ -80,16 +80,16 @@
                         android:layout_width="wrap_content"
                         android:textColor="@color/white"
                         android:layout_height="wrap_content"
-                        android:text="Cultivo 1"/>
+                        android:text=""/>
                     <TextView
                         android:layout_below="@+id/txtNombreCultivo"
-                        android:id="@+id/txtNombreTipoProducto"
+                        android:id="@+id/txtCantidad"
                         android:textSize="@dimen/text_size_25"
                         android:layout_marginStart="@dimen/margin_5"
                         android:layout_width="match_parent"
                         android:textColor="@color/white"
                         android:layout_height="wrap_content"
-                        android:text="45.67"/>
+                        android:text=""/>
                     <TextView
                         android:id="@+id/txtFechaInicioCultivo"
                         android:layout_width="match_parent"
@@ -97,7 +97,7 @@
                         android:layout_above="@+id/txtNombreTipoProducto"
                         android:layout_alignStart="@+id/txtNombreCultivo"
                         android:gravity="end"
-                        android:text="12/12/2017"
+                        android:text=""
                         android:textColor="@color/white" />
 
                     <TextView
@@ -106,7 +106,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignStart="@+id/txtFechaInicioCultivo"
                         android:layout_below="@+id/txtFechaInicioCultivo"
-                        android:text="12/12/2017"
+                        android:text=""
                         android:gravity="end"
                         android:textColor="@color/white" />
                 </RelativeLayout>
