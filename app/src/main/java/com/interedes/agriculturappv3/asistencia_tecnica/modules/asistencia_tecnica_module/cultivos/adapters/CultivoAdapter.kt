@@ -89,7 +89,7 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
             txt_nombre_cultivo.text = data.Nombre_Detalle_Tipo_Producto
             txt_descripcion_cultivo.text = data.Descripcion
             txt_cosecha_estimada.text = data.EstimadoCosecha.toString()
-            txt_fechas_cultivo.setText(String.format(context.getString(R.string.cantidad_estimada)!!, data.FechaIncio, data.FechaFin))
+            txt_fechas_cultivo.setText(String.format(context.getString(R.string.range_dates)!!, data.FechaIncio, data.FechaFin))
 
             itemView.setOnClickListener {
                 CultivoAdapter.instance?.postEvent(CultivoEvent.ITEM_EVENT, data)
