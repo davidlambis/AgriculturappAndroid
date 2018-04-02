@@ -31,6 +31,8 @@ data class Insumo(@PrimaryKey(autoincrement = true)
                   var lote_laboratorio: String? = null,
                   @Column(name = "EnfermedadId")
                   var EnfermedadId: Long? = 0,
+                  @Column(name = "TipoEnfermedadId")
+                  var TipoEnfermedadId: Long? = 0,
                   @Column(name = "Imagen")
                   var Imagen: Int? = 0) {
 

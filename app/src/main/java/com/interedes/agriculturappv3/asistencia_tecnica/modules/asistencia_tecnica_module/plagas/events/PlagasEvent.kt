@@ -5,13 +5,14 @@ class PlagasEvent(var eventType: Int, var mutableList: MutableList<Object>? = nu
 
     companion object {
         val READ_EVENT: Int = 0
-        val SET_EVENT: Int = 2
-
+        val SET_EVENT: Int = 1
+        val SET_ENFERMEDAD_EVENT: Int = 2
+        val LOAD_LIST_TIPO_PRODUCTO : Int = 3
 
         //Events On item Click
-        val ITEM_EVENT: Int = 3
-        val ITEM_SELECT_PLAGA_EVENT : Int = 4
-        val ITEM_OPEN_EVENT : Int = 5
+        val ITEM_EVENT: Int = 4
+        val ITEM_SELECT_PLAGA_EVENT: Int = 5
+        val ITEM_OPEN_EVENT: Int = 6
 
     }
 }

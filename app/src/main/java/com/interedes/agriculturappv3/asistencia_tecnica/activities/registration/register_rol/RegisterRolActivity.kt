@@ -61,7 +61,7 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
             call.enqueue(object : Callback<RolResponse> {
                 override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
                     if (response != null) {
-                        lista = response.body()?.value!!
+                        lista = response.body()?.value
                         if (lista != null) {
                             for (item: Rol in lista!!) {
                                 if (item.Nombre.equals("Comprador")) {

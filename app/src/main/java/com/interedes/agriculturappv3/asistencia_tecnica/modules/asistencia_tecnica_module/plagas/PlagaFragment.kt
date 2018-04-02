@@ -35,6 +35,7 @@ import kotlinx.android.synthetic.main.content_recyclerview.view.*
 import kotlinx.android.synthetic.main.dialog_list_general.view.*
 import kotlinx.android.synthetic.main.fragment_plaga.*
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
+import com.interedes.agriculturappv3.asistencia_tecnica.models.insumos.Insumo_Table.EnfermedadId
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.adapters.SelectPlagasAdapter
 
 
@@ -49,6 +50,9 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     //List Plagas
     var plagasList: ArrayList<TipoEnfermedad>? = ArrayList<TipoEnfermedad>()
 
+    //List Tipo Producto
+    var ListTipoProductoGlobal: ArrayList<TipoProducto>? = ArrayList<TipoProducto>()
+
     //Dialog Tipo Productos
     var dialogProducto: AlertDialog? = null
     var dialogPlaga: AlertDialog? = null
@@ -58,6 +62,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     var Tipo_Producto_id: Long? = 0
     var Tipo_Producto_Nombre: String? = null
     var Tipo_Enfermedad_id: Long? = 0
+    var Enfermedad_Id: Long? = 0
 
     companion object {
         var instance: PlagaFragment? = null
@@ -93,15 +98,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     }
 
     private fun setupInjection() {
-        val a = this.arguments
-        if (a != null) {
-            Tipo_Enfermedad_id = a.getLong("tipoEnfermedadId")
-            Tipo_Producto_Nombre = a.getString("nombreTipoProducto")
-            searchFilter.setText(Tipo_Producto_Nombre)
-            presenter?.setPlaga(Tipo_Enfermedad_id)
-        } else {
-            showAlertDialogTipoProduccion()
-        }
+        showAlertDialogTipoProduccion()
     }
 
 
@@ -140,10 +137,10 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
         viewDialogPlagas?.title?.setText(getString(R.string.title_selected_plaga))
 
-       // val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar_Fullscreen)
+        // val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar_Fullscreen)
 
         val dialog = AlertDialog.Builder(context!!)
-                .setView(viewDialogPlagas!! )
+                .setView(viewDialogPlagas!!)
                 .create()
         dialog.getWindow().setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.black_transparencia)))
 
@@ -180,6 +177,8 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         bundle.putLong("tipoEnfermedadId", Tipo_Enfermedad_id!!)
         bundle.putString("nombreTipoEnfermedad", tipoEnfermedad.Nombre)
         bundle.putString("nombreTipoProducto", tipoEnfermedad.NombreTipoProducto)
+        bundle.putLong("tipoProductoId", tipoEnfermedad.TipoProductoId!!)
+        bundle.putLong("enfermedadId", Enfermedad_Id!!)
         val insumosFragment: InsumosFragment
         insumosFragment = InsumosFragment()
         insumosFragment.arguments = bundle
@@ -200,6 +199,10 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         Tipo_Producto_id = tipoProducto.Id
         Tipo_Producto_Nombre = tipoProducto.Nombre
         // plagas_search_view.setQuery(tipoProducto.Nombre, false)
+    }
+
+    override fun setIdEnfermedad(enfermedadId: Long?) {
+        Enfermedad_Id = enfermedadId
     }
     //endregion
 
@@ -233,7 +236,9 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         val adapterLocal = TipoProductosAdapter(lista!!)
         viewDialogTipoProductos?.recyclerView?.adapter = adapterLocal
 
-        adapterLocal.setItems(Listas.listaTipoProducto())
+        presenter?.getTiposProducto()
+        // adapterLocal.setItems(Listas.listaTipoProducto())
+        adapterLocal.setItems(ListTipoProductoGlobal!!)
         val results = String.format(getString(R.string.results_global_search), lista.size)
         viewDialogTipoProductos?.txtResults?.setText(results)
         viewDialogTipoProductos?.txtResults?.setTextColor(resources.getColor(R.color.white))
@@ -247,7 +252,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         viewDialogTipoProductos?.title?.setText(getString(R.string.title_selected_tipo_productos))
 
         val dialog = AlertDialog.Builder(context!!)
-                .setView(viewDialogTipoProductos!! )
+                .setView(viewDialogTipoProductos!!)
                 .create()
         dialog.getWindow().setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.black_transparencia)))
 
@@ -292,6 +297,9 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
     }
 
+    override fun loadListTipoProducto(listTipoProducto: ArrayList<TipoProducto>) {
+        ListTipoProductoGlobal = listTipoProducto
+    }
 
     //endregion
 
@@ -300,7 +308,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         when (p0?.id) {
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
-                (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
+                (activity as MenuMainActivity).onBackPressed()
             }
             R.id.searchFilter -> {
                 showAlertDialogTipoProduccion()

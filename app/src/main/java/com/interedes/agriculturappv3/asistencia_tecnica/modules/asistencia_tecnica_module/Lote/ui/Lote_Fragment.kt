@@ -955,7 +955,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             R.id.fabUnidadProductiva -> showAlertDialogSelectUp()
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
-                (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
+                (activity as MenuMainActivity).onBackPressed()
             }
 
             R.id.checkDoneMapView->{

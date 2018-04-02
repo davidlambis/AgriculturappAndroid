@@ -37,8 +37,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     //var coordsGlobal:Coords?=null
     var presenter: MenuPresenterImpl? = null
     var usuario_logued: Usuario? = null
-    var inflaterGlobal:MenuInflater?=null
-    var menuItemGlobal:MenuItem?=null
+    var inflaterGlobal: MenuInflater? = null
+    var menuItemGlobal: MenuItem? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,8 +128,17 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             replaceCleanFragment(MainMenuFragment())
 
         } else {
-            supportFragmentManager.popBackStackImmediate()
+            supportFragmentManager.popBackStack()
         }
+        /*
+        if (count == 1) {
+            super.onBackPressed()
+            replaceCleanFragment(MainMenuFragment())
+
+        } else {
+            supportFragmentManager.popBackStackImmediate()
+        }*/
+
     }
 
 
@@ -148,7 +157,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         fragmentTransaction = fragmentManager.beginTransaction()
         val inboxFragment = fragment
         fragmentTransaction.replace(R.id.container, inboxFragment)
-        fragmentTransaction?.addToBackStack(fragment::class.java.getName())
+        // fragmentTransaction?.addToBackStack(fragment::class.java.getName())
+        fragmentTransaction?.addToBackStack(null)
         fragmentTransaction.commit()
     }
 /*
@@ -162,9 +172,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }*/
 
 
-
-    fun replaceCleanFragment(fragment: Fragment)
-    {
+    fun replaceCleanFragment(fragment: Fragment) {
         val fragmentManager: FragmentManager
         val fragmentTransaction: FragmentTransaction
 
@@ -213,9 +221,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-      //getMenuInflater().inflate(R.menu.menu_main_fragment, menu)
+        //getMenuInflater().inflate(R.menu.menu_main_fragment, menu)
 
-        inflaterGlobal= menuInflater
+        inflaterGlobal = menuInflater
         inflaterGlobal?.inflate(R.menu.menu_main_fragment, menu)
         menuItemGlobal = menu?.findItem(R.id.action_menu_icon)
         menuItemGlobal?.isVisible = false

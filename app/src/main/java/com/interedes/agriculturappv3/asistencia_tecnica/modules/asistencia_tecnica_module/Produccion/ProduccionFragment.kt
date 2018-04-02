@@ -606,7 +606,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             }
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
-                (activity as MenuMainActivity).replaceCleanFragment(AsistenciaTecnicaFragment())
+                (activity as MenuMainActivity).onBackPressed()
             }
 
 

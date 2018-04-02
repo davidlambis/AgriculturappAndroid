@@ -118,7 +118,7 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
                 /*val mainMenuFragment = MainMenuFragment()
                 (activity as MenuMainActivity).replaceFragment(mainMenuFragment)*/
                 //fragmentManager?.popBackStackImmediate()
-                (activity as MenuMainActivity).replaceCleanFragment(MainMenuFragment())
+                (activity as MenuMainActivity).onBackPressed()
             }
         }
     }

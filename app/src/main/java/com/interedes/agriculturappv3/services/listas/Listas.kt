@@ -202,8 +202,14 @@ class Listas {
 
         fun listaInsumos(): ArrayList<Insumo> {
             val lista_insumos = ArrayList<Insumo>()
-            lista_insumos.add(Insumo(Id = 1, Descripcion = "Polvo soluble. 10 a 20 cc/Bomba de 20 L. Hidróxido de Cobre 53,8 %", Nombre = "Kocide", EnfermedadId = 1, Imagen = R.drawable.kocide))
+            lista_insumos.add(Insumo(Id = 1, Descripcion = "Insumo para Roña(Aguacate)", Nombre = "Kocide", EnfermedadId = 1, Imagen = R.drawable.kocide))
             return lista_insumos
+        }
+
+        fun listaTratamientos(): ArrayList<Tratamiento> {
+            val lista_tratamientos = ArrayList<Tratamiento>()
+            lista_tratamientos.add(Tratamiento(Id = 1, Desc_Aplicacion = "10 a 20 cc/Bomba de 20 L", Desc_Formulacion = "Polvo soluble", IngredienteActivo = "Hidróxido de Cobre 53,8 %", InsumoId = 1, Modo_Accion = "", Nombre_Comercial = "KOCIDE", proveedor = "", precioAproximado = 0.0))
+            return lista_tratamientos
         }
 
         fun queryGeneral(criterio: String, valor: String): String {
