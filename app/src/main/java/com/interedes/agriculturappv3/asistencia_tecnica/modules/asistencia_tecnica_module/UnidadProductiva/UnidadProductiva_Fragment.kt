@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.UnidadProductiva
 
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
@@ -13,6 +14,7 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
@@ -94,6 +96,16 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         adapter = UnidadProductivaAdapter(unidadProductivaList!!)
         recyclerView?.adapter = adapter
     }
+
+
+     private fun hideKeyboard(){
+        var inputManager =
+         activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(activity?.getCurrentFocus()?.getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+
 
 
     //region IMPLEMETS INTERFACE MAIN
@@ -298,12 +310,16 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         val imageViewLocalizarUnidadProductiva= viewDialog?.imageViewLocalizarUnidadProductiva
         val btnCloseDialog= viewDialog?.ivClosetDialogUp
         unidadProductivaGlobal=unidadProductiva
+
+
+
         //REGISTER
         if (unidadProductiva == null) {
-
+            viewDialog?.txtTitle?.setText(getString(R.string.tittle_add_unidadproductiva))
         }
         //UPDATE
         else {
+            viewDialog?.txtTitle?.setText(getString(R.string.tittle_edit_unidadproductiva))
             unidadMedidaGlobal = Unidad_Medida(unidadProductiva.UnidadMedidaId, unidadProductiva.Nombre_Unidad_Medida, null)
             viewDialog?.edtNombreUnidadProductiva?.setText(unidadProductiva.Nombre)
             viewDialog?.etDescripcionUnidadProductiva?.setText(unidadProductiva.Descripcion)
@@ -314,6 +330,8 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
             longitud= unidadProductiva.Longitud!!
 
         }
+
+
         //Set Events
         btnCloseDialog?.setOnClickListener(this)
         imageViewLocalizarUnidadProductiva?.setOnClickListener(this)
@@ -330,6 +348,8 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
         dialog.getWindow()?.setAttributes(lp)
+        //Hide KeyBoard
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.show()
         _dialogRegisterUpdate=dialog
 

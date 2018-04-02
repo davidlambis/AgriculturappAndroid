@@ -335,13 +335,14 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
         //REGISTER
         if (produccion == null) {
+            viewDialog?.txtTitle?.setText(getString(R.string.tittle_add_producccion))
             viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.Nombre)
             viewDialog?.txtLoteSelected?.setText(loteGlobal?.Nombre)
             viewDialog?.txtCultivoSelected?.setText(cultivoGlobal?.Nombre)
         }
         //UPDATE
         else {
-
+            viewDialog?.txtTitle?.setText(getString(R.string.tittle_edit_producccion))
             viewDialog?.txtUnidadProductivaSelected?.setText(produccion.NombreUnidadProductiva)
             viewDialog?.txtLoteSelected?.setText(produccion.NombreLote)
             viewDialog?.txtCultivoSelected?.setText(produccion.NombreCultivo)
@@ -398,6 +399,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         lp.copyFrom(dialog.getWindow().getAttributes())
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        //Hide KeyBoard
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.show()
         dialog.getWindow().setAttributes(lp)
         _dialogRegisterUpdate=dialog
@@ -567,7 +570,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         if(cultivoSeletedContainer.visibility==View.GONE){
             cultivoSeletedContainer.visibility=View.VISIBLE
         }
-        txtNombreCultivo.setText(cultivo?.Nombre)
+        txtNombreCultivo.setText(cultivo?.Nombre_Detalle_Tipo_Producto)
         txtCantidad.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
         txtFechaInicioCultivo.setText(cultivo?.FechaIncio)
         txtFechaFinCultivo.setText(cultivo?.FechaFin)

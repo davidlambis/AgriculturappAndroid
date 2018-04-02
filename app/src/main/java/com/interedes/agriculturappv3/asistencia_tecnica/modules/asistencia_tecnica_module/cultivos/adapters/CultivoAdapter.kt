@@ -36,7 +36,7 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CultivoAdapter.ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.content_list_cultivo, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.content_list_general, parent, false)
         return CultivoAdapter.ViewHolder(v)
     }
 
@@ -57,31 +57,49 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: Cultivo, pos: Int) = with(itemView) {
-            val txt_nombre_cultivo: TextView = itemView.findViewById(R.id.txtNombreCultivo)
-            val txt_detalle_tipo_producto: TextView = itemView.findViewById(R.id.txtDetalleTipoProducto)
-            val txt_descripcion_cultivo: TextView = itemView.findViewById(R.id.txtDescripcionCultivo)
-            val txt_cosecha_estimada: TextView = itemView.findViewById(R.id.txtCosechaEstimada)
-            val txt_fecha_inicio: TextView = itemView.findViewById(R.id.txtFechaInicio)
-            val txt_fecha_fin: TextView = itemView.findViewById(R.id.txtFechaFin)
-            val btn_edit_cultivo: ImageButton = itemView.findViewById(R.id.btn_edit_cultivo)
-            val btn_delete_cultivo: ImageButton = itemView.findViewById(R.id.btn_delete_cultivo)
 
-            txt_nombre_cultivo.text = data.Nombre
-            txt_detalle_tipo_producto.text = data.Nombre_Detalle_Tipo_Producto
+
+            var txt_nombre_cultivo: TextView = itemView.findViewById(R.id.txtTitle)
+            var txt_descripcion_cultivo: TextView = itemView.findViewById(R.id.txtDescription)
+            var txt_fechas_cultivo: TextView = itemView.findViewById(R.id.txtDate)
+            var txt_cosecha_estimada: TextView = itemView.findViewById(R.id.txtQuantity)
+            var txtAdicional: TextView = itemView.findViewById(R.id.txtDescripcionAdditional)
+            var icon: ImageView = itemView.findViewById(R.id.contentIcon)
+
+            var btnDelete: ImageButton = itemView.findViewById(R.id.btnAction3)
+            var btnAdd: ImageButton = itemView.findViewById(R.id.btnAction1)
+            var btnEdit: ImageButton = itemView.findViewById(R.id.btnAction2)
+
+
+
+            icon.setImageResource(R.drawable.ic_cultivos)
+            txtAdicional.visibility=View.GONE
+
+            btnEdit.setColorFilter(getContext().getResources().getColor(R.color.orange))
+            btnAdd.visibility=View.GONE
+            btnEdit.setColorFilter(getContext().getResources().getColor(R.color.orange))
+            btnDelete.setColorFilter(getContext().getResources().getColor(R.color.red_900))
+
+
+
+
+            //val txt_nombre_cultivo: TextView = itemView.findViewById(R.id.txtNombreCultivo)
+
+            //txt_nombre_cultivo.text = data.Nombre
+            txt_nombre_cultivo.text = data.Nombre_Detalle_Tipo_Producto
             txt_descripcion_cultivo.text = data.Descripcion
             txt_cosecha_estimada.text = data.EstimadoCosecha.toString()
-            txt_fecha_inicio.text = data.FechaIncio
-            txt_fecha_fin.text = data.FechaFin
+            txt_fechas_cultivo.setText(String.format(context.getString(R.string.cantidad_estimada)!!, data.FechaIncio, data.FechaFin))
 
             itemView.setOnClickListener {
                 CultivoAdapter.instance?.postEvent(CultivoEvent.ITEM_EVENT, data)
             }
 
-            btn_edit_cultivo.setOnClickListener {
+            btnEdit.setOnClickListener {
                 CultivoAdapter.instance?.postEvent(CultivoEvent.ITEM_EDIT_EVENT, data)
             }
 
-            btn_delete_cultivo.setOnClickListener {
+            btnDelete.setOnClickListener {
                 CultivoAdapter.instance?.postEvent(CultivoEvent.ITEM_DELETE_EVENT, data)
             }
         }

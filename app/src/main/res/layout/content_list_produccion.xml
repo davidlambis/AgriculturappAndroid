@@ -88,13 +88,13 @@
     <LinearLayout
         android:orientation="horizontal"
         android:background="?android:selectableItemBackground"
-        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageButton
+            android:padding="@dimen/margin_10"
             android:clickable="true"
             android:id="@+id/btnEditProducccion"
-            android:background="@android:color/transparent"
+            android:background="?android:selectableItemBackground"
             android:src="@android:drawable/ic_menu_edit"
             android:layout_width="wrap_content"
             android:tint="@color/grey_luiyi"
@@ -102,6 +102,7 @@
             android:layout_height="wrap_content"
             />
         <ImageButton
+            android:padding="@dimen/margin_10"
             android:clickable="true"
             android:id="@+id/btnDeleteProduccion"
             android:background="@android:color/transparent"
