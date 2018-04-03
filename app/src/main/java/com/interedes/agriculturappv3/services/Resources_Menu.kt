@@ -7,5 +7,7 @@ class Resources_Menu {
     companion object {
         var MENU_MAIN=0
         var MENU_MODULE_ASISTENCIA_TECNICA=1
+        var MENU_MODULE_COMERCIAL=2
+        var MENU_MODULE_ACCOUNTANT=3
     }
 }

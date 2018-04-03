@@ -48,6 +48,27 @@ class Listas {
             return lista_asistencia_tecnica_productor
         }
 
+
+        fun listaModuloComercialProductor(): ArrayList<ItemLista> {
+            val lista_comercial_productor = ArrayList<ItemLista>()
+            lista_comercial_productor.add(ItemLista("Mis Cultivos", Imagen = R.drawable.ic_productos_blue, Identificador = "mis_cultivos"))
+            lista_comercial_productor.add(ItemLista("Ofertas", Imagen = R.drawable.ic_ofertas, Identificador = "ofertas"))
+            lista_comercial_productor.add(ItemLista("Ventas Realizadas", Imagen = R.drawable.ic_ventas, Identificador = "ventas_realizadas"))
+            lista_comercial_productor.add(ItemLista("Clientes", Imagen = R.drawable.ic_clientes_azul, Identificador = "clientes"))
+            lista_comercial_productor.add(ItemLista("Preguntas", Imagen = R.drawable.ic_preguntas_frecuentas_azul, Identificador = "preguntas"))
+            return lista_comercial_productor
+        }
+
+        fun listaModuloContableProductor(): ArrayList<ItemLista> {
+            val lista_comercial_productor = ArrayList<ItemLista>()
+            lista_comercial_productor.add(ItemLista("Ventas", Imagen = R.drawable.ic_contabilidad_color_500, Identificador = "ventas"))
+            lista_comercial_productor.add(ItemLista("Compras", Imagen = R.drawable.ic_contabilidad_color_500, Identificador = "compras"))
+            lista_comercial_productor.add(ItemLista("Ingresos-Gastos", Imagen = R.drawable.ic_contabilidad_color_500, Identificador = "ingresos_gastos"))
+            lista_comercial_productor.add(ItemLista("Provedores", Imagen = R.drawable.ic_clientes, Identificador = "proveedores"))
+            lista_comercial_productor.add(ItemLista("Reportes", Imagen = R.drawable.ic_contabilidad_color_500, Identificador = "reportes"))
+            return lista_comercial_productor
+        }
+
         fun listaUP(): ArrayList<UnidadProductiva> {
             val listaUP = ArrayList<UnidadProductiva>()
             listaUP.add(UnidadProductiva(1,

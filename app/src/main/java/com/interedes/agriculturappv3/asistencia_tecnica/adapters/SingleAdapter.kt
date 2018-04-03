@@ -58,6 +58,12 @@ class SingleAdapter(val lista: ArrayList<ItemLista>,var TYPE_MENU:Int,var contex
             }else if(Resources_Menu.MENU_MODULE_ASISTENCIA_TECNICA==TYPE_MENU){
                 textNombre.setTextColor(context.resources.getColor(R.color.purple))
             }
+            else if(Resources_Menu.MENU_MODULE_COMERCIAL==TYPE_MENU){
+                textNombre.setTextColor(context.resources.getColor(R.color.blue))
+            }
+            else if(Resources_Menu.MENU_MODULE_ACCOUNTANT==TYPE_MENU){
+                textNombre.setTextColor(context.resources.getColor(R.color.green))
+            }
 
             //El listener en base a la posición
             itemView.setOnClickListener {

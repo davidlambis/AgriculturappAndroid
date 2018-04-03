@@ -8,6 +8,8 @@
     <!--Titles Frfgaments-->
     <string name="title_module_asistencia_tecnica">Asistencia Tecnica</string>
 
+    <string name="title_module_comercial">Comercial</string>
+    <string name="title_module_contable">Contabilidad</string>
     <!-- GLOBALES -->
     <string name="results_global_search">Mostrando %d Resultados</string>
     <string name="error_field_required">Campo Requerido</string>

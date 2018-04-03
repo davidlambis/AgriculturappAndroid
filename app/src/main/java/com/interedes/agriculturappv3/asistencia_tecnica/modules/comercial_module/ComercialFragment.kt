@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module
+package com.interedes.agriculturappv3.asistencia_tecnica.modules.comercial_module
 
 
 import android.graphics.PorterDuff
@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,6 @@ import android.view.WindowManager
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.ui.MainMenuFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.Resources_Menu
 import com.interedes.agriculturappv3.services.listas.Listas
@@ -22,13 +22,11 @@ import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_general.*
 
 
-/**
- * A simple [Fragment] subclass.
- */
-class AccountingFragment : Fragment(), View.OnClickListener {
+class ComercialFragment : Fragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_general, container, false)
     }
 
@@ -43,12 +41,12 @@ class AccountingFragment : Fragment(), View.OnClickListener {
 
 
     private fun setupInitDesign() {
-        (activity as MenuMainActivity).toolbar.title = getString(R.string.title_module_contable)
-        (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.green));
+        (activity as MenuMainActivity).toolbar.title = getString(R.string.title_module_comercial)
+        (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.blue));
         var iconMenu = (activity as MenuMainActivity).menuItemGlobal
         iconMenu?.isVisible = true
 
-        var iconc = iconMenu?.setIcon(ContextCompat.getDrawable((activity as MenuMainActivity), R.drawable.ic_contabilidad))
+        var iconc = iconMenu?.setIcon(ContextCompat.getDrawable((activity as MenuMainActivity), R.drawable.ic_icon_comercial))
         var icon = iconc?.icon?.mutate()
         icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN);
 
@@ -59,7 +57,7 @@ class AccountingFragment : Fragment(), View.OnClickListener {
             // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             // finally change the color
-            window.statusBarColor = ContextCompat.getColor((activity as MenuMainActivity), R.color.green)
+            window.statusBarColor = ContextCompat.getColor((activity as MenuMainActivity), R.color.blue)
         }
     }
 
@@ -68,10 +66,10 @@ class AccountingFragment : Fragment(), View.OnClickListener {
 
     private fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
-        val lista = Listas.listaModuloContableProductor()
-        val adapter = SingleAdapter(lista, Resources_Menu.MENU_MODULE_ACCOUNTANT, activity) { position ->
+        val lista = Listas.listaModuloComercialProductor()
+        val adapter = SingleAdapter(lista, Resources_Menu.MENU_MODULE_COMERCIAL, activity) { position ->
 
-            if (lista[position].Identificador.equals("mis_cultivos")) {
+           if (lista[position].Identificador.equals("mis_cultivos")) {
                 //startActivity(Intent(activity, MapsActivity::class.java))
 
             } else if (lista[position].Identificador.equals("ofertas")) {
@@ -107,4 +105,6 @@ class AccountingFragment : Fragment(), View.OnClickListener {
 
 
     //endregion
+
+
 }

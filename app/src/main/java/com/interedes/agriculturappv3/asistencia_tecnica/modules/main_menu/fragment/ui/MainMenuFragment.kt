@@ -20,7 +20,9 @@ import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.AccountingFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.comercial_module.ComercialFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.presenter.MainMenuFragmentPresenter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.presenter.MainMenuFragmentPresenterImpl
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
@@ -95,7 +97,14 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
         val adapter = SingleAdapter(lista,Resources_Menu.MENU_MAIN,activity) { position ->
             if (lista[position].Identificador.equals("asistencia_tecnica")) {
                 (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())
-            } else if (lista[position].Identificador.equals("salir")) {
+            }
+            else if (lista[position].Identificador.equals("comercial")) {
+                (activity as MenuMainActivity).replaceFragment(ComercialFragment())
+            }
+            else if (lista[position].Identificador.equals("contabilidad")) {
+                (activity as MenuMainActivity).replaceFragment(AccountingFragment())
+            }
+            else if (lista[position].Identificador.equals("salir")) {
                 presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
             }
         }
