@@ -29,6 +29,7 @@ import com.interedes.agriculturappv3.services.Resources_Menu
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import android.view.MenuInflater
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.control_plagas.ControlPlagasFragment
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu {

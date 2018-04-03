@@ -12,9 +12,6 @@
     app:cardUseCompatPadding="true"
     >
 
-
-
-
 <LinearLayout
         android:padding="@dimen/margin_3"
         android:orientation="vertical"

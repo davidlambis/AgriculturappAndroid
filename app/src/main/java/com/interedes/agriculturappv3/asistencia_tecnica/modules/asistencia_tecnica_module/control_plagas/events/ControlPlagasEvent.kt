@@ -16,6 +16,7 @@ data class ControlPlagasEvent(var eventType: Int,
         val READ_EVENT: Int = 4
         val GET_EVENT_CULTIVO: Int = 5
         val ITEM_DELETE_EVENT: Int = 6
-        val DELETE_EVENT : Int = 7
+        val DELETE_EVENT: Int = 7
+        val ITEM_ERRADICAR_EVENT: Int = 8
     }
 }

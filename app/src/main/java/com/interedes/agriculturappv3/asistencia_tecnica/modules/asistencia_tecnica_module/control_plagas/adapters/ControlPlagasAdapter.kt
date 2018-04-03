@@ -5,15 +5,15 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.control_plagas.events.ControlPlagasEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import org.w3c.dom.Text
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ControlPlagasAdapter(var lista: ArrayList<ControlPlaga>) : RecyclerView.Adapter<ControlPlagasAdapter.ViewHolder>() {
 
@@ -67,18 +67,33 @@ class ControlPlagasAdapter(var lista: ArrayList<ControlPlaga>) : RecyclerView.Ad
             val txtEstadoErradicacion: TextView = itemView.findViewById(R.id.txtEstadoErradicacion)
             val btnDeleteControlPlaga: ImageButton = itemView.findViewById(R.id.btnDeleteControlPlaga)
             val cardControlPlaga: LinearLayout = itemView.findViewById(R.id.cardControlPlaga)
-            val btnErradicar : Button = itemView.findViewById(R.id.btnErradicar)
+            val btnErradicar: Button = itemView.findViewById(R.id.btnErradicar)
+            val titleFechaErradicacion: TextView = itemView.findViewById(R.id.titleFechaErradicacion)
+            val txtFechaErradicacion: TextView = itemView.findViewById(R.id.txtFechaErradicacion)
+            val ivControlPlaga: ImageView = itemView.findViewById(R.id.ivControlPlaga)
 
             if (data.EstadoErradicacion == false) {
                 cardControlPlaga.background = ContextCompat.getDrawable(context, R.drawable.custom_drawable_card_view_red)
                 txtEstadoErradicacion.visibility = View.VISIBLE
                 txtEstadoErradicacion.text = resources.getString(R.string.title_vigente)
                 btnErradicar.visibility = View.VISIBLE
+                ivControlPlaga.visibility = View.VISIBLE
+                ivControlPlaga.setImageResource(R.drawable.ic_plagas)
             } else {
                 cardControlPlaga.background = ContextCompat.getDrawable(context, R.drawable.custom_drawable_card_view_green)
                 txtEstadoErradicacion.visibility = View.VISIBLE
                 txtEstadoErradicacion.text = resources.getString(R.string.title_erradicada)
                 btnErradicar.visibility = View.GONE
+                titleFechaErradicacion.visibility = View.VISIBLE
+                txtFechaErradicacion.visibility = View.VISIBLE
+                val format1 = SimpleDateFormat("dd/MM/yyyy")
+                var formatted: String? = null
+                if (data.Fecha_Erradicacion != null) {
+                    formatted = format1.format(data.Fecha_Erradicacion)
+                }
+                txtFechaErradicacion.text = formatted
+                ivControlPlaga.visibility = View.VISIBLE
+                ivControlPlaga.setImageResource(R.drawable.ic_plagas_erradicada)
             }
             txtNombrePlaga.text = data.NombrePlaga
             txtFechaAplicacion.text = data.getFechaAplicacionFormat()
@@ -87,6 +102,10 @@ class ControlPlagasAdapter(var lista: ArrayList<ControlPlaga>) : RecyclerView.Ad
 
             btnDeleteControlPlaga.setOnClickListener {
                 postEvent(ControlPlagasEvent.ITEM_DELETE_EVENT, data)
+            }
+
+            btnErradicar.setOnClickListener {
+                postEvent(ControlPlagasEvent.ITEM_ERRADICAR_EVENT, data)
             }
         }
     }

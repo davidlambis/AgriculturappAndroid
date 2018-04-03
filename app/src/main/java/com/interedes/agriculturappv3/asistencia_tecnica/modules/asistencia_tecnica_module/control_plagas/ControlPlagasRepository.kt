@@ -11,6 +11,8 @@ import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecni
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.raizlabs.android.dbflow.kotlinextensions.delete
+import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
 
 class ControlPlagasRepository : IControlPlagas.Repository {
@@ -56,6 +58,11 @@ class ControlPlagasRepository : IControlPlagas.Repository {
     override fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?) {
         controlPlaga.delete()
         postEventOk(ControlPlagasEvent.DELETE_EVENT, getControlPlagas(cultivo_id),controlPlaga);
+    }
+
+    override fun updateControlPlaga(controlPlaga: ControlPlaga?) {
+        controlPlaga?.update()
+
     }
     //endregion
 

@@ -103,6 +103,10 @@ class ControlPlagasPresenter(var view: IControlPlagas.View?) : IControlPlagas.Pr
         }
     }
 
+    override fun updateControlPlaga(controlPlaga: ControlPlaga?) {
+        interactor?.updateControlPlaga(controlPlaga)
+    }
+
     @Subscribe
     override fun onEventMainThread(event: ControlPlagasEvent?) {
         when (event?.eventType) {
@@ -137,7 +141,12 @@ class ControlPlagasPresenter(var view: IControlPlagas.View?) : IControlPlagas.Pr
             ControlPlagasEvent.DELETE_EVENT -> {
                 val list = event.mutableList as List<ControlPlaga>
                 view?.setListControlPlagas(list)
-                onDeleteOk()
+                //onDeleteOk()
+            }
+
+            ControlPlagasEvent.ITEM_ERRADICAR_EVENT -> {
+                val controlPlaga = event.objectMutable as ControlPlaga
+                view?.updatePlaga(controlPlaga)
             }
         }
     }

@@ -44,7 +44,7 @@ class Listas {
             lista_asistencia_tecnica_productor.add(ItemLista("Mis Cultivos", Imagen = R.drawable.ic_cultivos, Identificador = "mis_cultivos"))
             lista_asistencia_tecnica_productor.add(ItemLista("Produccion", Imagen = R.drawable.ic_produccion_cultivo, Identificador = "produccion"))
             lista_asistencia_tecnica_productor.add(ItemLista("Plagas", Imagen = R.drawable.ic_plagas, Identificador = "plagas"))
-            lista_asistencia_tecnica_productor.add(ItemLista("Control Plagas", Imagen = R.drawable.ic_plagas, Identificador = "control_plagas"))
+            lista_asistencia_tecnica_productor.add(ItemLista("Control Plagas", Imagen = R.drawable.ic_plagas_erradicada, Identificador = "control_plagas"))
             return lista_asistencia_tecnica_productor
         }
 

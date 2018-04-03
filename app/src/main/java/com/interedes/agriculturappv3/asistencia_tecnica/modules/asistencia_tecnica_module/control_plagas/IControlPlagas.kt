@@ -39,6 +39,8 @@ interface IControlPlagas {
 
         fun onMessageOk(colorPrimary: Int, msg: String?)
         fun onMessageError(colorPrimary: Int, msg: String?)
+
+        fun updatePlaga(controlPlaga: ControlPlaga?)
     }
 
     interface Presenter {
@@ -66,6 +68,7 @@ interface IControlPlagas {
         fun getCultivo(cultivo_id: Long?)
 
         fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id:Long?)
+        fun updateControlPlaga(controlPlaga: ControlPlaga?)
     }
 
     interface Interactor {
@@ -73,6 +76,7 @@ interface IControlPlagas {
         fun getListControlPlaga(cultivo_id: Long?)
         fun getCultivo(cultivo_id: Long?)
         fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id:Long?)
+        fun updateControlPlaga(controlPlaga: ControlPlaga?)
     }
 
     interface Repository {
@@ -81,5 +85,6 @@ interface IControlPlagas {
         fun getControlPlagas(cultivo_id: Long?): List<ControlPlaga>
         fun getCultivo(cultivo_id: Long?)
         fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id:Long?)
+        fun updateControlPlaga(controlPlaga: ControlPlaga?)
     }
 }

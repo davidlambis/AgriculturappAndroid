@@ -28,6 +28,7 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
 import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
 import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
 import com.interedes.agriculturappv3.asistencia_tecnica.models.control_plaga.ControlPlaga
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.control_plagas.adapters.ControlPlagasAdapter
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.plagas.PlagaFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
@@ -35,7 +36,7 @@ import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_control_plagas.*
-import java.util.ArrayList
+import java.util.*
 
 
 class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -48,7 +49,7 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
     var viewDialogFilter: View? = null
 
     var _dialogFilter: MaterialDialog? = null
-
+    var dialogo: AlertDialog? = null
 
     //Listas
     var cultivoGlobal: Cultivo? = null
@@ -155,6 +156,7 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
     }
 
     override fun setListControlPlagas(listControlPlagas: List<ControlPlaga>) {
+        dialogo?.dismiss()
         adapter?.clear()
         controlPlagaList?.clear()
         adapter?.setItems(listControlPlagas)
@@ -178,18 +180,37 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         txtFechaFinCultivo.setText(cultivo?.FechaFin)
     }
 
-    override fun confirmDelete(controlPlaga: ControlPlaga): AlertDialog? {
+    override fun updatePlaga(controlPlaga: ControlPlaga?) {
         val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.confirmation));
         builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+        })
+        builder.setMessage(getString(R.string.title_alert_erradicar_plaga))
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            controlPlaga?.EstadoErradicacion = true
+            /*val format1 = SimpleDateFormat("MM/dd/yyyy")
+            val formatted = format1.format(Calendar.getInstance().time)*/
+            controlPlaga?.Fecha_Erradicacion = Calendar.getInstance().time
+            presenter?.updateControlPlaga(controlPlaga)
+            presenter?.getListControlPlaga(Cultivo_Id)
+        })
+        builder.setIcon(R.drawable.ic_plagas)
+        dialogo = builder.show()
+    }
+
+    override fun confirmDelete(controlPlaga: ControlPlaga): AlertDialog? {
+        val builder = AlertDialog.Builder(activity!!)
+        builder.setTitle(getString(R.string.confirmation))
+        builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
 
         })
-        builder.setMessage(getString(R.string.title_alert_control_plaga));
+        builder.setMessage(getString(R.string.title_alert_control_plaga))
         builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             presenter?.deleteControlPlaga(controlPlaga, Cultivo_Id)
         })
-        builder.setIcon(R.drawable.ic_plagas);
-        return builder.show();
+        builder.setIcon(R.drawable.ic_plagas)
+        dialogo = builder.show()
+        return dialogo
     }
 
     override fun showAlertDialogFilterControlPlaga() {
@@ -332,8 +353,8 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
     }
 
     override fun requestResponseOK() {
-        if (_dialogFilter != null) {
-            _dialogFilter?.dismiss()
+        if (dialogo != null) {
+            dialogo?.dismiss()
         }
         onMessageOk(R.color.colorPrimary, getString(R.string.request_ok))
     }

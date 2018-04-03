@@ -27,6 +27,10 @@ class ControlPlagasInteractor : IControlPlagas.Interactor {
     override fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?) {
         repository?.deleteControlPlaga(controlPlaga, cultivo_id)
     }
+
+    override fun updateControlPlaga(controlPlaga: ControlPlaga?) {
+        repository?.updateControlPlaga(controlPlaga)
+    }
     //endregion
 
 }

@@ -174,10 +174,12 @@
     <string name="title_control_plagas">Control Plagas</string>
     <string name="title_fecha_aplicacion">Fecha de Aplicación</string>
     <string name="title_dosis">Dosis</string>
+    <string name="title_fecha_erradicacion">Fecha de Erradicación</string>
     <string name="title_alert_control_plaga">¿Está seguro que desea eliminar el control para esta plaga?</string>
     <string name="title_vigente">Vigente</string>
     <string name="btn_erradicar">Erradicar</string>
     <string name="title_erradicada">Erradicada</string>
+    <string name="title_alert_erradicar_plaga">¿Confirma la erradicación de esta plaga?</string>
 
     <!--Tipo Producto-->
 

@@ -31,9 +31,11 @@
                 android:gravity="center">
 
                 <ImageView
+                    android:id="@+id/ivControlPlaga"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_plagas" />
+                    android:src="@drawable/ic_plagas"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
@@ -87,6 +89,22 @@
                     android:text="50mg/L"
                     android:textColor="@color/grey_luiyi" />
 
+                <TextView
+                    android:id="@+id/titleFechaErradicacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_fecha_erradicacion"
+                    android:textSize="@dimen/text_size_18"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/txtFechaErradicacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey_luiyi"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -103,6 +121,7 @@
                 android:id="@+id/btnDeleteControlPlaga"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="@dimen/margin_5"
                 android:background="@android:color/transparent"
@@ -142,10 +161,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_global"
                 android:background="@drawable/custom_drawable_card_view_red"
+                android:foreground="?attr/selectableItemBackground"
                 android:text="@string/btn_erradicar"
                 android:textColor="@color/grey_luiyi"
                 android:textSize="@dimen/text_size"
-                android:foreground="?attr/selectableItemBackground"
                 android:visibility="gone" />
             <!--
             <Button
