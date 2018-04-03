@@ -43,6 +43,7 @@ import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_list_general.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
+import kotlinx.android.synthetic.main.dialog_form_produccion.*
 import kotlinx.android.synthetic.main.dialog_form_produccion.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_produccion.*
@@ -572,7 +573,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             cultivoSeletedContainer.visibility=View.VISIBLE
         }
         txtNombreCultivo.setText(cultivo?.Nombre_Detalle_Tipo_Producto)
-        txtQuantity.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
+        txtCantidad.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
         txtFechaInicioCultivo.setText(cultivo?.FechaIncio)
         txtFechaFinCultivo.setText(cultivo?.FechaFin)
     }

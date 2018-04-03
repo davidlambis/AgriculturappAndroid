@@ -107,7 +107,7 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
                 var icon = ic_geolocalizacion_btn?.mutate()
                 icon?.setColorFilter(resources.getColor(R.color.gray_light), PorterDuff.Mode.SRC_OVER);
                 btnAddLocationUp.setImageDrawable(icon)*/
-                btnAddLocationUp.setImageResource(R.drawable.ic_geolocalizacion_btn)
+                btnAddLocationUp.setImageResource(R.drawable.ic_geolocalizaciongrey)
 
             }
 
@@ -120,7 +120,7 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
                 //indicator_is_configured_poligon.setImageResource(R.drawable.ic_close_white)
                 //indicator_is_configured_poligon.setBackgroundResource(R.color.red_900)
                 // badge_notification_poligon_up.visibility=View.VISIBLE
-                btnAddPoligonUp.setImageResource(R.drawable.ic_geolocalizacion_poligon_btn)
+                btnAddPoligonUp.setImageResource(R.drawable.ic_poligono_grey)
             }
 
 
