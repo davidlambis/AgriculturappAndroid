@@ -14,6 +14,7 @@ import android.view.WindowManager
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas.Ventas_Fragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.ui.MainMenuFragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.Resources_Menu
@@ -64,16 +65,14 @@ class AccountingFragment : Fragment(), View.OnClickListener {
     }
 
 
-
-
     private fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
         val lista = Listas.listaModuloContableProductor()
         val adapter = SingleAdapter(lista, Resources_Menu.MENU_MODULE_ACCOUNTANT, activity) { position ->
 
-            if (lista[position].Identificador.equals("mis_cultivos")) {
+            if (lista[position].Identificador.equals("ventas")) {
                 //startActivity(Intent(activity, MapsActivity::class.java))
-
+                (activity as MenuMainActivity).replaceFragment(Ventas_Fragment())
             } else if (lista[position].Identificador.equals("ofertas")) {
 
             } else if (lista[position].Identificador.equals("ventas_realizadas")) {

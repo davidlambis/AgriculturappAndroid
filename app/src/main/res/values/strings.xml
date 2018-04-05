@@ -185,12 +185,18 @@
 
     <!--Tipo Producto-->
 
+
+    <!--Ventas-->
+    <string name="search_cultivo">Buscar Cultivo</string>
+    <string name="title_add_venta">Agregar Venta</string>
+
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
     <string name="name">Nombre</string>
 
     <string name="title">Titulo</string>
     <string name="description">Descripción</string>
+    <string name="concepto">Concepto</string>
     <string name="quantity">Cantidad</string>
     <string name="date">Fecha</string>
     <string name="description_additional">Descripción Adicional</string>
@@ -207,7 +213,10 @@
     <string name="confirmation">Confirmacion</string>
     <string name="title_unidad">Unidad</string>
     <string name="cantidad">Cantidad</string>
+    <string name="venta">Venta $</string>
+    <string name="subtotal">Subtotal $</string>
 
+    <string name="total">Total $</string>
     <string name="cantidad_estimada">%1$,.0f / %2$s</string>
     <string name="selected">Seleccionar</string>
 
@@ -220,9 +229,8 @@
 
     <string name="range_dates">De %1$s A %2$s</string>
 
-
-
-
+    <!--Cliente-->
+    <string name="name_cliente">Nombre Cliente</string>
 
     <!-- INTERNET CONNECTION -->
     <string name="internet_connected">Conectado a Internet</string>

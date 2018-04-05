@@ -15,6 +15,7 @@ import android.view.WindowManager
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas.Ventas_Fragment
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.Resources_Menu
 import com.interedes.agriculturappv3.services.listas.Listas
@@ -71,6 +72,7 @@ class ComercialFragment : Fragment(), View.OnClickListener {
 
            if (lista[position].Identificador.equals("mis_cultivos")) {
                 //startActivity(Intent(activity, MapsActivity::class.java))
+               (activity as MenuMainActivity).replaceFragment(Ventas_Fragment())
 
             } else if (lista[position].Identificador.equals("ofertas")) {
 
