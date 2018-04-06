@@ -7,6 +7,8 @@ import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.FotoEnfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.CategoriaPuk
+import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.Puk
 
 class Listas {
 
@@ -68,6 +70,11 @@ class Listas {
             lista_comercial_productor.add(ItemLista("Reportes", Imagen = R.drawable.ic_contabilidad_color_500, Identificador = "reportes"))
             return lista_comercial_productor
         }
+
+
+
+
+
 
         fun listaUP(): ArrayList<UnidadProductiva> {
             val listaUP = ArrayList<UnidadProductiva>()
@@ -233,9 +240,47 @@ class Listas {
             return lista_tratamientos
         }
 
+
+        fun listCategoriaPuk(): ArrayList<CategoriaPuk> {
+            val lista_categoria_puk = ArrayList<CategoriaPuk>()
+
+            lista_categoria_puk.add(CategoriaPuk(1, "Gastos",""))
+            lista_categoria_puk.add(CategoriaPuk(2, "Ingresos",""))
+            //lista_categoria_puk.add(CategoriaPuk(3, "Costos de produccion o Operacion",""))
+            //lista_categoria_puk.add(CategoriaPuk(4, "",""))
+            return lista_categoria_puk
+        }
+
+
+        fun listPuk(): ArrayList<Puk> {
+            val lista_puk = ArrayList<Puk>()
+            lista_puk.add(Puk(1,1,"","Analisis de suelo"))
+            lista_puk.add(Puk(1,1,"","Material Vegetal"))
+            lista_puk.add(Puk(1,1,"","Materiales"))
+            lista_puk.add(Puk(1,1,"","Herramientas"))
+            lista_puk.add(Puk(1,1,"","Mano de Obra preparacion terreno"))
+            lista_puk.add(Puk(1,1,"","Mano de obra labores culturales"))
+            lista_puk.add(Puk(1,1,"","Mano de obra cosecha y poscosecha"))
+            lista_puk.add(Puk(1,1,"","Agroinsumos"))
+            lista_puk.add(Puk(1,1,"","Transporte"))
+
+            //Ingresos
+            lista_puk.add(Puk(1,2,"","Cultivo Aguacate"))
+            lista_puk.add(Puk(1,2,"","Material Vegetal"))
+            return lista_puk
+        }
+
+
+
+        //WebServices ODATA
+
         fun queryGeneral(criterio: String, valor: String): String {
             val queryFilter = "$criterio eq '$valor'"
             return queryFilter
         }
+
+
+
+
     }
 }

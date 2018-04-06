@@ -172,7 +172,7 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
     }
 
     override fun getListCultivos(lote_id: Long?) {
-        interactor?.execute(null)
+        interactor?.execute(lote_id)
     }
 
     override fun setListSpinnerUnidadProductiva() {

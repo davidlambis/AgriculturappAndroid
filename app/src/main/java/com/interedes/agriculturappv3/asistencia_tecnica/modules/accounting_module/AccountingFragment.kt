@@ -53,6 +53,8 @@ class AccountingFragment : Fragment(), View.OnClickListener {
         var icon = iconc?.icon?.mutate()
         icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN);
 
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val window = (activity as MenuMainActivity).getWindow()
             // clear FLAG_TRANSLUCENT_STATUS flag:
@@ -61,6 +63,7 @@ class AccountingFragment : Fragment(), View.OnClickListener {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             // finally change the color
             window.statusBarColor = ContextCompat.getColor((activity as MenuMainActivity), R.color.green)
+            (activity as MenuMainActivity).toolbar.elevation= 0F
         }
     }
 

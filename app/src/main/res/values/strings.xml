@@ -189,6 +189,9 @@
     <!--Ventas-->
     <string name="search_cultivo">Buscar Cultivo</string>
     <string name="title_add_venta">Agregar Venta</string>
+    <string name="title_edit_venta">Editar Venta</string>
+    <string name="tittle_select_cultivo_transaccion">Seleccione el cultivo para agregar una transaccion</string>
+    <string name="tittle_puk">Seleccione Tipo Operaccion</string>
 
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
@@ -228,6 +231,8 @@
     <string name="error_results">No se encontraron resultados</string>
 
     <string name="range_dates">De %1$s A %2$s</string>
+
+    <string name="price">$ %1$,.0f</string>
 
     <!--Cliente-->
     <string name="name_cliente">Nombre Cliente</string>

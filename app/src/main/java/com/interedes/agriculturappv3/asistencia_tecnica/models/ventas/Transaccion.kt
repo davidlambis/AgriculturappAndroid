@@ -5,6 +5,7 @@ import com.interedes.agriculturappv3.config.DataSource
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -23,8 +24,8 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
                        var EstadoId: Long? = 0,
 
                        @SerializedName("Fecha")
-                       @Column(name = "Fecha")
-                       var Fecha: Date? = null,
+                       @Column(name = "Fecha_Transaccion")
+                       var Fecha_Transaccion: Date? = null,
 
                        @Column(name = "updated_at")
                        var updatedAt: Calendar = Calendar.getInstance(),
@@ -41,6 +42,10 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
                        @Column(name = "TerceroId")
                        var TerceroId: Long? = 0,
 
+
+                       @Column(name = "Nombre_Tercero")
+                       var Nombre_Tercero: String? = null,
+
                        @SerializedName("Valor")
                        @Column(name = "Valor")
                        var Valor: Double? = 0.0,
@@ -52,10 +57,26 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
 
                        @SerializedName("Cultivo_Id")
                        @Column(name = "Cultivo_Id")
-                       var Cultivo_Id: Long? = 0
+                       var Cultivo_Id: Long? = 0,
+
+                       @Column(name = "Nombre_Cultivo")
+                       var Nombre_Cultivo: String? = null,
+
+                       @Column(name = "Descripcion_Puk")
+                       var Descripcion_Puk: String? = null
+
+
 
 ) {
 
+    fun getFechaUpdateAt(): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return sdf.format(updatedAt)
+    }
 
+    fun getFechaTransacccion(): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return sdf.format(Fecha_Transaccion)
+    }
 
 }
