@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.Dialog
 import android.app.Service
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -22,8 +21,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Coords
-import com.interedes.agriculturappv3.asistencia_tecnica.services.coords.CoordsService
+import com.interedes.agriculturappv3.productor.models.Coords
 import com.interedes.agriculturappv3.services.Const
 
 /**

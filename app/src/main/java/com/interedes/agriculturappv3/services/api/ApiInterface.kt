@@ -1,11 +1,11 @@
 package com.interedes.agriculturappv3.services.api
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.detalle_metodo_pago.DetalleMetodoPagoResponse
-import com.interedes.agriculturappv3.asistencia_tecnica.models.login.Login
-import com.interedes.agriculturappv3.asistencia_tecnica.models.login.LoginResponse
-import com.interedes.agriculturappv3.asistencia_tecnica.models.rol.RolResponse
-import com.interedes.agriculturappv3.asistencia_tecnica.models.metodopago.MetodoPagoResponse
-import com.interedes.agriculturappv3.asistencia_tecnica.models.usuario.*
+import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPagoResponse
+import com.interedes.agriculturappv3.productor.models.login.Login
+import com.interedes.agriculturappv3.productor.models.login.LoginResponse
+import com.interedes.agriculturappv3.productor.models.rol.RolResponse
+import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPagoResponse
+import com.interedes.agriculturappv3.productor.models.usuario.*
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit

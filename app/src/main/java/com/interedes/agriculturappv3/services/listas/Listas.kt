@@ -1,14 +1,13 @@
 package com.interedes.agriculturappv3.services.listas
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.*
-import com.interedes.agriculturappv3.asistencia_tecnica.models.insumos.Insumo
-import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.Enfermedad
-import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.FotoEnfermedad
-import com.interedes.agriculturappv3.asistencia_tecnica.models.plagas.TipoEnfermedad
-import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.CategoriaPuk
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.Puk
+import com.interedes.agriculturappv3.productor.models.*
+import com.interedes.agriculturappv3.productor.models.insumos.Insumo
+import com.interedes.agriculturappv3.productor.models.plagas.Enfermedad
+import com.interedes.agriculturappv3.productor.models.plagas.FotoEnfermedad
+import com.interedes.agriculturappv3.productor.models.plagas.TipoEnfermedad
+import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
+import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 
 class Listas {
 
@@ -53,7 +52,7 @@ class Listas {
 
         fun listaModuloComercialProductor(): ArrayList<ItemLista> {
             val lista_comercial_productor = ArrayList<ItemLista>()
-            lista_comercial_productor.add(ItemLista("Mis Cultivos", Imagen = R.drawable.ic_productos_blue, Identificador = "mis_cultivos"))
+            lista_comercial_productor.add(ItemLista("Mis Productos", Imagen = R.drawable.ic_productos_blue, Identificador = "mis_productos"))
             lista_comercial_productor.add(ItemLista("Ofertas", Imagen = R.drawable.ic_ofertas, Identificador = "ofertas"))
             lista_comercial_productor.add(ItemLista("Ventas Realizadas", Imagen = R.drawable.ic_ventas, Identificador = "ventas_realizadas"))
             lista_comercial_productor.add(ItemLista("Clientes", Imagen = R.drawable.ic_clientes_azul, Identificador = "clientes"))
@@ -70,11 +69,6 @@ class Listas {
             lista_comercial_productor.add(ItemLista("Reportes", Imagen = R.drawable.ic_contabilidad_color_500, Identificador = "reportes"))
             return lista_comercial_productor
         }
-
-
-
-
-
 
         fun listaUP(): ArrayList<UnidadProductiva> {
             val listaUP = ArrayList<UnidadProductiva>()
@@ -240,47 +234,17 @@ class Listas {
             return lista_tratamientos
         }
 
-
-        fun listCategoriaPuk(): ArrayList<CategoriaPuk> {
-            val lista_categoria_puk = ArrayList<CategoriaPuk>()
-
-            lista_categoria_puk.add(CategoriaPuk(1, "Gastos",""))
-            lista_categoria_puk.add(CategoriaPuk(2, "Ingresos",""))
-            //lista_categoria_puk.add(CategoriaPuk(3, "Costos de produccion o Operacion",""))
-            //lista_categoria_puk.add(CategoriaPuk(4, "",""))
-            return lista_categoria_puk
+        fun listaCalidadProducto(): ArrayList<CalidadProducto> {
+            val lista_calidades_producto = ArrayList<CalidadProducto>()
+            lista_calidades_producto.add(CalidadProducto(Id = 1, Descripcion = "Calidad Primera", Nombre = "Primera"))
+            lista_calidades_producto.add(CalidadProducto(Id = 2, Descripcion = "Calidad Segunda", Nombre = "Segunda"))
+            lista_calidades_producto.add(CalidadProducto(Id = 3, Descripcion = "Calidad Tercera", Nombre = "Tercera"))
+            return lista_calidades_producto
         }
-
-
-        fun listPuk(): ArrayList<Puk> {
-            val lista_puk = ArrayList<Puk>()
-            lista_puk.add(Puk(1,1,"","Analisis de suelo"))
-            lista_puk.add(Puk(1,1,"","Material Vegetal"))
-            lista_puk.add(Puk(1,1,"","Materiales"))
-            lista_puk.add(Puk(1,1,"","Herramientas"))
-            lista_puk.add(Puk(1,1,"","Mano de Obra preparacion terreno"))
-            lista_puk.add(Puk(1,1,"","Mano de obra labores culturales"))
-            lista_puk.add(Puk(1,1,"","Mano de obra cosecha y poscosecha"))
-            lista_puk.add(Puk(1,1,"","Agroinsumos"))
-            lista_puk.add(Puk(1,1,"","Transporte"))
-
-            //Ingresos
-            lista_puk.add(Puk(1,2,"","Cultivo Aguacate"))
-            lista_puk.add(Puk(1,2,"","Material Vegetal"))
-            return lista_puk
-        }
-
-
-
-        //WebServices ODATA
 
         fun queryGeneral(criterio: String, valor: String): String {
             val queryFilter = "$criterio eq '$valor'"
             return queryFilter
         }
-
-
-
-
     }
 }

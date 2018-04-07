@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -22,7 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.splash.SplashActivity"
+            android:name="com.interedes.agriculturappv3.activities.splash.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -32,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.home.HomeActivity"
+            android:name="com.interedes.agriculturappv3.activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <!--<activity
             android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity"
@@ -41,29 +44,29 @@
             android:windowSoftInputMode="stateHidden" />-->
 
         <activity
-            android:name=".asistencia_tecnica.activities.login.ui.LoginActivity"
+            android:name="com.interedes.agriculturappv3.activities.login.ui.LoginActivity"
             android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
-            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_rol.RegisterRolActivity"
-            android:parentActivityName="com.interedes.agriculturappv3.asistencia_tecnica.activities.home.HomeActivity"
+            android:name="com.interedes.agriculturappv3.activities.registration.register_rol.RegisterRolActivity"
+            android:parentActivityName="com.interedes.agriculturappv3.activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_user.ui.RegisterUserActivity"
+            android:name="com.interedes.agriculturappv3.activities.registration.register_user.ui.RegisterUserActivity"
             android:configChanges="screenSize|orientation"
-            android:parentActivityName="com.interedes.agriculturappv3.asistencia_tecnica.activities.registration.register_rol.RegisterRolActivity"
+            android:parentActivityName="com.interedes.agriculturappv3.activities.registration.register_rol.RegisterRolActivity"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".asistencia_tecnica.modules.ui.main_menu.MenuMainActivity"
+            android:name=".productor.modules.ui.main_menu.MenuMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".asistencia_tecnica.activities.MapsActivity"
+            android:name="com.interedes.agriculturappv3.activities.MapsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <!-- Maps -->
