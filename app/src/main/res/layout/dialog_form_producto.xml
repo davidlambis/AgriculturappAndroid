@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo_general"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_10"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivClosetDialogProduccion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back_button"
+            android:tint="@color/grey_luiyi" />
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="11dp"
+            android:layout_toEndOf="@+id/ivClosetDialogProduccion"
+            android:gravity="center"
+            android:text="@string/title_registrar_producto"
+            android:textAlignment="center"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/text_size_18"
+            android:textStyle="bold" />
+
+        <View
+            android:id="@+id/division"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/txtTitle"
+            android:layout_marginTop="15dp"
+            android:background="@color/blue" />
+    </RelativeLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/margin_24">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtUnidadProductivaSelected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_10"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_nombre_finca"
+                    android:gravity="start|center"
+                    android:text="Unidad Productiva" />
+
+                <TextView
+                    android:id="@+id/txtLoteSelected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_10"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_nombre_finca"
+                    android:gravity="start|center"
+                    android:text="Lote" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtCultivoSelected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_10"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_localizacion_finca"
+                    android:gravity="start|center"
+                    android:text="Cultivo" />
+
+                <TextView
+                    android:id="@+id/txtDetalleTipoProductoSelected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_10"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_productos"
+                    android:gravity="start|center"
+                    android:text="Tipo Producto" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/product_image"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_foto_producto_square" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/product_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_camera"
+                    android:layout_marginEnd="@dimen/margin_global"
+                    android:background="@null"/>
+
+                <ImageButton
+                    android:id="@+id/product_gallery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_gallery"
+                    android:layout_marginEnd="@dimen/margin_global"
+                    android:background="@null"/>
+
+                <ImageButton
+                    android:id="@+id/product_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_cancel"
+                    android:background="@null"/>
+
+            </LinearLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:hint="@string/descripcion_producto"
+                android:textColorHint="@color/blue"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                <EditText
+                    android:id="@+id/txtDescripcionProducto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="16dp"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:overScrollMode="always"
+                    android:padding="15dp"
+                    android:scrollbars="vertical" />
+            </android.support.design.widget.TextInputLayout>
+
+            <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                android:id="@+id/spinnerCalidadProducto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/ic_mes"
+                android:drawableStart="@drawable/ic_mes"
+                android:hint="@string/spinner_calidad_producto"
+                android:textAlignment="center"
+                android:textColorHint="@color/grey_luiyi"
+                android:textSize="@dimen/text_size_18"
+                app:met_baseColor="@color/grey_luiyi"
+                app:met_floatingLabel="normal"
+                app:met_floatingLabelTextColor="@color/grey_luiyi"
+                app:met_primaryColor="@color/grey_luiyi"
+                app:met_textColor="@color/grey_luiyi"
+                app:met_textColorHint="@color/black_alpha_40" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                <EditText
+                    android:id="@+id/txtFechaLimiteDisponibilidad"
+                    style="@style/editText"
+                    android:drawableLeft="@drawable/ic_mes"
+                    android:drawableStart="@drawable/ic_mes"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/edit_text_fecha_limite" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <EditText
+                        android:id="@+id/txtPrecioProducto"
+                        style="@style/editText"
+                        android:drawableLeft="@drawable/ic_numero_hectareas"
+                        android:drawableStart="@drawable/ic_numero_hectareas"
+                        android:hint="@string/edit_text_precio"
+                        android:inputType="numberDecimal"
+                        android:textAlignment="textStart" />
+                </android.support.design.widget.TextInputLayout>
+
+                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                    android:id="@+id/spinnerMonedaPrecio"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@drawable/ic_medicion"
+                    android:drawableStart="@drawable/ic_medicion"
+                    android:hint="@string/spinner_moneda"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/grey_luiyi"
+                    android:textSize="@dimen/text_size_18"
+                    app:met_baseColor="@color/grey_luiyi"
+                    app:met_floatingLabel="normal"
+                    app:met_floatingLabelTextColor="@color/grey_luiyi"
+                    app:met_primaryColor="@color/grey_luiyi"
+                    app:met_textColor="@color/grey_luiyi"
+                    app:met_textColorHint="@color/black_alpha_40" />
+            </LinearLayout>
+
+
+
+            <Button
+                android:id="@+id/btnSaveProducto"
+                style="@style/button"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_global"
+                android:background="@color/blue"
+                android:text="@string/btn_save" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

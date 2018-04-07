@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/container_fragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.interedes.agriculturappv3.asistencia_tecnica.modules.asistencia_tecnica_module.Produccion.ProduccionFragment">
+    tools:context="com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Produccion.ProduccionFragment">
 
 
 
@@ -83,7 +83,7 @@
                         android:text=""/>
                     <TextView
                         android:layout_below="@+id/txtNombreCultivo"
-                        android:id="@+id/txtCantidad"
+                        android:id="@+id/txtNombreTipoProducto"
                         android:textSize="@dimen/text_size_25"
                         android:layout_marginStart="@dimen/margin_5"
                         android:layout_width="match_parent"

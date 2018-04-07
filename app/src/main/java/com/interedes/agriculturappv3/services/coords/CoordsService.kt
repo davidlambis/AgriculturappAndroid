@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.services.coords
+package com.interedes.agriculturappv3.productor.services.coords
 
 import android.Manifest
 import android.app.Activity
@@ -22,7 +22,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Coords
+import com.interedes.agriculturappv3.productor.models.Coords
 
 /**
  * Created by EnuarMunoz on 5/03/18.
