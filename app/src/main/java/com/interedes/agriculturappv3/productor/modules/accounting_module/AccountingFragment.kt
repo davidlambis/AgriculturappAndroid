@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.modules.accounting_module
+package com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module
 
 
 import android.graphics.PorterDuff
@@ -13,8 +13,10 @@ import android.view.ViewGroup
 import android.view.WindowManager
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.adapters.SingleAdapter
-import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.adapters.SingleAdapter
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas.Ventas_Fragment
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.main_menu.fragment.ui.MainMenuFragment
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.Resources_Menu
 import com.interedes.agriculturappv3.services.listas.Listas
 import kotlinx.android.synthetic.main.activity_menu_main.*
@@ -51,6 +53,8 @@ class AccountingFragment : Fragment(), View.OnClickListener {
         var icon = iconc?.icon?.mutate()
         icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN);
 
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val window = (activity as MenuMainActivity).getWindow()
             // clear FLAG_TRANSLUCENT_STATUS flag:
@@ -59,10 +63,9 @@ class AccountingFragment : Fragment(), View.OnClickListener {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             // finally change the color
             window.statusBarColor = ContextCompat.getColor((activity as MenuMainActivity), R.color.green)
+            (activity as MenuMainActivity).toolbar.elevation= 0F
         }
     }
-
-
 
 
     private fun loadItems() {
@@ -70,9 +73,9 @@ class AccountingFragment : Fragment(), View.OnClickListener {
         val lista = Listas.listaModuloContableProductor()
         val adapter = SingleAdapter(lista, Resources_Menu.MENU_MODULE_ACCOUNTANT, activity) { position ->
 
-            if (lista[position].Identificador.equals("mis_cultivos")) {
+            if (lista[position].Identificador.equals("ventas")) {
                 //startActivity(Intent(activity, MapsActivity::class.java))
-
+                (activity as MenuMainActivity).replaceFragment(Ventas_Fragment())
             } else if (lista[position].Identificador.equals("ofertas")) {
 
             } else if (lista[position].Identificador.equals("ventas_realizadas")) {

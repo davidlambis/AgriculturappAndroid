@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_back_button"
-            android:tint="@color/grey_luiyi" />
+            />
 
         <TextView
             android:id="@+id/title"

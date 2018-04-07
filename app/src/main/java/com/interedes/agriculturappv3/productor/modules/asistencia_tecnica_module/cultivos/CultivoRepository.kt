@@ -58,7 +58,7 @@ class CultivoRepository : ICultivo.Repository {
 
     override fun getCultivos(loteId: Long?): List<Cultivo> {
         var listResponse: List<Cultivo>? = null
-        if (loteId == null) {
+        if (loteId == null || loteId == 0.toLong() ) {
             listResponse = SQLite.select().from(Cultivo::class.java!!).queryList()
         } else {
             listResponse = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.LoteId.eq(loteId)).queryList()
