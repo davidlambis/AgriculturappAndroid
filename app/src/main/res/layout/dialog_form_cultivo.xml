@@ -106,12 +106,15 @@
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                 <EditText
+                    android:layout_height="@dimen/height_150"
+                    android:gravity="start"
+                    android:inputType="text|textMultiLine"
                     android:id="@+id/edtDescripcionCultivo"
                     style="@style/editText"
                     android:drawableLeft="@drawable/ic_nombre_finca"
                     android:drawableStart="@drawable/ic_nombre_finca"
                     android:hint="@string/edit_text_descripcion_cultivo"
-                    android:inputType="text" />
+                    />
             </android.support.design.widget.TextInputLayout>
 
             <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner

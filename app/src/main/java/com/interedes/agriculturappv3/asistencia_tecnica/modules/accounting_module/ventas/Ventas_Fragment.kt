@@ -11,6 +11,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -420,6 +422,85 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
        // viewDialog?.txtCantidadTransaccion?.addTextChangedListener(wac:TextWatcher)
 
 
+
+        viewDialog?.txtCantidadTransaccion?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                var cantidad=  viewDialog?.txtCantidadTransaccion?.text.toString()?.toLongOrNull()
+                var precioVenta=  viewDialog?.txtPrecioVenta?.text.toString()?.toDoubleOrNull()
+
+
+                if(!viewDialog?.txtCantidadTransaccion?.text.toString().isEmpty()
+                    && !viewDialog?.txtPrecioVenta?.text.toString().isEmpty()){
+
+
+                    var subtotal=cantidad!!*precioVenta!!
+                    var costo_total_item = String.format(context!!.getString(R.string.price),
+                            subtotal)
+
+                    var costo_total_ = String.format(context!!.getString(R.string.price_total),
+                            subtotal)
+
+
+                    viewDialog?.txtValorSubtotal?.text=costo_total_item
+                    viewDialog?.txtTotalVenta?.setText(costo_total_)
+
+
+                }else{
+                    viewDialog?.txtValorSubtotal?.text=""
+                    viewDialog?.txtTotalVenta?.setText("")
+                }
+
+
+
+            }
+        })
+
+        viewDialog?.txtPrecioVenta?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                var cantidad=  viewDialog?.txtCantidadTransaccion?.text.toString()?.toLongOrNull()
+                var precioVenta=  viewDialog?.txtPrecioVenta?.text.toString()?.toDoubleOrNull()
+
+
+                if(!viewDialog?.txtCantidadTransaccion?.text.toString().isEmpty()
+                        && !viewDialog?.txtPrecioVenta?.text.toString().isEmpty()){
+
+
+                    var subtotal=cantidad!!*precioVenta!!
+                    var costo_total_item = String.format(context!!.getString(R.string.price),
+                            subtotal)
+
+                    var costo_total_ = String.format(context!!.getString(R.string.price_total),
+                            subtotal)
+
+                    viewDialog?.txtValorSubtotal?.text=costo_total_item
+                    viewDialog?.txtTotalVenta?.setText(costo_total_)
+                }else{
+                    viewDialog?.txtValorSubtotal?.text=""
+                    viewDialog?.txtTotalVenta?.setText("")
+                }
+            }
+        })
+
+
+
+
+
+
+
+
         viewDialog?.changeCultivo?.setText(cultivoGlobal?.Nombre)
 
         transaccionGlobal=transaccion
@@ -622,7 +703,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
 
 
 
-            R.id.btnSaveProduccion->{
+            R.id.fabAddVenta->{
                 if(transaccionGlobal!=null){
                     updateTransaccion(transaccionGlobal!!)
                 }else{

@@ -233,6 +233,9 @@
     <string name="range_dates">De %1$s A %2$s</string>
 
     <string name="price">$ %1$,.0f</string>
+    <string name="price_total">%1$, .0f</string>
+
+
 
     <!--Cliente-->
     <string name="name_cliente">Nombre Cliente</string>

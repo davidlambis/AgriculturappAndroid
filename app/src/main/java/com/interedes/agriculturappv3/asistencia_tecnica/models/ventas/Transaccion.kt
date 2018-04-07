@@ -70,8 +70,11 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
 ) {
 
     fun getFechaUpdateAt(): String {
-        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        return sdf.format(updatedAt)
+        val cal = updatedAt
+        cal.add(Calendar.DATE, 1)
+        val format1 = SimpleDateFormat("dd/MM/yyyy")
+       // val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return format1.format(cal.getTime() )
     }
 
     fun getFechaTransacccion(): String {

@@ -70,7 +70,7 @@ class VentaAdapter(var lista: ArrayList<Transaccion>) : RecyclerView.Adapter<Ven
 
 
 
-            icon.setImageResource(R.drawable.ic_ventas)
+            icon.setImageResource(R.drawable.ic_contabilidad)
 
 
 
