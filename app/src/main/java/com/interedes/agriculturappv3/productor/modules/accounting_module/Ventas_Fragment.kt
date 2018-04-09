@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas
+package com.interedes.agriculturappv3.productor.modules.accounting_module
 
 
 import android.content.DialogInterface
@@ -26,15 +26,14 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
-import com.interedes.agriculturappv3.asistencia_tecnica.models.produccion.Produccion
-import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.Puk
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.Transaccion
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas.adapter.VentaAdapter
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.productor.models.ventas.Puk
+import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
+import com.interedes.agriculturappv3.productor.modules.accounting_module.adapter.VentaAdapter
+import com.interedes.agriculturappv3.productor.models.Cultivo
+import com.interedes.agriculturappv3.productor.models.Lote
+import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
@@ -43,10 +42,10 @@ import kotlinx.android.synthetic.main.diaog_form_ventas.view.*
 import kotlinx.android.synthetic.main.fragment_ventas.*
 import java.util.*
 
-class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.OnRefreshListener,  IMainViewTransacciones.MainView {
+class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.OnRefreshListener, IMainViewTransacciones.MainView {
 
     var presenter: IMainViewTransacciones.Presenter? = null
-    var adapter:VentaAdapter?=null
+    var adapter: VentaAdapter?=null
 
     //Progress
     private var hud: KProgressHUD?=null
@@ -61,17 +60,17 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     //var produccionGlobal:Produccion?=null
     var produccionList:ArrayList<Transaccion>?=ArrayList<Transaccion>()
     var Cultivo_Id: Long? = null
-    var unidadMedidaGlobal:Unidad_Medida?=null
+    var unidadMedidaGlobal: Unidad_Medida?=null
 
 
     var changeCultivo:Boolean?=false
 
     //Listas
-    var cultivoGlobal:Cultivo?=null
-    var pukGlobal:Puk?=null
-    var unidadProductivaGlobal:UnidadProductiva?=null
-    var loteGlobal:Lote?=null
-    var transaccionGlobal:Transaccion?=null
+    var cultivoGlobal: Cultivo?=null
+    var pukGlobal: Puk?=null
+    var unidadProductivaGlobal: UnidadProductiva?=null
+    var loteGlobal: Lote?=null
+    var transaccionGlobal: Transaccion?=null
 
 
     companion object {
@@ -86,8 +85,8 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Ventas_Fragment.instance =this
-        presenter =  VentasPresenter(this);
+        instance =this
+        presenter = VentasPresenter(this);
         presenter?.onCreate();
     }
 
@@ -249,7 +248,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
 
     override fun registerTransaccion() {
         if (presenter?.validarCampos() == true) {
-            val transaccion =  Transaccion()
+            val transaccion = Transaccion()
             transaccion.Nombre_Cultivo=cultivoGlobal?.Nombre
             transaccion.Concepto=viewDialog?.txtConceptoVenta?.text.toString()
             transaccion.EstadoId=1
@@ -272,7 +271,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
 
     override fun updateTransaccion(transaccion: Transaccion) {
         if (presenter?.validarCampos() == true) {
-            val transaccion =  Transaccion()
+            val transaccion = Transaccion()
             transaccion.Nombre_Cultivo=cultivoGlobal?.Nombre
             transaccion.Concepto=viewDialog?.txtConceptoVenta?.text.toString()
             transaccion.EstadoId=1
@@ -514,7 +513,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
         else {
 
             cultivoGlobal = Cultivo(transaccion.Cultivo_Id, transaccion.Nombre_Cultivo, null)
-            pukGlobal = Puk(transaccion.PucId, null,transaccion.Descripcion_Puk, null)
+            pukGlobal = Puk(transaccion.PucId, null, transaccion.Descripcion_Puk, null)
 
             viewDialog?.txtTitle?.setText(getString(R.string.title_edit_venta))
             viewDialog?.txtCantidadTransaccion?.setText(transaccion.Cantidad.toString())

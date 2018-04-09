@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas.adapter
+package com.interedes.agriculturappv3.productor.modules.accounting_module.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.Transaccion
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas.events.RequestEventVenta
+import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
+import com.interedes.agriculturappv3.productor.modules.accounting_module.events.RequestEventVenta
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import kotlinx.android.synthetic.main.content_list_general.view.*
@@ -100,22 +100,22 @@ class VentaAdapter(var lista: ArrayList<Transaccion>) : RecyclerView.Adapter<Ven
 
             //El listener en base a la posición
             itemView.setOnClickListener {
-                VentaAdapter.instance?.postEventc(RequestEventVenta.ITEM_EVENT,data)
+                instance?.postEventc(RequestEventVenta.ITEM_EVENT,data)
             }
 
             btnEdit.setOnClickListener {
-                VentaAdapter.instance?.postEventc(RequestEventVenta.ITEM_EDIT_EVENT,data)
+                instance?.postEventc(RequestEventVenta.ITEM_EDIT_EVENT,data)
             }
 
             btnDelete.setOnClickListener {
-                VentaAdapter.instance?.postEventc(RequestEventVenta.ITEM_DELETE_EVENT,data)
+                instance?.postEventc(RequestEventVenta.ITEM_DELETE_EVENT,data)
             }
         }
     }
 
     fun postEventc(type: Int, transaccion: Transaccion?) {
         var transaccionnMutable= transaccion as Object
-        val event = RequestEventVenta(type,null, transaccionnMutable,null)
+        val event = RequestEventVenta(type, null, transaccionnMutable, null)
         event.eventType = type
         eventBus?.post(event)
     }

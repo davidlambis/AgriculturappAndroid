@@ -1,24 +1,24 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas
+package com.interedes.agriculturappv3.productor.modules.accounting_module
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo_Table
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
-import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.CategoriaPuk
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.Puk
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.Transaccion
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.Transaccion_Table
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas.events.RequestEventVenta
+import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
+import com.interedes.agriculturappv3.productor.models.ventas.Puk
+import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
+import com.interedes.agriculturappv3.productor.modules.accounting_module.events.RequestEventVenta
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.Cultivo
+import com.interedes.agriculturappv3.productor.models.Cultivo_Table
+import com.interedes.agriculturappv3.productor.models.Lote
+import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.ventas.Transaccion_Table
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
 
-class VentasRespository:IMainViewTransacciones.Repository {
+class VentasRespository: IMainViewTransacciones.Repository {
 
 
     var eventBus: EventBus? = null
@@ -119,7 +119,7 @@ class VentasRespository:IMainViewTransacciones.Repository {
     }
 
 
-    private fun postEventOk(type: Int, transacciones: List<Transaccion>?, trasaccion:Transaccion?) {
+    private fun postEventOk(type: Int, transacciones: List<Transaccion>?, trasaccion: Transaccion?) {
         var transaccionListMitable= transacciones as MutableList<Object>
         var ProducciconMutable:Object?=null
         if(trasaccion!=null){

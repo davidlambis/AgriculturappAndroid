@@ -8,6 +8,8 @@ import com.interedes.agriculturappv3.productor.models.plagas.FotoEnfermedad
 import com.interedes.agriculturappv3.productor.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
+import com.interedes.agriculturappv3.productor.models.ventas.Puk
 
 class Listas {
 
@@ -241,6 +243,28 @@ class Listas {
             lista_calidades_producto.add(CalidadProducto(Id = 3, Descripcion = "Calidad Tercera", Nombre = "Tercera"))
             return lista_calidades_producto
         }
+
+        fun listCategoriaPuk(): ArrayList<CategoriaPuk> {
+            val categoriaPuk = ArrayList<CategoriaPuk>()
+            categoriaPuk.add(CategoriaPuk(Id = 1, Nombre = "Ingreso",Sigla = "I"))
+            categoriaPuk.add(CategoriaPuk(Id = 2,   Nombre = "Gasto",Sigla ="G"))
+            return categoriaPuk
+        }
+
+        fun listPuk(): ArrayList<Puk> {
+            val categoriaPuk = ArrayList<Puk>()
+            categoriaPuk.add(Puk(Id = 1,CategoriaId =  1,Codigo = "",Descripcion = ""))
+            categoriaPuk.add(Puk(Id = 2,CategoriaId =  1,Codigo = "",Descripcion = ""))
+            categoriaPuk.add(Puk(Id = 3,CategoriaId =  1,Codigo = "",Descripcion = ""))
+            categoriaPuk.add(Puk(Id = 4,CategoriaId =  1,Codigo = "",Descripcion = ""))
+            categoriaPuk.add(Puk(Id = 5,CategoriaId =  1,Codigo = "",Descripcion = ""))
+            categoriaPuk.add(Puk(Id = 6,CategoriaId =  1,Codigo = "",Descripcion = ""))
+            return categoriaPuk
+        }
+
+
+        var listCategoriasPuk= Listas.listCategoriaPuk()
+        var listPuk= Listas.listPuk()
 
         fun queryGeneral(criterio: String, valor: String): String {
             val queryFilter = "$criterio eq '$valor'"

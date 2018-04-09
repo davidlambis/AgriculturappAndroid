@@ -19,8 +19,8 @@ import android.widget.TextView
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
+import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.AccountingFragment
 import com.interedes.agriculturappv3.productor.adapters.SingleAdapter
-import com.interedes.agriculturappv3.productor.modules.accounting_module.AccountingFragment
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.productor.modules.comercial_module.ComercialFragment
 import com.interedes.agriculturappv3.productor.modules.main_menu.fragment.presenter.MainMenuFragmentPresenter

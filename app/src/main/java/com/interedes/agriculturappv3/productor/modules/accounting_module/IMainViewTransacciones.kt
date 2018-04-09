@@ -1,18 +1,16 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas
+package com.interedes.agriculturappv3.productor.modules.accounting_module
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Cultivo
-import com.interedes.agriculturappv3.asistencia_tecnica.models.Lote
-import com.interedes.agriculturappv3.asistencia_tecnica.models.UnidadProductiva
-import com.interedes.agriculturappv3.asistencia_tecnica.models.produccion.Produccion
-import com.interedes.agriculturappv3.asistencia_tecnica.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.CategoriaPuk
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.Puk
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.Transaccion
-import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas.events.RequestEventVenta
+import com.interedes.agriculturappv3.productor.models.Cultivo
+import com.interedes.agriculturappv3.productor.models.Lote
+import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.ventas.Puk
+import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
+import com.interedes.agriculturappv3.productor.modules.accounting_module.events.RequestEventVenta
 
 interface IMainViewTransacciones {
 
@@ -34,7 +32,7 @@ interface IMainViewTransacciones {
 
         //Fun Lote CRUD
         fun registerTransaccion()
-        fun updateTransaccion(transaccion:Transaccion)
+        fun updateTransaccion(transaccion: Transaccion)
         fun setListTransaccion(transaccion: List<Transaccion>)
         fun setResults(transacciones:Int)
 
@@ -81,9 +79,9 @@ interface IMainViewTransacciones {
 
 
         //Methods
-        fun registerTransaccion(transaccion: Transaccion,cultivo_id:Long?)
-        fun updateTransaccion(transaccion: Transaccion,cultivo_id:Long?)
-        fun deleteTransaccion(transaccion: Transaccion,cultivo_id:Long?)
+        fun registerTransaccion(transaccion: Transaccion, cultivo_id:Long?)
+        fun updateTransaccion(transaccion: Transaccion, cultivo_id:Long?)
+        fun deleteTransaccion(transaccion: Transaccion, cultivo_id:Long?)
         fun getListTransaccion(cultivo_id:Long?)
         fun getListas()
 
@@ -107,9 +105,9 @@ interface IMainViewTransacciones {
     }
 
     interface Interactor {
-        fun registerTransaccion(transaccion: Transaccion,cultivo_id:Long?)
-        fun updateTransaccion(transaccion: Transaccion,cultivo_id:Long?)
-        fun deleteProducccionTransaccion(transaccion: Transaccion,cultivo_id:Long?)
+        fun registerTransaccion(transaccion: Transaccion, cultivo_id:Long?)
+        fun updateTransaccion(transaccion: Transaccion, cultivo_id:Long?)
+        fun deleteProducccionTransaccion(transaccion: Transaccion, cultivo_id:Long?)
         fun execute(cultivo_id:Long?)
         fun getListas()
         fun getCultivo(cultivo_id:Long?)
@@ -119,9 +117,9 @@ interface IMainViewTransacciones {
         fun getListas()
         fun getListTransacciones(cultivo_id:Long?)
         fun getTransaccion(cultivo_id:Long?): List<Transaccion>
-        fun saveTransaccion(transaccion: Transaccion,cultivo_id:Long?)
-        fun updateTransaccion(transaccion: Transaccion,cultivo_id:Long?)
-        fun deleteTransaccion(transaccion: Transaccion,cultivo_id:Long?)
+        fun saveTransaccion(transaccion: Transaccion, cultivo_id:Long?)
+        fun updateTransaccion(transaccion: Transaccion, cultivo_id:Long?)
+        fun deleteTransaccion(transaccion: Transaccion, cultivo_id:Long?)
         fun getCultivo(cultivo_id:Long?)
     }
 }

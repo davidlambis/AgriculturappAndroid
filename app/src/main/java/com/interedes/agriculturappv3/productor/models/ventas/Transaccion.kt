@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.models.ventas
+package com.interedes.agriculturappv3.productor.models.ventas
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource

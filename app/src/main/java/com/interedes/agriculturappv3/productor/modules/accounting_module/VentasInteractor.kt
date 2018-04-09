@@ -1,9 +1,8 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.ventas
+package com.interedes.agriculturappv3.productor.modules.accounting_module
 
-import com.interedes.agriculturappv3.asistencia_tecnica.models.ventas.Transaccion
-import com.raizlabs.android.dbflow.kotlinextensions.delete
+import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
 
-class VentasInteractor:IMainViewTransacciones.Interactor {
+class VentasInteractor: IMainViewTransacciones.Interactor {
 
     var repository: IMainViewTransacciones.Repository? = null
 

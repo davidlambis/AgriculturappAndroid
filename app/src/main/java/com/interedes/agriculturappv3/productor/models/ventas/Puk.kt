@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.asistencia_tecnica.models.ventas
+package com.interedes.agriculturappv3.productor.models.ventas
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
@@ -17,13 +17,13 @@ data class Puk(@PrimaryKey(autoincrement = true)
                       @Column(name = "CategoriaId")
                       var CategoriaId: Long? = 0,
 
-               @SerializedName("Codigo")
-               @Column(name = "Codigo")
-               var Codigo: String? = null,
+                       @SerializedName("Codigo")
+                       @Column(name = "Codigo")
+                       var Codigo: String? = null,
 
-               @SerializedName("Descripcion")
-               @Column(name = "Descripcion")
-               var Descripcion: String? = null
+                       @SerializedName("Descripcion")
+                       @Column(name = "Descripcion")
+                       var Descripcion: String? = null
 
 
 ) {
