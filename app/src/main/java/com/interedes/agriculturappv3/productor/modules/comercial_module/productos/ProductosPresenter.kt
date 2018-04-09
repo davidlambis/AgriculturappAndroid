@@ -113,11 +113,35 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
                 val cultivo = event.objectMutable as Cultivo
                 view?.setCultivo(cultivo)
             }
+            ProductosEvent.SAVE_EVENT -> {
+                val list = event.mutableList as List<Producto>
+                view?.setListProductos(list)
+                onSaveOk()
+            }
+            ProductosEvent.DELETE_EVENT -> {
+                val list = event.mutableList as List<Producto>
+                view?.setListProductos(list)
+                view?.requestResponseOK()
+            }
+
+        //ITEMS
+            ProductosEvent.ITEM_EDIT_EVENT -> {
+                val producto = event.objectMutable as Producto
+                view?.showAlertDialogAddProducto(producto)
+            }
+
+            ProductosEvent.ITEM_DELETE_EVENT -> {
+                val producto = event.objectMutable as Producto
+                view?.confirmDelete(producto)
+            }
         }
     }
 
     override fun validarCampos(): Boolean? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (view?.validarCampos() == true) {
+            return true
+        }
+        return false
     }
 
     override fun validarListasAddProducto(): Boolean? {
@@ -129,7 +153,9 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
 
 
     override fun registerProducto(producto: Producto, cultivo_id: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        view?.disableInputs()
+        view?.showDialogProgress()
+        interactor?.registerProducto(producto, cultivo_id)
     }
 
     override fun updateProducto(producto: Producto, cultivo_id: Long) {
@@ -137,7 +163,7 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
     }
 
     override fun deleteProducto(producto: Producto, cultivo_id: Long?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        interactor?.deleteProducto(producto, cultivo_id)
     }
 
     override fun getListProductos(cultivo_id: Long?) {
@@ -173,6 +199,12 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
         view?.setListCalidad(listCalidadesGlobal)
     }
 
-
+    //Métodos
+    private fun onSaveOk() {
+        view?.enableInputs()
+        view?.hideDialogProgress()
+        view?.limpiarCampos()
+        view?.requestResponseOK()
+    }
     //endregion
 }

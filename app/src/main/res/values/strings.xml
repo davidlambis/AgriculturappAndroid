@@ -191,10 +191,15 @@
     <string name="title_editar_producto">Editar Producto</string>
     <string name="descripcion_producto">Descripción(Opcional)</string>
     <string name="spinner_calidad_producto">Calidad del Producto</string>
-    <string name="edit_text_fecha_limite">Fecha límite de Disponibilidad</string>
-    <string name="edit_text_precio">Precio del Producto</string>
+    <string name="edit_text_fecha_limite">Límite de Disponibilidad</string>
+    <string name="edit_text_precio">Precio</string>
     <string name="spinner_moneda">Moneda</string>
-
+    <string name="title_adapter_cultivo">Cultivo : %s</string>
+    <string name="title_adapter_detalle_producto">Tipo Producto : %s</string>
+    <string name="title_adapter_descripcion_producto">Descripción : %s</string>
+    <string name="title_adapter_fecha_disponibilidad">Fecha Límite : %s</string>
+    <string name="title_adapter_precio_producto">Precio producto : %f</string>
+    <string name="title_alert_delete_producto">¿Está seguro de eliminar este producto?</string>
     <!--Tipo Producto-->
 
 
@@ -261,6 +266,7 @@
     <string name="error_load_roles">No se pueden cargar los roles porque no hay internet</string>
     <string name="_3232_34_mts">3232.34 mts</string>
     <string name="error_take_picture_camera">Error al tomar la fotografía</string>
+    <string name="error_image_selected">Debe seleccionar una imagen</string>
 
 
     <string-array name="array_type_get_location_with_conection">
