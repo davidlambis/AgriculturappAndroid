@@ -1,7 +1,5 @@
 package com.interedes.agriculturappv3.productor.modules.comercial_module.productos
 
-import android.app.Activity
-import android.app.Fragment
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.Cultivo
@@ -12,16 +10,11 @@ import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.producto.Producto_Table
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Produccion.events.RequestEventProduccion
 import com.interedes.agriculturappv3.productor.modules.comercial_module.productos.events.ProductosEvent
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.raizlabs.android.dbflow.kotlinextensions.delete
+import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
-import pl.aprilapps.easyphotopicker.EasyImage
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-import android.content.pm.PackageManager
-import android.support.v4.content.ContextCompat
-
-
 
 
 class ProductosRepository : IProductos.Repository {
@@ -61,8 +54,10 @@ class ProductosRepository : IProductos.Repository {
         return listResponse;
     }
 
-    override fun saveProducto(producto: Producto, cultivo_id: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun registerProducto(producto: Producto, cultivo_id: Long) {
+        producto.save()
+        var listProductos = getProductos(cultivo_id)
+        postEventOk(ProductosEvent.SAVE_EVENT,listProductos,null);
     }
 
     override fun updateProducto(producto: Producto, cultivo_id: Long) {
@@ -70,7 +65,8 @@ class ProductosRepository : IProductos.Repository {
     }
 
     override fun deleteProducto(producto: Producto, cultivo_id: Long?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        producto.delete()
+        postEventOk(ProductosEvent.DELETE_EVENT, getProductos(cultivo_id),producto)
     }
 
     override fun getCultivo(cultivo_id: Long?) {

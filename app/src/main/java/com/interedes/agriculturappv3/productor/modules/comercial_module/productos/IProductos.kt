@@ -23,6 +23,11 @@ interface IProductos {
         fun validarListasAddProducto(): Boolean
         fun showProgress()
         fun hideProgress()
+        fun disableInputs()
+        fun enableInputs()
+        fun limpiarCampos()
+        fun showDialogProgress()
+        fun hideDialogProgress()
         //Fun Productos CRUD
         fun registerProducto()
 
@@ -113,7 +118,7 @@ interface IProductos {
         fun getListas()
         fun getListProducto(cultivo_id: Long?)
         fun getProductos(cultivo_id: Long?): List<Producto>
-        fun saveProducto(producto: Producto, cultivo_id: Long)
+        fun registerProducto(producto: Producto, cultivo_id: Long)
         fun updateProducto(producto: Producto, cultivo_id: Long)
         fun deleteProducto(producto: Producto, cultivo_id: Long?)
         fun getCultivo(cultivo_id: Long?)

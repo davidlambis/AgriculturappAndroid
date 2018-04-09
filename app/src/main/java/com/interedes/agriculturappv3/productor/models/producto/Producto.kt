@@ -5,6 +5,7 @@ import com.interedes.agriculturappv3.config.DataSource
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
+import com.raizlabs.android.dbflow.data.Blob
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,11 +40,10 @@ data class Producto(@PrimaryKey(autoincrement = true)
                     @Column(name = "FechaLimiteDisponibilidad")
                     var FechaLimiteDisponibilidad: Date? = null,
 
-/*
                     @SerializedName("Imagen")
                     @Column(name = "Imagen")
                     var Imagen: Blob? = null,
-
+/*
                     @SerializedName("IsEnabled")
                     @Column(getterName = "getIsEnabled")
                     var IsEnabled: Boolean? = null,*/
@@ -54,15 +54,15 @@ data class Producto(@PrimaryKey(autoincrement = true)
 
                     @SerializedName("Precio")
                     @Column(name = "Precio")
-                    var Precio: Double? = null,
+                    var Precio: Double? = 0.0,
 
                     @SerializedName("PrecioSpecial")
                     @Column(name = "PrecioSpecial")
-                    var PrecioSpecial: Double? = null,
+                    var PrecioSpecial: Double? = 0.0,
 
                     @SerializedName("Stock")
                     @Column(name = "Stock")
-                    var Stock: Double? = null,
+                    var Stock: Double? = 0.0,
 
 
                     @SerializedName("cultivoId")
@@ -82,7 +82,10 @@ data class Producto(@PrimaryKey(autoincrement = true)
                     var NombreCultivo: String? = null,
 
                     @Column(name = "NombreDetalleTipoProducto")
-                    var NombreDetalleTipoProducto: String? = null) {
+                    var NombreDetalleTipoProducto: String? = null,
+
+                    @Column(name = "NombreCalidad")
+                    var NombreCalidad: String? = null) {
 
     override fun toString(): String {
         return Descripcion!!

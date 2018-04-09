@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.productor.modules.comercial_module.product
 
 import android.Manifest
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,7 +11,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.MediaScannerConnection
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -34,12 +34,8 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.R.id.*
 import com.interedes.agriculturappv3.productor.models.Cultivo
 import com.interedes.agriculturappv3.productor.models.Lote
 import com.interedes.agriculturappv3.productor.models.UnidadProductiva
@@ -48,18 +44,17 @@ import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.comercial_module.productos.adapters.ProductosAdapter
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
-import com.interedes.agriculturappv3.services.coords.CoordsServiceJava.latitud
-import com.interedes.agriculturappv3.services.coords.CoordsServiceJava.longitud
+import com.raizlabs.android.dbflow.data.Blob
+import com.raizlabs.android.dbflow.kotlinextensions.delete
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_producto.*
 import kotlinx.android.synthetic.main.dialog_form_producto.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_productos.*
-import pl.aprilapps.easyphotopicker.DefaultCallback
 import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.*
-import java.lang.Exception
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -85,11 +80,20 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     var calidadProductoGlobal: CalidadProducto? = null
     var productoGlobal: Producto? = null
     var _dialogRegisterUpdate: AlertDialog? = null
+    var dateTime = Calendar.getInstance()
+    var fechaLimiteDisponibilidad: Date? = null
+    var dialogo: AlertDialog? = null
 
     //CÁMARA
     val IMAGE_DIRECTORY = "/Productos"
     val REQUEST_GALLERY = 1
     val REQUEST_CAMERA = 2
+
+    var PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+
+    var imageGlobal: ByteArray? = null
+
+    var isFoto: Boolean? = false
 
     companion object {
         var instance: ProductosFragment? = null
@@ -158,23 +162,35 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
             }
             R.id.product_camera -> {
-                /* if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                     ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1000)
-                     return
-                 }*/
+                if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity!!, PERMISSIONS, 1000)
+                    return
+                }
                 takePictureWithCamera(this)
 
 
             }
             R.id.product_gallery -> {
-                /* if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                     ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1000)
-                     return
-                 }*/
+                if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity!!, PERMISSIONS, 1000)
+                    return
+                }
                 choosePhotoFromGallery(this)
             }
             R.id.product_cancel -> {
+                isFoto = false
                 viewDialog?.product_image?.setImageResource(R.drawable.ic_foto_producto_square)
+            }
+            R.id.txtFechaLimiteDisponibilidad -> {
+                updateDate()
+            }
+            R.id.btnSaveProducto -> {
+                if (productoGlobal != null) {
+                    updateProducto(productoGlobal!!)
+                } else {
+                    registerProducto()
+                    presenter?.getCultivo(Cultivo_Id)
+                }
             }
         }
     }
@@ -271,6 +287,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         viewDialog?.product_cancel?.setOnClickListener(this)
         viewDialog?.txtFechaLimiteDisponibilidad?.setOnClickListener(this)
         viewDialog?.ivClosetDialogProduccion?.setOnClickListener(this)
+        viewDialog?.btnSaveProducto?.setOnClickListener(this)
 
         productoGlobal = producto
 
@@ -285,11 +302,16 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         //UPDATE
         else {
             viewDialog?.txtTitle?.setText(getString(R.string.title_editar_producto))
+            val byte = producto.Imagen?.getBlob()
+            val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
+            viewDialog?.product_image?.setImageBitmap(bitmap)
             viewDialog?.txtUnidadProductivaSelected?.setText(producto.NombreUnidadProductiva)
             viewDialog?.txtLoteSelected?.setText(producto.NombreLote)
             viewDialog?.txtCultivoSelected?.setText(producto.NombreCultivo)
             viewDialog?.txtDetalleTipoProductoSelected?.setText(producto.NombreDetalleTipoProducto)
             viewDialog?.txtDescripcionProducto?.setText(producto.Descripcion)
+            viewDialog?.spinnerCalidadProducto?.setText(producto.NombreCalidad)
+            viewDialog?.spinnerMonedaPrecio?.setText(producto.NombreUnidadMedida)
             viewDialog?.txtFechaLimiteDisponibilidad?.setText(producto.getFechaLimiteDisponibilidadFormat())
             viewDialog?.txtPrecioProducto?.setText(producto.Precio.toString())
 
@@ -398,7 +420,42 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     }
 
     override fun validarCampos(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var cancel = false
+        var focusView: View? = null
+
+        /*if (isFoto == false) {
+            focusView =  viewDialog?.spinnerCalidadProducto
+            cancel = true
+            onMessageError(R.color.grey_luiyi, getString(R.string.error_image_selected))
+        } */
+        if (viewDialog?.spinnerCalidadProducto?.text.toString().isEmpty()) {
+            viewDialog?.spinnerCalidadProducto?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.spinnerCalidadProducto
+            cancel = true
+        } else if (viewDialog?.txtFechaLimiteDisponibilidad?.text.toString().isEmpty()) {
+            viewDialog?.txtFechaLimiteDisponibilidad?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.txtFechaLimiteDisponibilidad
+            cancel = true
+        } else if (viewDialog?.txtPrecioProducto?.text.toString().isEmpty()) {
+            viewDialog?.txtPrecioProducto?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.txtPrecioProducto
+            cancel = true
+        } else if (viewDialog?.spinnerMonedaPrecio?.text.toString().isEmpty()) {
+            viewDialog?.spinnerMonedaPrecio?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.spinnerMonedaPrecio
+            cancel = true
+        } else if (isFoto == false) {
+            onMessageError(R.color.grey_luiyi, getString(R.string.error_image_selected))
+            focusView = viewDialog?.spinnerMonedaPrecio
+            cancel = true
+        }
+
+        if (cancel) {
+            focusView?.requestFocus()
+        } else {
+            return true
+        }
+        return false
     }
 
     override fun validarListasAddProducto(): Boolean {
@@ -423,6 +480,51 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             return true;
         }
         return false
+    }
+
+    override fun disableInputs() {
+        setInputs(false)
+    }
+
+    override fun enableInputs() {
+        setInputs(true)
+    }
+
+    private fun setInputs(b: Boolean) {
+        if (viewDialog != null) {
+            viewDialog?.product_image?.isEnabled = b
+            viewDialog?.product_camera?.isEnabled = b
+            viewDialog?.product_gallery?.isEnabled = b
+            viewDialog?.product_cancel?.isEnabled = b
+            viewDialog?.txtDescripcionProducto?.isEnabled = b
+            viewDialog?.spinnerCalidadProducto?.isEnabled = b
+            viewDialog?.txtFechaLimiteDisponibilidad?.isEnabled = b
+            viewDialog?.txtPrecioProducto?.isEnabled = b
+            viewDialog?.spinnerMonedaPrecio?.isEnabled = b
+        }
+    }
+
+    override fun limpiarCampos() {
+        if (viewDialog != null) {
+            viewDialog?.product_image?.setImageResource(R.drawable.ic_foto_producto_square)
+            viewDialog?.txtDescripcionProducto?.setText("")
+            viewDialog?.spinnerCalidadProducto?.setText("")
+            viewDialog?.txtFechaLimiteDisponibilidad?.setText("")
+            viewDialog?.txtPrecioProducto?.setText("")
+            viewDialog?.spinnerMonedaPrecio?.setText("")
+        }
+    }
+
+    override fun showDialogProgress() {
+        if (viewDialog != null) {
+            viewDialog?.progressBarProducto?.visibility = View.VISIBLE
+        }
+    }
+
+    override fun hideDialogProgress() {
+        if (viewDialog != null) {
+            viewDialog?.progressBarProducto?.visibility = View.GONE
+        }
     }
 
     override fun showProgress() {
@@ -497,7 +599,9 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 if (data != null) {
                     val contentURI = data.data
                     try {
+                        isFoto = true
                         val bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, contentURI)
+                        imageGlobal = convertBitmapToByte(bitmap)
                         //saveImage(bitmap)
                         //Toast.makeText(context, "Image Saved!", Toast.LENGTH_SHORT).show()
                         viewDialog?.product_image?.setImageBitmap(bitmap)
@@ -511,7 +615,9 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
             } else if (requestCode == REQUEST_CAMERA) {
                 if (data != null) {
+                    isFoto = true
                     val thumbnail = data.extras?.get("data") as Bitmap
+                    imageGlobal = convertBitmapToByte(thumbnail)
                     viewDialog?.product_image?.setImageBitmap(thumbnail)
                     // saveImage(thumbnail)
                     // Toast.makeText(context, thumbnail.toString(), Toast.LENGTH_SHORT).show()
@@ -621,7 +727,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                              .setQuality(100)
                              .compressToBitmap(imageFile)*/
 
-                     //compressedImage = getEncoded64ImageStringFromBitmap(compressedImage)
+                     //compressedImage = convertBitmapToByte(compressedImage)
                      product_image.setImageURI(uri)
 
                 } catch (e: IOException) {
@@ -647,36 +753,68 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
     }*/
 
-    fun getEncoded64ImageStringFromBitmap(bitmapCompressed: Bitmap): Bitmap {
+    fun convertBitmapToByte(bitmapCompressed: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()
-        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 80, stream)
-        val byteFormat = stream.toByteArray()
-        return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
+        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+        return stream.toByteArray()
+        //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }
+
 
     //endregion
 
     override fun registerProducto() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (presenter?.validarCampos() == true) {
+            val producto = Producto()
+            producto.CalidadId = calidadProductoGlobal?.Id
+            producto.NombreCalidad = calidadProductoGlobal?.Nombre
+            producto.Descripcion = viewDialog?.txtDescripcionProducto?.text.toString()
+            producto.FechaLimiteDisponibilidad = fechaLimiteDisponibilidad
+            producto.Imagen = Blob(imageGlobal)
+            producto.Precio = viewDialog?.txtPrecioProducto?.text.toString().toDoubleOrNull()
+            producto.CultivoId = Cultivo_Id
+            producto.NombreUnidadProductiva = unidadProductivaGlobal?.Nombre
+            producto.NombreLote = loteGlobal?.Nombre
+            producto.NombreCultivo = cultivoGlobal?.Nombre
+            producto.NombreDetalleTipoProducto = cultivoGlobal?.Nombre_Detalle_Tipo_Producto
+            producto.NombreUnidadMedida = viewDialog?.spinnerMonedaPrecio?.text.toString()
+            presenter?.registerProducto(producto, Cultivo_Id!!)
+        }
     }
 
     override fun updateProducto(producto: Producto) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (presenter?.validarCampos() == true) {
+            val productoUpdate = Producto()
+            productoUpdate.Id = producto.Id
+            productoUpdate.Descripcion = viewDialog?.txtDescripcionProducto?.text.toString()
+            productoUpdate.FechaLimiteDisponibilidad = fechaLimiteDisponibilidad
+            productoUpdate.Imagen = Blob(imageGlobal)
+            productoUpdate.Precio = viewDialog?.txtPrecioProducto?.text.toString().toDoubleOrNull()
+            productoUpdate.CultivoId = Cultivo_Id
+            productoUpdate.NombreUnidadProductiva = unidadProductivaGlobal?.Nombre
+            productoUpdate.NombreLote = loteGlobal?.Nombre
+            productoUpdate.NombreCultivo = cultivoGlobal?.Nombre
+            productoUpdate.NombreDetalleTipoProducto = cultivoGlobal?.Nombre_Detalle_Tipo_Producto
+            presenter?.registerProducto(productoUpdate, Cultivo_Id!!)
+        }
     }
 
 
     override fun requestResponseOK() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (_dialogRegisterUpdate != null) {
+            _dialogRegisterUpdate?.dismiss()
+        }
+        Snackbar.make(container_fragment, getString(R.string.request_ok), Snackbar.LENGTH_SHORT).show()
     }
 
     override fun requestResponseError(error: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onMessageOk(colorPrimary: Int, msg: String?) {
         val color = Color.WHITE
         val snackbar = Snackbar
-                .make(container_fragment, msg!!, Snackbar.LENGTH_LONG)
+                .make(viewDialog!!.containerDialogProducto, msg!!, Snackbar.LENGTH_LONG)
         val sbView = snackbar.view
         sbView.setBackgroundColor(ContextCompat.getColor(activity!!.applicationContext, colorPrimary))
         val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
@@ -703,7 +841,19 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     }
 
     override fun confirmDelete(producto: Producto): AlertDialog? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val builder = AlertDialog.Builder(activity!!)
+        builder.setTitle(getString(R.string.confirmation))
+        builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+
+        })
+        builder.setMessage(getString(R.string.title_alert_delete_producto))
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            presenter?.deleteProducto(producto, Cultivo_Id)
+        })
+        builder.setIcon(R.drawable.ic_plagas)
+        dialogo = builder.show()
+        return dialogo
+
     }
 
 
@@ -715,6 +865,27 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         }
     }
 
+    //endregion
+
+    //region Métodos
+    //Fecha
+    private fun updateDate() {
+        DatePickerDialog(context, d, dateTime.get(Calendar.YEAR), dateTime.get(Calendar.MONTH), dateTime.get(Calendar.DAY_OF_MONTH)).show()
+    }
+
+    internal var d: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+        dateTime.set(Calendar.YEAR, year)
+        dateTime.set(Calendar.MONTH, monthOfYear)
+        dateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        mostrarResultadosFechaLimiteDisponibilidad()
+    }
+
+    private fun mostrarResultadosFechaLimiteDisponibilidad() {
+        val format1 = SimpleDateFormat("dd/MM/yyyy")
+        val formatted = format1.format(dateTime.time)
+        fechaLimiteDisponibilidad = dateTime.time
+        viewDialog?.txtFechaLimiteDisponibilidad?.setText(formatted)
+    }
     //endregion
 
     override fun onRefresh() {

@@ -63,9 +63,9 @@ class PlagasAdapter(val lista: ArrayList<TipoEnfermedad>) : RecyclerView.Adapter
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: TipoEnfermedad, pos: Int) = with(itemView) {
-            val txt_nombre_enfermedad: TextView = itemView.findViewById(R.id.txtNombreEnfermedad)
-            val txt_nombre_cientifico: TextView = itemView.findViewById(R.id.txtNombreCientifico)
-            val image_enfermedad: ImageView = itemView.findViewById(R.id.imageViewEnfermedad)
+            val txt_nombre_enfermedad: TextView = itemView.findViewById(R.id.txtNombreCultivo)
+            val txt_nombre_cientifico: TextView = itemView.findViewById(R.id.txtNombreDetalleProducto)
+            val image_enfermedad: ImageView = itemView.findViewById(R.id.imageViewProducto)
             val txt_descripcion_enfermedad: TextView = itemView.findViewById(R.id.txtDescripcionEnfermedad)
             val btn_ver_insumos: Button = itemView.findViewById(R.id.btnVerInsumos)
             val expandable : Expandable = itemView.findViewById(R.id.expandable)
