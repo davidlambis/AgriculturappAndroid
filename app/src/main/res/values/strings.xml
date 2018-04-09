@@ -199,9 +199,17 @@
 
 
     <!--Ventas-->
-    <string name="search_cultivo">Buscar Cultivo</string>
+
     <string name="title_add_venta">Agregar Venta</string>
     <string name="title_edit_venta">Editar Venta</string>
+
+    <!--Gasto-->
+    <string name="title_add_gasto">Agregar Gasto</string>
+    <string name="title_edit_gasto">Editar Gasto</string>
+
+
+    <!--Transaccion-->
+    <string name="title_add_transaccion">Agregar Transaccion</string>
     <string name="tittle_select_cultivo_transaccion">Seleccione el cultivo para agregar una transaccion</string>
     <string name="tittle_puk">Seleccione Tipo Operaccion</string>
 
@@ -228,7 +236,7 @@
     <string name="confirmation">Confirmacion</string>
     <string name="title_unidad">Unidad</string>
     <string name="cantidad">Cantidad</string>
-    <string name="venta">Venta $</string>
+    <string name="venta">Precio $</string>
     <string name="subtotal">Subtotal $</string>
 
     <string name="total">Total $</string>
@@ -244,12 +252,17 @@
 
     <string name="range_dates">De %1$s A %2$s</string>
 
-    <string name="price">$ %1$,.0f</string>
-    <string name="price_total">%1$, .0f</string>
 
+    <string name="price_3decimas">$ % ,.3f</string>
+    <string name="price_total_3decimas">% ,.3f</string>
+
+    <string name="price">$ %1$,.0f</string>
+    <string name="price_empty_signe">%.0f</string>
+    <string name="search_cultivo">Buscar Cultivo</string>
 
     <!--Cliente-->
-    <string name="name_cliente">Nombre Cliente</string>
+    <string name="name_usuario">Nombre Usuario</string>
+    <string name="identificacion_usuario">Identificacion Usuario</string>
 
     <!-- INTERNET CONNECTION -->
     <string name="internet_connected">Conectado a Internet</string>

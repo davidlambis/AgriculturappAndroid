@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.modules.accounting_module
+package com.interedes.agriculturappv3.productor.modules.accounting_module.ventas
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.productor.models.ventas.Puk
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
-import com.interedes.agriculturappv3.productor.modules.accounting_module.events.RequestEventVenta
+import com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.events.RequestEventVenta
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.Cultivo
@@ -203,8 +203,8 @@ class VentasPresenter(var mainView: IMainViewTransacciones.MainView?) : IMainVie
         }
     }
 
-    override fun getListTransaccion(cultivo_id:Long?) {
-        interactor?.execute(cultivo_id)
+    override fun getListTransaccion(cultivo_id:Long?,typeTransaccion:Long?) {
+        interactor?.execute(cultivo_id,typeTransaccion)
     }
 
     override fun getListas() {

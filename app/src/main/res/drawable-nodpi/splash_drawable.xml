@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/fondo_splash" />
-
+    <item android:drawable="@drawable/splash_complete" />
+<!--
     <item android:top="@dimen/margin_24">
         <bitmap
             android:gravity="top"
             android:src="@drawable/logo_agr_app_big" />
-    </item>
 
+    </item>
+-->
 </layer-list>

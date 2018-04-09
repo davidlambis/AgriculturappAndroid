@@ -22,12 +22,17 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter.ViewHolder>() {
 
     companion object {
-        var instance:  LoteAdapter? = null
+        var eventBus: EventBus? = null
+        fun postEventc(type: Int, lote:Lote?) {
+            var loteMitable= lote as Object
+            val event = RequestEventLote(type,null, loteMitable,null)
+            event.eventType = type
+            eventBus?.post(event)
+        }
     }
-    var eventBus: EventBus? = null
+
     init {
         eventBus = GreenRobotEventBus()
-        instance = this
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -90,25 +95,20 @@ class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter
 
             //El listener en base a la posición
             itemView.setOnClickListener {
-                LoteAdapter.instance?.postEventc(RequestEventLote.ITEM_EVENT,data)
+                postEventc(RequestEventLote.ITEM_EVENT,data)
             }
 
             btnDelete.setOnClickListener {
-                LoteAdapter.instance?.postEventc(RequestEventLote.ITEM_DELETE_EVENT,data)
+               postEventc(RequestEventLote.ITEM_DELETE_EVENT,data)
             }
 
             btnEdit.setOnClickListener {
-                LoteAdapter.instance?.postEventc(RequestEventLote.ITEM_EDIT_EVENT,data)
+               postEventc(RequestEventLote.ITEM_EDIT_EVENT,data)
             }
         }
     }
 
-    fun postEventc(type: Int, lote:Lote?) {
-        var loteMitable= lote as Object
-        val event = RequestEventLote(type,null, loteMitable,null)
-        event.eventType = type
-        eventBus?.post(event)
-    }
+
 }
 
 

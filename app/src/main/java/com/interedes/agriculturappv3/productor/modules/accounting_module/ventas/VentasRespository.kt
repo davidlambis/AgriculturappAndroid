@@ -1,9 +1,9 @@
-package com.interedes.agriculturappv3.productor.modules.accounting_module
+package com.interedes.agriculturappv3.productor.modules.accounting_module.ventas
 
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.productor.models.ventas.Puk
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
-import com.interedes.agriculturappv3.productor.modules.accounting_module.events.RequestEventVenta
+import com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.events.RequestEventVenta
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.Cultivo
@@ -44,47 +44,42 @@ class VentasRespository: IMainViewTransacciones.Repository {
         postEventListPuk(RequestEventVenta.LIST_EVENT_PUK,listPuk,null);
     }
 
-    override fun getListTransacciones(cultivo_id: Long?) {
-        var listaProduccion = getTransaccion(cultivo_id)
+    override fun getListTransacciones(cultivo_id: Long?,typeTransaccion:Long?) {
+        var listaProduccion = getTransaccion(cultivo_id,typeTransaccion)
         postEventOk(RequestEventVenta.READ_EVENT,listaProduccion,null);
     }
 
-    override fun getTransaccion(cultivo_id: Long?): List<Transaccion> {
+    override fun getTransaccion(cultivo_id: Long?,typeTransaccion:Long?): List<Transaccion> {
         var listResponse:List<Transaccion>?=null
         if(cultivo_id==null){
-            listResponse = SQLite.select().from(Transaccion::class.java!!).queryList()
+            listResponse = SQLite.select().from(Transaccion::class.java!!).where(Transaccion_Table.CategoriaPuk_Id.eq(typeTransaccion)).queryList()
         }else{
-            listResponse = SQLite.select().from(Transaccion::class.java!!).where(Transaccion_Table.Cultivo_Id.eq(cultivo_id)).queryList()
+            listResponse = SQLite.select().from(Transaccion::class.java!!).where(Transaccion_Table.Cultivo_Id.eq(cultivo_id)).and(Transaccion_Table.CategoriaPuk_Id.eq(typeTransaccion)).queryList()
         }
         return listResponse;
     }
 
     override fun saveTransaccion(transaccion: Transaccion, cultivo_id: Long?) {
         transaccion.save()
-        var listProduccion = getTransaccion(cultivo_id)
+        var listProduccion = getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id)
         postEventOk(RequestEventVenta.SAVE_EVENT,listProduccion,null);
     }
 
     override fun updateTransaccion(transaccion: Transaccion, cultivo_id: Long?) {
         transaccion.update()
-        postEventOk(RequestEventVenta.UPDATE_EVENT, getTransaccion(cultivo_id),transaccion);
+        postEventOk(RequestEventVenta.UPDATE_EVENT, getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id),transaccion);
     }
 
     override fun deleteTransaccion(transaccion: Transaccion, cultivo_id: Long?) {
         transaccion.delete()
         //SQLite.delete<Lote>(Lote::class.java).where(Lote_Table.Id.eq(lote.Id)).async().execute()
-        postEventOk(RequestEventVenta.DELETE_EVENT, getTransaccion(cultivo_id),transaccion);
+        postEventOk(RequestEventVenta.DELETE_EVENT, getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id),transaccion);
     }
 
     override fun getCultivo(cultivo_id: Long?) {
         var cultivo = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
         postEventOkCultivo(RequestEventVenta.GET_EVENT_CULTIVO,cultivo)
     }
-
-
-
-
-
 
     //region Events
     private fun postEventListUnidadMedida(type: Int, listUnidadMedida:List<Unidad_Medida>?, messageError:String?) {

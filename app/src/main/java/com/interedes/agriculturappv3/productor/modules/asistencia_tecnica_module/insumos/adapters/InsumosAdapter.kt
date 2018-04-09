@@ -18,14 +18,19 @@ import com.robertlevonyan.views.expandable.ExpandingListener
 class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<InsumosAdapter.ViewHolder>() {
 
     companion object {
-        var instance: InsumosAdapter? = null
+        var eventBus: EventBus? = null
+        fun postEvent(type: Int, insumo: Insumo?) {
+            val insumoMutable = insumo as Object
+            val event = InsumosEvent(type, null, insumoMutable, null)
+            event.eventType = type
+            eventBus?.post(event)
+        }
     }
 
-    var eventBus: EventBus? = null
+
 
     init {
         eventBus = GreenRobotEventBus()
-        InsumosAdapter.instance = this
     }
 
     override fun onBindViewHolder(holder: InsumosAdapter.ViewHolder, position: Int) {
@@ -77,15 +82,10 @@ class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<Insumo
             })
 
             btn_ver_tratamiento.setOnClickListener {
-                InsumosAdapter.instance?.postEvent(InsumosEvent.ITEM_EVENT, data)
+               postEvent(InsumosEvent.ITEM_EVENT, data)
             }
         }
     }
 
-    fun postEvent(type: Int, insumo: Insumo?) {
-        val insumoMutable = insumo as Object
-        val event = InsumosEvent(type, null, insumoMutable, null)
-        event.eventType = type
-        eventBus?.post(event)
-    }
+
 }

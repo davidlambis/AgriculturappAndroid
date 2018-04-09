@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.modules.accounting_module.adapter
+package com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -9,20 +9,25 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
-import com.interedes.agriculturappv3.productor.modules.accounting_module.events.RequestEventVenta
+import com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.events.RequestEventVenta
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import kotlinx.android.synthetic.main.content_list_general.view.*
 
-class VentaAdapter(var lista: ArrayList<Transaccion>) : RecyclerView.Adapter<VentaAdapter.ViewHolder>() {
+class VentaAdapter(var lista: ArrayList<Transaccion>)    : RecyclerView.Adapter<VentaAdapter.ViewHolder>() {
 
     companion object {
-        var instance:  VentaAdapter? = null
+        var eventBus: EventBus? = null
+        fun postEventc(type: Int, transaccion: Transaccion?) {
+            var transaccionnMutable= transaccion as Object
+            val event = RequestEventVenta(type, null, transaccionnMutable, null)
+            event.eventType = type
+            eventBus?.post(event)
+        }
     }
-    var eventBus: EventBus? = null
+
     init {
         eventBus = GreenRobotEventBus()
-        instance = this
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -90,7 +95,7 @@ class VentaAdapter(var lista: ArrayList<Transaccion>) : RecyclerView.Adapter<Ven
             txtTitle.text=data.Descripcion_Puk
             txtDescription.text=data.Concepto
             txtFechas.text=data.getFechaUpdateAt()
-            txtCantidad.text= String.format(context?.getString(R.string.price)!!,data.Valor)
+            txtCantidad.text= String.format(context?.getString(R.string.price)!!,data.Valor_Total)
             txtAdicional.text= data.Nombre_Cultivo
             txtAdicional.text= data.Nombre_Tercero
 
@@ -100,25 +105,20 @@ class VentaAdapter(var lista: ArrayList<Transaccion>) : RecyclerView.Adapter<Ven
 
             //El listener en base a la posición
             itemView.setOnClickListener {
-                instance?.postEventc(RequestEventVenta.ITEM_EVENT,data)
+               postEventc(RequestEventVenta.ITEM_EVENT,data)
             }
 
             btnEdit.setOnClickListener {
-                instance?.postEventc(RequestEventVenta.ITEM_EDIT_EVENT,data)
+               postEventc(RequestEventVenta.ITEM_EDIT_EVENT,data)
             }
 
             btnDelete.setOnClickListener {
-                instance?.postEventc(RequestEventVenta.ITEM_DELETE_EVENT,data)
+               postEventc(RequestEventVenta.ITEM_DELETE_EVENT,data)
             }
         }
     }
 
-    fun postEventc(type: Int, transaccion: Transaccion?) {
-        var transaccionnMutable= transaccion as Object
-        val event = RequestEventVenta(type, null, transaccionnMutable, null)
-        event.eventType = type
-        eventBus?.post(event)
-    }
+
 }
 
 

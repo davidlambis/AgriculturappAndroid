@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.modules.accounting_module.events
+package com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.events
 
 
 

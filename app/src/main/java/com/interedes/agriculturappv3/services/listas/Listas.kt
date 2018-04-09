@@ -9,6 +9,8 @@ import com.interedes.agriculturappv3.productor.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
+import com.interedes.agriculturappv3.productor.models.ventas.Estado
+import com.interedes.agriculturappv3.productor.models.ventas.Estado_Transaccion
 import com.interedes.agriculturappv3.productor.models.ventas.Puk
 
 class Listas {
@@ -64,11 +66,9 @@ class Listas {
 
         fun listaModuloContableProductor(): ArrayList<ItemLista> {
             val lista_comercial_productor = ArrayList<ItemLista>()
-            lista_comercial_productor.add(ItemLista("Ventas", Imagen = R.drawable.ic_contabilidad_color_500, Identificador = "ventas"))
-            lista_comercial_productor.add(ItemLista("Compras", Imagen = R.drawable.ic_contabilidad_color_500, Identificador = "compras"))
-            lista_comercial_productor.add(ItemLista("Ingresos-Gastos", Imagen = R.drawable.ic_contabilidad_color_500, Identificador = "ingresos_gastos"))
-            lista_comercial_productor.add(ItemLista("Provedores", Imagen = R.drawable.ic_clientes, Identificador = "proveedores"))
-            lista_comercial_productor.add(ItemLista("Reportes", Imagen = R.drawable.ic_contabilidad_color_500, Identificador = "reportes"))
+            lista_comercial_productor.add(ItemLista("Ventas", Imagen = R.drawable.ic_ventas_contables, Identificador = "ventas"))
+            lista_comercial_productor.add(ItemLista("Gastos", Imagen = R.drawable.ic_gasto_contable2, Identificador = "gastos"))
+            lista_comercial_productor.add(ItemLista("Reportes", Imagen = R.drawable.ic_reporte_contable, Identificador = "reportes"))
             return lista_comercial_productor
         }
 
@@ -246,20 +246,32 @@ class Listas {
 
         fun listCategoriaPuk(): ArrayList<CategoriaPuk> {
             val categoriaPuk = ArrayList<CategoriaPuk>()
-            categoriaPuk.add(CategoriaPuk(Id = 1, Nombre = "Ingreso",Sigla = "I"))
-            categoriaPuk.add(CategoriaPuk(Id = 2,   Nombre = "Gasto",Sigla ="G"))
+            categoriaPuk.add(CategoriaPuk(Id = 1, Nombre = "Gasto",Sigla = "I"))
+            categoriaPuk.add(CategoriaPuk(Id = 2,   Nombre = "Ingreso",Sigla ="G"))
             return categoriaPuk
         }
 
         fun listPuk(): ArrayList<Puk> {
             val categoriaPuk = ArrayList<Puk>()
-            categoriaPuk.add(Puk(Id = 1,CategoriaId =  1,Codigo = "",Descripcion = ""))
-            categoriaPuk.add(Puk(Id = 2,CategoriaId =  1,Codigo = "",Descripcion = ""))
-            categoriaPuk.add(Puk(Id = 3,CategoriaId =  1,Codigo = "",Descripcion = ""))
-            categoriaPuk.add(Puk(Id = 4,CategoriaId =  1,Codigo = "",Descripcion = ""))
-            categoriaPuk.add(Puk(Id = 5,CategoriaId =  1,Codigo = "",Descripcion = ""))
-            categoriaPuk.add(Puk(Id = 6,CategoriaId =  1,Codigo = "",Descripcion = ""))
+            categoriaPuk.add(Puk(Id = 1,CategoriaId =  1,Codigo = "",Descripcion = "Analisis de suelo"))
+            categoriaPuk.add(Puk(Id = 2,CategoriaId =  1,Codigo = "",Descripcion = "Material Vegetal"))
+            categoriaPuk.add(Puk(Id = 3,CategoriaId =  1,Codigo = "",Descripcion = "Materiales"))
+            categoriaPuk.add(Puk(Id = 4,CategoriaId =  1,Codigo = "",Descripcion = "Herramientas"))
+            categoriaPuk.add(Puk(Id = 5,CategoriaId =  1,Codigo = "",Descripcion = "Mano de obra preparaciond de terreno"))
+            categoriaPuk.add(Puk(Id = 6,CategoriaId =  1,Codigo = "",Descripcion = "Mano de obra cosecha y poscosecha"))
+            categoriaPuk.add(Puk(Id = 7,CategoriaId =  1,Codigo = "",Descripcion = "Agroinsumos"))
+            categoriaPuk.add(Puk(Id = 8,CategoriaId =  1,Codigo = "",Descripcion = "Transporte"))
+
+            categoriaPuk.add(Puk(Id = 9,CategoriaId =  2,Codigo = "",Descripcion = "Cosecha"))
+            categoriaPuk.add(Puk(Id = 10,CategoriaId =  2,Codigo = "",Descripcion = "Cultivo de Cafe"))
             return categoriaPuk
+        }
+
+        fun listEstadoTransaccion(): ArrayList<Estado_Transaccion> {
+            val estadoTransaccion = ArrayList<Estado_Transaccion>()
+            estadoTransaccion.add(Estado_Transaccion(Id = 1, Nombre = "Pagado"))
+            estadoTransaccion.add(Estado_Transaccion(Id = 2,   Nombre = "Por Pagar"))
+            return estadoTransaccion
         }
 
 

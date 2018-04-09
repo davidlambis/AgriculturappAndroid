@@ -17,14 +17,21 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<CultivoAdapter.ViewHolder>() {
 
     companion object {
-        var instance: CultivoAdapter? = null
+        var eventBus: EventBus? = null
+
+        fun postEvent(type: Int, cultivo: Cultivo?) {
+            val cultivoMutable = cultivo as Object
+            val event = CultivoEvent(type, null, cultivoMutable, null)
+            event.eventType = type
+            eventBus?.post(event)
+        }
     }
 
-    var eventBus: EventBus? = null
+
 
     init {
         eventBus = GreenRobotEventBus()
-        CultivoAdapter.instance = this
+
     }
 
     override fun onBindViewHolder(holder: CultivoAdapter.ViewHolder, position: Int) {
@@ -90,24 +97,18 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
             txt_fechas_cultivo.setText(String.format(context.getString(R.string.range_dates)!!, data.FechaIncio, data.FechaFin))
 
             itemView.setOnClickListener {
-                CultivoAdapter.instance?.postEvent(CultivoEvent.ITEM_EVENT, data)
+                postEvent(CultivoEvent.ITEM_EVENT, data)
             }
 
             btnEdit.setOnClickListener {
-                CultivoAdapter.instance?.postEvent(CultivoEvent.ITEM_EDIT_EVENT, data)
+             postEvent(CultivoEvent.ITEM_EDIT_EVENT, data)
             }
 
             btnDelete.setOnClickListener {
-                CultivoAdapter.instance?.postEvent(CultivoEvent.ITEM_DELETE_EVENT, data)
+                postEvent(CultivoEvent.ITEM_DELETE_EVENT, data)
             }
         }
     }
 
-    fun postEvent(type: Int, cultivo: Cultivo?) {
-        val cultivoMutable = cultivo as Object
-        val event = CultivoEvent(type, null, cultivoMutable, null)
-        event.eventType = type
-        eventBus?.post(event)
-    }
 
 }

@@ -28,7 +28,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="11dp"
             android:gravity="center"
-            android:text="@string/title_add_venta"
+            android:text="@string/title_add_transaccion"
             android:textColor="@color/green"
             android:textSize="@dimen/text_size_18"
             android:textStyle="bold" />
@@ -127,7 +127,7 @@
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                     <EditText
-                        android:id="@+id/txtPrecioVenta"
+                        android:id="@+id/txtPrecioTransaccion"
                         style="@style/editText"
                         android:background="@color/green_100"
                         android:hint="@string/venta"
@@ -157,7 +157,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:paddingStart="@dimen/margin_5"
-                        android:text="12000"
+                        android:text=""
                         android:textSize="@dimen/text_size_16"
                         android:textStyle="bold" />
                 </RelativeLayout>
@@ -203,13 +203,15 @@
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                 <EditText
-                    android:id="@+id/txtTotalVenta"
+                    android:id="@+id/txtTotalTransaccion"
                     style="@style/editText"
                     android:background="@color/green_100"
                     android:hint="@string/total"
                     android:inputType="numberDecimal"
                     android:textColor="@color/black"
                     android:textSize="@dimen/margin_24"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:textStyle="bold" />
 
 
@@ -227,8 +229,26 @@
                     android:id="@+id/txtNombreCliente"
                     style="@style/editText"
                     android:background="@color/green_100"
-                    android:hint="@string/name_cliente"
+                    android:hint="@string/name_usuario"
                     android:inputType="text"
+                    android:textSize="@dimen/text_size_16"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_70"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                <EditText
+                    android:id="@+id/txtIdentificacionCliente"
+                    style="@style/editText"
+                    android:background="@color/green_100"
+                    android:hint="@string/identificacion_usuario"
+                    android:inputType="number"
                     android:textSize="@dimen/text_size_16"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
@@ -254,6 +274,8 @@
                     android:textStyle="bold" />
 
             </android.support.design.widget.TextInputLayout>
+
+
 
             <LinearLayout
                 android:layout_marginBottom="@dimen/margin_24"

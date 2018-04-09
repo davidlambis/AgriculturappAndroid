@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.modules.accounting_module
+package com.interedes.agriculturappv3.productor.modules.accounting_module.ventas
 
 
 import android.content.DialogInterface
@@ -28,18 +28,20 @@ import com.afollestad.materialdialogs.Theme
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.ventas.Puk
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
-import com.interedes.agriculturappv3.productor.modules.accounting_module.adapter.VentaAdapter
+import com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.adapter.VentaAdapter
 import com.interedes.agriculturappv3.productor.models.Cultivo
 import com.interedes.agriculturappv3.productor.models.Lote
 import com.interedes.agriculturappv3.productor.models.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.services.resources.CategoriaPukResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.diaog_form_ventas.view.*
 import kotlinx.android.synthetic.main.fragment_ventas.*
+import java.text.NumberFormat
 import java.util.*
 
 class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.OnRefreshListener, IMainViewTransacciones.MainView {
@@ -60,9 +62,6 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     //var produccionGlobal:Produccion?=null
     var produccionList:ArrayList<Transaccion>?=ArrayList<Transaccion>()
     var Cultivo_Id: Long? = null
-    var unidadMedidaGlobal: Unidad_Medida?=null
-
-
     var changeCultivo:Boolean?=false
 
     //Listas
@@ -71,10 +70,12 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     var unidadProductivaGlobal: UnidadProductiva?=null
     var loteGlobal: Lote?=null
     var transaccionGlobal: Transaccion?=null
+    var valorTotalGlobal:Double?=null
 
 
     companion object {
         var instance:  Ventas_Fragment? = null
+        var typeTransaccion:Long?=0
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -93,7 +94,12 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
-        (activity as MenuMainActivity).toolbar.title=getString(R.string.tittle_producccion)
+        if(CategoriaPukResources.INGRESO== typeTransaccion){
+            (activity as MenuMainActivity).toolbar.title=getString(R.string.title_add_venta)
+        }else if(CategoriaPukResources.GASTO== typeTransaccion){
+            (activity as MenuMainActivity).toolbar.title=getString(R.string.title_add_gasto)
+        }
+
         fabAddTransaccion.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         ivBackButton.setOnClickListener(this)
@@ -102,8 +108,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     }
 
     fun setupInjection(){
-        presenter?.getListTransaccion(Cultivo_Id)
-
+        presenter?.getListTransaccion(Cultivo_Id,typeTransaccion)
         /*
         spinnerUnidadProductiva?.setOnClickListener {view->
             spinnerUnidadProductiva?.error=null
@@ -134,13 +139,13 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             viewDialog?.txtCantidadTransaccion?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.txtCantidadTransaccion
             cancel = true
-        } else if (viewDialog?.txtPrecioVenta?.text.toString().isEmpty()) {
-            viewDialog?.txtPrecioVenta?.setError(getString(R.string.error_field_required))
-            focusView = viewDialog?.txtPrecioVenta
+        } else if (viewDialog?.txtPrecioTransaccion?.text.toString().isEmpty()) {
+            viewDialog?.txtPrecioTransaccion?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.txtPrecioTransaccion
             cancel = true
-        }  else if (viewDialog?.txtTotalVenta?.text.toString().isEmpty()) {
-            viewDialog?.txtTotalVenta?.setError(getString(R.string.error_field_required))
-            focusView = viewDialog?.txtTotalVenta
+        }  else if (viewDialog?.txtTotalTransaccion?.text.toString().isEmpty()) {
+            viewDialog?.txtTotalTransaccion?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.txtTotalTransaccion
             cancel = true
         }
         else if (viewDialog?.txtNombreCliente?.text.toString().isEmpty()) {
@@ -200,8 +205,8 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     override fun limpiarCampos() {
         if(viewDialog!=null){
             viewDialog?.txtCantidadTransaccion?.setText("0");
-            viewDialog?.txtPrecioVenta?.setText("");
-            viewDialog?.txtTotalVenta?.setText("");
+            viewDialog?.txtPrecioTransaccion?.setText("");
+            viewDialog?.txtTotalTransaccion?.setText("");
             viewDialog?.txtNombreCliente?.setText("");
             viewDialog?.txtConceptoVenta?.setText("");
 
@@ -218,8 +223,8 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     private fun setInputs(b: Boolean) {
         if( viewDialog!=null){
             viewDialog?.txtCantidadTransaccion?.isEnabled = b
-            viewDialog?.txtPrecioVenta?.isEnabled = b
-            viewDialog?.txtTotalVenta?.isEnabled = b
+            viewDialog?.txtPrecioTransaccion?.isEnabled = b
+            viewDialog?.txtTotalTransaccion?.isEnabled = b
             viewDialog?.txtConceptoVenta?.isEnabled = b
         }
     }
@@ -249,7 +254,6 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     override fun registerTransaccion() {
         if (presenter?.validarCampos() == true) {
             val transaccion = Transaccion()
-            transaccion.Nombre_Cultivo=cultivoGlobal?.Nombre
             transaccion.Concepto=viewDialog?.txtConceptoVenta?.text.toString()
             transaccion.EstadoId=1
             transaccion.Fecha_Transaccion= Calendar.getInstance().getTime()
@@ -257,21 +261,22 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             transaccion.PucId=pukGlobal?.Id
             transaccion.Descripcion_Puk=pukGlobal?.Descripcion
             transaccion.Nombre_Tercero=viewDialog?.txtNombreCliente?.text.toString()
-            transaccion.Valor=viewDialog?.txtTotalVenta?.text.toString().toDoubleOrNull()
+            transaccion.Identificacion_Tercero=viewDialog?.txtIdentificacionCliente?.text.toString()
+            transaccion.Valor_Unitario=viewDialog?.txtPrecioTransaccion?.text.toString().toDoubleOrNull()
+            transaccion.Valor_Total=valorTotalGlobal
             transaccion.Cantidad=viewDialog?.txtCantidadTransaccion?.text.toString().toLong()
             transaccion.Cultivo_Id=cultivoGlobal?.Id
-            transaccion.Nombre_Cultivo=cultivoGlobal?.Nombre_Detalle_Tipo_Producto
-
-
+            transaccion.Nombre_Cultivo=cultivoGlobal?.Nombre
+            transaccion.Nombre_Detalle_Producto_Cultivo=cultivoGlobal?.Nombre_Detalle_Tipo_Producto
+            transaccion.CategoriaPuk_Id= typeTransaccion
             presenter?.registerTransaccion(transaccion,Cultivo_Id!! )
-
-
         }
     }
 
-    override fun updateTransaccion(transaccion: Transaccion) {
+    override fun updateTransaccion(transaccionEdit: Transaccion) {
         if (presenter?.validarCampos() == true) {
             val transaccion = Transaccion()
+            transaccion.Id=transaccionEdit.Id
             transaccion.Nombre_Cultivo=cultivoGlobal?.Nombre
             transaccion.Concepto=viewDialog?.txtConceptoVenta?.text.toString()
             transaccion.EstadoId=1
@@ -280,10 +285,13 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             transaccion.PucId=pukGlobal?.Id
             transaccion.Descripcion_Puk=pukGlobal?.Descripcion
             transaccion.Nombre_Tercero=viewDialog?.txtNombreCliente?.text.toString()
-            transaccion.Valor=viewDialog?.txtTotalVenta?.text.toString().toDoubleOrNull()
+            transaccion.Identificacion_Tercero=viewDialog?.txtIdentificacionCliente?.text.toString()
+            transaccion.Valor_Unitario=viewDialog?.txtPrecioTransaccion?.text.toString().toDoubleOrNull()
+            transaccion.Valor_Total=valorTotalGlobal
             transaccion.Cantidad=viewDialog?.txtCantidadTransaccion?.text.toString().toLong()
             transaccion.Cultivo_Id=cultivoGlobal?.Id
-            transaccion.Nombre_Cultivo=cultivoGlobal?.Nombre_Detalle_Tipo_Producto
+            transaccion.Nombre_Detalle_Producto_Cultivo=cultivoGlobal?.Nombre_Detalle_Tipo_Producto
+            transaccion.CategoriaPuk_Id= typeTransaccion
             presenter?.registerTransaccion(transaccion,Cultivo_Id!! )
         }
     }
@@ -387,7 +395,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
         if(cultivoSeletedContainer.visibility==View.GONE){
             cultivoSeletedContainer.visibility=View.VISIBLE
         }
-        txtNombreCultivo.setText(cultivo?.Nombre_Detalle_Tipo_Producto)
+        txtNombreCultivo.setText(cultivo?.getNombreCultio())
         txtNombreUnidadProductiva.setText(cultivo?.NombreUnidadProductiva)
 
     }
@@ -408,7 +416,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     override fun showAlertDialogAddTransaccion(transaccion: Transaccion?) {
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.diaog_form_ventas, null)
-        presenter?.setListSpinnerPuk(2)
+        presenter?.setListSpinnerPuk(typeTransaccion)
         viewDialog?.ivClosetDialogVentas?.setOnClickListener(this)
         viewDialog?.changeCultivo?.setOnClickListener(this)
         viewDialog?.fabAddVenta?.setOnClickListener(this)
@@ -419,11 +427,10 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
         viewDialog?.changeCultivo?.setOnClickListener(this)
 
        // viewDialog?.txtCantidadTransaccion?.addTextChangedListener(wac:TextWatcher)
-
-
-
+        
         viewDialog?.txtCantidadTransaccion?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
+
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -432,36 +439,29 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 var cantidad=  viewDialog?.txtCantidadTransaccion?.text.toString()?.toLongOrNull()
-                var precioVenta=  viewDialog?.txtPrecioVenta?.text.toString()?.toDoubleOrNull()
-
+                var precioVenta=  viewDialog?.txtPrecioTransaccion?.text.toString()?.toDoubleOrNull()
 
                 if(!viewDialog?.txtCantidadTransaccion?.text.toString().isEmpty()
-                    && !viewDialog?.txtPrecioVenta?.text.toString().isEmpty()){
-
+                    && !viewDialog?.txtPrecioTransaccion?.text.toString().isEmpty()){
 
                     var subtotal=cantidad!!*precioVenta!!
                     var costo_total_item = String.format(context!!.getString(R.string.price),
                             subtotal)
 
-                    var costo_total_ = String.format(context!!.getString(R.string.price_total),
+                    var costo_total_ = String.format(context!!.getString(R.string.price),
                             subtotal)
-
-
+                     valorTotalGlobal=subtotal
                     viewDialog?.txtValorSubtotal?.text=costo_total_item
-                    viewDialog?.txtTotalVenta?.setText(costo_total_)
-
+                    viewDialog?.txtTotalTransaccion?.setText(costo_total_.replace(",", "."))
 
                 }else{
                     viewDialog?.txtValorSubtotal?.text=""
-                    viewDialog?.txtTotalVenta?.setText("")
+                    viewDialog?.txtTotalTransaccion?.setText("")
                 }
-
-
-
             }
         })
 
-        viewDialog?.txtPrecioVenta?.addTextChangedListener(object : TextWatcher {
+        viewDialog?.txtPrecioTransaccion?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
 
@@ -469,61 +469,75 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
                 var cantidad=  viewDialog?.txtCantidadTransaccion?.text.toString()?.toLongOrNull()
-                var precioVenta=  viewDialog?.txtPrecioVenta?.text.toString()?.toDoubleOrNull()
+                var precioVenta=  viewDialog?.txtPrecioTransaccion?.text.toString()?.toDoubleOrNull()
 
 
                 if(!viewDialog?.txtCantidadTransaccion?.text.toString().isEmpty()
-                        && !viewDialog?.txtPrecioVenta?.text.toString().isEmpty()){
+                        && !viewDialog?.txtPrecioTransaccion?.text.toString().isEmpty()){
 
 
                     var subtotal=cantidad!!*precioVenta!!
                     var costo_total_item = String.format(context!!.getString(R.string.price),
                             subtotal)
 
-                    var costo_total_ = String.format(context!!.getString(R.string.price_total),
+                    var costo_total_ = String.format(context!!.getString(R.string.price),
                             subtotal)
 
+                     valorTotalGlobal=subtotal
+
                     viewDialog?.txtValorSubtotal?.text=costo_total_item
-                    viewDialog?.txtTotalVenta?.setText(costo_total_)
+                    viewDialog?.txtTotalTransaccion?.setText(costo_total_.replace(",", "."))
                 }else{
                     viewDialog?.txtValorSubtotal?.text=""
-                    viewDialog?.txtTotalVenta?.setText("")
+                    viewDialog?.txtTotalTransaccion?.setText("")
                 }
             }
         })
 
-
-
-
-
-
-
-
-        viewDialog?.changeCultivo?.setText(cultivoGlobal?.Nombre)
-
+        viewDialog?.changeCultivo?.setText(cultivoGlobal?.getNombreCultio())
         transaccionGlobal=transaccion
+
+        var titleDialog:String?=null
 
         //REGISTER
         if (transaccion == null) {
-            viewDialog?.txtTitle?.setText(getString(R.string.title_add_venta))
 
+            if(CategoriaPukResources.INGRESO== typeTransaccion){
+                titleDialog=getString(R.string.title_add_venta)
+            }else if(CategoriaPukResources.GASTO== typeTransaccion){
+                titleDialog=getString(R.string.title_add_gasto)
+            }
+            viewDialog?.txtTitle?.setText(titleDialog)
         }
         //UPDATE
         else {
 
-            cultivoGlobal = Cultivo(transaccion.Cultivo_Id, transaccion.Nombre_Cultivo, null)
-            pukGlobal = Puk(transaccion.PucId, null, transaccion.Descripcion_Puk, null)
+            cultivoGlobal = Cultivo(transaccion.Cultivo_Id,"",0,0.0,null,null,0, transaccion.Nombre_Cultivo, null,Nombre_Detalle_Tipo_Producto = transaccion.Nombre_Detalle_Producto_Cultivo)
+            pukGlobal = Puk(transaccion.PucId, null, "",transaccion.Descripcion_Puk )
 
-            viewDialog?.txtTitle?.setText(getString(R.string.title_edit_venta))
+            if(CategoriaPukResources.INGRESO== typeTransaccion){
+                titleDialog=getString(R.string.title_edit_venta)
+            }else if(CategoriaPukResources.GASTO== typeTransaccion){
+                titleDialog=getString(R.string.title_edit_gasto)
+            }
+            viewDialog?.txtTitle?.setText(titleDialog)
             viewDialog?.txtCantidadTransaccion?.setText(transaccion.Cantidad.toString())
-            viewDialog?.txtValorSubtotal?.setText(transaccion.Valor.toString())
-            viewDialog?.changeCultivo?.setText(transaccion.Nombre_Cultivo)
+            viewDialog?.txtPrecioTransaccion?.setText(String.format(context!!.getString(R.string.price_empty_signe),
+                    transaccion.Valor_Unitario))
+            viewDialog?.txtValorSubtotal?.setText(String.format(context!!.getString(R.string.price),
+                    transaccion.Valor_Total))
+
+            viewDialog?.changeCultivo?.setText(cultivoGlobal?.getNombreCultio())
 
             Cultivo_Id=transaccion.Cultivo_Id
-            viewDialog?.txtTotalVenta?.setText(transaccion.Valor.toString())
+            viewDialog?.txtTotalTransaccion?.setText( String.format(context!!.getString(R.string.price),
+                    transaccion.Valor_Total))
             viewDialog?.txtNombreCliente?.setText(transaccion.Nombre_Tercero)
             viewDialog?.txtConceptoVenta?.setText(transaccion.Concepto)
+            viewDialog?.spinnerPuk?.setText(transaccion.Descripcion_Puk)
+            valorTotalGlobal= transaccion.Valor_Total
 
         }
 
@@ -586,7 +600,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
 
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.Nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
-            viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.Nombre)
+            viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.getNombreCultio())
 
         }
 
@@ -618,12 +632,12 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
                             if(isFilter==true){
                                 if(presenter?.validarListasAddTransaccion()==true){
                                     dialog1.dismiss()
-                                    presenter?.getListTransaccion(Cultivo_Id)
+                                    presenter?.getListTransaccion(Cultivo_Id, typeTransaccion)
                                     presenter?.getCultivo(Cultivo_Id)
                                 }
                             }else{
                                 if(changeCultivo==true){
-                                    viewDialog?.changeCultivo?.setText(cultivoGlobal?.Nombre)
+                                    viewDialog?.changeCultivo?.setText(cultivoGlobal?.getNombreCultio())
                                     dialog1.dismiss()
                                 }else{
                                     if(presenter?.validarListasAddTransaccion()==true){
@@ -638,8 +652,6 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
                     dialog1.dismiss()
                 })
                 .build()
-
-
 
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())
@@ -700,8 +712,6 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
                 showAlertDialogFilterTransaccion(true)
             }
 
-
-
             R.id.fabAddVenta->{
                 if(transaccionGlobal!=null){
                     updateTransaccion(transaccionGlobal!!)
@@ -727,7 +737,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
 
     override fun onRefresh() {
         showProgress()
-        presenter?.getListTransaccion(Cultivo_Id)
+        presenter?.getListTransaccion(Cultivo_Id, typeTransaccion)
     }
 
     override fun onPause() {

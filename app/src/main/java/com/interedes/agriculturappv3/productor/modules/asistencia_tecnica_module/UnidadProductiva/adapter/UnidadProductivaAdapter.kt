@@ -19,13 +19,18 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerView.Adapter<UnidadProductivaAdapter.ViewHolder>() {
 
     companion object {
-        var instance:  UnidadProductivaAdapter? = null
+        var eventBus: EventBus? = null
+        fun postEventc(type: Int, unidadProductiva: UnidadProductiva?) {
+            var unidadMitable= unidadProductiva as Object
+            val event = RequestEventUP(type, null,unidadMitable,null)
+            event.eventType = type
+            eventBus?.post(event)
+        }
     }
 
-    var eventBus: EventBus? = null
+
     init {
         eventBus = GreenRobotEventBus()
-        instance = this
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -127,23 +132,17 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
 
             //El listener en base a la posición
             itemView.setOnClickListener {
-                UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ITEM_EVENT,data)
+                postEventc(RequestEventUP.ITEM_EVENT,data)
             }
 
             btnEditUp.setOnClickListener {
-                UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ITEM_EDIT_EVENT,data)
+              postEventc(RequestEventUP.ITEM_EDIT_EVENT,data)
             }
 
             btnAddPoligonUp.setOnClickListener {
-                UnidadProductivaAdapter.instance?.postEventc(RequestEventUP.ADD_POLIGON_EVENT,data)
+               postEventc(RequestEventUP.ADD_POLIGON_EVENT,data)
             }
         }
     }
 
-    fun postEventc(type: Int, unidadProductiva: UnidadProductiva?) {
-        var unidadMitable= unidadProductiva as Object
-        val event = RequestEventUP(type, null,unidadMitable,null)
-        event.eventType = type
-        eventBus?.post(event)
-    }
 }

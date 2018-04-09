@@ -20,14 +20,20 @@ import com.robertlevonyan.views.expandable.ExpandingListener
 class PlagasAdapter(val lista: ArrayList<TipoEnfermedad>) : RecyclerView.Adapter<PlagasAdapter.ViewHolder>() {
 
     companion object {
-        var instance: PlagasAdapter? = null
+        var eventBus: EventBus? = null
+        fun postEvent(type: Int, plaga: TipoEnfermedad?) {
+            val plagaMutable = plaga as Object
+            val event = PlagasEvent(type, null, plagaMutable, null)
+            event.eventType = type
+            eventBus?.post(event)
+        }
+
     }
 
-    var eventBus: EventBus? = null
+
 
     init {
         eventBus = GreenRobotEventBus()
-        PlagasAdapter.instance = this
     }
 
     override fun onBindViewHolder(holder: PlagasAdapter.ViewHolder, position: Int) {
@@ -70,7 +76,7 @@ class PlagasAdapter(val lista: ArrayList<TipoEnfermedad>) : RecyclerView.Adapter
             txt_descripcion_enfermedad.text = data.Descripcion
 
             btn_ver_insumos.setOnClickListener {
-                PlagasAdapter.instance?.postEvent(PlagasEvent.ITEM_OPEN_EVENT, data)
+                postEvent(PlagasEvent.ITEM_OPEN_EVENT, data)
             }
 
 
@@ -87,12 +93,6 @@ class PlagasAdapter(val lista: ArrayList<TipoEnfermedad>) : RecyclerView.Adapter
         }
     }
 
-    fun postEvent(type: Int, plaga: TipoEnfermedad?) {
-        val plagaMutable = plaga as Object
-        val event = PlagasEvent(type, null, plagaMutable, null)
-        event.eventType = type
-        eventBus?.post(event)
-    }
 
 
 }

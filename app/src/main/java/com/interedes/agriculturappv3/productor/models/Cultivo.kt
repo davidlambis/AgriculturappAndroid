@@ -63,6 +63,10 @@ data class Cultivo(@PrimaryKey(autoincrement = true)
                    var Nombre_Detalle_Tipo_Producto: String? = null) {
 
     override fun toString(): String {
-        return Nombre!!
+        return String.format("%s - %s", Nombre , Nombre_Detalle_Tipo_Producto);
+    }
+
+    fun getNombreCultio(): String {
+        return String.format("%s - %s", Nombre , Nombre_Detalle_Tipo_Producto);
     }
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".productor.modules.accounting_module.Ventas_Fragment">
+    tools:context=".productor.modules.accounting_module.ventas.Ventas_Fragment">
 
 
     <RelativeLayout
@@ -13,7 +13,7 @@
 
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".productor.modules.accounting_module.Ventas_Fragment">
+        tools:context=".productor.modules.accounting_module.ventas.Ventas_Fragment">
 
         <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"

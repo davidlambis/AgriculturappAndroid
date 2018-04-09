@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.modules.accounting_module
+package com.interedes.agriculturappv3.productor.modules.accounting_module.ventas
 
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
 
@@ -22,8 +22,8 @@ class VentasInteractor: IMainViewTransacciones.Interactor {
         repository?.deleteTransaccion(transaccion,cultivo_id)
     }
 
-    override fun execute(cultivo_id: Long?) {
-        repository?.getListTransacciones(cultivo_id)
+    override fun execute(cultivo_id: Long?,typeTransaccion:Long?) {
+        repository?.getListTransacciones(cultivo_id,typeTransaccion)
     }
 
     override fun getListas() {

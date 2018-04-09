@@ -14,10 +14,11 @@ import android.view.WindowManager
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.adapters.SingleAdapter
-import com.interedes.agriculturappv3.productor.modules.accounting_module.Ventas_Fragment
+import com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.Ventas_Fragment
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.Resources_Menu
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.CategoriaPukResources
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_general.*
 
@@ -74,14 +75,13 @@ class AccountingFragment : Fragment(), View.OnClickListener {
 
             if (lista[position].Identificador.equals("ventas")) {
                 //startActivity(Intent(activity, MapsActivity::class.java))
+                Ventas_Fragment.typeTransaccion=CategoriaPukResources.INGRESO
                 (activity as MenuMainActivity).replaceFragment(Ventas_Fragment())
-            } else if (lista[position].Identificador.equals("ofertas")) {
+            } else if (lista[position].Identificador.equals("gastos")) {
+                Ventas_Fragment.typeTransaccion=CategoriaPukResources.GASTO
+                (activity as MenuMainActivity).replaceFragment(Ventas_Fragment())
 
-            } else if (lista[position].Identificador.equals("ventas_realizadas")) {
-
-            } else if (lista[position].Identificador.equals("clientes")) {
-
-            } else if (lista[position].Identificador.equals("preguntas")) {
+            } else if (lista[position].Identificador.equals("reportes")) {
 
             }
         }

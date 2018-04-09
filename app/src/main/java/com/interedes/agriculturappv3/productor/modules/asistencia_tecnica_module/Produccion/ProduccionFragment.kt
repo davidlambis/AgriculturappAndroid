@@ -118,7 +118,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     //region ADAPTER
     private fun initAdapter() {
         recyclerView?.layoutManager = LinearLayoutManager(activity)
-        adapter = ProduccionAdapter(produccionList!!,activity)
+        adapter = ProduccionAdapter(produccionList!!)
         recyclerView?.adapter = adapter
     }
     //endregion

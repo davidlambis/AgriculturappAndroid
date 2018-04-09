@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.modules.accounting_module
+package com.interedes.agriculturappv3.productor.modules.accounting_module.ventas
 
 import android.content.Context
 import android.content.Intent
@@ -10,7 +10,7 @@ import com.interedes.agriculturappv3.productor.models.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.ventas.Puk
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
-import com.interedes.agriculturappv3.productor.modules.accounting_module.events.RequestEventVenta
+import com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.events.RequestEventVenta
 
 interface IMainViewTransacciones {
 
@@ -82,12 +82,10 @@ interface IMainViewTransacciones {
         fun registerTransaccion(transaccion: Transaccion, cultivo_id:Long?)
         fun updateTransaccion(transaccion: Transaccion, cultivo_id:Long?)
         fun deleteTransaccion(transaccion: Transaccion, cultivo_id:Long?)
-        fun getListTransaccion(cultivo_id:Long?)
+        fun getListTransaccion(cultivo_id:Long?,typeTransaccion:Long?)
         fun getListas()
 
-
         fun getCultivo(cultivo_id:Long?)
-
 
         //Methods View
         fun setListSpinnerUnidadProductiva()
@@ -97,9 +95,6 @@ interface IMainViewTransacciones {
 
 
         fun setListSpinnerPuk(categoria_puk_id:Long?)
-
-
-
         //Conecttion
         fun checkConnection(): Boolean
     }
@@ -108,15 +103,15 @@ interface IMainViewTransacciones {
         fun registerTransaccion(transaccion: Transaccion, cultivo_id:Long?)
         fun updateTransaccion(transaccion: Transaccion, cultivo_id:Long?)
         fun deleteProducccionTransaccion(transaccion: Transaccion, cultivo_id:Long?)
-        fun execute(cultivo_id:Long?)
+        fun execute(cultivo_id:Long?,typeTransaccion:Long?)
         fun getListas()
         fun getCultivo(cultivo_id:Long?)
     }
 
     interface Repository {
         fun getListas()
-        fun getListTransacciones(cultivo_id:Long?)
-        fun getTransaccion(cultivo_id:Long?): List<Transaccion>
+        fun getListTransacciones(cultivo_id:Long?,typeTransaccion:Long?)
+        fun getTransaccion(cultivo_id:Long?,typeTransaccion:Long?): List<Transaccion>
         fun saveTransaccion(transaccion: Transaccion, cultivo_id:Long?)
         fun updateTransaccion(transaccion: Transaccion, cultivo_id:Long?)
         fun deleteTransaccion(transaccion: Transaccion, cultivo_id:Long?)

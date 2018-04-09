@@ -19,17 +19,21 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
  */
 
 
-class ProduccionAdapter(var lista: ArrayList<Produccion>,contextL:Context?) : RecyclerView.Adapter<ProduccionAdapter.ViewHolder>() {
+class ProduccionAdapter(var lista: ArrayList<Produccion>) : RecyclerView.Adapter<ProduccionAdapter.ViewHolder>() {
 
     companion object {
-        var instance:  ProduccionAdapter? = null
-        var contextAdapter:  Context? = null
+        var eventBus: EventBus? = null
+        fun postEventc(type: Int, produccion: Produccion?) {
+            var produccionMutable= produccion as Object
+            val event = RequestEventProduccion(type,null, produccionMutable,null)
+            event.eventType = type
+            eventBus?.post(event)
+        }
     }
-    var eventBus: EventBus? = null
+
     init {
         eventBus = GreenRobotEventBus()
-        instance = this
-        contextAdapter=contextL
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -98,8 +102,8 @@ class ProduccionAdapter(var lista: ArrayList<Produccion>,contextL:Context?) : Re
             // image.setImageResource(data.Imagen)
 
 
-            txtFechasProduccion.text = String.format(contextAdapter?.getString(R.string.range_dates)!!,data.getFechaInicioFormat(), data.getFechafinFormat())
-            txt_title.text = String.format(contextAdapter?.getString(R.string.cantidad_estimada)!!,data.ProduccionReal, data.NombreUnidadMedida)
+            txtFechasProduccion.text = String.format(context.getString(R.string.range_dates)!!,data.getFechaInicioFormat(), data.getFechafinFormat())
+            txt_title.text = String.format(context.getString(R.string.cantidad_estimada)!!,data.ProduccionReal, data.NombreUnidadMedida)
 
 
 
@@ -107,25 +111,20 @@ class ProduccionAdapter(var lista: ArrayList<Produccion>,contextL:Context?) : Re
 
             //El listener en base a la posición
             itemView.setOnClickListener {
-                ProduccionAdapter.instance?.postEventc(RequestEventProduccion.ITEM_EVENT,data)
+              postEventc(RequestEventProduccion.ITEM_EVENT,data)
             }
 
             btnEdit.setOnClickListener {
-                ProduccionAdapter.instance?.postEventc(RequestEventProduccion.ITEM_EDIT_EVENT,data)
+               postEventc(RequestEventProduccion.ITEM_EDIT_EVENT,data)
             }
 
             btnDelete.setOnClickListener {
-                ProduccionAdapter.instance?.postEventc(RequestEventProduccion.ITEM_DELETE_EVENT,data)
+               postEventc(RequestEventProduccion.ITEM_DELETE_EVENT,data)
             }
         }
     }
 
-    fun postEventc(type: Int, produccion: Produccion?) {
-        var produccionMutable= produccion as Object
-        val event = RequestEventProduccion(type,null, produccionMutable,null)
-        event.eventType = type
-        eventBus?.post(event)
-    }
+
 }
 
 
