@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.adapter
 
+import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -98,8 +99,9 @@ class VentaAdapter(var lista: ArrayList<Transaccion>)    : RecyclerView.Adapter<
             txtCantidad.text= String.format(context?.getString(R.string.price)!!,data.Valor_Total)
             txtAdicional.text= data.Nombre_Cultivo
             txtAdicional.text= data.Nombre_Tercero
-
-
+            txt_descripcion.text=data.Nombre_Estado_Transaccion
+            txt_descripcion.setTextColor(context.resources.getColor(R.color.black))
+            txt_descripcion.setTypeface(txt_descripcion.getTypeface(),Typeface.BOLD);
 
 ///            txtCantidadProduccion.text = String.format(contextAdapter?.getString(R.string.cantidad_estimada)!!, data.ProduccionReal, data.NombreUnidadMedida)
 

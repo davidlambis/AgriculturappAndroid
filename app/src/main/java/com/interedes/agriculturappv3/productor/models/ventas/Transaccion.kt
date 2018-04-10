@@ -76,7 +76,10 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
                        var Descripcion_Puk: String? = null,
 
                        @Column(name = "Nombre_Detalle_Producto_Cultivo")
-                       var Nombre_Detalle_Producto_Cultivo: String? = null
+                       var Nombre_Detalle_Producto_Cultivo: String? = null,
+
+                       @Column(name = "Nombre_Estado_Transaccion")
+                       var Nombre_Estado_Transaccion: String? = null
 
 ) {
 

@@ -34,5 +34,9 @@ data class RequestEventVenta (var eventType: Int,
 
         //Query Single
         val GET_EVENT_CULTIVO: Int = 16
+
+
+        //
+        val ITEM_EVENT_RADIO_TYPE_TRANSACION: Int = 17
     }
 }

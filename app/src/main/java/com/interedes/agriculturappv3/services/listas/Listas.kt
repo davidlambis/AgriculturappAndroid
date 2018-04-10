@@ -269,8 +269,9 @@ class Listas {
 
         fun listEstadoTransaccion(): ArrayList<Estado_Transaccion> {
             val estadoTransaccion = ArrayList<Estado_Transaccion>()
-            estadoTransaccion.add(Estado_Transaccion(Id = 1, Nombre = "Pagado"))
+            estadoTransaccion.add(Estado_Transaccion(Id = 1,   Nombre = "Por Cobrar"))
             estadoTransaccion.add(Estado_Transaccion(Id = 2,   Nombre = "Por Pagar"))
+            estadoTransaccion.add(Estado_Transaccion(Id = 3, Nombre = "Pagado"))
             return estadoTransaccion
         }
 

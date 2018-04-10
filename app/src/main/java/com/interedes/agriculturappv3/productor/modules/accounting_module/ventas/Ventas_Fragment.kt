@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,15 +18,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
+import android.widget.*
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.libs.EventBus
+import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.ventas.Puk
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
 import com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.adapter.VentaAdapter
@@ -33,21 +34,27 @@ import com.interedes.agriculturappv3.productor.models.Cultivo
 import com.interedes.agriculturappv3.productor.models.Lote
 import com.interedes.agriculturappv3.productor.models.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.ventas.Estado_Transaccion
+import com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.adapter.EstadoTransaccionAdapter
+import com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.events.RequestEventVenta
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.CategoriaPukResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
+import kotlinx.android.synthetic.main.content_radio_button.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.diaog_form_ventas.view.*
 import kotlinx.android.synthetic.main.fragment_ventas.*
-import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.OnRefreshListener, IMainViewTransacciones.MainView {
 
     var presenter: IMainViewTransacciones.Presenter? = null
     var adapter: VentaAdapter?=null
+    var adapterEstadotransaccion: EstadoTransaccionAdapter?=null
 
     //Progress
     private var hud: KProgressHUD?=null
@@ -61,6 +68,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     //Globals
     //var produccionGlobal:Produccion?=null
     var produccionList:ArrayList<Transaccion>?=ArrayList<Transaccion>()
+    var estadoTransaccionList:ArrayList<Estado_Transaccion>?=ArrayList<Estado_Transaccion>()
     var Cultivo_Id: Long? = null
     var changeCultivo:Boolean?=false
 
@@ -71,11 +79,15 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     var loteGlobal: Lote?=null
     var transaccionGlobal: Transaccion?=null
     var valorTotalGlobal:Double?=null
+    var estadoTransaccionGlobal:Estado_Transaccion?=null
+
+
 
 
     companion object {
         var instance:  Ventas_Fragment? = null
         var typeTransaccion:Long?=0
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -164,6 +176,13 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             focusView = viewDialog?.spinnerPuk
             cancel = true
         }
+        else if (viewDialog?.radioGroupEstados?.getCheckedRadioButtonId() == -1) {
+            cancel = true
+            Toast.makeText(activity,getString(R.string.error_field_required_radio_group),Toast.LENGTH_SHORT).show()
+        }
+
+
+
         /* else if (!edtCorreo.text.toString().trim().matches(email_pattern.toRegex())) {
             edtCorreo?.setError(getString(R.string.edit_text_error_correo))
             focusView = edtCorreo
@@ -269,6 +288,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             transaccion.Nombre_Cultivo=cultivoGlobal?.Nombre
             transaccion.Nombre_Detalle_Producto_Cultivo=cultivoGlobal?.Nombre_Detalle_Tipo_Producto
             transaccion.CategoriaPuk_Id= typeTransaccion
+            transaccion.Nombre_Estado_Transaccion=estadoTransaccionGlobal?.Nombre
             presenter?.registerTransaccion(transaccion,Cultivo_Id!! )
         }
     }
@@ -292,6 +312,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             transaccion.Cultivo_Id=cultivoGlobal?.Id
             transaccion.Nombre_Detalle_Producto_Cultivo=cultivoGlobal?.Nombre_Detalle_Tipo_Producto
             transaccion.CategoriaPuk_Id= typeTransaccion
+            transaccion.Nombre_Estado_Transaccion=estadoTransaccionGlobal?.Nombre
             presenter?.registerTransaccion(transaccion,Cultivo_Id!! )
         }
     }
@@ -315,6 +336,12 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             _dialogRegisterUpdate?.dismiss()
         }
         onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
+    }
+
+    override fun requestResponseItemOK(string1:String?, string2:String?) {
+
+
+        Toast.makeText(context,string1+" - "+string2,Toast.LENGTH_SHORT).show()
     }
 
     override fun requestResponseError(error: String?) {
@@ -422,12 +449,30 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
         viewDialog?.fabAddVenta?.setOnClickListener(this)
 
         //Venta
-        viewDialog?.btnInfoCultivo?.setOnClickListener(this)
-        viewDialog?.btnLimpiarVenta?.setOnClickListener(this)
         viewDialog?.changeCultivo?.setOnClickListener(this)
 
+
+        //radioGroup
+        var list= Listas.listEstadoTransaccion()
+        for( item in list){
+            var id =item.Id
+            val rb = RadioButton(this.context)
+            rb.id = id!!.toInt()
+            rb.setText(item.Nombre)
+            rb.setOnClickListener {
+                var data: Estado_Transaccion = list.filter { s -> s.Id ==rb.id.toLong()}.single()
+                estadoTransaccionGlobal=data
+            }
+            viewDialog?.radioGroupEstados?.addView(rb)
+        }
+        /*viewDialog?.package_lst?.layoutManager = GridLayoutManager(activity, 3)
+        estadoTransaccionList?.clear()
+        adapterEstadotransaccion = EstadoTransaccionAdapter(estadoTransaccionList!!)
+        viewDialog?.package_lst?.adapter = adapterEstadotransaccion
+         adapterEstadotransaccion?.setItems(Listas.listEstadoTransaccion())
+        */
+
        // viewDialog?.txtCantidadTransaccion?.addTextChangedListener(wac:TextWatcher)
-        
         viewDialog?.txtCantidadTransaccion?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
 
@@ -513,7 +558,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
         }
         //UPDATE
         else {
-
+            estadoTransaccionGlobal=Estado_Transaccion(transaccion.EstadoId,transaccion.Nombre_Estado_Transaccion)
             cultivoGlobal = Cultivo(transaccion.Cultivo_Id,"",0,0.0,null,null,0, transaccion.Nombre_Cultivo, null,Nombre_Detalle_Tipo_Producto = transaccion.Nombre_Detalle_Producto_Cultivo)
             pukGlobal = Puk(transaccion.PucId, null, "",transaccion.Descripcion_Puk )
 
@@ -556,6 +601,7 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
         _dialogRegisterUpdate=dialog
     }
 
+
     override fun verificateConnection(): AlertDialog? {
         var builder = AlertDialog.Builder(context!!)
         builder.setTitle(getString(R.string.alert));
@@ -586,8 +632,6 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
         presenter?.setListSpinnerUnidadProductiva()
 
         var title:String?=null
-
-
         if(isFilter==true){
             title=getString(R.string.tittle_filter)
         }else{
@@ -652,7 +696,6 @@ class Ventas_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
                     dialog1.dismiss()
                 })
                 .build()
-
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())
         lp.width = WindowManager.LayoutParams.MATCH_PARENT

@@ -13,6 +13,7 @@
     <!-- GLOBALES -->
     <string name="results_global_search">Mostrando %d Resultados</string>
     <string name="error_field_required">Campo Requerido</string>
+
     <string name="coords">%f  /  %f</string>
 
 
@@ -207,7 +208,7 @@
 
     <string name="title_add_venta">Agregar Venta</string>
     <string name="title_edit_venta">Editar Venta</string>
-
+    <string name="error_field_required_radio_group">Seleccione un estado de la transaccion</string>
     <!--Gasto-->
     <string name="title_add_gasto">Agregar Gasto</string>
     <string name="title_edit_gasto">Editar Gasto</string>
