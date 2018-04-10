@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_3"
@@ -9,36 +9,39 @@
     app:cardCornerRadius="6dp"
     app:cardElevation="1dp"
 
-    app:cardUseCompatPadding="true"
-    >
+    app:cardUseCompatPadding="true">
+
     <LinearLayout
-        android:padding="@dimen/margin_24"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_24">
+
         <ImageView
-            android:padding="@dimen/margin_global"
-            android:foreground="?android:attr/selectableItemBackground"
             android:id="@+id/ivCloseButtonDialogFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@null"
             android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="@dimen/margin_global"
             android:src="@drawable/met_ic_close" />
+
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
             <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                 android:id="@+id/spinnerUnidadProductiva"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:drawableLeft="@drawable/ic_localizacion_finca"
+                android:drawableStart="@drawable/ic_localizacion_finca"
                 android:hint="@string/spinner_unidad_productiva"
+                android:textAlignment="textStart"
                 android:textColorHint="@color/grey_luiyi"
                 android:textSize="@dimen/text_size_18"
-                android:textAlignment="textStart"
-                android:drawableStart="@drawable/ic_localizacion_finca"
-                android:drawableLeft="@drawable/ic_localizacion_finca"
                 app:met_baseColor="@color/grey_luiyi"
                 app:met_floatingLabel="normal"
                 app:met_floatingLabelTextColor="@color/grey_luiyi"
@@ -46,20 +49,22 @@
                 app:met_textColor="@color/grey_luiyi"
                 app:met_textColorHint="@color/black_alpha_40" />
         </LinearLayout>
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
                 android:id="@+id/spinnerLote"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:drawableLeft="@drawable/ic_numero_hectareas"
+                android:drawableStart="@drawable/ic_numero_hectareas"
                 android:hint="@string/spinner_lote"
+                android:textAlignment="textStart"
                 android:textColorHint="@color/grey_luiyi"
                 android:textSize="@dimen/text_size_18"
-                android:textAlignment="textStart"
-                android:drawableStart="@drawable/ic_numero_hectareas"
-                android:drawableLeft="@drawable/ic_numero_hectareas"
                 app:met_baseColor="@color/grey_luiyi"
                 app:met_floatingLabel="normal"
                 app:met_floatingLabelTextColor="@color/grey_luiyi"
@@ -72,12 +77,30 @@
                 android:id="@+id/spinnerCultivo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:drawableLeft="@drawable/ic_cultivo"
+                android:drawableStart="@drawable/ic_cultivo"
                 android:hint="@string/spinner_cultivo"
+                android:textAlignment="textStart"
                 android:textColorHint="@color/grey_luiyi"
                 android:textSize="@dimen/text_size_18"
+                app:met_baseColor="@color/grey_luiyi"
+                app:met_floatingLabel="normal"
+                app:met_floatingLabelTextColor="@color/grey_luiyi"
+                app:met_primaryColor="@color/grey_luiyi"
+                app:met_textColor="@color/grey_luiyi"
+                app:met_textColorHint="@color/black_alpha_40" />
+
+            <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                android:id="@+id/spinnerProducto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/ic_productos"
+                android:drawableStart="@drawable/ic_productos"
+                android:hint="@string/spinner_producto"
                 android:textAlignment="textStart"
-                android:drawableStart="@drawable/ic_cultivo"
-                android:drawableLeft="@drawable/ic_cultivo"
+                android:textColorHint="@color/grey_luiyi"
+                android:textSize="@dimen/text_size_18"
+                android:visibility="gone"
                 app:met_baseColor="@color/grey_luiyi"
                 app:met_floatingLabel="normal"
                 app:met_floatingLabelTextColor="@color/grey_luiyi"
@@ -90,4 +113,4 @@
     </LinearLayout>
 
 
-</android.support.v7.widget.CardView >
+</android.support.v7.widget.CardView>
