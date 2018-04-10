@@ -14,6 +14,7 @@ import com.interedes.agriculturappv3.productor.models.Cultivo
 import com.interedes.agriculturappv3.productor.models.Lote
 import com.interedes.agriculturappv3.productor.models.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.ventas.Estado_Transaccion
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -157,6 +158,12 @@ class VentasPresenter(var mainView: IMainViewTransacciones.MainView?) : IMainVie
                 var cultivo = event.objectMutable as Cultivo
                 mainView?.setCultivo(cultivo)
             }
+
+            RequestEventVenta.ITEM_EVENT_RADIO_TYPE_TRANSACION -> {
+                var transaccion = event.objectMutable as Estado_Transaccion
+
+                mainView?.requestResponseItemOK(transaccion.Nombre,transaccion.Id.toString())
+            }
         }
     }
     //endregion
@@ -277,6 +284,12 @@ class VentasPresenter(var mainView: IMainViewTransacciones.MainView?) : IMainVie
     private fun onMessageConectionError() {
         mainView?.hideProgress()
         mainView?.verificateConnection()
+    }
+
+
+    private fun onMessageOkItem() {
+
+        mainView?.requestResponseOK()
     }
     //endregion
 }

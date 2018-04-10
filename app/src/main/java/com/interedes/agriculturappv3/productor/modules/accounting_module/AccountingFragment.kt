@@ -45,6 +45,7 @@ class AccountingFragment : Fragment(), View.OnClickListener {
 
     private fun setupInitDesign() {
         (activity as MenuMainActivity).toolbar.title = getString(R.string.title_module_contable)
+
         (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.green));
         var iconMenu = (activity as MenuMainActivity).menuItemGlobal
         iconMenu?.isVisible = true

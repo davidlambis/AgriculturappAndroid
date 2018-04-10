@@ -94,6 +94,30 @@
                 app:met_textColor="@color/grey_luiyi"
                 app:met_textColorHint="@color/black_alpha_40" />
 
+
+            <RadioGroup
+                android:id="@+id/radioGroupEstados"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+
+            <!--<android.support.v7.widget.RecyclerView
+                android:id="@+id/package_lst"
+                android:scrollbars="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/package_txt"/>-->
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -167,7 +191,7 @@
             </LinearLayout>
 
 
-            <LinearLayout
+           <!-- <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -194,14 +218,13 @@
                     android:clickable="true"
                     android:padding="@dimen/margin_10"
                     android:src="@drawable/ic_delete" />
-            </LinearLayout>
+            </LinearLayout>-->
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_70"
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
                 <EditText
                     android:id="@+id/txtTotalTransaccion"
                     style="@style/editText"
@@ -213,10 +236,7 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:textStyle="bold" />
-
-
             </android.support.design.widget.TextInputLayout>
-
 
 
             <android.support.design.widget.TextInputLayout
@@ -224,7 +244,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_70"
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
                 <EditText
                     android:id="@+id/txtNombreCliente"
                     style="@style/editText"
@@ -234,7 +253,6 @@
                     android:textSize="@dimen/text_size_16"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
-
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout

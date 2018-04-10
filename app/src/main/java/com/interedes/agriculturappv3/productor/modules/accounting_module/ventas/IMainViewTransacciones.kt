@@ -42,6 +42,7 @@ interface IMainViewTransacciones {
 
         fun onMessageOk(colorPrimary: Int, msg: String?)
         fun onMessageError(colorPrimary: Int, msg: String?)
+        fun requestResponseItemOK(string1:String?, string2:String?)
 
         //Set sppiners
         fun setListUnidadMedida(listUnidadMedida:List<Unidad_Medida>?)
