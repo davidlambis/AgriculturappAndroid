@@ -561,9 +561,9 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             cultivoSeletedContainer.visibility=View.VISIBLE
         }
         txtNombreCultivo.setText(cultivo?.Nombre_Detalle_Tipo_Producto)
-        txtNombreTipoProducto.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
-        txtFechaInicioCultivo.setText(cultivo?.FechaIncio)
-        txtFechaFinCultivo.setText(cultivo?.FechaFin)
+        txtNombreDetalleTipoProducto.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
+        txtPrecioProducto.setText(cultivo?.FechaIncio)
+        txtFechaDisponibilidadProducto.setText(cultivo?.FechaFin)
     }
 
     override fun verificateConnection(): AlertDialog? {

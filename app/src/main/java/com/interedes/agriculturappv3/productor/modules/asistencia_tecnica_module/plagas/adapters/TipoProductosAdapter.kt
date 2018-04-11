@@ -59,7 +59,7 @@ class TipoProductosAdapter(val lista: ArrayList<TipoProducto>) : RecyclerView.Ad
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: TipoProducto, pos: Int) = with(itemView) {
-            val txtNombreTipoProducto: TextView = itemView.findViewById(R.id.txtNombreTipoProducto)
+            val txtNombreTipoProducto: TextView = itemView.findViewById(R.id.txtNombreDetalleTipoProducto)
             val imgTipoProducto: ImageView = itemView.findViewById(R.id.imgTipoProducto)
 
 

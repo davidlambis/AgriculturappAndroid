@@ -26,7 +26,7 @@
             />
 
         <TextView
-            android:id="@+id/txtNombreTipoProducto"
+            android:id="@+id/txtNombreDetalleTipoProducto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imgTipoProducto"
@@ -42,7 +42,7 @@
             android:id="@+id/btnSelectedTipoProducto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtNombreTipoProducto"
+            android:layout_below="@+id/txtNombreDetalleTipoProducto"
             android:layout_gravity="center"
             android:background="?android:selectableItemBackground"
             android:drawableEnd="@drawable/ic_hand_selected"

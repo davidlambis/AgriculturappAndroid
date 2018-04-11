@@ -14,6 +14,7 @@ import android.view.WindowManager
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.adapters.SingleAdapter
+import com.interedes.agriculturappv3.productor.modules.comercial_module.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.productor.modules.comercial_module.productos.ProductosFragment
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.Resources_Menu
@@ -70,7 +71,7 @@ class ComercialFragment : Fragment(), View.OnClickListener {
             if (lista[position].Identificador.equals("mis_productos")) {
                 (activity as MenuMainActivity).replaceFragment(ProductosFragment())
             } else if (lista[position].Identificador.equals("ofertas")) {
-
+                (activity as MenuMainActivity).replaceFragment(OfertasFragment())
             } else if (lista[position].Identificador.equals("ventas_realizadas")) {
 
             } else if (lista[position].Identificador.equals("clientes")) {

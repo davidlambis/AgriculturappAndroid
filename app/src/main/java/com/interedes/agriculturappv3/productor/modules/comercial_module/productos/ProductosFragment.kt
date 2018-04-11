@@ -45,10 +45,8 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.productor.modules.comercial_module.productos.adapters.ProductosAdapter
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.raizlabs.android.dbflow.data.Blob
-import com.raizlabs.android.dbflow.kotlinextensions.delete
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
-import kotlinx.android.synthetic.main.dialog_form_producto.*
 import kotlinx.android.synthetic.main.dialog_form_producto.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_productos.*
@@ -413,9 +411,9 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             cultivoSeletedContainer.visibility = View.VISIBLE
         }
         txtNombreCultivo.setText(cultivo?.Nombre)
-        txtNombreTipoProducto.setText(cultivo?.Nombre_Tipo_Producto)
-        txtFechaInicioCultivo.setText(cultivo?.FechaIncio)
-        txtFechaFinCultivo.setText(cultivo?.FechaFin)
+        txtNombreDetalleTipoProducto.setText(cultivo?.Nombre_Tipo_Producto)
+        txtPrecioProducto.setText(cultivo?.FechaIncio)
+        txtFechaDisponibilidadProducto.setText(cultivo?.FechaFin)
 
     }
 

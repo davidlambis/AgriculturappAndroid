@@ -1,7 +1,5 @@
 package com.interedes.agriculturappv3.productor.modules.comercial_module.productos
 
-import android.app.Activity
-import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,11 +7,9 @@ import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.productor.models.Cultivo
 import com.interedes.agriculturappv3.productor.models.Lote
 import com.interedes.agriculturappv3.productor.models.UnidadProductiva
-import com.interedes.agriculturappv3.productor.models.produccion.Produccion
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Produccion.events.RequestEventProduccion
 import com.interedes.agriculturappv3.productor.modules.comercial_module.productos.events.ProductosEvent
 
 interface IProductos {

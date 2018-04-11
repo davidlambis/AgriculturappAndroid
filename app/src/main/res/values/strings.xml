@@ -201,8 +201,12 @@
     <string name="title_adapter_fecha_disponibilidad">Fecha Límite : %s</string>
     <string name="title_adapter_precio_producto">Precio producto : %f</string>
     <string name="title_alert_delete_producto">¿Está seguro de eliminar este producto?</string>
+    <string name="spinner_producto">Producto</string>
+    <string name="select_product_ofertas">Selecciona el producto para consultar sus ofertas</string>
     <!--Tipo Producto-->
 
+    <!-- Ofertas Productor -->
+    <string name="title_ofertas">Ofertas</string>
 
     <!--Ventas-->
 
