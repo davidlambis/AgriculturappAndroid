@@ -247,7 +247,7 @@ class Listas {
         fun listCategoriaPuk(): ArrayList<CategoriaPuk> {
             val categoriaPuk = ArrayList<CategoriaPuk>()
             categoriaPuk.add(CategoriaPuk(Id = 1, Nombre = "Gasto",Sigla = "I"))
-            categoriaPuk.add(CategoriaPuk(Id = 2,   Nombre = "Ingreso",Sigla ="G"))
+            categoriaPuk.add(CategoriaPuk(Id = 2,   Nombre = "Ventas",Sigla ="G"))
             return categoriaPuk
         }
 

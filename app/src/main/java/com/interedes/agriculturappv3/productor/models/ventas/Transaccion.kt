@@ -96,4 +96,5 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
         return sdf.format(Fecha_Transaccion)
     }
 
+
 }

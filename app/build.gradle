@@ -111,6 +111,11 @@ dependencies {
     //CAMARA COMPRESOR
     implementation 'id.zelory:compressor:2.1.0'
 
+
+    //Recycler
+    compile 'com.thoughtbot:expandablerecyclerview:1.3'
+    compile 'com.thoughtbot:expandablecheckrecyclerview:1.4'
+
     /*
     //Extenciones Kotlin (QUERYS LIST)
     compile "com.github.vicpinm:krealmextensions:$krealmextensionsVersion"

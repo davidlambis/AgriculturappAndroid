@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".productor.modules.accounting_module.reportes.ReporteFragment">
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_3"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="1dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_3">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_interval_transactions"
+                android:textColor="@color/grey_luiyi"
+                android:textSize="@dimen/text_size_20"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/txtTitleFechaInicio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_date_start"
+                        android:textColor="@color/grey_luiyi"
+                        android:textSize="@dimen/text_size_12" />
+
+                    <TextView
+                        android:id="@+id/txtFechaInicioReporte"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txtTitleFechaInicio"
+                        android:text="01-03-2018"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_12"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/txtTitleFechaFin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_date_end"
+                        android:textColor="@color/grey_luiyi"
+                        android:textSize="@dimen/text_size_12" />
+
+                    <TextView
+                        android:id="@+id/txtFechaFinReporte"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txtTitleFechaFin"
+                        android:text="01-03-2018"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_12"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="@dimen/width_70"
+                    android:layout_height="wrap_content">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabAddTransaccion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:src="@drawable/ic_mes"
+                        android:tint="@color/white_solid"
+                        app:backgroundTint="@color/light_green_800"
+                        app:fabCustomSize="@dimen/size_60" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:id="@+id/hsv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:fillViewport="true"
+                android:measureAllChildren="false"
+                android:scrollbars="none" >
+                <LinearLayout
+                    android:id="@+id/innerLay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+                    <LinearLayout
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RelativeLayout
+                            android:padding="@dimen/margin_10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                           >
+
+                            <TextView
+                                android:id="@+id/txtTitleIngresos"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_ingresos"
+                                android:textColor="@color/green"
+                                android:textSize="@dimen/text_size_16" />
+
+                            <TextView
+                                android:id="@+id/txtTotalIngtresosReporte"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/txtTitleIngresos"
+                                android:text="$ 217,000"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/text_size_18"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:padding="@dimen/margin_10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:id="@+id/txtTitleEgresos"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_egresos"
+                                android:textColor="@color/green"
+                                android:textSize="@dimen/text_size_16" />
+
+                            <TextView
+                                android:id="@+id/txtTotalEgresosReporte"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/txtTitleEgresos"
+                                android:text="$ 64,000"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/text_size_18"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:padding="@dimen/margin_10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/txtTitleBalance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_balance"
+                                android:textColor="@color/green"
+                                android:textSize="@dimen/text_size_16" />
+
+                            <TextView
+                                android:id="@+id/txtTotalBalanceReporte"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/txtTitleBalance"
+                                android:text="$ 153,000"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/text_size_18"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:gravity="end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabExportPdf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_gravity="bottom|end"
+                        android:layout_toEndOf="@+id/fabViewGrafic"
+                        android:src="@drawable/ic_trending_up"
+                        android:tint="@color/white_solid"
+                        app:backgroundTint="@color/light_green_800"
+                        app:fabCustomSize="@dimen/size_60" />
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabViewGrafic"
+                        android:layout_marginEnd="@dimen/margin_10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:src="@drawable/ic_picture_as_pdf"
+                        android:tint="@color/white_solid"
+                        app:backgroundTint="@color/light_green_800"
+                        app:fabCustomSize="@dimen/size_60" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/toggle_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Toggle Classic Group" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/toggle_button" />
+
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</FrameLayout>

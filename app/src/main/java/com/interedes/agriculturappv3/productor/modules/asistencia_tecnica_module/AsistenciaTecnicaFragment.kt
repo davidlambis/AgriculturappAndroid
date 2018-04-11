@@ -66,6 +66,11 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             // finally change the color
             window.statusBarColor = ContextCompat.getColor((activity as MenuMainActivity), R.color.purple)
+            (activity as MenuMainActivity).app_bar_main.elevation=0f
+            (activity as MenuMainActivity).app_bar_main.stateListAnimator=null
+
+        }else{
+            (activity as MenuMainActivity).app_bar_main.targetElevation=0f
         }
     }
 

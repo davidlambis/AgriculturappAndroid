@@ -14,7 +14,8 @@ import android.view.WindowManager
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.adapters.SingleAdapter
-import com.interedes.agriculturappv3.productor.modules.accounting_module.ventas.Ventas_Fragment
+import com.interedes.agriculturappv3.productor.modules.accounting_module.reportes.ReporteFragment
+import com.interedes.agriculturappv3.productor.modules.accounting_module.transacciones.Transaccion_Fragment
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.Resources_Menu
 import com.interedes.agriculturappv3.services.listas.Listas
@@ -46,6 +47,7 @@ class AccountingFragment : Fragment(), View.OnClickListener {
     private fun setupInitDesign() {
         (activity as MenuMainActivity).toolbar.title = getString(R.string.title_module_contable)
 
+
         (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.green));
         var iconMenu = (activity as MenuMainActivity).menuItemGlobal
         iconMenu?.isVisible = true
@@ -64,7 +66,13 @@ class AccountingFragment : Fragment(), View.OnClickListener {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             // finally change the color
             window.statusBarColor = ContextCompat.getColor((activity as MenuMainActivity), R.color.green)
-            (activity as MenuMainActivity).toolbar.elevation= 0F
+
+            (activity as MenuMainActivity).app_bar_main.elevation=0f
+            (activity as MenuMainActivity).app_bar_main.stateListAnimator=null
+        }else{
+
+
+            (activity as MenuMainActivity).app_bar_main.targetElevation=0f
         }
     }
 
@@ -76,14 +84,14 @@ class AccountingFragment : Fragment(), View.OnClickListener {
 
             if (lista[position].Identificador.equals("ventas")) {
                 //startActivity(Intent(activity, MapsActivity::class.java))
-                Ventas_Fragment.typeTransaccion=CategoriaPukResources.INGRESO
-                (activity as MenuMainActivity).replaceFragment(Ventas_Fragment())
+                Transaccion_Fragment.typeTransaccion=CategoriaPukResources.INGRESO
+                (activity as MenuMainActivity).replaceFragment(Transaccion_Fragment())
             } else if (lista[position].Identificador.equals("gastos")) {
-                Ventas_Fragment.typeTransaccion=CategoriaPukResources.GASTO
-                (activity as MenuMainActivity).replaceFragment(Ventas_Fragment())
+                Transaccion_Fragment.typeTransaccion=CategoriaPukResources.GASTO
+                (activity as MenuMainActivity).replaceFragment(Transaccion_Fragment())
 
             } else if (lista[position].Identificador.equals("reportes")) {
-
+                (activity as MenuMainActivity).replaceFragment(ReporteFragment())
             }
         }
         recyclerView?.adapter = adapter

@@ -86,8 +86,11 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             // finally change the color
             window.statusBarColor = ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary)
-        }
+            (activity as MenuMainActivity).app_bar_main.elevation=4f
 
+        }else{
+            (activity as MenuMainActivity).app_bar_main.targetElevation=4f
+        }
     }
 
     //region Métodos Interfaz

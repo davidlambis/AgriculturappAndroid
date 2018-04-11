@@ -209,6 +209,8 @@
     <string name="title_add_venta">Agregar Venta</string>
     <string name="title_edit_venta">Editar Venta</string>
     <string name="error_field_required_radio_group">Seleccione un estado de la transaccion</string>
+
+
     <!--Gasto-->
     <string name="title_add_gasto">Agregar Gasto</string>
     <string name="title_edit_gasto">Editar Gasto</string>
@@ -218,6 +220,12 @@
     <string name="title_add_transaccion">Agregar Transaccion</string>
     <string name="tittle_select_cultivo_transaccion">Seleccione el cultivo para agregar una transaccion</string>
     <string name="tittle_puk">Seleccione Tipo Operaccion</string>
+
+    <string name="title_interval_transactions">Intervalo de transacciones</string>
+    <string name="title_ingresos">Ingresos</string>
+    <string name="title_egresos">Egresos</string>
+    <string name="title_balance">Balance</string>
+
 
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
