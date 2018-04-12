@@ -64,8 +64,6 @@ class GenreDataFactory {
         return Genre("Salsa", makeSalsaArtists(), R.drawable.ic_maracas)
     }
 
-
-
     fun makeSalsaArtists(): List<Artist> {
         val hectorLavoe = Artist("Hector Lavoe", true)
         val celiaCruz = Artist("Celia Cruz", false)
@@ -79,7 +77,6 @@ class GenreDataFactory {
         return Genre("Bluegrass", makeBluegrassArtists(), R.drawable.ic_banjo)
     }
 
-
     fun makeBluegrassArtists(): List<Artist> {
         val billMonroe = Artist("Bill Monroe", false)
         val earlScruggs = Artist("Earl Scruggs", false)
@@ -88,5 +85,6 @@ class GenreDataFactory {
 
         return Arrays.asList<Artist>(billMonroe, earlScruggs, osborneBrothers, johnHartford)
     }
+
     }
 }

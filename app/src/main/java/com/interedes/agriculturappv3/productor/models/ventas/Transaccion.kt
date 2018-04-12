@@ -1,7 +1,12 @@
 package com.interedes.agriculturappv3.productor.models.ventas
 
+import android.os.Parcel
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.productor.models.parcelable.KParcelable
+import com.interedes.agriculturappv3.productor.models.parcelable.parcelableCreator
+import com.interedes.agriculturappv3.productor.models.parcelable.readDate
+import com.interedes.agriculturappv3.productor.models.parcelable.writeDate
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
@@ -81,7 +86,7 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
                        @Column(name = "Nombre_Estado_Transaccion")
                        var Nombre_Estado_Transaccion: String? = null
 
-) {
+): KParcelable {
 
     fun getFechaUpdateAt(): String {
         val cal = updatedAt
@@ -94,6 +99,55 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
     fun getFechaTransacccion(): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return sdf.format(Fecha_Transaccion)
+    }
+
+
+
+
+    private constructor(p: Parcel) : this(
+            Id = p.readLong(),
+            Concepto = p.readString(),
+            Fecha_Transaccion = p.readDate(),
+            NaturalezaId = p.readLong(),
+            PucId = p.readLong(),
+            TerceroId = p.readLong(),
+            Nombre_Tercero = p.readString(),
+            Identificacion_Tercero = p.readString(),
+            Valor_Total = p.readDouble(),
+            Valor_Unitario = p.readDouble(),
+            Cantidad = p.readLong(),
+            Cultivo_Id = p.readLong(),
+            Nombre_Cultivo = p.readString(),
+            CategoriaPuk_Id = p.readLong(),
+            Descripcion_Puk = p.readString(),
+            Nombre_Detalle_Producto_Cultivo = p.readString(),
+            Nombre_Estado_Transaccion = p.readString())
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeLong(Id!!)
+        dest.writeString(Concepto)
+        dest.writeLong(EstadoId!!)
+        dest.writeDate(Fecha_Transaccion)
+        dest.writeLong(NaturalezaId!!)
+        dest.writeLong(PucId!!)
+        dest.writeLong(TerceroId!!)
+        dest.writeString(Nombre_Tercero)
+        dest.writeString(Identificacion_Tercero)
+        dest.writeDouble(Valor_Total!!)
+        dest.writeDouble(Valor_Unitario!!)
+        dest.writeLong(Cantidad!!)
+
+        dest.writeLong(Cultivo_Id!!)
+        dest.writeString(Nombre_Cultivo)
+        dest.writeLong(CategoriaPuk_Id!!)
+        dest.writeString(Descripcion_Puk)
+        dest.writeString(Nombre_Detalle_Producto_Cultivo)
+        dest.writeString(Nombre_Estado_Transaccion)
+
+    }
+
+    companion object {
+        @JvmField val CREATOR = parcelableCreator(::Transaccion)
     }
 
 

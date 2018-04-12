@@ -15,12 +15,12 @@
         tools:src="@drawable/ic_banjo" />
 
     <TextView
-        android:id="@+id/list_item_genre_name"
+        android:id="@+id/list_item_categoria_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="72dp"
         android:gravity="center_vertical"
-        tools:text="Genre" />
+        tools:text="Categoria" />
 
     <ImageView
         android:id="@+id/list_item_genre_arrow"

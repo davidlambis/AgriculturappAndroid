@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.models.ventas.resports
+package com.interedes.agriculturappv3.productor.models.parcelable
 
 import android.os.Parcel
 import android.os.Parcelable
