@@ -28,10 +28,12 @@ import com.kaopiz.kprogresshud.KProgressHUD
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import java.util.*
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
@@ -78,6 +80,8 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     var fechaInicio: Date?=null
     var fechaFin: Date?=null
     var confFecha:Boolean?=false
+
+    var isFilterAllCultivos:Boolean?=true
 
     companion object {
         var instance:  ReporteFragment? = null
@@ -183,9 +187,9 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             viewDialogDates?.txtDateStarReport?.setError(getString(R.string.error_field_required))
             focusView = viewDialogDates?.txtDateStarReport
             cancel = true
-        } else if (viewDialogDates?.txtDateStarReport?.text.toString().isEmpty()) {
-            viewDialogDates?.txtDateStarReport?.setError(getString(R.string.error_field_required))
-            focusView =viewDialogDates?.txtDateStarReport
+        } else if (viewDialogDates?.txtDateEndReport?.text.toString().isEmpty()) {
+            viewDialogDates?.txtDateEndReport?.setError(getString(R.string.error_field_required))
+            focusView =viewDialogDates?.txtDateEndReport
             cancel = true
         }
 
@@ -253,19 +257,28 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     }
 
     override fun requestResponseOK() {
-
+        onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
     }
 
     override fun requestResponseError(error: String?) {
-
+        onMessageError(R.color.red_900,error);
     }
 
-    override fun onMessageOk(colorPrimary: Int, msg: String?) {
-
+    override fun onMessageOk(colorPrimary: Int, message: String?) {
+        val color = Color.WHITE
+        val snackbar = Snackbar
+                .make(container_fragment, message!!, Snackbar.LENGTH_LONG)
+        val sbView = snackbar.view
+        sbView.setBackgroundColor(ContextCompat.getColor(activity!!.applicationContext, colorPrimary))
+        val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.quantum_ic_cast_connected_white_24, 0, 0, 0)
+        // textView.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.activity_horizontal_margin));
+        textView.setTextColor(color)
+        snackbar.show()
     }
 
-    override fun onMessageError(colorPrimary: Int, msg: String?) {
-
+    override fun onMessageError(colorPrimary: Int, message: String?) {
+        onMessageOk(colorPrimary, message)
     }
 
     override fun requestResponseItemOK(string1: String?, string2: String?) {
@@ -321,12 +334,18 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     }
 
     override fun setCultivo(cultivo: Cultivo?) {
-        if(cultivoSeletedContainer.visibility==View.GONE){
-            cultivoSeletedContainer.visibility=View.VISIBLE
-        }
-        txtNombreCultivo.setText(cultivo?.getNombreCultio())
-        txtNombreUnidadProductiva.setText(cultivo?.NombreUnidadProductiva)
 
+        if(cultivo!=null){
+            if(cultivoSeletedContainer.visibility==View.GONE){
+                cultivoSeletedContainer.visibility=View.VISIBLE
+            }
+            txtNombreCultivo.setText(cultivo?.getNombreCultio())
+            txtNombreUnidadProductiva.setText(cultivo?.NombreUnidadProductiva)
+        }else{
+            if(cultivoSeletedContainer.visibility==View.VISIBLE){
+                cultivoSeletedContainer.visibility=View.GONE
+            }
+        }
     }
 
     override fun setListReportCategoriasPuk(categoriaList: List<CategoriaPuk>?) {
@@ -365,6 +384,20 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
         title=getString(R.string.title_filter_report)
 
 
+
+        viewDialogFilter?.content_filter_reports?.visibility=View.VISIBLE
+        viewDialogFilter?.content_list_filter?.visibility=View.GONE
+
+        if(isFilterAllCultivos==true){
+            viewDialogFilter?.content_list_filter?.visibility=View.GONE
+            viewDialogFilter?.radioFiltersByAllCultivo?.isChecked=true
+        }else{
+            viewDialogFilter?.content_list_filter?.visibility=View.VISIBLE
+            viewDialogFilter?.radioFilterByCultivo?.isChecked=true
+        }
+
+
+
         if(unidadProductivaGlobal!=null && loteGlobal!=null && cultivoGlobal!=null){
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
@@ -377,6 +410,17 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
 
         //Set Events
         viewDialogFilter?.ivCloseButtonDialogFilter?.setOnClickListener(this)
+        viewDialogFilter?.radioFiltersByAllCultivo?.setOnClickListener(this)
+        viewDialogFilter?.radioFilterByCultivo?.setOnClickListener(this)
+
+
+
+
+
+
+
+
+
 
         val dialog = MaterialDialog.Builder(activity!!)
                 .title(title)
@@ -400,10 +444,14 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
                 .theme(Theme.DARK)
                 .onPositive(
                         { dialog1, which ->
-                            if(presenter?.validarListasFilterReports()==true){
+                            if(viewDialogFilter?.content_list_filter?.visibility==View.GONE){
                                 dialog1.dismiss()
-                                presenter?.getTotalTransacciones(Cultivo_Id,null,null)
-                                presenter?.getCultivo(Cultivo_Id)
+                            }else{
+                                if(presenter?.validarListasFilterReports()==true){
+                                    dialog1.dismiss()
+                                    presenter?.getTotalTransacciones(Cultivo_Id,fechaInicio,fechaFin)
+                                    presenter?.getCultivo(Cultivo_Id)
+                                }
                             }
                         })
                 .onNegative({ dialog1, which ->
@@ -427,6 +475,11 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
         var title:String?=null
         title=getString(R.string.tittle_filter)
 
+        if(fechaInicio!=null && fechaFin!=null){
+            val format = SimpleDateFormat("dd/MM/yyyy")
+            viewDialogDates?.txtDateEndReport?.setText( format.format(fechaFin))
+            viewDialogDates?.txtDateStarReport?.setText( format.format(fechaInicio))
+        }
 
 
         viewDialogDates?.txtDateStarReport?.setOnClickListener(this)
@@ -505,6 +558,17 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
                 confFecha=false
                 updateDate()
             }
+
+            R.id.radioFiltersByAllCultivo -> {
+                viewDialogFilter?.content_list_filter?.visibility=View.GONE
+                presenter?.getTotalTransacciones(null,fechaInicio,fechaFin)
+                setCultivo(null)
+                isFilterAllCultivos=true
+            }
+            R.id.radioFilterByCultivo -> {
+                isFilterAllCultivos=false
+                viewDialogFilter?.content_list_filter?.visibility=View.VISIBLE
+            }
         }
     }
 
@@ -531,7 +595,7 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     }
 
     private fun mostrarResultadosFechaInicio() {
-        val format1 = SimpleDateFormat("MM/dd/yyyy")
+        val format1 = SimpleDateFormat("dd/MM/yyyy")
         val formatted = format1.format(dateTime.time)
         fechaInicio=dateTime.time
         viewDialogDates?.txtDateStarReport?.setText(formatted)
@@ -539,7 +603,7 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
     }
 
     private fun mostrarResultadosFechaFin() {
-        val format1 = SimpleDateFormat("MM/dd/yyyy")
+        val format1 = SimpleDateFormat("dd/MM/yyyy")
         val formatted = format1.format(dateTime.time)
         fechaFin=dateTime.time
         viewDialogDates?.txtDateEndReport?.setText(formatted)
@@ -569,7 +633,5 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
         presenter?.onResume(activity!!.applicationContext)
         super.onResume()
     }
-
     //endregion
-
 }

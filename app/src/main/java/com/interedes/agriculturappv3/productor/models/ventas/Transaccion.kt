@@ -32,6 +32,10 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
                        @Column(name = "Fecha_Transaccion")
                        var Fecha_Transaccion: Date? = null,
 
+                       @SerializedName("FechaString")
+                       @Column(name = "FechaString")
+                       var FechaString: String? = null,
+
                        @Column(name = "updated_at")
                        var updatedAt: Calendar = Calendar.getInstance(),
 

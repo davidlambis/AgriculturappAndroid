@@ -42,6 +42,7 @@ import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.diaog_form_transacciones.view.*
 import kotlinx.android.synthetic.main.fragment_transacciones.*
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -267,10 +268,17 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
 
     override fun registerTransaccion() {
         if (presenter?.validarCampos() == true) {
+
+
+            val dateFormatFecha = SimpleDateFormat("MM-dd-yyyy")
+            val dateFecha = Date()
+            val FechaString = dateFormatFecha.format(Calendar.getInstance().getTime())
+
             val transaccion = Transaccion()
             transaccion.Concepto=viewDialog?.txtConceptoVenta?.text.toString()
             transaccion.EstadoId=1
             transaccion.Fecha_Transaccion= Calendar.getInstance().getTime()
+            transaccion.FechaString= FechaString
             transaccion.NaturalezaId=1
             transaccion.PucId=pukGlobal?.Id
             transaccion.Descripcion_Puk=pukGlobal?.Descripcion
@@ -290,12 +298,19 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
 
     override fun updateTransaccion(transaccionEdit: Transaccion) {
         if (presenter?.validarCampos() == true) {
+
+
+
             val transaccion = Transaccion()
             transaccion.Id=transaccionEdit.Id
             transaccion.Nombre_Cultivo=cultivoGlobal?.Nombre
             transaccion.Concepto=viewDialog?.txtConceptoVenta?.text.toString()
             transaccion.EstadoId=1
             transaccion.Fecha_Transaccion= transaccionEdit.Fecha_Transaccion
+
+            transaccion.FechaString= transaccionEdit.FechaString
+
+
             transaccion.NaturalezaId=1
             transaccion.PucId=pukGlobal?.Id
             transaccion.Descripcion_Puk=pukGlobal?.Descripcion

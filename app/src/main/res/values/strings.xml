@@ -233,6 +233,8 @@
 
     <!--Reports-->
     <string name="title_filter_report">Filtrar Reporte</string>
+    <string name="title_filter_report_all_cultivos">Todos los cultivos</string>
+    <string name="title_filter_report_by_cultivo">Por Cultivo</string>
 
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>

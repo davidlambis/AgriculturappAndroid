@@ -21,6 +21,10 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.raizlabs.android.dbflow.sql.language.property.PropertyFactory
 import java.lang.Double.sum
 import java.util.*
+import android.os.AsyncTask.execute
+import com.raizlabs.android.dbflow.sql.queriable.StringQuery
+import java.text.SimpleDateFormat
+
 
 class ReporteRepository: IMainViewReportes.Repository {
 
@@ -35,7 +39,9 @@ class ReporteRepository: IMainViewReportes.Repository {
         var listCategoriaPuk=ArrayList<CategoriaPuk>()
         var categoriaPukList=Listas.listCategoriaPuk()
 
-
+        var sumIngresos:CountOfPost?=null
+        var sumEgresos:CountOfPost?=null
+        var balance:Double?=null
 
         if(cultivo_id==null && dateStart==null && dateEnd==null){
             for (itemCategorias in categoriaPukList){
@@ -49,6 +55,23 @@ class ReporteRepository: IMainViewReportes.Repository {
                 var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
+
+            sumIngresos = SQLite.select(
+                    Method.sum(Transaccion_Table.Valor).`as`("count"))
+                    .from<Transaccion>(Transaccion::class.java)
+                    .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.INGRESO))
+                    .queryCustomSingle(CountOfPost::class.java)
+
+
+            sumEgresos = SQLite.select(
+                    Method.sum(Transaccion_Table.Valor).`as`("count"))
+                    .from<Transaccion>(Transaccion::class.java)
+                    .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.GASTO))
+                    .queryCustomSingle(CountOfPost::class.java)
+
+            balance= sumIngresos?.count!!-sumEgresos?.count!!
+
+
         }else if(cultivo_id!=null && dateStart==null && dateEnd==null){
             for (itemCategorias in categoriaPukList){
                 var listTransaciones=ArrayList<Transaccion>()
@@ -61,16 +84,40 @@ class ReporteRepository: IMainViewReportes.Repository {
                 var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
+
+
+            sumIngresos = SQLite.select(
+                    Method.sum(Transaccion_Table.Valor).`as`("count"))
+                    .from<Transaccion>(Transaccion::class.java)
+                    .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.INGRESO))
+                    .and(Transaccion_Table.Cultivo_Id.eq(cultivo_id))
+                    .queryCustomSingle(CountOfPost::class.java)
+
+
+            sumEgresos = SQLite.select(
+                    Method.sum(Transaccion_Table.Valor).`as`("count"))
+                    .from<Transaccion>(Transaccion::class.java)
+                    .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.GASTO))
+                    .and(Transaccion_Table.Cultivo_Id.eq(cultivo_id))
+                    .queryCustomSingle(CountOfPost::class.java)
+
+            balance= sumIngresos?.count!!-sumEgresos?.count!!
         }
 
-        else if(cultivo_id!=null && dateStart!=null && dateEnd!=null){
+        else if(cultivo_id==null && dateStart!=null && dateEnd!=null){
+
+            var format1 = SimpleDateFormat("MM-dd-yyyy")
+            var formattedStart = format1.format(dateStart.getTime())
+            var formattedEnd = format1.format(dateEnd.getTime())
+
+
+
             for (itemCategorias in categoriaPukList){
                 var listTransaciones=ArrayList<Transaccion>()
                 var valor_total= 0.0
                 var transaccion= SQLite.select().from(Transaccion::class.java!!)
                         .where(Transaccion_Table.CategoriaPuk_Id.eq(itemCategorias.Id))
-                        .and(Transaccion_Table.Cultivo_Id.eq(cultivo_id))
-                        .and(Transaccion_Table.Fecha_Transaccion.between(dateStart).and(dateEnd))
+                        .and(Transaccion_Table.FechaString.between(formattedStart).and(formattedEnd))
                         .queryList()
                 for (item in transaccion){
                     listTransaciones.add(item)
@@ -79,26 +126,71 @@ class ReporteRepository: IMainViewReportes.Repository {
                 var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
+
+
+            sumIngresos = SQLite.select(
+                    Method.sum(Transaccion_Table.Valor).`as`("count"))
+                    .from<Transaccion>(Transaccion::class.java)
+                    .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.INGRESO))
+                    .and(Transaccion_Table.FechaString.between(formattedStart).and(formattedEnd))
+                    .queryCustomSingle(CountOfPost::class.java)
+
+            sumEgresos = SQLite.select(
+                    Method.sum(Transaccion_Table.Valor).`as`("count"))
+                    .from<Transaccion>(Transaccion::class.java)
+                    .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.GASTO))
+                    .and(Transaccion_Table.FechaString.between(formattedStart).and(formattedEnd))
+                    .queryCustomSingle(CountOfPost::class.java)
+
+            balance= sumIngresos?.count!!-sumEgresos?.count!!
         }
 
-        var sumIngresos = SQLite.select(
-                Method.sum(Transaccion_Table.Valor).`as`("count"))
-                .from<Transaccion>(Transaccion::class.java)
-                .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.INGRESO))
-                .queryCustomSingle(CountOfPost::class.java)
+        else if(cultivo_id!=null && dateStart!=null && dateEnd!=null){
+
+            var format1 = SimpleDateFormat("MM-dd-yyyy")
+            var formattedStart = format1.format(dateStart.getTime())
+            var formattedEnd = format1.format(dateEnd.getTime())
+
+            for (itemCategorias in categoriaPukList){
+                var listTransaciones=ArrayList<Transaccion>()
+                var valor_total= 0.0
+                var transaccion= SQLite.select().from(Transaccion::class.java!!)
+                        .where(Transaccion_Table.CategoriaPuk_Id.eq(itemCategorias.Id))
+                        .and(Transaccion_Table.Cultivo_Id.eq(cultivo_id))
+                        .and(Transaccion_Table.FechaString.between(formattedStart).and(formattedEnd))
+                        .queryList()
+                for (item in transaccion){
+                    listTransaciones.add(item)
+                    valor_total= valor_total!!+item.Valor_Total!!
+                }
+                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,listTransaciones)
+                listCategoriaPuk.add(categoria)
+            }
 
 
-        var sumEgresos = SQLite.select(
-                Method.sum(Transaccion_Table.Valor).`as`("count"))
-                .from<Transaccion>(Transaccion::class.java)
-                .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.GASTO))
-                .queryCustomSingle(CountOfPost::class.java)
+            sumIngresos = SQLite.select(
+                    Method.sum(Transaccion_Table.Valor).`as`("count"))
+                    .from<Transaccion>(Transaccion::class.java)
+                    .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.INGRESO))
+                    .and(Transaccion_Table.Cultivo_Id.eq(cultivo_id))
+                    .and(Transaccion_Table.FechaString.between(formattedStart).and(formattedEnd))
+                    .queryCustomSingle(CountOfPost::class.java)
 
-        var balance= sumIngresos?.count!!-sumEgresos?.count!!
+            sumEgresos = SQLite.select(
+                    Method.sum(Transaccion_Table.Valor).`as`("count"))
+                    .from<Transaccion>(Transaccion::class.java)
+                    .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.GASTO))
+                    .and(Transaccion_Table.Cultivo_Id.eq(cultivo_id))
+                    .and(Transaccion_Table.FechaString.between(formattedStart).and(formattedEnd))
+                    .queryCustomSingle(CountOfPost::class.java)
+
+            balance= sumIngresos?.count!!-sumEgresos?.count!!
+        }
+
+
 
 
         var balanceContable= BalanceContable(sumIngresos?.count!!,sumEgresos?.count!!,balance)
-
         postEventOkBalanceContable(RequestEventReporte.EVENT_BALANCE_CONTABLE,balanceContable)
         postEventListCategorias(RequestEventReporte.LIST_EVENT_REPORT_CATEGORIAS,listCategoriaPuk,null)
 

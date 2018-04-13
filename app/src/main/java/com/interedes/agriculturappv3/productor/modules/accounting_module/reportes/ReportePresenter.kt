@@ -71,8 +71,6 @@ class ReportePresenter(var mainView: IMainViewReportes.MainView?):IMainViewRepor
     }
 
 
-
-
     //region Suscribe Events
     @Subscribe
     override fun onEventMainThread(event: RequestEventReporte?) {
@@ -114,9 +112,6 @@ class ReportePresenter(var mainView: IMainViewReportes.MainView?):IMainViewRepor
                 mainView?.setListReportCategoriasPuk(categoriaList)
             }
 
-
-
-
         //Get Single
             RequestEventReporte.GET_EVENT_CULTIVO -> {
                 var cultivo = event.objectMutable as Cultivo
@@ -148,15 +143,12 @@ class ReportePresenter(var mainView: IMainViewReportes.MainView?):IMainViewRepor
         return false
     }
 
-
-
     override fun validarListasFilterReports(): Boolean {
         if (mainView?.validarListasFilterReports() == true) {
             return true
         }
         return false
     }
-
 
 
     override fun getCultivo(cultivo_id: Long?) {
@@ -227,9 +219,7 @@ class ReportePresenter(var mainView: IMainViewReportes.MainView?):IMainViewRepor
         mainView?.verificateConnection()
     }
 
-
     private fun onMessageOkItem() {
-
         mainView?.requestResponseOK()
     }
     //endregion
