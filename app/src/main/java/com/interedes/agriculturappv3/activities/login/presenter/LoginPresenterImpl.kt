@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.activities.login.presenter
 
+import com.interedes.agriculturappv3.activities.login.events.LoginEvent
 import com.interedes.agriculturappv3.activities.login.interactor.LoginInteractor
 import com.interedes.agriculturappv3.activities.login.interactor.LoginInteractorImpl
 import com.interedes.agriculturappv3.activities.login.ui.LoginView
@@ -30,12 +31,12 @@ class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
     }
 
     @Subscribe
-    override fun onEventMainThread(event: RequestEvent?) {
+    override fun onEventMainThread(event: LoginEvent?) {
         when (event?.eventType) {
-            RequestEvent.ERROR_EVENT -> {
+            LoginEvent.ERROR_EVENT -> {
                 onErrorIngresar(event.mensajeError)
             }
-            RequestEvent.SAVE_EVENT -> {
+            LoginEvent.SAVE_EVENT -> {
                 loginView?.navigateToMainActivity()
             }
         }

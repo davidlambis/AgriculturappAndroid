@@ -88,7 +88,7 @@ data class Producto(@PrimaryKey(autoincrement = true)
                     var NombreCalidad: String? = null) {
 
     override fun toString(): String {
-        return Descripcion!!
+        return Nombre!!
     }
 
     fun getFechaLimiteDisponibilidadFormat(): String {

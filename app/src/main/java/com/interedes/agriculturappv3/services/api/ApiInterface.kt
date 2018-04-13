@@ -5,6 +5,7 @@ import com.interedes.agriculturappv3.productor.models.login.Login
 import com.interedes.agriculturappv3.productor.models.login.LoginResponse
 import com.interedes.agriculturappv3.productor.models.rol.RolResponse
 import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPagoResponse
+import com.interedes.agriculturappv3.productor.models.rol.AspNetRolResponse
 import com.interedes.agriculturappv3.productor.models.usuario.*
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -19,15 +20,15 @@ interface ApiInterface {
 
     //region Peticiones
     //Get Roles
-    @GET("odata/agriculturebd/Rols")
+    @GET("odata/agpbd/Rols")
     fun getRoles(): Call<RolResponse>
 
     //Get Métodos Pago
-    @GET("odata/agriculturebd/MetodoPagos")
+    @GET("odata/agpbd/MetodoPagos")
     fun getMetodoPagos(): Call<MetodoPagoResponse>
 
     //Get Detalle Métodos Pago
-    @GET("odata/agriculturebd/DetalleMetodopagos")
+    @GET("odata/agpbd/DetalleMetodopagos")
     fun getDetalleMetodoPagos(): Call<DetalleMetodoPagoResponse>
 
     //Post Registro Usuarios
@@ -51,6 +52,9 @@ interface ApiInterface {
     @GET("auth/ApplicationUsers")
     fun getAuthUserByCorreo(@Header("Authorization") token: String, @Query("\$filter") filter: String): Call<GetUserResponse>
 
+    //Get en AspNetRoles por Tipo User
+    @GET("auth/ApplicationRoles")
+    fun getAspNetRolesByTipoUser(@Header("Authorization") token: String, @Query("\$filter") filter: String): Call<AspNetRolResponse>
 
     //endregion
 

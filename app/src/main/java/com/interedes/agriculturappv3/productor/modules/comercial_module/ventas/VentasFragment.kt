@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.modules.comercial_module.ofertas
+package com.interedes.agriculturappv3.productor.modules.comercial_module.ventas
 
 
 import android.content.DialogInterface
@@ -25,22 +25,23 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.Cultivo
 import com.interedes.agriculturappv3.productor.models.Lote
 import com.interedes.agriculturappv3.productor.models.UnidadProductiva
-import com.interedes.agriculturappv3.productor.models.ofertas.Oferta
+import com.interedes.agriculturappv3.productor.models.compras.Compras
 import com.interedes.agriculturappv3.productor.models.producto.Producto
-import com.interedes.agriculturappv3.productor.modules.comercial_module.ofertas.adapters.OfertasAdapter
+import com.interedes.agriculturappv3.productor.modules.comercial_module.ventas.adapters.VentasAdapter
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
-import kotlinx.android.synthetic.main.fragment_ofertas.*
+import kotlinx.android.synthetic.main.fragment_ventas_comercial.*
 import java.util.ArrayList
 
 
-class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
+class VentasFragment : Fragment(), IVentas.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    var presenter: IOfertas.Presenter? = null
-    var ofertasList: ArrayList<Oferta>? = ArrayList<Oferta>()
-    var adapter: OfertasAdapter? = null
+
+    var presenter: IVentas.Presenter? = null
+    var ventasList: ArrayList<Compras>? = ArrayList<Compras>()
+    var adapter: VentasAdapter? = null
     var viewDialogFilter: View? = null
     var cultivoGlobal: Cultivo? = null
     var unidadProductivaGlobal: UnidadProductiva? = null
@@ -50,27 +51,27 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
 
     var Producto_Id: Long? = null
 
+    companion object {
+        var instance: VentasFragment? = null
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ofertas, container, false)
-    }
-
-    companion object {
-        var instance: OfertasFragment? = null
+        return inflater.inflate(R.layout.fragment_ventas_comercial, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        OfertasFragment.instance = this
-        presenter = OfertasPresenter(this)
+        VentasFragment.instance = this
+        presenter = VentasPresenter(this)
         presenter?.onCreate()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
-        (activity as MenuMainActivity).toolbar.title = getString(R.string.title_ofertas)
+        (activity as MenuMainActivity).toolbar.title = getString(R.string.title_ventas)
         ivBackButton.setOnClickListener(this)
         swipeRefreshLayout.setOnRefreshListener(this)
         searchFilter.setOnClickListener(this)
@@ -79,19 +80,18 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
 
     private fun initAdapter() {
         recyclerView?.layoutManager = LinearLayoutManager(activity)
-        adapter = OfertasAdapter(ofertasList!!)
+        adapter = VentasAdapter(ventasList!!)
         recyclerView?.adapter = adapter
     }
 
     private fun setupInjection() {
-        presenter?.getListOfertas(Producto_Id)
+        presenter?.getListVentas(Producto_Id)
     }
 
-    //region on Click
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.searchFilter -> {
-                showAlertDialogFilterOferta()
+                showAlertDialogFilterVenta()
             }
             R.id.ivBackButton -> {
                 ivBackButton?.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
@@ -102,7 +102,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
             }
         }
     }
-    //endregion
+
 
     //region Métodos Interfaz
     override fun showProgress() {
@@ -113,12 +113,12 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         swipeRefreshLayout.isRefreshing = false
     }
 
-    override fun setListOfertas(listOfertas: List<Oferta>) {
+    override fun setListVentas(listVentas: List<Compras>) {
         adapter?.clear()
-        ofertasList?.clear()
-        adapter?.setItems(listOfertas)
+        ventasList?.clear()
+        adapter?.setItems(listVentas)
         hideProgress()
-        setResults(listOfertas.size)
+        setResults(listVentas.size)
     }
 
     override fun setResults(ofertas: Int) {
@@ -153,14 +153,14 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
             return true;
         }
         return false
+
     }
 
-    override fun showAlertDialogFilterOferta() {
+    override fun showAlertDialogFilterVenta() {
         val inflater = this.layoutInflater
         viewDialogFilter = inflater.inflate(R.layout.dialog_select_spinners, null)
         presenter?.setListSpinnerUnidadProductiva()
-
-        val title: String? = getString(R.string.select_product_ofertas)
+        val title: String? = getString(R.string.select_product_ventas)
         if (unidadProductivaGlobal != null && loteGlobal != null && cultivoGlobal != null && productoGlobal != null) {
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
@@ -199,7 +199,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
                         { dialog1, which ->
                             if (presenter?.validarListas() == true) {
                                 dialog1.dismiss()
-                                presenter?.getListOfertas(Producto_Id)
+                                presenter?.getListVentas(Producto_Id)
                                 presenter?.getProducto(Producto_Id)
                             }
                         })
@@ -217,7 +217,6 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         dialog.getWindow().setAttributes(lp)
 //        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         _dialogFilter = dialog
-
     }
 
     override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?) {
@@ -286,7 +285,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
         })
-        builder.setIcon(R.drawable.ic_ofertas)
+        builder.setIcon(R.drawable.ic_ventas)
         return builder.show()
     }
 
@@ -298,7 +297,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         }
     }
 
-    override fun confirmDelete(oferta: Oferta): AlertDialog? {
+    override fun confirmDelete(venta: Compras): AlertDialog? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -311,13 +310,12 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         txtPrecioProducto?.setText(getString(R.string.title_adapter_precio_producto, producto?.Precio))
         txtNombreProducto?.setText(producto?.Nombre)
     }
+
+
     //endregion
 
-    //region Methods
     override fun onRefresh() {
         showProgress()
-        presenter?.getListOfertas(Producto_Id)
+        presenter?.getListVentas(Producto_Id)
     }
-    //endregion
-
 }

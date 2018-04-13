@@ -15,6 +15,7 @@ import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenter
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenterImpl
+import com.interedes.agriculturappv3.productor.models.login.Login
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import kotlinx.android.synthetic.main.activity_login.*
@@ -47,7 +48,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
             onMessageOk(R.color.colorPrimary, getString(R.string.snackbar_verificacion_correo))
         }
         //Registra al receiver de Internet
-        registerInternetReceiver()
+        //registerInternetReceiver()
     }
 
 
@@ -66,11 +67,11 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     //Login
     override fun ingresar() {
         if (presenter?.validarCampos() == true) {
-            /* val login = Login(edtCorreo?.text?.trim().toString(),
-                     edtContrasena?.text?.trim()?.toString())
-             presenter?.ingresar(login) */
-            progressBar.visibility = View.VISIBLE
-            startActivity(Intent(this, MenuMainActivity::class.java))
+            val login = Login(edtCorreo?.text?.trim().toString(),
+                    edtContrasena?.text?.trim()?.toString())
+            presenter?.ingresar(login)
+            /* progressBar.visibility = View.VISIBLE
+             startActivity(Intent(this, MenuMainActivity::class.java))*/
         }
     }
 
@@ -156,6 +157,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
 
     //region Conexión a Internet
     override fun checkConnection(): Boolean? {
+        registerInternetReceiver()
         return ConnectivityReceiver.isConnected
     }
 

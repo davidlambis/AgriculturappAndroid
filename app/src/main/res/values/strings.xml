@@ -199,22 +199,32 @@
     <string name="title_adapter_detalle_producto">Tipo Producto : %s</string>
     <string name="title_adapter_descripcion_producto">Descripción : %s</string>
     <string name="title_adapter_fecha_disponibilidad">Fecha Límite : %s</string>
-    <string name="title_adapter_precio_producto">Precio producto : %f</string>
+    <string name="title_adapter_precio_producto">Precio : $%f</string>
     <string name="title_alert_delete_producto">¿Está seguro de eliminar este producto?</string>
     <string name="spinner_producto">Producto</string>
     <string name="select_product_ofertas">Selecciona el producto para consultar sus ofertas</string>
+    <string name="edit_text_nombre_producto">Nombre Producto</string>
     <!--Tipo Producto-->
 
     <!-- Ofertas Productor -->
     <string name="title_ofertas">Ofertas</string>
+    <string name="title_cliente">Cliente: %s</string>
+    <string name="title_precio_oferta">Valor : %f</string>
+    <string name="title_fecha_oferta">Fecha: %s</string>
+    <string name="select_product_ventas">Selecciona el producto para consultar sus ventas</string>
+
+    <!-- Ventas Comercial -->
+    <string name="title_ventas">Ventas</string>
+
+    <!-- Clientes -->
+    <string name="title_clientes">Clientes</string>
+    <string name="nombre_cliente">%1s %2s</string>
 
     <!--Ventas-->
 
     <string name="title_add_venta">Agregar Venta</string>
     <string name="title_edit_venta">Editar Venta</string>
     <string name="error_field_required_radio_group">Seleccione un estado de la transaccion</string>
-
-
     <!--Gasto-->
     <string name="title_add_gasto">Agregar Gasto</string>
     <string name="title_edit_gasto">Editar Gasto</string>
@@ -224,17 +234,13 @@
     <string name="title_add_transaccion">Agregar Transaccion</string>
     <string name="tittle_select_cultivo_transaccion">Seleccione el cultivo para agregar una transaccion</string>
     <string name="tittle_puk">Seleccione Tipo Operaccion</string>
-
-    <string name="title_interval_transactions">Intervalo de transacciones</string>
+    <string name="title_interval_transactions">Intervalo de Transacción</string>
     <string name="title_ingresos">Ingresos</string>
     <string name="title_egresos">Egresos</string>
     <string name="title_balance">Balance</string>
-
-
-    <!--Reports-->
-    <string name="title_filter_report">Filtrar Reporte</string>
-    <string name="title_filter_report_all_cultivos">Todos los cultivos</string>
-    <string name="title_filter_report_by_cultivo">Por Cultivo</string>
+    <string name="title_filter_report_all_cultivos">Filtrar por todos los cultivos</string>
+    <string name="title_filter_report_by_cultivo">Filtrar por cultivo</string>
+    <string name="title_filter_report">Filtrar reporte</string>
 
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>

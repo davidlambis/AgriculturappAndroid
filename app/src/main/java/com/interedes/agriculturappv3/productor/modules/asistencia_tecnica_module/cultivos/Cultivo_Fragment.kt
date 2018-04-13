@@ -48,7 +48,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     var viewDialog: View? = null
     var _dialogRegisterUpdate: AlertDialog? = null
 
-    var viewDialogFilter:View?= null
+    var viewDialogFilter: View? = null
     var _dialogFilter: MaterialDialog? = null
 
     //adapter
@@ -60,11 +60,11 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     var Unidad_Medida_Id: Long? = 0
     var Lote_Id: Long? = 0
 
-    var unidadProductivaGlobal:UnidadProductiva?=null
-    var unidadMedidaGlobal:Unidad_Medida?=null
-    var loteGlobal:Lote?=null
-    var tipoProductoGlobal:TipoProducto?=null
-    var detalleTipoProductoGlobal:DetalleTipoProducto?=null
+    var unidadProductivaGlobal: UnidadProductiva? = null
+    var unidadMedidaGlobal: Unidad_Medida? = null
+    var loteGlobal: Lote? = null
+    var tipoProductoGlobal: TipoProducto? = null
+    var detalleTipoProductoGlobal: DetalleTipoProducto? = null
 
     //Fecha
     internal var dateTime = Calendar.getInstance()
@@ -128,7 +128,9 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                 fecha = false
                 updateDate()
             }
-
+            R.id.ivCloseButtonDialogFilter -> {
+                _dialogFilter?.dismiss()
+            }
 
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
@@ -140,10 +142,10 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                 showAlertDialogFilterCultivo(true)
             }
 
-            R.id.btnSaveCultivo->{
-                if(cultivoGlobal==null){
+            R.id.btnSaveCultivo -> {
+                if (cultivoGlobal == null) {
                     registerCultivo()
-                }else{
+                } else {
                     updateCultivo()
                 }
             }
@@ -265,12 +267,12 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo.Nombre = viewDialog?.edtNombreCultivo?.text?.trim()?.toString()
             cultivo.Unidad_Medida_Id = Unidad_Medida_Id
             cultivo.Nombre_Unidad_Medida = viewDialog?.spinnerUnidadMedidaCosecha?.text?.toString()
-            cultivo.NombreUnidadProductiva=viewDialog?.txtUnidadProductivaSelected?.text.toString()
-            cultivo.NombreLote=viewDialog?.txtLoteSelected?.text.toString()
-            cultivo.Nombre_Tipo_Producto=tipoProductoGlobal?.Nombre
+            cultivo.NombreUnidadProductiva = viewDialog?.txtUnidadProductivaSelected?.text.toString()
+            cultivo.NombreLote = viewDialog?.txtLoteSelected?.text.toString()
+            cultivo.Nombre_Tipo_Producto = tipoProductoGlobal?.Nombre
             cultivo.DetalleTipoProductoId = detalleTipoProductoGlobal?.Id
             cultivo.Nombre_Detalle_Tipo_Producto = detalleTipoProductoGlobal?.Nombre
-            cultivo.Id_Tipo_Producto=tipoProductoGlobal?.Id
+            cultivo.Id_Tipo_Producto = tipoProductoGlobal?.Id
             presenter?.registerCultivo(cultivo)
         }
     }
@@ -287,12 +289,12 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo.Nombre = viewDialog?.edtNombreCultivo?.text?.trim()?.toString()
             cultivo.Unidad_Medida_Id = Unidad_Medida_Id
             cultivo.Nombre_Unidad_Medida = viewDialog?.spinnerUnidadMedidaCosecha?.text?.toString()
-            cultivo.NombreUnidadProductiva=viewDialog?.txtUnidadProductivaSelected?.text.toString()
-            cultivo.NombreLote=viewDialog?.txtLoteSelected?.text.toString()
-            cultivo.Nombre_Tipo_Producto=tipoProductoGlobal?.Nombre
+            cultivo.NombreUnidadProductiva = viewDialog?.txtUnidadProductivaSelected?.text.toString()
+            cultivo.NombreLote = viewDialog?.txtLoteSelected?.text.toString()
+            cultivo.Nombre_Tipo_Producto = tipoProductoGlobal?.Nombre
             cultivo.DetalleTipoProductoId = detalleTipoProductoGlobal?.Id
-            cultivo.Nombre_Detalle_Tipo_Producto =  viewDialog?.spinnerDetalleTipoProducto?.text?.toString()
-            cultivo.Id_Tipo_Producto=tipoProductoGlobal?.Id
+            cultivo.Nombre_Detalle_Tipo_Producto = viewDialog?.spinnerDetalleTipoProducto?.text?.toString()
+            cultivo.Id_Tipo_Producto = tipoProductoGlobal?.Id
             presenter?.updateCultivo(cultivo)
         }
     }
@@ -367,78 +369,78 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     override fun showAlertDialogCultivo(cultivo: Cultivo?): AlertDialog? {
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_cultivo, null)
-            val btnCloseDialog = viewDialog?.ivClosetDialogCultivo
-            val edtFechaInicio = viewDialog?.edtFechaInicio
-            val edtFechaFin = viewDialog?.edtFechaFin
-             presenter?.setListSpinnerTipoProducto()
-             presenter?.setListSpinnerUnidadMedida()
-            //Set Events
-            btnCloseDialog?.setOnClickListener(this)
-            edtFechaInicio?.setOnClickListener(this)
-            edtFechaFin?.setOnClickListener(this)
-            viewDialog?.btnSaveCultivo?.setOnClickListener(this)
+        val btnCloseDialog = viewDialog?.ivClosetDialogCultivo
+        val edtFechaInicio = viewDialog?.edtFechaInicio
+        val edtFechaFin = viewDialog?.edtFechaFin
+        presenter?.setListSpinnerTipoProducto()
+        presenter?.setListSpinnerUnidadMedida()
+        //Set Events
+        btnCloseDialog?.setOnClickListener(this)
+        edtFechaInicio?.setOnClickListener(this)
+        edtFechaFin?.setOnClickListener(this)
+        viewDialog?.btnSaveCultivo?.setOnClickListener(this)
 
-            var title:String?=null
+        var title: String? = null
 
-            //REGISTER
-            if (cultivo == null) {
-                viewDialog?.txtUnidadProductivaSelected?.text=unidadProductivaGlobal?.Nombre
-                viewDialog?.txtLoteSelected?.text=loteGlobal?.Nombre
-                viewDialog?.txtTitle?.text=getString(R.string.title_add_cultivo)
-                title
-            }
-            //UPDATE
-            else {
-                viewDialog?.txtTitle?.text=getString(R.string.tittle_edit_cultivo)
-                presenter?.setListSpinnerDetalleTipoProducto(cultivo.Id_Tipo_Producto)
-                viewDialog?.txtUnidadProductivaSelected?.text=cultivo.NombreUnidadProductiva
-                viewDialog?.txtLoteSelected?.text=cultivo?.NombreLote
-                viewDialog?.spinnerUnidadMedidaCosecha?.setText(cultivo.Nombre_Unidad_Medida)
-                viewDialog?.edtNombreCultivo?.setText(cultivo.Nombre)
-                viewDialog?.edtDescripcionCultivo?.setText(cultivo.Descripcion)
-                viewDialog?.edtEstimadoCosecha?.setText(cultivo.EstimadoCosecha.toString())
-                viewDialog?.edtFechaInicio?.setText(cultivo.FechaIncio)
-                viewDialog?.edtFechaFin?.setText(cultivo.FechaFin)
-                viewDialog?.spinnerTipoProducto?.setText(cultivo.Nombre_Tipo_Producto)
-                viewDialog?.spinnerDetalleTipoProducto?.setText(cultivo.Nombre_Detalle_Tipo_Producto)
-                tipoProductoGlobal = TipoProducto(cultivo.Id_Tipo_Producto, cultivo.Nombre_Tipo_Producto)
-                detalleTipoProductoGlobal=DetalleTipoProducto(cultivo.DetalleTipoProductoId,cultivo.Nombre_Detalle_Tipo_Producto)
-            }
+        //REGISTER
+        if (cultivo == null) {
+            viewDialog?.txtUnidadProductivaSelected?.text = unidadProductivaGlobal?.Nombre
+            viewDialog?.txtLoteSelected?.text = loteGlobal?.Nombre
+            viewDialog?.txtTitle?.text = getString(R.string.title_add_cultivo)
+            title
+        }
+        //UPDATE
+        else {
+            viewDialog?.txtTitle?.text = getString(R.string.tittle_edit_cultivo)
+            presenter?.setListSpinnerDetalleTipoProducto(cultivo.Id_Tipo_Producto)
+            viewDialog?.txtUnidadProductivaSelected?.text = cultivo.NombreUnidadProductiva
+            viewDialog?.txtLoteSelected?.text = cultivo?.NombreLote
+            viewDialog?.spinnerUnidadMedidaCosecha?.setText(cultivo.Nombre_Unidad_Medida)
+            viewDialog?.edtNombreCultivo?.setText(cultivo.Nombre)
+            viewDialog?.edtDescripcionCultivo?.setText(cultivo.Descripcion)
+            viewDialog?.edtEstimadoCosecha?.setText(cultivo.EstimadoCosecha.toString())
+            viewDialog?.edtFechaInicio?.setText(cultivo.FechaIncio)
+            viewDialog?.edtFechaFin?.setText(cultivo.FechaFin)
+            viewDialog?.spinnerTipoProducto?.setText(cultivo.Nombre_Tipo_Producto)
+            viewDialog?.spinnerDetalleTipoProducto?.setText(cultivo.Nombre_Detalle_Tipo_Producto)
+            tipoProductoGlobal = TipoProducto(cultivo.Id_Tipo_Producto, cultivo.Nombre_Tipo_Producto)
+            detalleTipoProductoGlobal = DetalleTipoProducto(cultivo.DetalleTipoProductoId, cultivo.Nombre_Detalle_Tipo_Producto)
+        }
 
-            val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar)
+        val dialog = AlertDialog.Builder(context!!, android.R.style.Theme_Light_NoTitleBar)
                 .setView(viewDialog)
                 .create()
 
-            val lp = WindowManager.LayoutParams()
-            lp.copyFrom(dialog.getWindow().getAttributes())
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT
-            lp.height = WindowManager.LayoutParams.MATCH_PARENT
-            //Hide KeyBoard
-            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-            dialog.show()
-            dialog.getWindow().setAttributes(lp)
-            _dialogRegisterUpdate=dialog
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        //Hide KeyBoard
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.show()
+        dialog.getWindow().setAttributes(lp)
+        _dialogRegisterUpdate = dialog
 
-            return _dialogRegisterUpdate
+        return _dialogRegisterUpdate
 
     }
 
 
-    override fun showAlertDialogFilterCultivo(isFilter:Boolean?) {
+    override fun showAlertDialogFilterCultivo(isFilter: Boolean?) {
         val inflater = this.layoutInflater
         viewDialogFilter = inflater.inflate(R.layout.dialog_select_spinners, null)
         presenter?.setListSpinnerUnidadProductiva()
-        var title:String?=null
+        var title: String? = null
 
-        viewDialogFilter?.spinnerCultivo?.visibility=View.GONE
+        viewDialogFilter?.spinnerCultivo?.visibility = View.GONE
 
-        if(isFilter==true){
-            title=getString(R.string.tittle_filter)
-        }else{
-            title=getString(R.string.tittle_select_lote)
+        if (isFilter == true) {
+            title = getString(R.string.tittle_filter)
+        } else {
+            title = getString(R.string.tittle_select_lote)
         }
 
-        if(unidadProductivaGlobal!=null && loteGlobal!=null){
+        if (unidadProductivaGlobal != null && loteGlobal != null) {
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.Nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
@@ -468,13 +470,13 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                 .theme(Theme.DARK)
                 .onPositive(
                         { dialog1, which ->
-                            if(isFilter==true){
-                                if(presenter?.validarListasFilterLote()==true){
+                            if (isFilter == true) {
+                                if (presenter?.validarListasFilterLote() == true) {
                                     dialog1.dismiss()
                                     presenter?.getListCultivos(Lote_Id)
                                 }
-                            }else{
-                                if(presenter?.validarListasFilterLote()==true){
+                            } else {
+                                if (presenter?.validarListasFilterLote() == true) {
                                     dialog1.dismiss()
                                     showAlertDialogCultivo(null)
                                 }
@@ -490,18 +492,18 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
         dialog.show()
         dialog.getWindow().setAttributes(lp)
-        _dialogFilter=dialog
+        _dialogFilter = dialog
     }
 
 
     override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?) {
-        if(viewDialogFilter!=null){
+        if (viewDialogFilter != null) {
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
             val unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
             viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialogFilter?.spinnerLote?.setText("")
-                unidadProductivaGlobal= listUnidadProductiva!![position] as UnidadProductiva
+                unidadProductivaGlobal = listUnidadProductiva!![position] as UnidadProductiva
                 presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             }
         }
@@ -515,20 +517,20 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             val loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, listLotes)
             viewDialogFilter?.spinnerLote!!.setAdapter(loteArrayAdapter)
             viewDialogFilter?.spinnerLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                loteGlobal= listLotes!![position] as Lote
-                Lote_Id= listLotes.get(position).Id
+                loteGlobal = listLotes!![position] as Lote
+                Lote_Id = listLotes.get(position).Id
                 presenter?.setListSpinnerLote(loteGlobal?.Id)
             }
         }
     }
 
     override fun setListTipoProducto(listTipoProducto: List<TipoProducto>?) {
-        if(viewDialog!=null){
+        if (viewDialog != null) {
             viewDialog?.spinnerTipoProducto!!.setAdapter(null)
             val tipoProductoArrayAdapter = ArrayAdapter<TipoProducto>(activity, android.R.layout.simple_spinner_dropdown_item, listTipoProducto)
             viewDialog?.spinnerTipoProducto!!.setAdapter(tipoProductoArrayAdapter)
             viewDialog?.spinnerTipoProducto!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                tipoProductoGlobal= listTipoProducto!![position] as TipoProducto
+                tipoProductoGlobal = listTipoProducto!![position] as TipoProducto
                 viewDialog?.spinnerDetalleTipoProducto?.setText("")
                 viewDialog?.spinnerDetalleTipoProducto?.setHint(String.format(getString(R.string.spinner_detalle_tipo_producto)))
                 presenter?.setListSpinnerDetalleTipoProducto(tipoProductoGlobal?.Id)
@@ -543,20 +545,19 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             val detalleTipoProductoArrayAdapter = ArrayAdapter<DetalleTipoProducto>(activity, android.R.layout.simple_spinner_dropdown_item, listDetalleTipoProducto)
             viewDialog?.spinnerDetalleTipoProducto!!.setAdapter(detalleTipoProductoArrayAdapter)
             viewDialog?.spinnerDetalleTipoProducto!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                detalleTipoProductoGlobal= listDetalleTipoProducto!![position] as DetalleTipoProducto
+                detalleTipoProductoGlobal = listDetalleTipoProducto!![position] as DetalleTipoProducto
             }
         }
     }
 
     override fun setListUnidadMedidas(listUnidadMedida: List<Unidad_Medida>?) {
-        if(viewDialog!=null){
+        if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadMedidaCosecha!!.setAdapter(null)
             var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedida);
             viewDialog?.spinnerUnidadMedidaCosecha!!.setAdapter(uMedidaArrayAdapter);
-            viewDialog?.spinnerUnidadMedidaCosecha!!.onItemClickListener = AdapterView.OnItemClickListener {
-                adapterView, view, position, l ->
-                unidadMedidaGlobal= listUnidadMedida!![position] as Unidad_Medida
+            viewDialog?.spinnerUnidadMedidaCosecha!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+                unidadMedidaGlobal = listUnidadMedida!![position] as Unidad_Medida
             }
         }
     }
@@ -581,7 +582,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     }
 
     //Fecha
-     private fun updateDate() {
+    private fun updateDate() {
         DatePickerDialog(context, d, dateTime.get(Calendar.YEAR), dateTime.get(Calendar.MONTH), dateTime.get(Calendar.DAY_OF_MONTH)).show()
     }
 

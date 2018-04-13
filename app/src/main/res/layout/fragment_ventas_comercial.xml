@@ -143,17 +143,17 @@
             <include layout="@layout/content_recyclerview" />
         </LinearLayout>
 
-     <!--   <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabAddProducto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/margin_global"
-            android:background="@drawable/fondo_general"
-            android:src="@android:drawable/ic_input_add"
-            android:tint="@color/white"
-            app:backgroundTint="@color/blue"
-            app:fabCustomSize="@dimen/size_60" /> -->
+        <!--   <android.support.design.widget.FloatingActionButton
+               android:id="@+id/fabAddProducto"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="bottom|end"
+               android:layout_margin="@dimen/margin_global"
+               android:background="@drawable/fondo_general"
+               android:src="@android:drawable/ic_input_add"
+               android:tint="@color/white"
+               app:backgroundTint="@color/blue"
+               app:fabCustomSize="@dimen/size_60" /> -->
     </android.support.design.widget.CoordinatorLayout>
 
 </FrameLayout>

@@ -5,15 +5,22 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.interedes.agriculturappv3.activities.login.events.LoginEvent
 import com.interedes.agriculturappv3.productor.models.login.Login
 import com.interedes.agriculturappv3.productor.models.usuario.*
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.login.LoginResponse
+import com.interedes.agriculturappv3.productor.models.rol.AspNetRolResponse
 import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.and
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginRepositoryImpl : LoginRepository {
 
@@ -31,8 +38,54 @@ class LoginRepositoryImpl : LoginRepository {
 
     //region Interfaz
     override fun ingresar(login: Login) {
+
+        val call = apiService?.postLogin(login)
+        call?.enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
+                val access_token: String = response?.body()?.access_token!!
+                val query = Listas.queryGeneral("Email", login.username!!)
+                val call_usuario = apiService?.getAuthUserByCorreo(access_token, query)
+
+                call_usuario?.enqueue(object : Callback<GetUserResponse> {
+                    override fun onResponse(call: Call<GetUserResponse>?, response: Response<GetUserResponse>?) {
+                        val user_login: List<UserResponse>? = response?.body()?.value!!
+                        for (item in user_login!!) {
+                            val tipo_user = item.tipouser
+                            val query = Listas.queryGeneral("Id", tipo_user.toString())
+                            val call_asp_net_roles = apiService?.getAspNetRolesByTipoUser(access_token, query)
+                            call_asp_net_roles?.enqueue(object : Callback<AspNetRolResponse> {
+                                override fun onResponse(call: Call<AspNetRolResponse>?, response: Response<AspNetRolResponse>?) {
+                                    val asp_net_rol = response?.body()?.value
+
+                                }
+
+                                override fun onFailure(call: Call<AspNetRolResponse>?, t: Throwable?) {
+                                    postEventError(RequestEvent.ERROR_EVENT, t?.message.toString())
+                                    Log.e("Failure Rol Response", t?.message.toString())
+                                }
+                            })
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GetUserResponse>?, t: Throwable?) {
+                        postEventError(RequestEvent.ERROR_EVENT, t?.message.toString())
+                        Log.e("Failure Get Login User", t?.message.toString())
+                    }
+                })
+
+            }
+
+            override fun onFailure(call: Call<LoginResponse>?, t: Throwable?) {
+                postEventError(RequestEvent.ERROR_EVENT, t?.message.toString())
+                Log.e("Failure Login Admin", t?.message.toString())
+            }
+
+
+        })
+
+
         //FIREBASE
-        var emailConfirmed: Boolean? = false
+        /*var emailConfirmed: Boolean? = false
         mAuth = FirebaseAuth.getInstance()
         mAuth?.signInWithEmailAndPassword(login.username!!, login.password!!)?.addOnCompleteListener({ task ->
             if (task.isSuccessful) {
@@ -86,7 +139,7 @@ class LoginRepositoryImpl : LoginRepository {
                     Log.e("Error Post", firebaseException.toString())
                 }
             }
-        })
+        }) */
 
 
         //Firebase
@@ -224,9 +277,9 @@ class LoginRepositoryImpl : LoginRepository {
         if (usuario_sqlite != null) {
             usuario_sqlite.UsuarioRemembered = true
             usuario_sqlite.save()
-            postEvent(RequestEvent.SAVE_EVENT)
+            postEvent(LoginEvent.SAVE_EVENT)
         } else {
-            postEventError(RequestEvent.ERROR_EVENT, "Usuario o Contraseña Incorrectos")
+            postEventError(LoginEvent.ERROR_EVENT, "Usuario o Contraseña Incorrectos")
         }
     }
 
@@ -246,7 +299,7 @@ class LoginRepositoryImpl : LoginRepository {
 
     //region Eventos
     private fun postEvent(type: Int) {
-        val event = RequestEvent(type, null, null, null)
+        val event = LoginEvent(type, null, null, null)
         event.eventType = type
         eventBus?.post(event)
     }
@@ -260,7 +313,7 @@ class LoginRepositoryImpl : LoginRepository {
     //Post Object user
     private fun postEventObjectUsuario(type: Int, usuario: Usuario?, errorMessage: String?) {
         var usuarioMutable = usuario as Object
-        val event = RequestEvent(type, null, usuarioMutable, errorMessage)
+        val event = LoginEvent(type, null, usuarioMutable, errorMessage)
         event.eventType = type
         event.mensajeError = errorMessage
         eventBus?.post(event)
@@ -268,7 +321,7 @@ class LoginRepositoryImpl : LoginRepository {
 
     //Post Event Error
     private fun postEventError(type: Int, messageError: String?) {
-        val errorEvent = RequestEvent(type, null, null, messageError)
+        val errorEvent = LoginEvent(type, null, null, messageError)
         errorEvent.eventType = type
         errorEvent.mensajeError = messageError
         eventBus?.post(errorEvent)

@@ -160,17 +160,15 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
             }
             R.id.product_camera -> {
-                if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(activity!!, PERMISSIONS, 1000)
+                if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 1000)
                     return
                 }
                 takePictureWithCamera(this)
-
-
             }
             R.id.product_gallery -> {
-                if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(activity!!, PERMISSIONS, 1000)
+                if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 1000)
                     return
                 }
                 choosePhotoFromGallery(this)
@@ -429,6 +427,10 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         if (viewDialog?.spinnerCalidadProducto?.text.toString().isEmpty()) {
             viewDialog?.spinnerCalidadProducto?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerCalidadProducto
+            cancel = true
+        } else if (viewDialog?.txtNombreProducto?.text.toString().isEmpty()) {
+            viewDialog?.txtNombreProducto?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.txtNombreProducto
             cancel = true
         } else if (viewDialog?.txtFechaLimiteDisponibilidad?.text.toString().isEmpty()) {
             viewDialog?.txtFechaLimiteDisponibilidad?.setError(getString(R.string.error_field_required))
@@ -766,6 +768,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             val producto = Producto()
             producto.CalidadId = calidadProductoGlobal?.Id
             producto.NombreCalidad = calidadProductoGlobal?.Nombre
+            producto.Nombre = viewDialog?.txtNombreProducto?.text.toString()
             producto.Descripcion = viewDialog?.txtDescripcionProducto?.text.toString()
             producto.FechaLimiteDisponibilidad = fechaLimiteDisponibilidad
             producto.Imagen = Blob(imageGlobal)
@@ -784,6 +787,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         if (presenter?.validarCampos() == true) {
             val productoUpdate = Producto()
             productoUpdate.Id = producto.Id
+            productoUpdate.Nombre = viewDialog?.txtNombreProducto?.text.toString()
             productoUpdate.Descripcion = viewDialog?.txtDescripcionProducto?.text.toString()
             productoUpdate.FechaLimiteDisponibilidad = fechaLimiteDisponibilidad
             productoUpdate.Imagen = Blob(imageGlobal)

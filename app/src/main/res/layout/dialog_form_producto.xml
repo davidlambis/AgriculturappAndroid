@@ -151,6 +151,21 @@
 
             </LinearLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                <EditText
+                    android:id="@+id/txtNombreProducto"
+                    style="@style/editText"
+                    android:drawableLeft="@drawable/ic_numero_hectareas"
+                    android:drawableStart="@drawable/ic_numero_hectareas"
+                    android:hint="@string/edit_text_nombre_producto"
+                    android:inputType="text"
+                    android:textAlignment="textStart" />
+            </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
