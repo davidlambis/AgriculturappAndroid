@@ -14,13 +14,33 @@
         android:layout_marginLeft="16dp"
         tools:src="@drawable/ic_banjo" />
 
-    <TextView
-        android:id="@+id/list_item_categoria_name"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="72dp"
-        android:gravity="center_vertical"
-        tools:text="Categoria" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/list_item_categoria_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="72dp"
+            android:gravity="center_vertical"
+            tools:text="Categoria" />
+
+        <TextView
+            android:paddingStart="@dimen/text_size_18"
+            android:id="@+id/list_item_categoria_valor"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical"
+            tools:text="Valor" />
+
+    </RelativeLayout>
+
+
 
     <ImageView
         android:id="@+id/list_item_genre_arrow"

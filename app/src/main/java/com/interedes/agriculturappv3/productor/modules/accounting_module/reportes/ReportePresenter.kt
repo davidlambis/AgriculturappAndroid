@@ -10,13 +10,14 @@ import com.interedes.agriculturappv3.productor.models.Cultivo
 import com.interedes.agriculturappv3.productor.models.Lote
 import com.interedes.agriculturappv3.productor.models.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
+import com.interedes.agriculturappv3.productor.models.ventas.resports.BalanceContable
 import com.interedes.agriculturappv3.productor.modules.accounting_module.reportes.events.RequestEventReporte
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
+import java.util.*
 
 class ReportePresenter(var mainView: IMainViewReportes.MainView?):IMainViewReportes.Presenter {
-
 
     var interactor: IMainViewReportes.Interactor? = null
     var eventBus: EventBus? = null
@@ -122,8 +123,9 @@ class ReportePresenter(var mainView: IMainViewReportes.MainView?):IMainViewRepor
                 mainView?.setCultivo(cultivo)
             }
 
-            RequestEventReporte.ITEM_EVENT_RADIO_TYPE_TRANSACION -> {
-
+            RequestEventReporte.EVENT_BALANCE_CONTABLE -> {
+                var balance = event.objectMutable as BalanceContable
+                mainView?.setBalanceContable(balance)
             }
         }
     }
@@ -139,6 +141,22 @@ class ReportePresenter(var mainView: IMainViewReportes.MainView?):IMainViewRepor
         return false
     }
 
+    override fun validarDatesSelect(): Boolean {
+        if (mainView?.validarDatesSelect() == true) {
+            return true
+        }
+        return false
+    }
+
+
+
+    override fun validarListasFilterReports(): Boolean {
+        if (mainView?.validarListasFilterReports() == true) {
+            return true
+        }
+        return false
+    }
+
 
 
     override fun getCultivo(cultivo_id: Long?) {
@@ -149,8 +167,8 @@ class ReportePresenter(var mainView: IMainViewReportes.MainView?):IMainViewRepor
         interactor?.getListas()
     }
 
-    override fun getTotalTransacciones(cultivo_id: Long?) {
-        interactor?.getTotalTransacciones(cultivo_id)
+    override fun getTotalTransacciones(cultivo_id: Long?,dateStart: Date?, dateEnd: Date?) {
+        interactor?.getTotalTransacciones(cultivo_id,dateStart,dateEnd)
     }
 
     //endregion

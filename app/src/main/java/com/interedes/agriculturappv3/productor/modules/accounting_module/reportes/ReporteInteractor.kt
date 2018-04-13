@@ -1,5 +1,7 @@
 package com.interedes.agriculturappv3.productor.modules.accounting_module.reportes
 
+import java.util.*
+
 class ReporteInteractor: IMainViewReportes.Interactor {
 
     var repository: IMainViewReportes.Repository? = null
@@ -10,8 +12,8 @@ class ReporteInteractor: IMainViewReportes.Interactor {
 
 
 
-    override fun getTotalTransacciones(cultivo_id: Long?) {
-        repository?.getTotalTransacciones(cultivo_id)
+    override fun getTotalTransacciones(cultivo_id: Long?, dateStart: Date?, dateEnd: Date?) {
+        repository?.getTotalTransacciones(cultivo_id,dateStart,dateEnd)
     }
 
     override fun execute(cultivo_id: Long?, typeTransaccion: Long?) {

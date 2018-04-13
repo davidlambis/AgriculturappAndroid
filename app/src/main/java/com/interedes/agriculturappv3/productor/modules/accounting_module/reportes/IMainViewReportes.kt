@@ -8,13 +8,17 @@ import com.interedes.agriculturappv3.productor.models.Cultivo
 import com.interedes.agriculturappv3.productor.models.Lote
 import com.interedes.agriculturappv3.productor.models.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
+import com.interedes.agriculturappv3.productor.models.ventas.resports.BalanceContable
 import com.interedes.agriculturappv3.productor.modules.accounting_module.reportes.events.RequestEventReporte
+import java.util.*
 
 interface IMainViewReportes {
 
     interface MainView {
+        //Validacion
+        fun validarListasFilterReports(): Boolean
         fun validarCampos(): Boolean
-        fun validarListasAddTransaccion(): Boolean
+        fun validarDatesSelect(): Boolean
 
         fun limpiarCampos()
 
@@ -49,7 +53,11 @@ interface IMainViewReportes {
 
         //Dialogs
         fun verificateConnection(): AlertDialog?
-        fun showAlertDialogFilterReports(isFilter:Boolean?)
+        fun showAlertDialogFilterReports()
+        fun showAlertDialogSelectDate()
+
+        //Balance
+        fun setBalanceContable(balanceContable:BalanceContable?)
 
 
         //Events
@@ -67,10 +75,12 @@ interface IMainViewReportes {
 
         //Validacion
         fun validarCampos(): Boolean?
+        fun validarListasFilterReports(): Boolean
+        fun validarDatesSelect(): Boolean
 
         //Methods
         fun getCultivo(cultivo_id:Long?)
-        fun getTotalTransacciones(cultivo_id:Long?)
+        fun getTotalTransacciones(cultivo_id:Long?, dateStart: Date?, dateEnd:Date?)
         fun getListas()
 
         //Methods View
@@ -88,12 +98,12 @@ interface IMainViewReportes {
         fun execute(cultivo_id:Long?,typeTransaccion:Long?)
         fun getListas()
         fun getCultivo(cultivo_id:Long?)
-        fun getTotalTransacciones(cultivo_id:Long?)
+        fun getTotalTransacciones(cultivo_id:Long?, dateStart: Date?, dateEnd:Date?)
     }
 
     interface Repository {
         fun getListas()
         fun getCultivo(cultivo_id:Long?)
-        fun getTotalTransacciones(cultivo_id:Long?)
+        fun getTotalTransacciones(cultivo_id:Long?,dateStart: Date?, dateEnd:Date?)
     }
 }

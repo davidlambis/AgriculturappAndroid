@@ -38,7 +38,7 @@ class CategoriaPukAdapter(groups: List<ExpandableGroup<*>> ): ExpandableRecycler
                                        group: ExpandableGroup<*>, childIndex: Int) {
 
         val transacciones = (group as CategoriaPuk).getItems().get(childIndex)
-        holder.setArtistName(transacciones.Concepto!!, transacciones.Valor_Total.toString())
+        holder.setArtistName(transacciones.Concepto!!, transacciones.Valor_Total!!)
     }
 
     override fun onBindGroupViewHolder(holder: CategoriaPukViewHolder, flatPosition: Int,

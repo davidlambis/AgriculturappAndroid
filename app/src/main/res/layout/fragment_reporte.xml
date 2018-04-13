@@ -3,11 +3,107 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".productor.modules.accounting_module.reportes.ReporteFragment">
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+
+
+    <LinearLayout
+        android:id="@+id/container_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:background="@color/green"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/margin_5">
+
+            <ImageView
+                android:id="@+id/ivBackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="58dp"
+                android:layout_gravity="center"
+                android:tint="@color/white_solid"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_back_button" />
+
+            <LinearLayout
+                android:id="@+id/plagas_search_edit_frame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/searchFilter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/radius_edit_text"
+                    android:drawableStart="@drawable/ic_lupa_buscar_producto"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:hint="@string/filtrar"
+                    android:padding="@dimen/margin_3"
+                    android:paddingStart="@dimen/margin_5" />
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/cultivoSeletedContainer"
+            android:paddingBottom="@dimen/margin_5"
+            android:paddingTop="@dimen/margin_5"
+            android:paddingRight="@dimen/margin_24"
+            android:background="@color/green"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/activity_horizontal_margin">
+            <View
+                android:id="@+id/indicator_element_sincronize_status"
+                android:layout_width="10dp"
+                android:layout_height="@dimen/size_40"
+                android:layout_alignParentStart="true"
+                android:background="@color/white" />
+            <RelativeLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txtNombreCultivo"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size_18"
+                    android:layout_marginStart="@dimen/margin_5"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/white"
+
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+
+                <TextView
+                    android:layout_below="@+id/txtNombreCultivo"
+                    android:id="@+id/txtNombreUnidadProductiva"
+                    android:textSize="@dimen/text_size_12"
+                    android:layout_marginStart="@dimen/margin_5"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/white"
+
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+    <android.support.v7.widget.CardView
+        android:layout_below="@+id/container_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_3"
@@ -22,6 +118,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="@dimen/margin_3">
+
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -54,7 +152,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/txtTitleFechaInicio"
-                        android:text="01-03-2018"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size_12"
                         android:textStyle="bold" />
@@ -78,7 +176,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/txtTitleFechaFin"
-                        android:text="01-03-2018"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size_12"
                         android:textStyle="bold" />
@@ -89,7 +187,7 @@
                     android:layout_height="wrap_content">
 
                     <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/fabAddTransaccion"
+                        android:id="@+id/fabChangeDatesReport"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|end"
@@ -140,7 +238,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/txtTitleIngresos"
-                                android:text="$ 217,000"
+                                android:text=""
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/text_size_18"
                                 android:textStyle="bold" />
@@ -165,7 +263,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/txtTitleEgresos"
-                                android:text="$ 64,000"
+                                android:text=""
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/text_size_18"
                                 android:textStyle="bold" />
@@ -189,7 +287,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/txtTitleBalance"
-                                android:text="$ 153,000"
+                                android:text=""
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/text_size_18"
                                 android:textStyle="bold" />
@@ -210,7 +308,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <android.support.design.widget.FloatingActionButton
+                   <!-- <android.support.design.widget.FloatingActionButton
                         android:id="@+id/fabExportPdf"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -231,26 +329,35 @@
                         android:src="@drawable/ic_picture_as_pdf"
                         android:tint="@color/white_solid"
                         app:backgroundTint="@color/light_green_800"
-                        app:fabCustomSize="@dimen/size_60" />
+                        app:fabCustomSize="@dimen/size_60" />-->
 
                 </RelativeLayout>
             </LinearLayout>
 
 
-            <Button
+         <!--  <Button
                 android:id="@+id/toggle_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Toggle Classic Group" />
-
+                android:text="Toggle Classic Group" />-->
+            <TextView
+                android:id="@+id/txtResults"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="right"
+                android:layout_toEndOf="@+id/progressBar"
+                android:layout_toRightOf="@+id/progressBar"
+                android:text="@string/results_global_search"
+                android:textColor="@color/black" />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/toggle_button" />
+               />
 
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
-
+    </RelativeLayout>
 </FrameLayout>

@@ -3,7 +3,7 @@ package com.interedes.agriculturappv3.productor.models.ventas.resports
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
 
-class Genre(title: String, items: List<Artist>, val iconResId: Int) : ExpandableGroup<Artist>(title, items) {
+class Genre(var nombre: String, items: List<Artist>, val iconResId: Int) : ExpandableGroup<Artist>(nombre, items) {
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

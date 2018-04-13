@@ -251,6 +251,9 @@ class Listas {
             return categoriaPuk
         }
 
+
+
+
         fun listPuk(): ArrayList<Puk> {
             val categoriaPuk = ArrayList<Puk>()
             categoriaPuk.add(Puk(Id = 1,CategoriaId =  1,Codigo = "",Descripcion = "Analisis de suelo"))

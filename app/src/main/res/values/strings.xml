@@ -231,6 +231,9 @@
     <string name="title_balance">Balance</string>
 
 
+    <!--Reports-->
+    <string name="title_filter_report">Filtrar Reporte</string>
+
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
     <string name="name">Nombre</string>

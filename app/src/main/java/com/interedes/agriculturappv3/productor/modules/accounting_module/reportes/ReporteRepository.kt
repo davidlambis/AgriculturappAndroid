@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.productor.modules.accounting_module.reportes
 
+import android.os.Build
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.Cultivo
@@ -10,9 +11,16 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion_Table
+import com.interedes.agriculturappv3.productor.models.ventas.resports.BalanceContable
+import com.interedes.agriculturappv3.productor.models.ventas.resports.CountOfPost
 import com.interedes.agriculturappv3.productor.modules.accounting_module.reportes.events.RequestEventReporte
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.CategoriaPukResources
+import com.raizlabs.android.dbflow.sql.language.Method
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.raizlabs.android.dbflow.sql.language.property.PropertyFactory
+import java.lang.Double.sum
+import java.util.*
 
 class ReporteRepository: IMainViewReportes.Repository {
 
@@ -23,26 +31,77 @@ class ReporteRepository: IMainViewReportes.Repository {
     }
 
 
-    override fun getTotalTransacciones(cultivo_id: Long?) {
-
+    override fun getTotalTransacciones(cultivo_id: Long?,  dateStart: Date?, dateEnd: Date?) {
         var listCategoriaPuk=ArrayList<CategoriaPuk>()
-        if(cultivo_id==null){
-            var categoriaPukList=Listas.listCategoriaPuk()
+        var categoriaPukList=Listas.listCategoriaPuk()
 
-            var listTransaciones=ArrayList<Transaccion>()
+
+
+        if(cultivo_id==null && dateStart==null && dateEnd==null){
             for (itemCategorias in categoriaPukList){
+                var listTransaciones=ArrayList<Transaccion>()
+                var valor_total= 0.0
                 var transaccion= SQLite.select().from(Transaccion::class.java!!).where(Transaccion_Table.CategoriaPuk_Id.eq(itemCategorias.Id)).queryList()
                 for (item in transaccion){
                     listTransaciones.add(item)
+                    valor_total= valor_total!!+item.Valor_Total!!
                 }
-                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,listTransaciones)
+                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
-        }else{
-
+        }else if(cultivo_id!=null && dateStart==null && dateEnd==null){
+            for (itemCategorias in categoriaPukList){
+                var listTransaciones=ArrayList<Transaccion>()
+                var valor_total= 0.0
+                var transaccion= SQLite.select().from(Transaccion::class.java!!).where(Transaccion_Table.CategoriaPuk_Id.eq(itemCategorias.Id)).and(Transaccion_Table.Cultivo_Id.eq(cultivo_id)).queryList()
+                for (item in transaccion){
+                    listTransaciones.add(item)
+                    valor_total= valor_total!!+item.Valor_Total!!
+                }
+                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,listTransaciones)
+                listCategoriaPuk.add(categoria)
+            }
         }
 
-        postEventListCategorias(RequestEventReporte.LIST_EVENT_REPORT_CATEGORIAS,listCategoriaPuk,null);
+        else if(cultivo_id!=null && dateStart!=null && dateEnd!=null){
+            for (itemCategorias in categoriaPukList){
+                var listTransaciones=ArrayList<Transaccion>()
+                var valor_total= 0.0
+                var transaccion= SQLite.select().from(Transaccion::class.java!!)
+                        .where(Transaccion_Table.CategoriaPuk_Id.eq(itemCategorias.Id))
+                        .and(Transaccion_Table.Cultivo_Id.eq(cultivo_id))
+                        .and(Transaccion_Table.Fecha_Transaccion.between(dateStart).and(dateEnd))
+                        .queryList()
+                for (item in transaccion){
+                    listTransaciones.add(item)
+                    valor_total= valor_total!!+item.Valor_Total!!
+                }
+                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,listTransaciones)
+                listCategoriaPuk.add(categoria)
+            }
+        }
+
+        var sumIngresos = SQLite.select(
+                Method.sum(Transaccion_Table.Valor).`as`("count"))
+                .from<Transaccion>(Transaccion::class.java)
+                .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.INGRESO))
+                .queryCustomSingle(CountOfPost::class.java)
+
+
+        var sumEgresos = SQLite.select(
+                Method.sum(Transaccion_Table.Valor).`as`("count"))
+                .from<Transaccion>(Transaccion::class.java)
+                .where(Transaccion_Table.CategoriaPuk_Id.eq(CategoriaPukResources.GASTO))
+                .queryCustomSingle(CountOfPost::class.java)
+
+        var balance= sumIngresos?.count!!-sumEgresos?.count!!
+
+
+        var balanceContable= BalanceContable(sumIngresos?.count!!,sumEgresos?.count!!,balance)
+
+        postEventOkBalanceContable(RequestEventReporte.EVENT_BALANCE_CONTABLE,balanceContable)
+        postEventListCategorias(RequestEventReporte.LIST_EVENT_REPORT_CATEGORIAS,listCategoriaPuk,null)
+
     }
 
     override fun getListas() {
@@ -88,6 +147,13 @@ class ReporteRepository: IMainViewReportes.Repository {
         postEvent(type, upMutable,null,messageError)
     }
 
+    private fun postEventOkBalanceContable(type: Int,  balance: BalanceContable?) {
+        var BalanceMutable:Object?=null
+        if(balance!=null){
+            BalanceMutable = balance as Object
+        }
+        postEvent(type, null,BalanceMutable,null)
+    }
 
 
 

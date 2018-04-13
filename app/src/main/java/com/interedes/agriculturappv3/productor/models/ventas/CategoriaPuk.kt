@@ -23,6 +23,9 @@ data class CategoriaPuk(@PrimaryKey(autoincrement = true)
                    @Column(name = "Sigla")
                    var Sigla: String? = null,
 
+
+                        var Valor_Total: Double?=null,
+
                         var transaccions: List<Transaccion>? = null
 
                    ): ExpandableGroup<Transaccion>(Nombre, transaccions) {

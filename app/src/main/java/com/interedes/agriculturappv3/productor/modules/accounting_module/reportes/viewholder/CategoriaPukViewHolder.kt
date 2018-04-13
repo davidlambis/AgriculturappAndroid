@@ -14,11 +14,13 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder
 class CategoriaPukViewHolder(itemView: View): GroupViewHolder(itemView) {
 
     var categoriaName: TextView?
+    var categoriaValor: TextView?
     var arrow: ImageView?
     var icon: ImageView?
 
     init {
         categoriaName = itemView.findViewById(R.id.list_item_categoria_name)
+        categoriaValor = itemView.findViewById(R.id.list_item_categoria_valor)
         arrow = itemView.findViewById(R.id.list_item_genre_arrow)
         icon = itemView.findViewById(R.id.list_item_genre_icon)
     }
@@ -26,8 +28,10 @@ class CategoriaPukViewHolder(itemView: View): GroupViewHolder(itemView) {
 
     fun setGenreTitle(categoriaPuk: ExpandableGroup<*>) {
         if (categoriaPuk is CategoriaPuk) {
+            //categoriaName?.setText(categoriaPuk.Nombre+"--"+String.format("%,.0f",categoriaPuk.Valor_Total))
             categoriaName?.setText(categoriaPuk.Nombre)
-            //icon?.setBackgroundResource((categoriaPuk as Genre).iconResId)
+            categoriaValor?.setText(String.format("$ %,.0f",categoriaPuk.Valor_Total))
+            icon?.setBackgroundResource( R.drawable.ic_ic_ingreso_egreso)
         }
 
     }

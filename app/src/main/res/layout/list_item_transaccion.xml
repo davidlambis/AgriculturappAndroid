@@ -11,8 +11,9 @@
             android:id="@+id/list_item_transaccion_concep"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="72dp"
+            android:layout_marginLeft="52dp"
             android:textStyle="bold"
+            android:textColor="@color/green"
             android:gravity="center_vertical"
             tools:text="Transaccion" />
         <TextView
@@ -20,8 +21,10 @@
             android:id="@+id/list_item_transaccion_valor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="72dp"
+            android:layout_marginLeft="52dp"
+            android:textColor="@color/black"
             android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/margin_5"
             tools:text="$12.000" />
     </RelativeLayout>
 

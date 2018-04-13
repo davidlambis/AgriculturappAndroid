@@ -13,8 +13,9 @@ class TransaccionesViewHolder(itemView: View): ChildViewHolder(itemView) {
         transaccionpValorTextView =itemView.findViewById(R.id.list_item_transaccion_valor)
     }
 
-    fun setArtistName(concep: String,valor: String ) {
+    fun setArtistName(concep: String,valor: Double ) {
+
         transaccionpTextView?.text = concep
-        transaccionpValorTextView?.text = valor
+        transaccionpValorTextView?.text = String.format("$ %,.0f",valor)
     }
 }

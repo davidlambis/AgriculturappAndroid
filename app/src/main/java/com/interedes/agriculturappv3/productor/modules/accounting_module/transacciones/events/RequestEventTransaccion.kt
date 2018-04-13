@@ -1,7 +1,8 @@
-package com.interedes.agriculturappv3.productor.modules.accounting_module.reportes.events
+package com.interedes.agriculturappv3.productor.modules.accounting_module.transacciones.events
 
 
-data class RequestEventReporte (var eventType: Int,
+
+data class RequestEventTransaccion (var eventType: Int,
                                     var mutableList: MutableList<Object>? = null,
                                     var objectMutable: Object? = null,
                                     var mensajeError: String?
@@ -29,16 +30,13 @@ data class RequestEventReporte (var eventType: Int,
         val LIST_EVENT_TRANSACCIONES: Int = 13
         val LIST_EVENT_CATEGORIA_PUK: Int = 14
         val LIST_EVENT_PUK: Int = 15
-        val LIST_EVENT_REPORT_CATEGORIAS: Int = 16
 
 
         //Query Single
-        val GET_EVENT_CULTIVO: Int = 17
+        val GET_EVENT_CULTIVO: Int = 16
 
 
         //
-        val ITEM_EVENT_RADIO_TYPE_TRANSACION: Int = 18
-
-        val EVENT_BALANCE_CONTABLE: Int = 19
+        val ITEM_EVENT_RADIO_TYPE_TRANSACION: Int = 17
     }
 }
