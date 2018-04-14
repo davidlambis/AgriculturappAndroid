@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.ContextCompat.startActivity
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -18,17 +19,26 @@ import com.interedes.agriculturappv3.R.id.*
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenter
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenterImpl
 import com.interedes.agriculturappv3.productor.models.login.Login
+import com.interedes.agriculturappv3.productor.models.rol.Rol
+import com.interedes.agriculturappv3.productor.models.rol.RolResponse
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.RolResources
 import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.sql.language.Delete
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_login.*
+import retrofit2.Call
+import retrofit2.Callback
 
 class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, ConnectivityReceiver.connectivityReceiverListener {
 
     var camposValidados: Boolean? = false
     var presenter: LoginPresenter? = null
     var connectivityReceiver: ConnectivityReceiver? = null
+    var lista: MutableList<Rol>? = null
 
     companion object {
         //val em = BuildConfig.em
@@ -53,6 +63,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
         }
         //Registra al receiver de Internet
         registerInternetReceiver()
+        loadRoles()
     }
 
 
@@ -87,6 +98,74 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
                     Snackbar.make(container, "Usuario o Contraseña Incorrectos", Snackbar.LENGTH_SHORT).show()
                 }
             }*/
+        }
+    }
+
+    private fun loadRoles() {
+        val lista_roles = SQLite.select().from(Rol::class.java).queryList()
+        if (lista_roles.size <= 0) {
+            if (checkConnection()) {
+                val apiService = ApiInterface.create()
+                val call = apiService.getRoles()
+                call.enqueue(object : Callback<RolResponse> {
+                    override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
+                        if (response != null) {
+                            lista = response.body()?.value
+                            if (lista != null) {
+                                for (item: Rol in lista!!) {
+                                    if (item.Nombre.equals(RolResources.COMPRADOR)) {
+                                        item.Imagen = R.drawable.ic_comprador_big
+                                        item.save()
+                                    } else if (item.Nombre.equals(RolResources.PRODUCTOR)) {
+                                        item.Imagen = R.drawable.ic_productor_big
+                                        item.save()
+                                    }
+                                }
+                                //lista = Select().from(Rol::class.java).queryList()
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<RolResponse>?, t: Throwable?) {
+                        onMessageOk(R.color.grey_luiyi, getString(R.string.error_request))
+                        Log.e("Error", t?.message.toString())
+                    }
+
+                })
+            } else {
+                onMessageOk(R.color.grey_luiyi, getString(R.string.not_internet_connected))
+            }
+        } else {
+            if (checkConnection()) {
+                val apiService = ApiInterface.create()
+                val call = apiService.getRoles()
+                call.enqueue(object : Callback<RolResponse> {
+                    override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
+                        if (response != null) {
+                            lista = response.body()?.value
+                            if (lista != null) {
+                                Delete.table<Rol>(Rol::class.java)
+                                for (item: Rol in lista!!) {
+                                    if (item.Nombre.equals(RolResources.COMPRADOR)) {
+                                        item.Imagen = R.drawable.ic_comprador_big
+                                        item.save()
+                                    } else if (item.Nombre.equals(RolResources.PRODUCTOR)) {
+                                        item.Imagen = R.drawable.ic_productor_big
+                                        item.save()
+                                    }
+                                }
+                                //lista = Select().from(Rol::class.java).queryList()
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<RolResponse>?, t: Throwable?) {
+                        onMessageOk(R.color.grey_luiyi, getString(R.string.error_request))
+                        Log.e("Error", t?.message.toString())
+                    }
+
+                })
+            }
         }
     }
 
@@ -171,7 +250,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     }
 
     //region Conexión a Internet
-    override fun checkConnection(): Boolean? {
+    override fun checkConnection(): Boolean {
         return ConnectivityReceiver.isConnected
     }
 
