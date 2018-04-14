@@ -27,6 +27,7 @@ import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module
 import com.interedes.agriculturappv3.productor.modules.comercial_module.ComercialFragment
 import com.interedes.agriculturappv3.productor.modules.main_menu.fragment.presenter.MainMenuFragmentPresenter
 import com.interedes.agriculturappv3.productor.modules.main_menu.fragment.presenter.MainMenuFragmentPresenterImpl
+import com.interedes.agriculturappv3.productor.modules.main_menu.fragment.ui.MainMenuFragment.Companion.connectivity_state
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.Resources_Menu
 import com.interedes.agriculturappv3.services.listas.Listas
@@ -98,21 +99,20 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
     //region Métodos Interfaz
     override fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
-        if ((activity as MenuMainActivity).getLastUserLogued()?.RolNombre.equals("Productor")) {
-            val lista = Listas.listaMenuProductor()
-            val adapter = SingleAdapter(lista, Resources_Menu.MENU_MAIN, activity) { position ->
-                if (lista[position].Identificador.equals("asistencia_tecnica")) {
-                    (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())
-                } else if (lista[position].Identificador.equals("comercial")) {
-                    (activity as MenuMainActivity).replaceFragment(ComercialFragment())
-                } else if (lista[position].Identificador.equals("contabilidad")) {
-                    (activity as MenuMainActivity).replaceFragment(AccountingFragment())
-                } else if (lista[position].Identificador.equals("salir")) {
-                    presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
-                }
+        val lista = Listas.listaMenuProductor()
+        val adapter = SingleAdapter(lista, Resources_Menu.MENU_MAIN, activity) { position ->
+            if (lista[position].Identificador.equals("asistencia_tecnica")) {
+                (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())
+            } else if (lista[position].Identificador.equals("comercial")) {
+                (activity as MenuMainActivity).replaceFragment(ComercialFragment())
+            } else if (lista[position].Identificador.equals("contabilidad")) {
+                (activity as MenuMainActivity).replaceFragment(AccountingFragment())
+            } else if (lista[position].Identificador.equals("salir")) {
+                presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
             }
-            recyclerView?.adapter = adapter
-        } else if ((activity as MenuMainActivity).getLastUserLogued()?.RolNombre.equals("Comprador")) {
+        }
+        recyclerView?.adapter = adapter
+        /*else if ((activity as MenuMainActivity).getLastUserLogued()?.RolNombre.equals("Comprador")) {
             val lista = Listas.listaMenuComprador()
             val adapter = SingleAdapter(lista, Resources_Menu.MENU_MAIN, activity) { position ->
                 if (lista[position].Identificador.equals("comercial")) {
@@ -122,7 +122,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
                 }
             }
             recyclerView?.adapter = adapter
-        }
+        } */
 
     }
 

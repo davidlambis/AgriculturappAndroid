@@ -7,8 +7,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    android:focusableInTouchMode="true"
-    tools:context=".productor.modules.main_menu.ui.MenuMainActivity">
+    android:focusableInTouchMode="true">
 
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -41,6 +40,7 @@
 
         <FrameLayout
             android:id="@+id/container"
+            android:background="@drawable/fondo_general"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
