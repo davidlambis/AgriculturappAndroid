@@ -4,13 +4,13 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="16dp">
+  >
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/circleImageView"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:src="@drawable/ic_registro_nav_drawer"
+        android:src="@drawable/ic_logo_productor"
         app:civ_border_color="@color/white"
         app:civ_border_width="2dp" />
 
@@ -18,11 +18,12 @@
         android:id="@+id/tvNombreUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="7dp"
+        android:padding="@dimen/margin_3"
         android:gravity="center"
+        android:background="@color/black_alpha_40"
         android:text="Nombre Usuario"
-        android:textColor="@color/white"
+        android:textColor="@color/white_solid"
         android:textSize="20sp" />
 
     <TextView
@@ -31,38 +32,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:gravity="center"
-        android:text="C.C. 12234234"
-        android:textColor="@color/white"
-        android:textSize="12sp"
+        android:text="exampl@example.com"
+        android:textColor="@color/white_solid"
+        android:padding="@dimen/margin_3"
+        android:layout_marginTop="@dimen/margin_3"
+
+        android:background="@color/black_alpha_40"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvTelefono"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/tvProyectoUsuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center"
-        android:text="AgriculturApp"
-        android:textColor="@color/white"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/tvCiudadUsuario"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:drawableLeft="@drawable/ic_candado_nav_drawer"
-        android:gravity="center"
-        android:textColor="@color/white" />
 
 </LinearLayout>
