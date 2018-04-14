@@ -129,13 +129,21 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         // Handle navigation view item clicks here.
         val id = item.itemId
 
-        if (id == R.id.nav_notification) {
+        if (id == R.id.nav_proveedores) {
             // Handle the camera action
             // val i = Intent(this, SettingsActivity::class.java)
             // startActivity(i)
-        } else if (id == R.id.nav_market) {
+        } else if (id == R.id.nav_ofertas) {
 
-        } else if (id == R.id.nav_account) {
+        } else if (id == R.id.nav_compras_realizadas) {
+
+
+        }
+        else if (id == R.id.nav_productos) {
+
+
+        }
+        else if (id == R.id.nav_preguntas) {
 
 
         }

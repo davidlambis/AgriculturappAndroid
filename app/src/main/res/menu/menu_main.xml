@@ -13,25 +13,35 @@
         android:title="Import" />
     </group>-->
 
-    <item android:title="Menu">
+    <item android:title="Menu" >
         <menu>
             <item
-                android:id="@+id/nav_account"
-                android:icon="@android:drawable/ic_menu_my_calendar"
-                android:iconTint="@color/light_green_800"
-                android:title="Mi cuenta" />
+
+                android:id="@+id/nav_proveedores"
+                android:icon="@drawable/ic_ic_proveedores"
+                android:title="Mis Proveedores" />
 
             <item
-                android:id="@+id/nav_market"
-                android:icon="@android:drawable/ic_menu_search"
+                android:id="@+id/nav_ofertas"
+                android:icon="@drawable/ic_ic_ofertas_desplegable"
                 android:iconTint="@color/white"
-                android:title="Mercado" />
+                android:title="Ofertas" />
 
             <item
-                android:id="@+id/nav_notification"
-                android:icon="@android:drawable/ic_menu_info_details"
+                android:id="@+id/nav_compras_realizadas"
+                android:icon="@drawable/ic_ic_compras_realizadas_desplegable"
                 android:iconTint="@color/white"
-                android:title="Notificaciones" />
+                android:title="Compras Realizadas" />
+            <item
+                android:id="@+id/nav_productos"
+                android:icon="@drawable/ic_ic_productos_interes_desplegable"
+                android:iconTint="@color/white"
+                android:title="Productos Interes" />
+            <item
+                android:id="@+id/nav_preguntas"
+                android:icon="@drawable/ic_ic_pregunas_desplegable"
+                android:iconTint="@color/white"
+                android:title="Preguntas" />
         </menu>
     </item>
 </menu>
