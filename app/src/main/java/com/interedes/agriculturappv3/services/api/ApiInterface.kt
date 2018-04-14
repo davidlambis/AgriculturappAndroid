@@ -56,6 +56,8 @@ interface ApiInterface {
     @GET("auth/ApplicationRoles")
     fun getAspNetRolesByTipoUser(@Header("Authorization") token: String, @Query("\$filter") filter: String): Call<AspNetRolResponse>
 
+    //Patch AspNet User Roles
+
     //endregion
 
     companion object Factory {

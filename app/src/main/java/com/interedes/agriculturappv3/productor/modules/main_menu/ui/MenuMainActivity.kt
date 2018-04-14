@@ -1,14 +1,11 @@
 package com.interedes.agriculturappv3.productor.modules.ui.main_menu
 
-import android.app.Activity
+import android.Manifest
+import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.media.MediaScannerConnection
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -17,7 +14,6 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -33,6 +29,11 @@ import com.interedes.agriculturappv3.productor.modules.main_menu.ui.MainViewMenu
 import com.interedes.agriculturappv3.services.Const
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import android.view.MenuInflater
+import android.content.Context.TELEPHONY_SERVICE
+import android.content.pm.PackageManager
+import android.support.v4.app.ActivityCompat
+import android.telephony.TelephonyManager
+import com.raizlabs.android.dbflow.kotlinextensions.save
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu {
@@ -43,6 +44,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     var usuario_logued: Usuario? = null
     var inflaterGlobal: MenuInflater? = null
     var menuItemGlobal: MenuItem? = null
+    var mPhoneNumber: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +73,26 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     //TODO pasar al repository
     fun getLastUserLogued(): Usuario? {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        hasPhonePermission()
+        usuarioLogued?.PhoneNumber = mPhoneNumber
+        usuarioLogued?.save()
         return usuarioLogued
+    }
+
+    fun hasPhonePermission() {
+        if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), 1000)
+            return
+        }
+        val tMgr = applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        mPhoneNumber = tMgr.line1Number
+    }
+
+    fun returnPhoneNumber(): String? {
+        if (mPhoneNumber != null) {
+            return mPhoneNumber
+        }
+        return null
     }
 
     //region ADAPTER FRAGMENTS

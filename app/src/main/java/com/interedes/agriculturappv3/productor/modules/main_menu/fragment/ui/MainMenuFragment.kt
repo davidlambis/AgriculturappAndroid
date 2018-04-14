@@ -21,6 +21,8 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.AccountingFragment
 import com.interedes.agriculturappv3.productor.adapters.SingleAdapter
+import com.interedes.agriculturappv3.productor.models.usuario.Usuario
+import com.interedes.agriculturappv3.productor.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.productor.modules.comercial_module.ComercialFragment
 import com.interedes.agriculturappv3.productor.modules.main_menu.fragment.presenter.MainMenuFragmentPresenter
@@ -28,6 +30,7 @@ import com.interedes.agriculturappv3.productor.modules.main_menu.fragment.presen
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.Resources_Menu
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_main_menu.*
 
@@ -36,7 +39,6 @@ import kotlinx.android.synthetic.main.fragment_main_menu.*
  * A simple [Fragment] subclass.
  */
 class MainMenuFragment : Fragment(), MainMenuFragmentView {
-
 
 
     var presenter: MainMenuFragmentPresenter? = null
@@ -64,21 +66,21 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
 
 
     private fun setupInit() {
-        (activity as MenuMainActivity).toolbar.title=getString(R.string.title_menu)
+        (activity as MenuMainActivity).toolbar.title = getString(R.string.title_menu)
         var sdk = android.os.Build.VERSION.SDK_INT;
-        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary) );
+        if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary));
 
         } else {
             (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary));
         }
         (activity as MenuMainActivity).toolbar.setTitleTextColor(resources.getColor(R.color.white))
-        var iconMenu=(activity as MenuMainActivity).menuItemGlobal
-        iconMenu?.isVisible=false
+        var iconMenu = (activity as MenuMainActivity).menuItemGlobal
+        iconMenu?.isVisible = false
 
 
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val window = (activity as MenuMainActivity).getWindow()
             // clear FLAG_TRANSLUCENT_STATUS flag:
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -86,32 +88,41 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             // finally change the color
             window.statusBarColor = ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary)
-            (activity as MenuMainActivity).app_bar_main.elevation=4f
+            (activity as MenuMainActivity).app_bar_main.elevation = 4f
 
-        }else{
-            (activity as MenuMainActivity).app_bar_main.targetElevation=4f
+        } else {
+            (activity as MenuMainActivity).app_bar_main.targetElevation = 4f
         }
     }
 
     //region Métodos Interfaz
     override fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
-        val lista = Listas.listaMenuProductor()
-        val adapter = SingleAdapter(lista,Resources_Menu.MENU_MAIN,activity) { position ->
-            if (lista[position].Identificador.equals("asistencia_tecnica")) {
-                (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())
+        if ((activity as MenuMainActivity).getLastUserLogued()?.RolNombre.equals("Productor")) {
+            val lista = Listas.listaMenuProductor()
+            val adapter = SingleAdapter(lista, Resources_Menu.MENU_MAIN, activity) { position ->
+                if (lista[position].Identificador.equals("asistencia_tecnica")) {
+                    (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())
+                } else if (lista[position].Identificador.equals("comercial")) {
+                    (activity as MenuMainActivity).replaceFragment(ComercialFragment())
+                } else if (lista[position].Identificador.equals("contabilidad")) {
+                    (activity as MenuMainActivity).replaceFragment(AccountingFragment())
+                } else if (lista[position].Identificador.equals("salir")) {
+                    presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
+                }
             }
-            else if (lista[position].Identificador.equals("comercial")) {
-                (activity as MenuMainActivity).replaceFragment(ComercialFragment())
+            recyclerView?.adapter = adapter
+        } else if ((activity as MenuMainActivity).getLastUserLogued()?.RolNombre.equals("Comprador")) {
+            val lista = Listas.listaMenuComprador()
+            val adapter = SingleAdapter(lista, Resources_Menu.MENU_MAIN, activity) { position ->
+                if (lista[position].Identificador.equals("comercial")) {
+                    (activity as MenuMainActivity).replaceFragment(ComercialFragment())
+                } else if (lista[position].Identificador.equals("salir")) {
+                    presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
+                }
             }
-            else if (lista[position].Identificador.equals("contabilidad")) {
-                (activity as MenuMainActivity).replaceFragment(AccountingFragment())
-            }
-            else if (lista[position].Identificador.equals("salir")) {
-                presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
-            }
+            recyclerView?.adapter = adapter
         }
-        recyclerView?.adapter = adapter
 
     }
 
@@ -173,6 +184,8 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
         builder.setIcon(R.mipmap.ic_launcher)
         return builder.show()
     }
+
+
     //endregion
 
 

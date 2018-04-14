@@ -47,6 +47,15 @@ class Listas {
             return lista_menu_productor
         }
 
+        fun listaMenuComprador(): ArrayList<ItemLista> {
+            val lista_menu_comprador = ArrayList<ItemLista>()
+            //lista_menu_comprador.add(ItemLista("Asistencia Técnica", Imagen = R.drawable.ic_asistencia_tecnica_color_500, Identificador = "asistencia_tecnica"))
+            lista_menu_comprador.add(ItemLista("Comercial", Imagen = R.drawable.ic_comercial_color_500, Identificador = "comercial"))
+            //lista_menu_comprador.add(ItemLista("Contabilidad", Imagen = R.drawable.ic_contabilidad_color_500, Identificador = "contabilidad"))
+            lista_menu_comprador.add(ItemLista("Salir", Imagen = R.drawable.ic_salir_500, Identificador = "salir"))
+            return lista_menu_comprador
+        }
+
         fun listaAsistenciaTecnicaProductor(): ArrayList<ItemLista> {
             val lista_asistencia_tecnica_productor = ArrayList<ItemLista>()
             lista_asistencia_tecnica_productor.add(ItemLista("Mis Unidades Productivas", Imagen = R.drawable.ic_unidad_productiva, Identificador = "mis_unidades_productivas"))
@@ -67,6 +76,12 @@ class Listas {
             lista_comercial_productor.add(ItemLista("Clientes", Imagen = R.drawable.ic_clientes_azul, Identificador = "clientes"))
             lista_comercial_productor.add(ItemLista("Preguntas", Imagen = R.drawable.ic_preguntas_frecuentas_azul, Identificador = "preguntas"))
             return lista_comercial_productor
+        }
+
+        fun listaModuloComercialComprador(): ArrayList<ItemLista> {
+            val lista_comercial_comprador = ArrayList<ItemLista>()
+            lista_comercial_comprador.add(ItemLista("Productos", Imagen = R.drawable.ic_productos_blue, Identificador = "productos"))
+            return lista_comercial_comprador
         }
 
         fun listaModuloContableProductor(): ArrayList<ItemLista> {
@@ -188,9 +203,6 @@ class Listas {
             lista_tipo_producto.add(TipoProducto(Id = 1, Nombre = "Aguacate"))
             lista_tipo_producto.add(TipoProducto(Id = 2, Nombre = "Fríjol"))
             lista_tipo_producto.add(TipoProducto(Id = 3, Nombre = "Plátano"))
-            lista_tipo_producto.add(TipoProducto(Id = 4, Nombre = "Aguacate"))
-            lista_tipo_producto.add(TipoProducto(Id = 5, Nombre = "Fríjol"))
-            lista_tipo_producto.add(TipoProducto(Id = 6, Nombre = "Plátano"))
             return lista_tipo_producto
         }
 
@@ -304,8 +316,15 @@ class Listas {
 
         fun listUsuarios(): ArrayList<Usuario> {
             val list_static_usuarios = ArrayList<Usuario>()
-            list_static_usuarios.add(Usuario(Id = 2, Apellidos = "Meza", Email = "anacleto@mail.com", Identificacion = "108908756", Nombre = "Cleto", PhoneNumber = "3145678512"))
+            list_static_usuarios.add(Usuario(Id = 4, Apellidos = "Meza", Email = "anacleto@mail.com", Identificacion = "108908756", Nombre = "Cleto", PhoneNumber = "3145678512"))
             return list_static_usuarios
+        }
+
+        fun listUsuariosLogin(): ArrayList<Usuario> {
+            val list_usuarios_login = ArrayList<Usuario>()
+            list_usuarios_login.add(Usuario(Id = 1, Apellidos = "Gonzalez", Email = "productor", Identificacion = "1054654660", Nombre = "Pedro", Contrasena = "productor", DetalleMetodoPagoNombre = "Efectivo", RolNombre = "Productor"))
+            list_usuarios_login.add(Usuario(Id = 2, Apellidos = "Gutierrez", Email = "comprador", Identificacion = "65165278", Nombre = "Carlos", Contrasena = "comprador", RolNombre = "Comprador"))
+            return list_usuarios_login
         }
 
         fun queryGeneral(criterio: String, valor: String): String {

@@ -25,6 +25,7 @@ import com.interedes.agriculturappv3.productor.models.rol.Rol
 import com.interedes.agriculturappv3.productor.models.rol.Rol_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
+import com.interedes.agriculturappv3.services.resources.RolResources
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.Select
 import kotlinx.android.synthetic.main.activity_register_rol.*
@@ -63,10 +64,10 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
                         lista = response.body()?.value
                         if (lista != null) {
                             for (item: Rol in lista!!) {
-                                if (item.Nombre.equals("Comprador")) {
+                                if (item.Nombre.equals(RolResources.COMPRADOR)) {
                                     item.Imagen = R.drawable.ic_comprador_big
                                     item.save()
-                                } else if (item.Nombre.equals("Productor")) {
+                                } else if (item.Nombre.equals(RolResources.PRODUCTOR)) {
                                     item.Imagen = R.drawable.ic_productor_big
                                     item.save()
                                 }

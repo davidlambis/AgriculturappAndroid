@@ -38,7 +38,6 @@ class LoginRepositoryImpl : LoginRepository {
 
     //region Interfaz
     override fun ingresar(login: Login) {
-
         val call = apiService?.postLogin(login)
         call?.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
@@ -46,13 +45,16 @@ class LoginRepositoryImpl : LoginRepository {
                 val query = Listas.queryGeneral("Email", login.username!!)
                 val call_usuario = apiService?.getAuthUserByCorreo(access_token, query)
 
+
                 call_usuario?.enqueue(object : Callback<GetUserResponse> {
                     override fun onResponse(call: Call<GetUserResponse>?, response: Response<GetUserResponse>?) {
                         val user_login: List<UserResponse>? = response?.body()?.value!!
-                        for (item in user_login!!) {
+
+
+                        /*for (item in user_login!!) {
                             val tipo_user = item.tipouser
-                            val query = Listas.queryGeneral("Id", tipo_user.toString())
-                            val call_asp_net_roles = apiService?.getAspNetRolesByTipoUser(access_token, query)
+                            val query2 = Listas.queryGeneral("Id", tipo_user.toString())
+                            val call_asp_net_roles = apiService?.getAspNetRolesByTipoUser(access_token, query2)
                             call_asp_net_roles?.enqueue(object : Callback<AspNetRolResponse> {
                                 override fun onResponse(call: Call<AspNetRolResponse>?, response: Response<AspNetRolResponse>?) {
                                     val asp_net_rol = response?.body()?.value
@@ -64,7 +66,7 @@ class LoginRepositoryImpl : LoginRepository {
                                     Log.e("Failure Rol Response", t?.message.toString())
                                 }
                             })
-                        }
+                        }*/
                     }
 
                     override fun onFailure(call: Call<GetUserResponse>?, t: Throwable?) {
