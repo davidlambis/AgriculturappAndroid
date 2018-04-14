@@ -29,7 +29,11 @@ data class Oferta(@PrimaryKey(autoincrement = true)
                   @Column(name = "UsuarioId")
                   var UsuarioId: Long? = 0,
                   @Column(name = "ProductoId")
-                  var ProductoId: Long? = 0) {
+                  var ProductoId: Long? = 0,
+                  @Column(name = "NombreUsuario")
+                  var NombreUsuario: String? = null,
+                  @Column(name = "Valor_Oferta")
+                  var Valor_Oferta: Double? = 0.0) {
 
     fun getCreatedOnFormat(): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())

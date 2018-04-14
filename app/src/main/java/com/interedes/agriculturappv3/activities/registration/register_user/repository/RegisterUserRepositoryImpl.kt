@@ -68,47 +68,12 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
                             userMap.put("Cedula", response.body()?.identification)
                             userMap.put("Correo", response.body()?.email)
                             userMap.put("Celular", response.body()?.phoneNumber)
-                            userMap.put("FotoEnfermedad", "")
+                            //userMap.put("FotoEnfermedad", "")
                             // userMap.put("Token", token!!)
 
                             reference?.setValue(userMap)?.addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
-
-                                    //ENVIAR EMAIL DE CONFIRMACIÓN
-                                    sendEmailVerification(currentUser)
-                                    //SQLITE, Traer usuario del servicio con todos los datos
-                                    /* val query: String = Listas.queryGeneral("Email", user.Email!!)
-                                     val callUsuario = apiService?.getUsuarioByCorreo(query)
-                                     callUsuario?.enqueue(object : Callback<UsuarioResponse> {
-                                         override fun onResponse(call: Call<UsuarioResponse>?, response: Response<UsuarioResponse>?) {
-                                             if (response != null && response.code() == 200) {
-                                                 //val usuario: Usuario = response.body()?.value!!
-                                                 val usuario: List<Usuario>? = response.body()?.value!!
-                                                 //TODO Encriptar Contraseña, Save sqlite
-                                                 for (u: Usuario in usuario!!) {
-                                                     if (u.Email.equals(user.Email)) {
-                                                         u.Contrasena = user.Password
-                                                         u.DetalleMetodoPagoNombre = SQLite.select().from(DetalleMetodoPago::class.java).where(DetalleMetodoPago_Table.Id.eq(u.DetalleMetodoPagoId?.toLong())).querySingle()?.Nombre
-                                                         u.RolNombre = rolName
-                                                         u.save()
-                                                     }
-                                                 }
-
-                                                 postEvent(RegisterEvent.onRegistroExitoso)
-                                             } else {
-                                                 postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
-                                                 Log.e("Error code Get", response?.errorBody()?.string())
-                                                 Log.v("url", response?.raw().toString())
-                                             }
-                                         }
-
-                                         override fun onFailure(call: Call<UsuarioResponse>?, t: Throwable?) {
-                                             postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor")
-                                             Log.e("Error Get", t?.message.toString())
-                                         }
-
-                                     }) */
-
+                                    postEvent(RegisterEvent.onRegistroExitoso)
                                 } else {
                                     postEvent(RegisterEvent.onErrorRegistro, "Petición fallida a Firebase(registro user)")
                                     Log.e("Error Firebase", task.exception.toString())

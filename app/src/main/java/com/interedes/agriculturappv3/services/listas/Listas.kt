@@ -2,16 +2,21 @@ package com.interedes.agriculturappv3.services.listas
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.*
+import com.interedes.agriculturappv3.productor.models.compras.Compras
+import com.interedes.agriculturappv3.productor.models.compras.DetalleCompra
 import com.interedes.agriculturappv3.productor.models.insumos.Insumo
+import com.interedes.agriculturappv3.productor.models.ofertas.Oferta
 import com.interedes.agriculturappv3.productor.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.productor.models.plagas.FotoEnfermedad
 import com.interedes.agriculturappv3.productor.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.usuario.Usuario
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
-import com.interedes.agriculturappv3.productor.models.ventas.Estado
 import com.interedes.agriculturappv3.productor.models.ventas.Estado_Transaccion
 import com.interedes.agriculturappv3.productor.models.ventas.Puk
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Listas {
 
@@ -246,41 +251,62 @@ class Listas {
 
         fun listCategoriaPuk(): ArrayList<CategoriaPuk> {
             val categoriaPuk = ArrayList<CategoriaPuk>()
-            categoriaPuk.add(CategoriaPuk(Id = 1, Nombre = "Gasto",Sigla = "I"))
-            categoriaPuk.add(CategoriaPuk(Id = 2,   Nombre = "Ventas",Sigla ="G"))
+            categoriaPuk.add(CategoriaPuk(Id = 1, Nombre = "Gasto", Sigla = "I"))
+            categoriaPuk.add(CategoriaPuk(Id = 2, Nombre = "Ingreso", Sigla = "G"))
             return categoriaPuk
         }
 
-
-
-
         fun listPuk(): ArrayList<Puk> {
             val categoriaPuk = ArrayList<Puk>()
-            categoriaPuk.add(Puk(Id = 1,CategoriaId =  1,Codigo = "",Descripcion = "Analisis de suelo"))
-            categoriaPuk.add(Puk(Id = 2,CategoriaId =  1,Codigo = "",Descripcion = "Material Vegetal"))
-            categoriaPuk.add(Puk(Id = 3,CategoriaId =  1,Codigo = "",Descripcion = "Materiales"))
-            categoriaPuk.add(Puk(Id = 4,CategoriaId =  1,Codigo = "",Descripcion = "Herramientas"))
-            categoriaPuk.add(Puk(Id = 5,CategoriaId =  1,Codigo = "",Descripcion = "Mano de obra preparaciond de terreno"))
-            categoriaPuk.add(Puk(Id = 6,CategoriaId =  1,Codigo = "",Descripcion = "Mano de obra cosecha y poscosecha"))
-            categoriaPuk.add(Puk(Id = 7,CategoriaId =  1,Codigo = "",Descripcion = "Agroinsumos"))
-            categoriaPuk.add(Puk(Id = 8,CategoriaId =  1,Codigo = "",Descripcion = "Transporte"))
+            categoriaPuk.add(Puk(Id = 1, CategoriaId = 1, Codigo = "", Descripcion = "Analisis de suelo"))
+            categoriaPuk.add(Puk(Id = 2, CategoriaId = 1, Codigo = "", Descripcion = "Material Vegetal"))
+            categoriaPuk.add(Puk(Id = 3, CategoriaId = 1, Codigo = "", Descripcion = "Materiales"))
+            categoriaPuk.add(Puk(Id = 4, CategoriaId = 1, Codigo = "", Descripcion = "Herramientas"))
+            categoriaPuk.add(Puk(Id = 5, CategoriaId = 1, Codigo = "", Descripcion = "Mano de obra preparaciond de terreno"))
+            categoriaPuk.add(Puk(Id = 6, CategoriaId = 1, Codigo = "", Descripcion = "Mano de obra cosecha y poscosecha"))
+            categoriaPuk.add(Puk(Id = 7, CategoriaId = 1, Codigo = "", Descripcion = "Agroinsumos"))
+            categoriaPuk.add(Puk(Id = 8, CategoriaId = 1, Codigo = "", Descripcion = "Transporte"))
 
-            categoriaPuk.add(Puk(Id = 9,CategoriaId =  2,Codigo = "",Descripcion = "Cosecha"))
-            categoriaPuk.add(Puk(Id = 10,CategoriaId =  2,Codigo = "",Descripcion = "Cultivo de Cafe"))
+            categoriaPuk.add(Puk(Id = 9, CategoriaId = 2, Codigo = "", Descripcion = "Cosecha"))
+            categoriaPuk.add(Puk(Id = 10, CategoriaId = 2, Codigo = "", Descripcion = "Cultivo de Cafe"))
             return categoriaPuk
         }
 
         fun listEstadoTransaccion(): ArrayList<Estado_Transaccion> {
             val estadoTransaccion = ArrayList<Estado_Transaccion>()
-            estadoTransaccion.add(Estado_Transaccion(Id = 1,   Nombre = "Por Cobrar"))
-            estadoTransaccion.add(Estado_Transaccion(Id = 2,   Nombre = "Por Pagar"))
+            estadoTransaccion.add(Estado_Transaccion(Id = 1, Nombre = "Por Cobrar"))
+            estadoTransaccion.add(Estado_Transaccion(Id = 2, Nombre = "Por Pagar"))
             estadoTransaccion.add(Estado_Transaccion(Id = 3, Nombre = "Pagado"))
             return estadoTransaccion
         }
 
 
-        var listCategoriasPuk= Listas.listCategoriaPuk()
-        var listPuk= Listas.listPuk()
+        var listCategoriasPuk = Listas.listCategoriaPuk()
+        var listPuk = Listas.listPuk()
+
+        fun listStaticOfertas(): ArrayList<Oferta> {
+            val list_static_ofertas = ArrayList<Oferta>()
+            list_static_ofertas.add(Oferta(Id = 1, CreatedOn = Calendar.getInstance().time, EstadoOferta = 1, EstadoOfertaId = 1, UsuarioId = 1, ProductoId = 1, NombreUsuario = "Anacleto", Valor_Oferta = 50.15))
+            return list_static_ofertas
+        }
+
+        fun listVentasProductor(): ArrayList<Compras> {
+            val list_static_ventas = ArrayList<Compras>()
+            list_static_ventas.add(Compras(Id = 1, ProductoId = 1, NombreProducto = "Producto1", NombreUsuario = "Serafín", CodigoCupon = "", CreatedOn = Calendar.getInstance().time, MetodoPago = "Efectivo", TotalCompra = 50000.0, UsuarioId = 2, UsuarioVendedorId = 1))
+            return list_static_ventas
+        }
+
+        fun listaDetalleVentasProductor(): ArrayList<DetalleCompra> {
+            val list_static_detalle_ventas = ArrayList<DetalleCompra>()
+            list_static_detalle_ventas.add(DetalleCompra(Id = 1, ComprasId = 1, ProductoId = 1))
+            return list_static_detalle_ventas
+        }
+
+        fun listUsuarios(): ArrayList<Usuario> {
+            val list_static_usuarios = ArrayList<Usuario>()
+            list_static_usuarios.add(Usuario(Id = 2, Apellidos = "Meza", Email = "anacleto@mail.com", Identificacion = "108908756", Nombre = "Cleto", PhoneNumber = "3145678512"))
+            return list_static_usuarios
+        }
 
         fun queryGeneral(criterio: String, valor: String): String {
             val queryFilter = "$criterio eq '$valor'"
