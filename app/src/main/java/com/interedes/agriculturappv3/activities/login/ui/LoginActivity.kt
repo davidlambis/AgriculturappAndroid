@@ -8,23 +8,21 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.R.id.*
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenter
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenterImpl
+import com.interedes.agriculturappv3.activities.registration.register_rol.RegisterRolActivity
 import com.interedes.agriculturappv3.productor.models.login.Login
 import com.interedes.agriculturappv3.productor.models.rol.Rol
 import com.interedes.agriculturappv3.productor.models.rol.RolResponse
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
-import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.Delete
@@ -58,11 +56,12 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
         if (getSupportActionBar() != null)
             getSupportActionBar()?.hide();
         fabLogin?.setOnClickListener(this)
+        tvRegistrarse?.setOnClickListener(this)
         if (intent.extras != null && intent.extras["correo"].equals(getString(R.string.snackbar_verificacion_correo))) {
             onMessageOk(R.color.colorPrimary, getString(R.string.snackbar_verificacion_correo))
         }
         //Registra al receiver de Internet
-        registerInternetReceiver()
+        //registerInternetReceiver()
         loadRoles()
     }
 
@@ -73,6 +72,12 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
             R.id.fabLogin -> {
                 ingresar()
             }
+            R.id.tvRegistrarse -> {
+                tvRegistrarse.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                val i = Intent(this, RegisterRolActivity::class.java)
+                i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(i)
+            }
 
         }
     }
@@ -82,12 +87,12 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     //Login
     override fun ingresar() {
         if (presenter?.validarCampos() == true) {
-            /*val login = Login(edtCorreo?.text?.trim().toString(),
+            val login = Login(edtCorreo?.text?.trim().toString(),
                     edtContrasena?.text?.trim()?.toString())
-            presenter?.ingresar(login)*/
+            presenter?.ingresar(login)
             //progressBar.visibility = View.VISIBLE
-            progressBar.visibility = View.VISIBLE
-            startActivity(Intent(this, MenuMainActivity::class.java))
+            /*progressBar.visibility = View.VISIBLE
+            startActivity(Intent(this, MenuMainActivity::class.java))*/
             /*val lista_usuarios = Listas.listUsuariosLogin()
             for (item in lista_usuarios) {
                 if (item.Email?.equals(edtCorreo?.text.toString())!! && item.Contrasena?.equals(edtContrasena?.text.toString())!!) {
@@ -109,7 +114,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
                 val call = apiService.getRoles()
                 call.enqueue(object : Callback<RolResponse> {
                     override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
-                        if (response != null) {
+                        if (response != null && response.code() == 200) {
                             lista = response.body()?.value
                             if (lista != null) {
                                 for (item: Rol in lista!!) {
@@ -141,7 +146,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
                 val call = apiService.getRoles()
                 call.enqueue(object : Callback<RolResponse> {
                     override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
-                        if (response != null) {
+                        if (response != null && response.code() == 200) {
                             lista = response.body()?.value
                             if (lista != null) {
                                 Delete.table<Rol>(Rol::class.java)
@@ -274,7 +279,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     //region Ciclo de Vida Actividad
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(connectivityReceiver)
+        //unregisterReceiver(connectivityReceiver)
         presenter?.onDestroy()
     }
 

@@ -102,6 +102,14 @@
                             app:fabSize="normal"
                             app:rippleColor="@color/colorPrimary" />
 
+                        <TextView
+                            android:id="@+id/tvRegistrarse"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/text_size"
+                            android:textColor="@color/grey_luiyi"
+                            android:text="@string/title_registrate"/>
 
                         <ProgressBar
                             android:id="@+id/progressBar"

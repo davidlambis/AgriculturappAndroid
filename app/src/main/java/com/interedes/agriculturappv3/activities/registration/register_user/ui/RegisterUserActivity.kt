@@ -37,7 +37,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     var presenter: RegisterUserPresenter? = null
     var metodo_pago_id: Long? = null
     var nombre_metodo_pago: String? = null
-    var detalle_metodo_pago_id: Long? = 0
+    var detalle_metodo_pago_id: Long? = null
     var rol_id: UUID? = null
     var connectivityReceiver: ConnectivityReceiver? = null
 

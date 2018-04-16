@@ -35,7 +35,7 @@ interface IMainViewReportes {
         //Fun Lote CRUD
         fun setResults(transacciones:Int)
 
-        //Response Notify
+        //GenericResponse Notify
         fun requestResponseOK()
         fun requestResponseError(error: String?)
 

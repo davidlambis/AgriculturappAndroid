@@ -64,7 +64,7 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
                 val call = apiService.getRoles()
                 call.enqueue(object : Callback<RolResponse> {
                     override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
-                        if (response != null) {
+                        if (response != null && response.code() == 200) {
                             lista = response.body()?.value
                             if (lista != null) {
                                 for (item: Rol in lista!!) {
@@ -101,7 +101,7 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
                 val call = apiService.getRoles()
                 call.enqueue(object : Callback<RolResponse> {
                     override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
-                        if (response != null) {
+                        if (response != null && response.code() == 200) {
                             lista = response.body()?.value
                             if (lista != null) {
                                 Delete.table<Rol>(Rol::class.java)

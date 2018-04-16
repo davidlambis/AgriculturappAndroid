@@ -73,27 +73,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     //TODO pasar al repository
     fun getLastUserLogued(): Usuario? {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
-        /*hasPhonePermission()
-        usuarioLogued?.PhoneNumber = mPhoneNumber
-        usuarioLogued?.save()*/
         return usuarioLogued
     }
 
-    fun hasPhonePermission() {
-        if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), 1000)
-            return
-        }
-        val tMgr = applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        mPhoneNumber = tMgr.line1Number
-    }
-
-    fun returnPhoneNumber(): String? {
-        if (mPhoneNumber != null) {
-            return mPhoneNumber
-        }
-        return null
-    }
 
     //region ADAPTER FRAGMENTS
 

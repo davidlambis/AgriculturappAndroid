@@ -34,13 +34,8 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
     //region Métodos Interfaz
     override fun logOut(usuario: Usuario?) {
         try {
-            //mUserReference?.child("Access_Token")?.setValue(null)
-            //mAuth?.signOut()
-            mUserDatabase = mDatabase?.child("Users")
             mAuth = FirebaseAuth.getInstance()
             if (mAuth?.currentUser != null) {
-                mUserReference = mUserDatabase?.child(mAuth?.currentUser?.uid)
-                mUserReference?.child("Access_Token")?.setValue(null)
                 mAuth?.signOut()
             }
             usuario?.UsuarioRemembered = false

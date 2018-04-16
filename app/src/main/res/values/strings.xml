@@ -304,6 +304,8 @@
     <string name="_3232_34_mts">3232.34 mts</string>
     <string name="error_take_picture_camera">Error al tomar la fotografía</string>
     <string name="error_image_selected">Debe seleccionar una imagen</string>
+    <string name="title_registrate"><u>Regístrate</u></string>
+    <string name="spinner_departamento">Departamento</string>
 
 
     <string-array name="array_type_get_location_with_conection">

@@ -99,20 +99,21 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
     //region Métodos Interfaz
     override fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
-        val lista = Listas.listaMenuProductor()
-        val adapter = SingleAdapter(lista, Resources_Menu.MENU_MAIN, activity) { position ->
-            if (lista[position].Identificador.equals("asistencia_tecnica")) {
-                (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())
-            } else if (lista[position].Identificador.equals("comercial")) {
-                (activity as MenuMainActivity).replaceFragment(ComercialFragment())
-            } else if (lista[position].Identificador.equals("contabilidad")) {
-                (activity as MenuMainActivity).replaceFragment(AccountingFragment())
-            } else if (lista[position].Identificador.equals("salir")) {
-                presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
+        if ((activity as MenuMainActivity).getLastUserLogued()?.RolNombre.equals("Productor")) {
+            val lista = Listas.listaMenuProductor()
+            val adapter = SingleAdapter(lista, Resources_Menu.MENU_MAIN, activity) { position ->
+                if (lista[position].Identificador.equals("asistencia_tecnica")) {
+                    (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())
+                } else if (lista[position].Identificador.equals("comercial")) {
+                    (activity as MenuMainActivity).replaceFragment(ComercialFragment())
+                } else if (lista[position].Identificador.equals("contabilidad")) {
+                    (activity as MenuMainActivity).replaceFragment(AccountingFragment())
+                } else if (lista[position].Identificador.equals("salir")) {
+                    presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
+                }
             }
-        }
-        recyclerView?.adapter = adapter
-        /*else if ((activity as MenuMainActivity).getLastUserLogued()?.RolNombre.equals("Comprador")) {
+            recyclerView?.adapter = adapter
+        } else if ((activity as MenuMainActivity).getLastUserLogued()?.RolNombre.equals("Comprador")) {
             val lista = Listas.listaMenuComprador()
             val adapter = SingleAdapter(lista, Resources_Menu.MENU_MAIN, activity) { position ->
                 if (lista[position].Identificador.equals("comercial")) {
@@ -122,7 +123,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
                 }
             }
             recyclerView?.adapter = adapter
-        } */
+        }
 
     }
 

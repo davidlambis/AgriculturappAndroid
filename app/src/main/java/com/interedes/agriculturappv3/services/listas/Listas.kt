@@ -316,14 +316,14 @@ class Listas {
 
         fun listUsuarios(): ArrayList<Usuario> {
             val list_static_usuarios = ArrayList<Usuario>()
-            list_static_usuarios.add(Usuario(Id = 4, Apellidos = "Meza", Email = "anacleto@mail.com", Identificacion = "108908756", Nombre = "Cleto", PhoneNumber = "3145678512"))
+            list_static_usuarios.add(Usuario(Id = UUID.randomUUID(), Apellidos = "Meza", Email = "anacleto@mail.com", Identificacion = "108908756", Nombre = "Cleto", PhoneNumber = "3145678512"))
             return list_static_usuarios
         }
 
         fun listUsuariosLogin(): ArrayList<Usuario> {
             val list_usuarios_login = ArrayList<Usuario>()
-            list_usuarios_login.add(Usuario(Id = 1, Apellidos = "Gonzalez", Email = "productor", Identificacion = "1054654660", Nombre = "Pedro", Contrasena = "productor", DetalleMetodoPagoNombre = "Efectivo", RolNombre = "Productor"))
-            list_usuarios_login.add(Usuario(Id = 2, Apellidos = "Gutierrez", Email = "comprador", Identificacion = "65165278", Nombre = "Carlos", Contrasena = "comprador", RolNombre = "Comprador"))
+            list_usuarios_login.add(Usuario(Id = UUID.randomUUID(), Apellidos = "Gonzalez", Email = "productor", Identificacion = "1054654660", Nombre = "Pedro", Contrasena = "productor", DetalleMetodoPagoNombre = "Efectivo", RolNombre = "Productor"))
+            list_usuarios_login.add(Usuario(Id = UUID.randomUUID(), Apellidos = "Gutierrez", Email = "comprador", Identificacion = "65165278", Nombre = "Carlos", Contrasena = "comprador", RolNombre = "Comprador"))
             return list_usuarios_login
         }
 

@@ -36,7 +36,7 @@ interface IMainViewTransacciones {
         fun setListTransaccion(transaccion: List<Transaccion>)
         fun setResults(transacciones:Int)
 
-        //Response Notify
+        //GenericResponse Notify
         fun requestResponseOK()
         fun requestResponseError(error: String?)
 

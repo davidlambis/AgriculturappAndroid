@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 class GetUserResponse {
 
     @SerializedName("value")
-    var value: List<UserResponse>? = null
+    var value: MutableList<UserLoginResponse>? = null
 }

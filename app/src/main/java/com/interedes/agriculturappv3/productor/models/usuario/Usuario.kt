@@ -5,13 +5,14 @@ import com.interedes.agriculturappv3.config.DataSource
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
+import java.util.*
 
 
 @Table(database = DataSource::class)
 data class Usuario(@PrimaryKey
                    @SerializedName("Id")
                    @Column(name = "Id")
-                   var Id: Long? = 0,
+                   var Id: UUID? = null,
 
                    @SerializedName("Apellidos")
                    @Column(name = "Apellidos")
@@ -19,7 +20,7 @@ data class Usuario(@PrimaryKey
 
                    @SerializedName("DetallemetodoPagoId")
                    @Column(name = "DetallemetodoPagoId")
-                   var DetalleMetodoPagoId: Int? = 0,
+                   var DetalleMetodoPagoId: Long? = 0,
 
                    @SerializedName("Email")
                    @Column(name = "Email")
@@ -67,7 +68,7 @@ data class Usuario(@PrimaryKey
 
                    @SerializedName("RolId")
                    @Column(name = "RolId")
-                   var RolId: Long? = 0,
+                   var RolId: UUID? = null,
 
                    @SerializedName("UserName")
                    @Column(name = "UserName")

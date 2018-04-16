@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.services.api
 
+import com.interedes.agriculturappv3.productor.models.GenericResponse
 import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPagoResponse
 import com.interedes.agriculturappv3.productor.models.login.Login
 import com.interedes.agriculturappv3.productor.models.login.LoginResponse
@@ -14,6 +15,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 import retrofit2.http.GET
+
+
 
 
 interface ApiInterface {
@@ -65,6 +68,10 @@ interface ApiInterface {
                 .readTimeout(5, TimeUnit.MINUTES) //Tiempo de respuesta del servicio
                 .connectTimeout(5, TimeUnit.MINUTES)
                 .build()
+
+        /*var gson = GsonBuilder()
+                .setLenient()
+                .create()*/
 
         val BASE_URL = "http://18.233.87.16/"
         fun create(): ApiInterface {

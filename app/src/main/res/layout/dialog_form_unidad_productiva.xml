@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     android:background="@drawable/fondo_general"
     android:fitsSystemWindows="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
+
     <RelativeLayout
-        android:layout_marginStart="@dimen/margin_10"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_10"
+        android:orientation="horizontal">
+
         <ImageView
             android:id="@+id/ivClosetDialogUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:tint="@color/grey_luiyi"
-            android:src="@drawable/ic_back_button"/>
+            android:src="@drawable/ic_back_button"
+            android:tint="@color/grey_luiyi" />
 
         <TextView
             android:id="@+id/txtTitle"
@@ -33,31 +35,56 @@
             android:textColor="@color/purple"
             android:textSize="@dimen/text_size_18"
             android:textStyle="bold" />
+
         <ImageView
             android:id="@+id/logo"
-            android:layout_marginTop="-15dp"
-            android:layout_marginBottom="-15dp"
-            android:layout_below="@+id/txtTitle"
             android:layout_width="match_parent"
             android:layout_height="90sp"
+            android:layout_below="@+id/txtTitle"
             android:layout_gravity="center"
+            android:layout_marginBottom="-15dp"
+            android:layout_marginTop="-15dp"
             android:src="@drawable/ic_unidad_productiva" />
+
         <View
             android:id="@+id/division"
-            android:layout_below="@+id/logo"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_below="@+id/logo"
             android:layout_marginTop="5dp"
             android:background="@color/purple" />
     </RelativeLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
-            android:paddingBottom="@dimen/margin_24"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/margin_24">
+
+            <!-- <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                 android:id="@+id/spinnerDepartamento"
+                 android:layout_width="match_parent"
+                 android:layout_height="0dp"
+                 android:layout_marginLeft="5dp"
+                 android:layout_marginRight="5dp"
+                 android:layout_marginTop="5dp"
+                 android:layout_weight="0.5"
+                 android:drawableLeft="@drawable/ic_departament_icon"
+                 android:drawableStart="@drawable/ic_departament_icon"
+                 android:hint="@string/spinner_departamento"
+                 android:textAlignment="center"
+                 android:textColorHint="@color/grey_luiyi"
+                 android:textSize="@dimen/text_size"
+                 app:met_baseColor="@color/grey_luiyi"
+                 app:met_floatingLabel="normal"
+                 app:met_floatingLabelTextColor="@color/grey_luiyi"
+                 app:met_primaryColor="@color/grey_luiyi"
+                 app:met_textColor="@color/grey_luiyi"
+                 app:met_textColorHint="@color/grey_luiyi" /> -->
 
 
             <android.support.design.widget.TextInputLayout
@@ -87,12 +114,11 @@
                     android:id="@+id/etDescripcionUnidadProductiva"
                     style="@style/editText"
                     android:layout_height="@dimen/height_150"
-                    android:gravity="start"
-                    android:inputType="text|textMultiLine"
                     android:drawableLeft="@drawable/ic_nombre_finca"
                     android:drawableStart="@drawable/ic_nombre_finca"
+                    android:gravity="start"
                     android:hint="@string/edit_text_description"
-                   />
+                    android:inputType="text|textMultiLine" />
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
@@ -113,26 +139,27 @@
                         android:drawableStart="@drawable/ic_localizacion_finca"
                         android:enabled="false"
                         android:hint="@string/edit_text_localizacion_finca"
-                        android:inputType="text"/>
+                        android:inputType="text" />
                 </android.support.design.widget.TextInputLayout>
 
 
                 <ImageView
-                    android:tint="@color/light_green_800"
                     android:id="@+id/imageViewLocalizarUnidadProductiva"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"
-                    android:src="@drawable/ic_apuntador" />
+                    android:src="@drawable/ic_apuntador"
+                    android:tint="@color/light_green_800" />
 
             </LinearLayout>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -142,10 +169,10 @@
                     <EditText
                         android:id="@+id/edtAreaUnidadProductiva"
                         style="@style/editText"
-                        android:hint="@string/area"
-                        android:inputType="numberDecimal"
                         android:drawableLeft="@drawable/ic_numero_hectareas"
                         android:drawableStart="@drawable/ic_numero_hectareas"
+                        android:hint="@string/area"
+                        android:inputType="numberDecimal"
                         android:textAlignment="textStart" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -153,12 +180,12 @@
                     android:id="@+id/spinnerUnidadMedidaUp"
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:hint="@string/title_unidad"
-                    android:textColorHint="@color/grey_luiyi"
-                    android:textSize="@dimen/text_size_18"
-                    android:textAlignment="center"
                     android:drawableLeft="@drawable/ic_medicion"
                     android:drawableStart="@drawable/ic_medicion"
+                    android:hint="@string/title_unidad"
+                    android:textAlignment="center"
+                    android:textColorHint="@color/grey_luiyi"
+                    android:textSize="@dimen/text_size_18"
                     app:met_baseColor="@color/grey_luiyi"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelTextColor="@color/grey_luiyi"

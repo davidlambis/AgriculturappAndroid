@@ -16,18 +16,19 @@ import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.activities.registration.register_rol.RegisterRolActivity
+import com.interedes.agriculturappv3.productor.models.GenericResponse
+import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPago
+import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPagoResponse
 import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPago
+import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPagoResponse
 import com.interedes.agriculturappv3.productor.models.rol.Rol
 import com.interedes.agriculturappv3.productor.models.rol.RolResponse
-import com.interedes.agriculturappv3.productor.models.rol.Rol_Table
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario_Table
-import com.interedes.agriculturappv3.productor.models.ventas.Estado
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.services.resources.RolResources
-import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.Delete
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -35,24 +36,28 @@ import com.raizlabs.android.dbflow.sql.language.Select
 import kotlinx.android.synthetic.main.activity_home.*
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 
 
 class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityReceiver.connectivityReceiverListener {
 
     var connectivityReceiver: ConnectivityReceiver? = null
     var lista: MutableList<Rol>? = null
+    var apiService: ApiInterface? = null
 
     init {
         connectivityReceiver = ConnectivityReceiver()
+        apiService = ApiInterface.create()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        // goToMainActivity()
+        goToMainActivity()
         registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         AgriculturApplication.instance.setConnectivityListener(this)
         loadRoles()
+        loadInitialLists()
         linearLayoutIngresar?.setOnClickListener(this)
         linearLayoutRegistrar?.setOnClickListener(this)
         linearLayoutContactanos?.setOnClickListener(this)
@@ -92,7 +97,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
                 val call = apiService.getRoles()
                 call.enqueue(object : Callback<RolResponse> {
                     override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
-                        if (response != null) {
+                        if (response != null && response.code() == 200) {
                             lista = response.body()?.value
                             if (lista != null) {
                                 for (item: Rol in lista!!) {
@@ -124,7 +129,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
                 val call = apiService.getRoles()
                 call.enqueue(object : Callback<RolResponse> {
                     override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
-                        if (response != null) {
+                        if (response != null && response.code() == 200) {
                             lista = response.body()?.value
                             if (lista != null) {
                                 Delete.table<Rol>(Rol::class.java)
@@ -151,6 +156,72 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
             }
         }
     }
+
+
+    fun loadInitialLists() {
+        if (checkConnection()) {
+            val call = apiService?.getMetodoPagos()
+            call?.enqueue(object : Callback<MetodoPagoResponse> {
+                override fun onResponse(call: Call<MetodoPagoResponse>?, response: Response<MetodoPagoResponse>?) {
+                    if (response != null && response.code() == 200) {
+                        val metodos_pago = response.body()?.value!!
+                        for (item: MetodoPago in metodos_pago) {
+                            item.save()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<MetodoPagoResponse>?, t: Throwable?) {
+
+                }
+            })
+
+            val call_2 = apiService?.getDetalleMetodoPagos()
+            call_2?.enqueue(object : Callback<DetalleMetodoPagoResponse> {
+                override fun onResponse(call: Call<DetalleMetodoPagoResponse>?, response: Response<DetalleMetodoPagoResponse>?) {
+                    if (response != null && response.code() == 200) {
+                        val detalle_metodos_pago = response.body()?.value!!
+                        for (item: DetalleMetodoPago in detalle_metodos_pago) {
+                            item.save()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<DetalleMetodoPagoResponse>?, t: Throwable?) {
+
+                }
+
+            })
+        }
+
+    }
+
+/*
+
+    override fun loadDetalleMetodosPagoByMetodoPagoId(Id: Long?) {
+        val call = apiService?.getDetalleMetodoPagos()
+        call?.enqueue(object : Callback<DetalleMetodoPagoResponse> {
+            override fun onResponse(call: Call<DetalleMetodoPagoResponse>?, response: GenericResponse<DetalleMetodoPagoResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val detalle_metodos_pago = response.body()?.value!!
+                    for (item: DetalleMetodoPago in detalle_metodos_pago) {
+                        item.save()
+                    }
+                    val detalleMetodosPagoList = getDetalleMetodosPagoByMetodoPagoId(Id)
+                    postEventDetalleMetodoPago(RegisterEvent.onDetalleMetodosPagoExitoso, detalleMetodosPagoList, null)
+
+                } else {
+                    postEvent(RegisterEvent.onLoadInfoError, "No se pudieron cargar los bancos")
+                }
+            }
+
+            override fun onFailure(call: Call<DetalleMetodoPagoResponse>?, t: Throwable?) {
+
+            }
+        })
+    }
+
+     */
 
     private fun checkConnection(): Boolean {
         return ConnectivityReceiver.isConnected
