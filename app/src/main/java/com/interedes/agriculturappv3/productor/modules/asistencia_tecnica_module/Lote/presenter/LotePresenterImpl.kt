@@ -6,8 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.events.RequestEventLote
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.interactor.LoteInteractor
@@ -15,6 +14,7 @@ import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.ui.MainViewLote
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
@@ -24,7 +24,7 @@ import org.greenrobot.eventbus.Subscribe
  * Created by EnuarMunoz on 7/03/18.
  */
 
-class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
+class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
 
     var coordsService: CoordsServiceKotlin? = null
     var loteInteractor: LoteInteractor? = null
@@ -32,12 +32,12 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
 
 
     companion object {
-        var instance:  LotePresenterImpl? = null
+        var instance: LotePresenterImpl? = null
     }
 
     init {
-        instance=this
-        loteInteractor=LoteInteractorImpl()
+        instance = this
+        loteInteractor = LoteInteractorImpl()
         eventBus = GreenRobotEventBus()
 
     }
@@ -50,7 +50,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
 
     override fun onDestroy() {
         loteMainView = null
-        if(coordsService!=null){
+        if (coordsService != null) {
             CoordsServiceKotlin.instance?.closeService()
             //coordsService!!.closeService()
         }
@@ -58,23 +58,23 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     }
 
     override fun closeServiceGps() {
-        if(coordsService!=null){
+        if (coordsService != null) {
             //CoordsService.instance?.closeService()
             CoordsServiceKotlin.instance?.closeService()
             //coordsService!!.closeService()
         }
     }
 
-    override fun getLotes(unidad_productiva_id:Long?) {
+    override fun getLotes(unidad_productiva_id: Long?) {
         loteInteractor?.execute(unidad_productiva_id)
     }
 
     //region Conectividad
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras =intent.extras
-            if(extras!=null){
-                loteMainView?.onEventBroadcastReceiver(extras,intent)
+            var extras = intent.extras
+            if (extras != null) {
+                loteMainView?.onEventBroadcastReceiver(extras, intent)
             }
         }
     }
@@ -84,19 +84,19 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
         //showSnack(isConnected);
     }
 
-    override fun onResume(context:Context) {
+    override fun onResume(context: Context) {
         context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
         context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_LOCATION))
 
     }
 
-    override fun onPause(context:Context) {
+    override fun onPause(context: Context) {
         context.unregisterReceiver(this.mNotificationReceiver);
     }
 
     override fun startGps(activity: Activity) {
-        coordsService= CoordsServiceKotlin(activity)
-        if(CoordsServiceKotlin.instance!!.isLocationEnabled()){
+        coordsService = CoordsServiceKotlin(activity)
+        if (CoordsServiceKotlin.instance!!.isLocationEnabled()) {
             loteMainView?.showProgressHud()
         }
     }
@@ -106,56 +106,56 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
     override fun onEventMainThread(eventLote: RequestEventLote?) {
         when (eventLote?.eventType) {
             RequestEventLote.READ_EVENT -> {
-                var loteList= eventLote.mutableList as List<Lote>
+                var loteList = eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
             }
-            RequestEventLote.SAVE_EVENT ->{
+            RequestEventLote.SAVE_EVENT -> {
                 onLoteSaveOk()
-                var loteList= eventLote.mutableList as List<Lote>
+                var loteList = eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
             }
             RequestEventLote.UPDATE_EVENT -> {
                 onLoteUpdateOk()
-                var loteList= eventLote.mutableList as List<Lote>
+                var loteList = eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
             }
             RequestEventLote.DELETE_EVENT -> {
                 onLoteDeleteOk()
-                var loteList= eventLote.mutableList as List<Lote>
+                var loteList = eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
             }
             RequestEventLote.ERROR_EVENT -> {
                 onMessageError(eventLote.mensajeError)
             }
 
-            //EVENTS ONITEM CLICK
+        //EVENTS ONITEM CLICK
             RequestEventLote.ITEM_EVENT -> {
-                var lote= eventLote.objectMutable as Lote
-                loteMainView?.onMessageOk(R.color.colorPrimary,"Item: "+lote.Nombre)
+                var lote = eventLote.objectMutable as Lote
+                loteMainView?.onMessageOk(R.color.colorPrimary, "Item: " + lote.Nombre)
             }
             RequestEventLote.ITEM_READ_EVENT -> {
-                var lote= eventLote.objectMutable as Lote
-                loteMainView?.onMessageOk(R.color.colorPrimary,"Leer: "+lote.Nombre)
+                var lote = eventLote.objectMutable as Lote
+                loteMainView?.onMessageOk(R.color.colorPrimary, "Leer: " + lote.Nombre)
                 ///  Toast.makeText(activity,"Leer: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
             RequestEventLote.ITEM_EDIT_EVENT -> {
-                var lote= eventLote.objectMutable as Lote
+                var lote = eventLote.objectMutable as Lote
                 loteMainView?.showAlertDialogAddLote(lote)
             }
             RequestEventLote.ITEM_DELETE_EVENT -> {
-                var lote= eventLote.objectMutable as Lote
+                var lote = eventLote.objectMutable as Lote
                 loteMainView?.confirmDelete(lote)
                 //// Toast.makeText(activity,"Eliminar: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
 
-            //LIST EVENTS
+        //LIST EVENTS
             RequestEventLote.LIST_EVENT_UP -> {
-                var list= eventLote.mutableList as List<UnidadProductiva>
+                var list = eventLote.mutableList as List<UnidadProductiva>
                 loteMainView?.setListUP(list)
             }
 
             RequestEventLote.LIST_EVENT_UNIDAD_MEDIDA -> {
-                var list= eventLote.mutableList as List<Unidad_Medida>
+                var list = eventLote.mutableList as List<Unidad_Medida>
                 loteMainView?.setListUnidadMedida(list)
             }
         }
@@ -174,36 +174,35 @@ class LotePresenterImpl(var loteMainView: MainViewLote?): LotePresenter{
         return false
     }
 
-    override fun registerLote(lote: Lote,unidad_productiva_id:Long?) {
+    override fun registerLote(lote: Lote, unidad_productiva_id: Long?) {
         loteMainView?.showProgress()
-        //if(checkConnection()){
         loteMainView?.disableInputs()
-        loteInteractor?.registerLote(lote,unidad_productiva_id)
-        //}else{
-          //  onMessageConectionError()
-        //}
+        if (checkConnection()) {
+            loteInteractor?.registerOnlineLote(lote, unidad_productiva_id)
+        } else {
+            loteInteractor?.registerLote(lote, unidad_productiva_id)
+        }
     }
 
-    override fun updateLote(lote: Lote,unidad_productiva_id:Long?) {
+    override fun updateLote(lote: Lote, unidad_productiva_id: Long?) {
         loteMainView?.showProgress()
-        if(checkConnection()){
+        if (checkConnection()) {
             loteMainView?.disableInputs()
-            loteInteractor?.updateLote(lote,unidad_productiva_id)
-        }else{
+            loteInteractor?.updateLote(lote, unidad_productiva_id)
+        } else {
             onMessageConectionError()
-       }
+        }
     }
 
 
-    override fun deleteLote(lote: Lote,unidad_productiva_id:Long?) {
+    override fun deleteLote(lote: Lote, unidad_productiva_id: Long?) {
         loteMainView?.showProgress()
-        if(checkConnection()){
-            loteInteractor?.deleteLote(lote,unidad_productiva_id)
-        }else{
+        if (checkConnection()) {
+            loteInteractor?.deleteLote(lote, unidad_productiva_id)
+        } else {
             onMessageConectionError()
-       }
+        }
     }
-
 
 
     override fun loadListas() {

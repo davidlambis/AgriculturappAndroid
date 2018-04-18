@@ -37,8 +37,8 @@ import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.Cultivo
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
@@ -212,7 +212,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
 
-            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.Nombre)
+            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
             viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.Nombre)
 
@@ -290,7 +290,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         //REGISTER
         if (producto == null) {
             viewDialog?.txtTitle?.setText(getString(R.string.title_registrar_producto))
-            viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.Nombre)
+            viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.nombre)
             viewDialog?.txtLoteSelected?.setText(loteGlobal?.Nombre)
             viewDialog?.txtCultivoSelected?.setText(cultivoGlobal?.Nombre)
             viewDialog?.txtDetalleTipoProductoSelected?.setText(cultivoGlobal?.Nombre_Detalle_Tipo_Producto)
@@ -774,7 +774,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             producto.Imagen = Blob(imageGlobal)
             producto.Precio = viewDialog?.txtPrecioProducto?.text.toString().toDoubleOrNull()
             producto.CultivoId = Cultivo_Id
-            producto.NombreUnidadProductiva = unidadProductivaGlobal?.Nombre
+            producto.NombreUnidadProductiva = unidadProductivaGlobal?.nombre
             producto.NombreLote = loteGlobal?.Nombre
             producto.NombreCultivo = cultivoGlobal?.Nombre
             producto.NombreDetalleTipoProducto = cultivoGlobal?.Nombre_Detalle_Tipo_Producto
@@ -793,7 +793,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             productoUpdate.Imagen = Blob(imageGlobal)
             productoUpdate.Precio = viewDialog?.txtPrecioProducto?.text.toString().toDoubleOrNull()
             productoUpdate.CultivoId = Cultivo_Id
-            productoUpdate.NombreUnidadProductiva = unidadProductivaGlobal?.Nombre
+            productoUpdate.NombreUnidadProductiva = unidadProductivaGlobal?.nombre
             productoUpdate.NombreLote = loteGlobal?.Nombre
             productoUpdate.NombreCultivo = cultivoGlobal?.Nombre
             productoUpdate.NombreDetalleTipoProducto = cultivoGlobal?.Nombre_Detalle_Tipo_Producto

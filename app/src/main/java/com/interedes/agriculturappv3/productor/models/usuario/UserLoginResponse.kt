@@ -15,7 +15,7 @@ class UserLoginResponse {
     @SerializedName("Apellido")
     var apellido: String? = null
 
-    @SerializedName("Nombre")
+    @SerializedName("nombre")
     var nombre: String? = null
 
     @SerializedName("NroCuenta")

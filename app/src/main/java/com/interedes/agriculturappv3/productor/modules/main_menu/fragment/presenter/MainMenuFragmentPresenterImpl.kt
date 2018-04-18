@@ -12,6 +12,7 @@ import com.interedes.agriculturappv3.productor.modules.main_menu.fragment.ui.Mai
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 
 
@@ -48,9 +49,15 @@ class MainMenuFragmentPresenterImpl(var view: MainMenuFragmentView?) : MainMenuF
         }
     }
 
+    override fun getListasIniciales() {
+        if (checkConnection()) {
+            interactor?.getListasIniciales()
+        }
+    }
+
     //Cerrar Sesión
     override fun logOut(usuario: Usuario?) {
-        if (view?.getConnectivityState()!!) {
+        if (checkConnection()) {
             interactor?.logOut(usuario)
         } else {
             interactor?.offlineLogOut(usuario)
@@ -59,15 +66,22 @@ class MainMenuFragmentPresenterImpl(var view: MainMenuFragmentView?) : MainMenuF
     //endregion
 
     //region Conectividad
+    //region Conectividad
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val extras: Bundle = intent.extras
+            var extras = intent.extras
             view?.onEventBroadcastReceiver(extras, intent);
         }
     }
 
+    override fun checkConnection(): Boolean {
+        return ConnectivityReceiver.isConnected
+        //showSnack(isConnected);
+    }
+
     override fun onResume(context: Context) {
         context.registerReceiver(mNotificationReceiver, IntentFilter("CONECTIVIDAD"))
+        context.registerReceiver(mNotificationReceiver, IntentFilter("LOCATION"))
     }
 
     override fun onPause(context: Context) {

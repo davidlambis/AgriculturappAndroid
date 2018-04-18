@@ -24,7 +24,9 @@ import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.*
+import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.cultivos.adapters.CultivoAdapter
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import kotlinx.android.synthetic.main.activity_menu_main.*
@@ -384,7 +386,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
         //REGISTER
         if (cultivo == null) {
-            viewDialog?.txtUnidadProductivaSelected?.text = unidadProductivaGlobal?.Nombre
+            viewDialog?.txtUnidadProductivaSelected?.text = unidadProductivaGlobal?.nombre
             viewDialog?.txtLoteSelected?.text = loteGlobal?.Nombre
             viewDialog?.txtTitle?.text = getString(R.string.title_add_cultivo)
             title
@@ -442,7 +444,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
         if (unidadProductivaGlobal != null && loteGlobal != null) {
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
-            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.Nombre)
+            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
         }
 

@@ -8,8 +8,8 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.Cultivo
 import com.interedes.agriculturappv3.productor.models.Cultivo_Table
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion_Table
 import com.interedes.agriculturappv3.services.listas.Listas

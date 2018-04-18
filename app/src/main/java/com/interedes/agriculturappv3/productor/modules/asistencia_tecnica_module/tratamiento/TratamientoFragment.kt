@@ -21,9 +21,9 @@ import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.Cultivo
-import com.interedes.agriculturappv3.productor.models.Lote
+import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.Tratamiento
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.control_plagas.ControlPlagasFragment
@@ -296,7 +296,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             presenter?.setListSpinnerCultivo(loteGlobal?.Id, tipoProductoId)
 
-            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.Nombre)
+            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
             viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.Nombre)
         }
@@ -356,7 +356,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         viewDialog?.ivClosetDialogControlPlaga?.setOnClickListener(this)
         viewDialog?.txtFechaAplicacion?.setOnClickListener(this)
         viewDialog?.btnSaveControlPlaga?.setOnClickListener(this)
-        viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.Nombre)
+        viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.nombre)
         viewDialog?.txtLoteSelected?.setText(loteGlobal?.Nombre)
         viewDialog?.txtCultivoSelected?.setText(cultivoGlobal?.Nombre)
 

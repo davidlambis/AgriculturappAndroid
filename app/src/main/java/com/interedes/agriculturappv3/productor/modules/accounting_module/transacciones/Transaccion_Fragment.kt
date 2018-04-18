@@ -28,8 +28,8 @@ import com.interedes.agriculturappv3.productor.models.ventas.Puk
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
 import com.interedes.agriculturappv3.productor.modules.accounting_module.transacciones.adapter.TrannsaccionAdapter
 import com.interedes.agriculturappv3.productor.models.Cultivo
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.ventas.Estado_Transaccion
 import com.interedes.agriculturappv3.productor.modules.accounting_module.transacciones.adapter.EstadoTransaccionAdapter
@@ -652,7 +652,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
 
-            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.Nombre)
+            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
             viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.getNombreCultio())
 

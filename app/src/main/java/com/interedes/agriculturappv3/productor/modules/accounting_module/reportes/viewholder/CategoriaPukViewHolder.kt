@@ -28,7 +28,7 @@ class CategoriaPukViewHolder(itemView: View): GroupViewHolder(itemView) {
 
     fun setGenreTitle(categoriaPuk: ExpandableGroup<*>) {
         if (categoriaPuk is CategoriaPuk) {
-            //categoriaName?.setText(categoriaPuk.Nombre+"--"+String.format("%,.0f",categoriaPuk.Valor_Total))
+            //categoriaName?.setText(categoriaPuk.nombre+"--"+String.format("%,.0f",categoriaPuk.Valor_Total))
             categoriaName?.setText(categoriaPuk.Nombre)
             categoriaValor?.setText(String.format("$ %,.0f",categoriaPuk.Valor_Total))
             icon?.setBackgroundResource( R.drawable.ic_ic_ingreso_egreso)

@@ -69,7 +69,7 @@ class EstadoTransaccionAdapter(var lista: ArrayList<Estado_Transaccion>)    : Re
             var radioGroup: RadioGroup = itemView.findViewById(R.id.radioGroup)
 
             val packageModel = data
-            //txtNameRadioButton.setText(packageModel.Nombre)
+            //txtNameRadioButton.setText(packageModel.nombre)
             var id =data.Id
             val rb = RadioButton(this.context)
             rb.id = id!!.toInt()

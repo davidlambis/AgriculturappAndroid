@@ -3,8 +3,8 @@ package com.interedes.agriculturappv3.productor.modules.comercial_module.ventas
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.Cultivo
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.compras.Compras
 import com.interedes.agriculturappv3.productor.models.compras.Compras_Table
 import com.interedes.agriculturappv3.productor.models.producto.Producto

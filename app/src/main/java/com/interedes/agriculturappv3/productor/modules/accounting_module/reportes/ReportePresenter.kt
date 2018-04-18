@@ -7,8 +7,8 @@ import android.content.IntentFilter
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.Cultivo
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.productor.models.ventas.resports.BalanceContable
 import com.interedes.agriculturappv3.productor.modules.accounting_module.reportes.events.RequestEventReporte

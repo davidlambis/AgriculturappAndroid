@@ -1,12 +1,17 @@
 package com.interedes.agriculturappv3.services.api
 
-import com.interedes.agriculturappv3.productor.models.GenericResponse
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPagoResponse
 import com.interedes.agriculturappv3.productor.models.login.Login
 import com.interedes.agriculturappv3.productor.models.login.LoginResponse
+import com.interedes.agriculturappv3.productor.models.lote.PostLote
 import com.interedes.agriculturappv3.productor.models.rol.RolResponse
 import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPagoResponse
 import com.interedes.agriculturappv3.productor.models.rol.AspNetRolResponse
+import com.interedes.agriculturappv3.productor.models.unidad_medida.CategoriaMedidaResponse
+import com.interedes.agriculturappv3.productor.models.unidad_medida.UnidadMedidaResponse
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.PostUnidadProductiva
 import com.interedes.agriculturappv3.productor.models.usuario.*
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -15,8 +20,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 import retrofit2.http.GET
-
-
 
 
 interface ApiInterface {
@@ -59,7 +62,31 @@ interface ApiInterface {
     @GET("auth/ApplicationRoles")
     fun getAspNetRolesByTipoUser(@Header("Authorization") token: String, @Query("\$filter") filter: String): Call<AspNetRolResponse>
 
-    //Patch AspNet User Roles
+    //Get Categorías Medida
+    @GET("odata/agpbd/CategoriaMedidas")
+    fun getCategoriasMedida(): Call<CategoriaMedidaResponse>
+
+    //Get Unidades Medida
+    @GET("odata/agpbd/UnidadMedidas")
+    fun getUnidadesMedida(): Call<UnidadMedidaResponse>
+
+    //Post Unidad Productiva
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @POST("odata/agpbd/UnidadProductivas")
+    fun postUnidadProductiva(@Body body: PostUnidadProductiva): Call<UnidadProductiva>
+
+    //Patch Unidad Productiva
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @PATCH("odata/agpbd/UnidadProductivas({Id})")
+    fun updateUnidadProductiva(@Body body: PostUnidadProductiva, @Path("Id") Id: Long): Call<UnidadProductiva>
+
+    //Post Lotes
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @POST("odata/agpbd/Lotes")
+    fun postLote(@Body body: PostLote): Call<Lote>
 
     //endregion
 

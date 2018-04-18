@@ -8,10 +8,10 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.Lote
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.events.RequestEventLote
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.lote.Lote
 
 /**
  * Created by EnuarMunoz on 9/03/18.
@@ -23,7 +23,7 @@ class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter
 
     companion object {
         var eventBus: EventBus? = null
-        fun postEventc(type: Int, lote:Lote?) {
+        fun postEventc(type: Int, lote: Lote?) {
             var loteMitable= lote as Object
             val event = RequestEventLote(type,null, loteMitable,null)
             event.eventType = type

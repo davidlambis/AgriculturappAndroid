@@ -5,7 +5,7 @@ package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_modul
  */
 
 
-data class RequestEventUP (var eventType: Int, var mutableList: MutableList<Object>? = null, var objectMutable: Object? = null, var mensajeError: String?) {
+data class RequestEventUP(var eventType: Int, var mutableList: MutableList<Object>? = null, var objectMutable: Object? = null, var mensajeError: String?) {
 
     companion object {
         val READ_EVENT: Int = 0
@@ -20,12 +20,15 @@ data class RequestEventUP (var eventType: Int, var mutableList: MutableList<Obje
 
         //EVENTS PERSONLITY
         val LIST_EVENT_UNIDAD_MEDIDA: Int = 5
+        val LIST_EVENT_DEPARTAMENTOS: Int = 12
+        val LIST_EVENT_CIUDADES: Int = 13
 
         //Events On item Click
         val ITEM_EVENT: Int = 6
         val ITEM_READ_EVENT: Int = 7
         val ITEM_EDIT_EVENT: Int = 8
         val ITEM_DELETE_EVENT: Int = 9
+
 
         //Buttons
         val ADD_POLIGON_EVENT: Int = 10

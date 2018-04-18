@@ -2,7 +2,7 @@ package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_modul
 
 import android.app.Activity
 import android.content.Context
-import com.interedes.agriculturappv3.productor.models.Lote
+import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.events.RequestEventLote
 
 /**
@@ -19,7 +19,7 @@ interface LotePresenter {
     fun loadListas()
 
     //CRUD
-    fun registerLote(lote: Lote,unidad_productiva_id:Long?)
+    fun registerLote(lote: Lote, unidad_productiva_id:Long?)
     fun updateLote(lote: Lote,unidad_productiva_id:Long?)
     fun deleteLote(lote: Lote,unidad_productiva_id:Long?)
     fun getLotes(unidad_productiva_id:Long?)

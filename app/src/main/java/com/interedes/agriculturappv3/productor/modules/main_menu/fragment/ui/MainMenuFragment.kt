@@ -21,17 +21,13 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.asistencia_tecnica.modules.accounting_module.AccountingFragment
 import com.interedes.agriculturappv3.productor.adapters.SingleAdapter
-import com.interedes.agriculturappv3.productor.models.usuario.Usuario
-import com.interedes.agriculturappv3.productor.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.AsistenciaTecnicaFragment
 import com.interedes.agriculturappv3.productor.modules.comercial_module.ComercialFragment
 import com.interedes.agriculturappv3.productor.modules.main_menu.fragment.presenter.MainMenuFragmentPresenter
 import com.interedes.agriculturappv3.productor.modules.main_menu.fragment.presenter.MainMenuFragmentPresenterImpl
-import com.interedes.agriculturappv3.productor.modules.main_menu.fragment.ui.MainMenuFragment.Companion.connectivity_state
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.Resources_Menu
 import com.interedes.agriculturappv3.services.listas.Listas
-import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_main_menu.*
 
@@ -61,6 +57,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getListasIniciales()
         loadItems()
         setupInit()
     }
@@ -94,6 +91,10 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
         } else {
             (activity as MenuMainActivity).app_bar_main.targetElevation = 4f
         }
+    }
+
+    override fun getListasIniciales() {
+        presenter?.getListasIniciales()
     }
 
     //region Métodos Interfaz
@@ -132,17 +133,8 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
         if (extras != null) {
             if (extras.containsKey("state_conectivity")) {
                 val state_conectivity = intent.extras!!.getBoolean("state_conectivity")
-                if (state_conectivity == true) {
-                    connectivity_state = true
-                } else {
-                    connectivity_state = false
-                }
             }
         }
-    }
-
-    override fun getConnectivityState(): Boolean? {
-        return connectivity_state
     }
 
     override fun navigateToLogin() {

@@ -11,8 +11,8 @@ import com.interedes.agriculturappv3.productor.modules.accounting_module.transac
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.Cultivo
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.ventas.Estado_Transaccion
 import com.interedes.agriculturappv3.services.Const
@@ -109,12 +109,12 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
         //EVENTS ONITEM CLICK
             RequestEventTransaccion.ITEM_EVENT -> {
                 var proiduccion = event.objectMutable as Transaccion
-                //loteMainView?.onMessageOk(R.color.colorPrimary,"Item: "+lote.Nombre)
+                //loteMainView?.onMessageOk(R.color.colorPrimary,"Item: "+lote.nombre)
             }
             RequestEventTransaccion.ITEM_READ_EVENT -> {
                 var producccion = event.objectMutable as Transaccion
-                //loteMainView?.onMessageOk(R.color.colorPrimary,"Leer: "+lote.Nombre)
-                ///  Toast.makeText(activity,"Leer: "+lote.Nombre,Toast.LENGTH_LONG).show()
+                //loteMainView?.onMessageOk(R.color.colorPrimary,"Leer: "+lote.nombre)
+                ///  Toast.makeText(activity,"Leer: "+lote.nombre,Toast.LENGTH_LONG).show()
             }
             RequestEventTransaccion.ITEM_EDIT_EVENT -> {
                 var producccion = event.objectMutable as Transaccion
@@ -123,7 +123,7 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
             RequestEventTransaccion.ITEM_DELETE_EVENT -> {
                 var producccion = event.objectMutable as Transaccion
                 mainView?.confirmDelete(producccion)
-                //// Toast.makeText(activity,"Eliminar: "+lote.Nombre,Toast.LENGTH_LONG).show()
+                //// Toast.makeText(activity,"Eliminar: "+lote.nombre,Toast.LENGTH_LONG).show()
             }
 
         //LIST EVENTS

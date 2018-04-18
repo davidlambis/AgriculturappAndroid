@@ -1,12 +1,11 @@
 package com.interedes.agriculturappv3.productor.modules.accounting_module.reportes
 
-import android.os.Build
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.Cultivo
 import com.interedes.agriculturappv3.productor.models.Cultivo_Table
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
@@ -18,11 +17,7 @@ import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.CategoriaPukResources
 import com.raizlabs.android.dbflow.sql.language.Method
 import com.raizlabs.android.dbflow.sql.language.SQLite
-import com.raizlabs.android.dbflow.sql.language.property.PropertyFactory
-import java.lang.Double.sum
 import java.util.*
-import android.os.AsyncTask.execute
-import com.raizlabs.android.dbflow.sql.queriable.StringQuery
 import java.text.SimpleDateFormat
 
 

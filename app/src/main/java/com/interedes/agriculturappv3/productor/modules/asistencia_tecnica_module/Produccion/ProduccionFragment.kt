@@ -23,8 +23,8 @@ import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.Cultivo
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.produccion.Produccion
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Produccion.adapter.ProduccionAdapter
@@ -68,8 +68,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
     //Listas
     var cultivoGlobal:Cultivo?=null
-    var unidadProductivaGlobal:UnidadProductiva?=null
-    var loteGlobal:Lote?=null
+    var unidadProductivaGlobal: UnidadProductiva?=null
+    var loteGlobal: Lote?=null
     var produccionGlobal:Produccion?=null
 
     var dateTime = Calendar.getInstance()
@@ -326,7 +326,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         //REGISTER
         if (produccion == null) {
             viewDialog?.txtTitle?.setText(getString(R.string.tittle_add_producccion))
-            viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.Nombre)
+            viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.nombre)
             viewDialog?.txtLoteSelected?.setText(loteGlobal?.Nombre)
             viewDialog?.txtCultivoSelected?.setText(cultivoGlobal?.Nombre)
         }
@@ -417,7 +417,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
 
-            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.Nombre)
+            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
             viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.Nombre)
 

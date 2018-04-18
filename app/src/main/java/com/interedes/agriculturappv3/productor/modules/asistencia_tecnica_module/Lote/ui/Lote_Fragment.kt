@@ -33,8 +33,8 @@ import com.google.android.gms.maps.model.*
 import com.google.maps.android.SphericalUtil
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.adapter.LoteAdapter
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.presenter.LotePresenter
@@ -48,7 +48,7 @@ import kotlinx.android.synthetic.main.fragment_lote.*
 import java.util.ArrayList
 
 
-class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefreshLayout.OnRefreshListener, GoogleMap.OnMapClickListener, View.OnClickListener, GoogleMap.OnMyLocationButtonClickListener,GoogleMap.OnMarkerDragListener {
+class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefreshLayout.OnRefreshListener, GoogleMap.OnMapClickListener, View.OnClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerDragListener {
 
 
     //Mapa
@@ -189,7 +189,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     }
 
     fun loadInitTaskHandler() {
-        if(INI_TASK_HANDLER==true){
+        if (INI_TASK_HANDLER == true) {
             handler.postDelayed({
                 if ((activity as MenuMainActivity).presenter?.checkConnection()!!) {
                     hideElementsAndSetPropertiesOnConectionInternet()
@@ -288,87 +288,83 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     }
 
 
-
     private fun animateLocationMap(lotes: List<Lote>) {
         mMap?.clear()
         //Si existe poligono se dibuja
-        if(DIALOG_SELECT_ALL_UP==false && unidadProductivaGlobalDialog?.Configuration_Poligon==true && unidadProductivaGlobalDialog?.Configuration_Point==true){
+        if (DIALOG_SELECT_ALL_UP == false && unidadProductivaGlobalDialog?.Configuration_Poligon == true && unidadProductivaGlobalDialog?.Configuration_Point == true) {
             var locations = ArrayList<LatLng>()
             locations.add(LatLng(2.930625, -75.271928))
             locations.add(LatLng(2.930534, -75.271674))
             locations.add(LatLng(2.930248, -75.271566))
-            locations.add(LatLng(2.930063,  -75.271644))
+            locations.add(LatLng(2.930063, -75.271644))
             locations.add(LatLng(2.930288, -75.272092))
             locations.add(LatLng(2.930625, -75.271928))
-            polygon=addPoligonUp(locations, ContextCompat.getColor(activity!!, android.R.color.holo_orange_dark),ContextCompat.getColor(activity!!, android.R.color.holo_orange_light))
+            polygon = addPoligonUp(locations, ContextCompat.getColor(activity!!, android.R.color.holo_orange_dark), ContextCompat.getColor(activity!!, android.R.color.holo_orange_light))
         }
 
         //si se selecciona la opcion todos, y no se encontraron lotes regiostrados y existen up registradas
-        if(DIALOG_SELECT_ALL_UP==true && lotes.size<=0 && listUnidadProductivaGlobal?.size!! >0){
-            var  builder =  LatLngBounds.Builder()
+        if (DIALOG_SELECT_ALL_UP == true && lotes.size <= 0 && listUnidadProductivaGlobal?.size!! > 0) {
+            var builder = LatLngBounds.Builder()
             for (up in listUnidadProductivaGlobal!!) {
                 var latlngUp = LatLng(up.Latitud!!, up.Longitud!!);
 
                 //var markerUP = addMarker(latlngUp, up.Nombre!!, up.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                var markerUP = addMarker(latlngUp, up.Nombre!!, up.Descripcion!!,BitmapDescriptorFactory .fromResource(R.drawable.ic_marker_unidad_productiva))
+                var markerUP = addMarker(latlngUp, up.nombre!!, up.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
                 listMarkerUp.add(markerUP!!)
                 builder.include(latlngUp)
             }
-            var  bounds = builder.build()
+            var bounds = builder.build()
             var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
             mMap?.animateCamera(cu)
         }
         //si se selecciona una up, y  no se encontraron lotes registrados
-        else if(DIALOG_SELECT_ALL_UP==false && lotes.size<=0){
-            var  builder =  LatLngBounds.Builder()
+        else if (DIALOG_SELECT_ALL_UP == false && lotes.size <= 0) {
+            var builder = LatLngBounds.Builder()
             var latlngUp = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
-            var markerUP = addMarker(latlngUp, unidadProductivaGlobalDialog?.Nombre!!, unidadProductivaGlobalDialog?.Descripcion!!, BitmapDescriptorFactory .fromResource(R.drawable.ic_marker_unidad_productiva))
+            var markerUP = addMarker(latlngUp, unidadProductivaGlobalDialog?.nombre!!, unidadProductivaGlobalDialog?.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
             listMarkerUp.add(markerUP!!)
             builder.include(latlngUp)
-            var  bounds = builder.build()
+            var bounds = builder.build()
             var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
             mMap?.animateCamera(cu)
         }
         //si se selecciona una up, y  se encontraron lotes regiostrados
-        else if(DIALOG_SELECT_ALL_UP==false && lotes.size>0 || DIALOG_SELECT_ALL_UP==true && lotes.size>0){
+        else if (DIALOG_SELECT_ALL_UP == false && lotes.size > 0 || DIALOG_SELECT_ALL_UP == true && lotes.size > 0) {
             var locations = ArrayList<LatLng>()
             val area = SphericalUtil.computeArea(locations)
             //Ajustar camara mostrando todos los marcadores
-            var  builder =  LatLngBounds.Builder();
-            for ( l in lotes) {
+            var builder = LatLngBounds.Builder();
+            for (l in lotes) {
                 var centerLatLng: LatLng? = LatLng(l.Latitud!!, l.Longitud!!)
                 builder.include(centerLatLng)
             }
-
 
 
             //mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
             //mMap?.setPadding(0, getResources().getDrawable(R.drawable.logo_agr_app).getIntrinsicHeight(), 0, 0);
             for (lote in lotes) {
                 var latlngLote = LatLng(lote.Latitud!!, lote.Longitud!!);
-                var markerLote = addMarker(latlngLote, lote.Nombre!!, lote.Descripcion!!,  BitmapDescriptorFactory .fromResource(R.drawable.ic_marker_lote))
+                var markerLote = addMarker(latlngLote, lote.Nombre!!, lote.Descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_lote))
                 listMarkerLote.add(markerLote!!)
             }
 
             //Add Marker UP
-            if(DIALOG_SELECT_ALL_UP==true){
+            if (DIALOG_SELECT_ALL_UP == true) {
                 for (unidadPro in this!!.listUnidadProductivaGlobal!!) {
                     var centerLatLng: LatLng? = LatLng(unidadPro?.Latitud!!, unidadPro?.Longitud!!)
-                    addMarker(centerLatLng!!, unidadPro?.Nombre!!, unidadPro?.Descripcion!!, BitmapDescriptorFactory .fromResource(R.drawable.ic_marker_unidad_productiva))
+                    addMarker(centerLatLng!!, unidadPro?.nombre!!, unidadPro?.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
                     builder.include(centerLatLng)
                 }
-            }else{
-                if(unidadProductivaGlobalDialog!=null){
+            } else {
+                if (unidadProductivaGlobalDialog != null) {
                     var centerLatLng: LatLng? = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
-                    addMarker(centerLatLng!!, unidadProductivaGlobalDialog?.Nombre!!, unidadProductivaGlobalDialog?.Descripcion!!, BitmapDescriptorFactory .fromResource(R.drawable.ic_marker_unidad_productiva))
+                    addMarker(centerLatLng!!, unidadProductivaGlobalDialog?.nombre!!, unidadProductivaGlobalDialog?.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
                     builder.include(centerLatLng)
                 }
             }
 
 
-
-
-            var  bounds = builder.build()
+            var bounds = builder.build()
             var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
             mMap?.animateCamera(cu)
 
@@ -376,26 +372,26 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             //Toast.makeText(activity, "AREA: " + String.format("%.0f mts", area), Toast.LENGTH_LONG).show()
         }
         //si no enontaron   up registradas, y  no se encontraron lotes regiostrados
-        else{
+        else {
             val positionInitial = LatLng(4.565473550710278, -74.058837890625)
             mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(positionInitial, 6f))
         }
     }
 
     override fun onMarkerDragEnd(p0: Marker?) {
-        Log.d("System out", "onMarkerDragEnd..."+p0?.getPosition()?.latitude+"..."+p0?.getPosition()?.longitude);
+        Log.d("System out", "onMarkerDragEnd..." + p0?.getPosition()?.latitude + "..." + p0?.getPosition()?.longitude);
         mMap?.animateCamera(CameraUpdateFactory.newLatLng(p0?.getPosition()))
         txtCoordsLote.setText(String.format(getString(R.string.coords), p0?.getPosition()?.latitude, p0?.getPosition()?.longitude))
         //LastMarkerDrawingLote?.setPosition(LatLng(p0?.getPosition()?.latitude!!, p0?.getPosition()?.longitude!!))
     }
 
     override fun onMarkerDragStart(p0: Marker?) {
-        Log.d("System out", "onMarkerDragStart..."+p0?.getPosition()?.latitude+"..."+p0?.getPosition()?.longitude);
+        Log.d("System out", "onMarkerDragStart..." + p0?.getPosition()?.latitude + "..." + p0?.getPosition()?.longitude);
         txtCoordsLote.setText(String.format(getString(R.string.coords), p0?.getPosition()?.latitude, p0?.getPosition()?.longitude))
     }
 
     override fun onMarkerDrag(p0: Marker?) {
-        Log.d("System out", "onMarkerDragStart..."+p0?.getPosition()?.latitude+"..."+p0?.getPosition()?.longitude);
+        Log.d("System out", "onMarkerDragStart..." + p0?.getPosition()?.latitude + "..." + p0?.getPosition()?.longitude);
         txtCoordsLote.setText(String.format(getString(R.string.coords), p0?.getPosition()?.latitude, p0?.getPosition()?.longitude))
     }
 
@@ -570,9 +566,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         viewDialog?.coordenadas_lote?.setText("");
         if (LastMarkerDrawingLote != null) LastMarkerDrawingLote?.remove()
         LastMarkerDrawingLote = null
-        contentButtonsDrawingLoteMapa.visibility= View.GONE
-        app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
-        app_bar.layoutParams.height=resources.getDimensionPixelSize(R.dimen.height_mapa)
+        contentButtonsDrawingLoteMapa.visibility = View.GONE
+        app_bar.layoutParams.width = AppBarLayout.LayoutParams.MATCH_PARENT
+        app_bar.layoutParams.height = resources.getDimensionPixelSize(R.dimen.height_mapa)
     }
 
 
@@ -600,14 +596,14 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         Toast.makeText(activity, "Ubicacion Manual", Toast.LENGTH_SHORT).show()
         txtCoordsLote.setText("")
 
-        contentButtonsDrawingLoteMapa.visibility= View.VISIBLE
-        app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
-        app_bar.layoutParams.height=AppBarLayout.LayoutParams.MATCH_PARENT
+        contentButtonsDrawingLoteMapa.visibility = View.VISIBLE
+        app_bar.layoutParams.width = AppBarLayout.LayoutParams.MATCH_PARENT
+        app_bar.layoutParams.height = AppBarLayout.LayoutParams.MATCH_PARENT
     }
 
 
     override fun requestResponseOk() {
-        if(_dialogRegisterUpdate!=null){
+        if (_dialogRegisterUpdate != null) {
             _dialogRegisterUpdate?.dismiss()
         }
         onMessageOk(R.color.colorPrimary, getString(R.string.request_ok));
@@ -689,10 +685,11 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             lote.Descripcion = viewDialog?.description_lote?.text.toString()
             lote.Area = viewDialog?.area_lote?.text.toString().toDoubleOrNull()
             lote.Coordenadas = viewDialog?.coordenadas_lote?.text.toString()
+            lote.Localizacion = lote.Coordenadas
             lote.Unidad_Productiva_Id = unidadProductivaGlobalSppiner?.Id
             lote.Latitud = locationLote.latitude
             lote.Longitud = locationLote.longitude
-            lote.Nombre_Unidad_Productiva = unidadProductivaGlobalSppiner?.Nombre
+            lote.Nombre_Unidad_Productiva = unidadProductivaGlobalSppiner?.nombre
             lote.Unidad_Medida_Id = unidadMedidaGlobal?.Id
             lote.Nombre_Unidad_Medida = unidadMedidaGlobal?.Descripcion
             presenter?.registerLote(lote, Unidad_Productiva_Id_Selected)
@@ -707,6 +704,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             lote.Descripcion = viewDialog?.description_lote?.text.toString()
             lote.Area = viewDialog?.area_lote?.text.toString().toDoubleOrNull()
             lote.Coordenadas = viewDialog?.coordenadas_lote?.text.toString()
+            lote.Localizacion = lote.Coordenadas
             lote.Unidad_Productiva_Id = loteGlobal?.Unidad_Productiva_Id
             lote.Latitud = loteGlobal?.Latitud
             lote.Longitud = loteGlobal?.Longitud
@@ -734,7 +732,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         setListUnidadMedidaAdapterSpinner()
         btnClosetDialogLote?.setOnClickListener(this)
         viewDialog?.btnSaveLote?.setOnClickListener(this)
-        loteGlobal= lote
+        loteGlobal = lote
         //REGISTER
         if (lote == null) {
 
@@ -796,7 +794,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 .theme(Theme.LIGHT)
                 .build()*/
 
-        val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar)
+        val dialog = AlertDialog.Builder(context!!, android.R.style.Theme_Light_NoTitleBar)
                 .setView(viewDialog)
                 .create()
 
@@ -808,7 +806,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.show()
         dialog.getWindow().setAttributes(lp)
-        _dialogRegisterUpdate=dialog
+        _dialogRegisterUpdate = dialog
 
 
     }
@@ -899,7 +897,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         var dialog = AlertDialog.Builder(activity!!)
         var upArraString = arrayOf<String>("Todos")
         for (up in this!!.listUnidadProductivaGlobal!!) {
-            upArraString += up.Nombre.toString()
+            upArraString += up.nombre.toString()
         }
         //REGISTER
         dialog.setSingleChoiceItems(upArraString, DIALOG_SELECTT_POSITION_UP, DialogInterface.OnClickListener { dialog, which ->
@@ -936,11 +934,11 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             R.id.fabAddLote -> {
                 if (UBICATION_MANUAL == false && UBICATION_GPS == false) {
                     showAlertTypeLocationLote()
-                } else if(UBICATION_MANUAL==true){
-                    contentButtonsDrawingLoteMapa.visibility= View.VISIBLE
-                    app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
-                    app_bar.layoutParams.height=AppBarLayout.LayoutParams.MATCH_PARENT
-                }else if(UBICATION_GPS==true){
+                } else if (UBICATION_MANUAL == true) {
+                    contentButtonsDrawingLoteMapa.visibility = View.VISIBLE
+                    app_bar.layoutParams.width = AppBarLayout.LayoutParams.MATCH_PARENT
+                    app_bar.layoutParams.height = AppBarLayout.LayoutParams.MATCH_PARENT
+                } else if (UBICATION_GPS == true) {
                     showAlertDialogAddLote(null)
                 }
             }
@@ -952,7 +950,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 (activity as MenuMainActivity).onBackPressed()
             }
 
-            R.id.checkDoneMapView->{
+            R.id.checkDoneMapView -> {
                 if (UBICATION_MANUAL == true && LastMarkerDrawingLote == null) {
                     Toast.makeText(activity, getString(R.string.message_location_lote_marker), Toast.LENGTH_LONG).show()
                 } else {
@@ -960,19 +958,19 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 }
             }
 
-            R.id.checkCloseMapView->{
-                contentButtonsDrawingLoteMapa.visibility= View.GONE
-                app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
-                app_bar.layoutParams.height=resources.getDimensionPixelSize(R.dimen.height_mapa)
+            R.id.checkCloseMapView -> {
+                contentButtonsDrawingLoteMapa.visibility = View.GONE
+                app_bar.layoutParams.width = AppBarLayout.LayoutParams.MATCH_PARENT
+                app_bar.layoutParams.height = resources.getDimensionPixelSize(R.dimen.height_mapa)
                 //app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
-               //var layoutParams1 =  LinearLayout.LayoutParams(AppBarLayout.LayoutParams.MATCH_PARENT,
-                                                              //R.dimen.height_mapa)
+                //var layoutParams1 =  LinearLayout.LayoutParams(AppBarLayout.LayoutParams.MATCH_PARENT,
+                //R.dimen.height_mapa)
             }
 
-            R.id.btnSaveLote->{
-                if(loteGlobal!=null){
+            R.id.btnSaveLote -> {
+                if (loteGlobal != null) {
                     updateLote()
-                }else{
+                } else {
                     registerLote()
                 }
             }
@@ -999,7 +997,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 addMarkerLocation(latitud, longitud)
                 hideProgressHud()
                 txtCoordsLote.setText(String.format(getString(R.string.coords), latitud, longitud))
-                if (viewDialog != null && UBICATION_GPS==true) {
+                if (viewDialog != null && UBICATION_GPS == true) {
                     viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
                 }
                 //Toast.makeText(activity,"Broadcast: "+longitud.toString(), Toast.LENGTH_SHORT).show()
@@ -1019,7 +1017,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             mapViewLotes.onDestroy();
         }
 
-        INI_TASK_HANDLER=false
+        INI_TASK_HANDLER = false
 
         presenter?.onDestroy()
     }

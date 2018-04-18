@@ -25,8 +25,8 @@ import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.Cultivo
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.control_plagas.adapters.ControlPlagasAdapter
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.plagas.PlagaFragment
@@ -224,7 +224,7 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
 
-            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.Nombre)
+            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
             viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.Nombre)
 

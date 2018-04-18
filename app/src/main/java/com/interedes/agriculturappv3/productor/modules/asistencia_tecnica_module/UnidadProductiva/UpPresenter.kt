@@ -5,20 +5,26 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.Ciudad
+import com.interedes.agriculturappv3.productor.models.Departamento
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
+import java.util.ArrayList
 
-class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presenter{
+class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Presenter {
     var coordsService: CoordsServiceKotlin? = null
     var IUpInteractor: IUnidadProductiva.Interactor? = null
-    var eventBus : EventBus ?=null
+    var eventBus: EventBus? = null
+    var listDepartamentoGlobal: List<Departamento>? = ArrayList<Departamento>()
+    var listMunicipiosGlobal: List<Ciudad>? = ArrayList<Ciudad>()
+
 
     init {
         IUpInteractor = UpInteractor()
@@ -30,16 +36,17 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
         getListas()
 
     }
+
     override fun onDestroy() {
-        IUpView=null
+        IUpView = null
         eventBus?.unregister(this)
     }
 
     //region Conectividad
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras =intent.extras
-            IUpView?.onEventBroadcastReceiver(extras,intent);
+            var extras = intent.extras
+            IUpView?.onEventBroadcastReceiver(extras, intent);
         }
     }
 
@@ -48,12 +55,12 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
         //showSnack(isConnected);
     }
 
-    override fun onResume(context:Context) {
+    override fun onResume(context: Context) {
         context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
         context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_LOCATION))
     }
 
-    override fun onPause(context:Context) {
+    override fun onPause(context: Context) {
         context.unregisterReceiver(this.mNotificationReceiver);
     }
 
@@ -62,14 +69,14 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
 
     //region Coords Service
     override fun startGps(activity: Activity) {
-        coordsService= CoordsServiceKotlin(activity)
-        if(CoordsServiceKotlin.instance!!.isLocationEnabled()){
+        coordsService = CoordsServiceKotlin(activity)
+        if (CoordsServiceKotlin.instance!!.isLocationEnabled()) {
             IUpView?.showProgressHud()
         }
     }
 
     override fun closeServiceGps() {
-        if(coordsService!=null){
+        if (coordsService != null) {
             //CoordsService.instance?.closeService()
             CoordsServiceKotlin.instance?.closeService()
             //coordsService!!.closeService()
@@ -79,7 +86,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
 
     @Subscribe
     override fun onEventMainThread(requestEvent: RequestEventUP?) {
-        when (requestEvent?.eventType){
+        when (requestEvent?.eventType) {
             RequestEventUP.READ_EVENT -> {
                 IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
             }
@@ -101,7 +108,6 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
             }
 
 
-
             RequestEventUP.ADD_LOCATION_EVENT -> {
                 IUpView?.requestResponseOK()
             }
@@ -109,21 +115,31 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
                 IUpView?.requestResponseOK()
             }
 
-            ////EVENTS ONITEM CLICK
+        ////EVENTS ONITEM CLICK
             RequestEventUP.ITEM_EVENT -> {
-                var unidadProductiva= requestEvent.objectMutable as UnidadProductiva
+                var unidadProductiva = requestEvent.objectMutable as UnidadProductiva
                 IUpView?.showAlertDialogAddUnidadProductiva(unidadProductiva)
             }
 
             RequestEventUP.ITEM_EDIT_EVENT -> {
-                var unidadProductiva= requestEvent.objectMutable as UnidadProductiva
+                var unidadProductiva = requestEvent.objectMutable as UnidadProductiva
                 IUpView?.showAlertDialogAddUnidadProductiva(unidadProductiva)
             }
 
-            //List
+        //List
             RequestEventUP.LIST_EVENT_UNIDAD_MEDIDA -> {
-                var list= requestEvent.mutableList as List<Unidad_Medida>
+                var list = requestEvent.mutableList as List<Unidad_Medida>
                 IUpView?.setListUnidadMedida(list)
+            }
+
+            RequestEventUP.LIST_EVENT_DEPARTAMENTOS -> {
+                val list_departamentos = requestEvent.mutableList as List<Departamento>
+                listDepartamentoGlobal = list_departamentos
+            }
+
+            RequestEventUP.LIST_EVENT_CIUDADES -> {
+                val list_ciudades = requestEvent.mutableList as List<Ciudad>
+                listMunicipiosGlobal = list_ciudades
             }
         }
     }
@@ -145,7 +161,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
     //region Methods
 
     override fun validarCampos(): Boolean {
-        if (IUpView?.validarCampos()==true){
+        if (IUpView?.validarCampos() == true) {
             return true
         }
         return false
@@ -154,14 +170,18 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
     override fun registerUP(unidadProductivaModel: UnidadProductiva?) {
         IUpView?.disableInputs()
         IUpView?.showProgress()
-        IUpInteractor?.registerUP(unidadProductivaModel)
+        if (checkConnection()) {
+            IUpInteractor?.registerOnlineUP(unidadProductivaModel)
+        } else {
+            IUpInteractor?.registerUP(unidadProductivaModel)
+        }
     }
 
     override fun updateUP(unidadProductivaModel: UnidadProductiva?) {
-        if(checkConnection()){
+        if (checkConnection()) {
             IUpView?.showProgress()
             IUpInteractor?.updateUP(unidadProductivaModel)
-        }else{
+        } else {
             onMessageConectionError()
         }
     }
@@ -179,8 +199,16 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?):IUnidadProductiva.Presen
         IUpInteractor?.getListas()
     }
 
-    //endregion
+    override fun setListDepartamentos() {
+        IUpView?.setListSpinnerDepartamentos(listDepartamentoGlobal!!)
+    }
 
+    override fun setListMunicipios(departamentoId: Long?) {
+        val list = listMunicipiosGlobal?.filter { municipio: Ciudad -> municipio.departmentoId == departamentoId }
+        IUpView?.setListSpinnerMunicipios(list!!)
+    }
+
+    //endregion
 
 
     //region Messages/Notificaciones

@@ -46,8 +46,8 @@ data class Usuario(@PrimaryKey
                    @Column(name = "Identificacion")
                    var Identificacion: String? = null,
 
-                   @SerializedName("Nombre")
-                   @Column(name = "Nombre")
+                   @SerializedName("nombre")
+                   @Column(name = "nombre")
                    var Nombre: String? = null,
 
                    @SerializedName("Nro_movil")

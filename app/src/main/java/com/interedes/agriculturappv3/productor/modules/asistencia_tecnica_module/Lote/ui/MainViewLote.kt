@@ -3,9 +3,9 @@ package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_modul
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 
 /**
  * Created by EnuarMunoz on 7/03/18.
@@ -59,9 +59,9 @@ interface MainViewLote {
 
 
     //UI
-    fun showAlertDialogAddLote(lote:Lote?)
+    fun showAlertDialogAddLote(lote: Lote?)
     fun showAlertTypeLocationLote(): AlertDialog?
-    fun confirmDelete(lote:Lote):AlertDialog?
+    fun confirmDelete(lote: Lote):AlertDialog?
     fun verificateConnection():AlertDialog?
     fun showAlertDialogSelectUp():AlertDialog?
 

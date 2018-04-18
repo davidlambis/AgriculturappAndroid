@@ -9,4 +9,6 @@ interface MainMenuFragmentRepository {
 
     //offline
     fun offlineLogOut(usuario: Usuario?)
+
+    fun getListasIniciales()
 }

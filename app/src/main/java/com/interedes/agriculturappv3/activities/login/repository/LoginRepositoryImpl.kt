@@ -92,7 +92,7 @@ class LoginRepositoryImpl : LoginRepository {
 
                             } else {
                                 postEventError(LoginEvent.ERROR_EVENT, response?.message().toString())
-                                Log.e("Get Login User GenericResponse", response?.body().toString())
+                                Log.e("Get Login User Response", response?.body().toString())
                             }
                         }
 

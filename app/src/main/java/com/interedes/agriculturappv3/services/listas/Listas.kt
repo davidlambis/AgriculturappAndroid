@@ -25,16 +25,16 @@ class Listas {
         /*
         fun listaRoles(): ArrayList<Rol> {
             val lista_roles = ArrayList<Rol>()
-            lista_roles.add(Rol(Nombre = "Productor", Imagen = R.drawable.ic_productor_big))
-            lista_roles.add(Rol(Nombre = "Comprador", Imagen = R.drawable.ic_comprador_big))
+            lista_roles.add(Rol(nombre = "Productor", Imagen = R.drawable.ic_productor_big))
+            lista_roles.add(Rol(nombre = "Comprador", Imagen = R.drawable.ic_comprador_big))
             return lista_roles
         }*/
 
         /*
         fun listaRoles(): ArrayList<Rol> {
             val lista_roles = ArrayList<Rol>()
-            lista_roles.add(Rol(Id = 1, Nombre = "Productor", Imagen = R.drawable.ic_productor_big))
-            lista_roles.add(Rol(Id = 2, Nombre = "Comprador", Imagen = R.drawable.ic_comprador_big))
+            lista_roles.add(Rol(Id = 1, nombre = "Productor", Imagen = R.drawable.ic_productor_big))
+            lista_roles.add(Rol(Id = 2, nombre = "Comprador", Imagen = R.drawable.ic_comprador_big))
             return lista_roles
         } */
 
@@ -92,7 +92,7 @@ class Listas {
             return lista_comercial_productor
         }
 
-        fun listaUP(): ArrayList<UnidadProductiva> {
+        /*fun listaUP(): ArrayList<UnidadProductiva> {
             val listaUP = ArrayList<UnidadProductiva>()
             listaUP.add(UnidadProductiva(1,
                     "Unidad Productiva 1",
@@ -168,7 +168,7 @@ class Listas {
                     null))
 
             return listaUP
-        }
+        }*/
 
 
         fun listaUnidadMedida(): ArrayList<Unidad_Medida> {

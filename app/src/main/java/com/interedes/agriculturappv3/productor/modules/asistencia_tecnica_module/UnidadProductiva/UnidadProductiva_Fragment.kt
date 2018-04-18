@@ -20,7 +20,9 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.Ciudad
+import com.interedes.agriculturappv3.productor.models.Departamento
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.up.adapter.UnidadProductivaAdapter
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
@@ -33,35 +35,37 @@ import kotlinx.android.synthetic.main.fragment_unidad_productiva.*
 /**
  * Created by usuario on 16/03/2018.
  */
-class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefreshLayout.OnRefreshListener, IUnidadProductiva.View {
+class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, IUnidadProductiva.View {
 
 
     var presenter: IUnidadProductiva.Presenter? = null
-    var adapter: UnidadProductivaAdapter?=null
-    var unidadProductivaList:ArrayList<UnidadProductiva>?=ArrayList<UnidadProductiva>()
-    var unidadProductivaGlobal:UnidadProductiva?=null
+    var adapter: UnidadProductivaAdapter? = null
+    var unidadProductivaList: ArrayList<UnidadProductiva>? = ArrayList<UnidadProductiva>()
+    var unidadProductivaGlobal: UnidadProductiva? = null
     //Progress
-    private var hud: KProgressHUD?=null
+    private var hud: KProgressHUD? = null
     //Dialog
-    var viewDialog:View?= null;
+    var viewDialog: View? = null;
     var _dialogRegisterUpdate: AlertDialog? = null
-
+    var departamentoGlobal: Departamento? = null
+    var municipioGlobal: Ciudad? = null
 
     //Globals
-    var unidadMedidaGlobal:Unidad_Medida?=null
-    var listUnidadMedidaGlobal:List<Unidad_Medida>?= java.util.ArrayList<Unidad_Medida>()
+    var unidadMedidaGlobal: Unidad_Medida? = null
+    var listUnidadMedidaGlobal: List<Unidad_Medida>? = java.util.ArrayList<Unidad_Medida>()
+    var listMunicipios: List<Ciudad>? = java.util.ArrayList<Ciudad>()
     private var latitud: Double = 0.0
     private var longitud: Double = 0.0
 
     companion object {
-        var instance:  UnidadProductiva_Fragment? = null
+        var instance: UnidadProductiva_Fragment? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        UnidadProductiva_Fragment.instance =this
-        presenter =  UpPresenter(this);
-        presenter?.onCreate();
+        UnidadProductiva_Fragment.instance = this
+        presenter = UpPresenter(this);
+        presenter?.onCreate()
     }
 
 
@@ -74,16 +78,16 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         _dialogRegisterUpdate?.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
-        (activity as MenuMainActivity).toolbar.title=getString(R.string.title_up)
+        (activity as MenuMainActivity).toolbar.title = getString(R.string.title_up)
         fabAddUnidadProductiva.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         ivBackButton.setOnClickListener(this)
         setupInjection()
     }
 
-     fun setupInjection(){
-         presenter?.getUps()
-     }
+    fun setupInjection() {
+        presenter?.getUps()
+    }
 
     private fun initAdapter() {
         //recyclerView?.layoutManager = LinearLayoutManager(activity)
@@ -93,14 +97,12 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
     }
 
 
-     private fun hideKeyboard(){
+    private fun hideKeyboard() {
         var inputManager =
-         activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(activity?.getCurrentFocus()?.getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
     }
-
-
 
 
     //region IMPLEMETS INTERFACE MAIN
@@ -115,25 +117,31 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         }*/
         if (viewDialog?.edtNombreUnidadProductiva?.text.toString().isEmpty()) {
             viewDialog?.edtNombreUnidadProductiva?.setError(getString(R.string.error_field_required))
-            focusView =  viewDialog?.edtNombreUnidadProductiva
+            focusView = viewDialog?.edtNombreUnidadProductiva
+            cancel = true
+        } else if (viewDialog?.spinnerDepartamento?.text.toString().isEmpty()) {
+            viewDialog?.spinnerDepartamento?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.spinnerDepartamento
+            cancel = true
+        } else if (viewDialog?.spinnerMunicipio?.text.toString().isEmpty()) {
+            viewDialog?.spinnerMunicipio?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.spinnerMunicipio
             cancel = true
         } else if (viewDialog?.etDescripcionUnidadProductiva?.text.toString().isEmpty()) {
             viewDialog?.etDescripcionUnidadProductiva?.setError(getString(R.string.error_field_required))
-            focusView =  viewDialog?.etDescripcionUnidadProductiva
+            focusView = viewDialog?.etDescripcionUnidadProductiva
             cancel = true
         } else if (viewDialog?.edtAreaUnidadProductiva?.text.toString().isEmpty()) {
             viewDialog?.edtAreaUnidadProductiva?.setError(getString(R.string.error_field_required))
-            focusView =  viewDialog?.edtAreaUnidadProductiva
+            focusView = viewDialog?.edtAreaUnidadProductiva
             cancel = true
-        }
-        else if (viewDialog?.spinnerUnidadMedidaUp?.text.toString().isEmpty()) {
+        } else if (viewDialog?.spinnerUnidadMedidaUp?.text.toString().isEmpty()) {
             viewDialog?.spinnerUnidadMedidaUp?.setError(getString(R.string.error_field_required))
-            focusView =  viewDialog?.spinnerUnidadMedidaUp
+            focusView = viewDialog?.spinnerUnidadMedidaUp
             cancel = true
-        }
-        else if (viewDialog?.edtLocalizacionUnidadProductiva?.text.toString().isEmpty()) {
+        } else if (viewDialog?.edtLocalizacionUnidadProductiva?.text.toString().isEmpty()) {
             viewDialog?.edtLocalizacionUnidadProductiva?.setError(getString(R.string.error_field_required))
-            focusView =  viewDialog?.edtLocalizacionUnidadProductiva
+            focusView = viewDialog?.edtLocalizacionUnidadProductiva
             cancel = true
         }
         if (cancel) {
@@ -145,7 +153,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
     }
 
     override fun limpiarCampos() {
-        if(viewDialog!=null){
+        if (viewDialog != null) {
             viewDialog?.edtNombreUnidadProductiva?.setText("");
             viewDialog?.etDescripcionUnidadProductiva?.setText("");
             viewDialog?.edtAreaUnidadProductiva?.setText("");
@@ -156,11 +164,13 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
     override fun disableInputs() {
         setInputs(false)
     }
+
     override fun enableInputs() {
         setInputs(true)
     }
+
     private fun setInputs(b: Boolean) {
-        if( viewDialog!=null){
+        if (viewDialog != null) {
             viewDialog?.edtNombreUnidadProductiva?.isEnabled = b
             viewDialog?.etDescripcionUnidadProductiva?.isEnabled = b
             viewDialog?.edtAreaUnidadProductiva?.isEnabled = b
@@ -169,7 +179,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
 
     override fun showProgress() {
         showProgressHud()
-       // progressBar?.visibility= View.VISIBLE;
+        // progressBar?.visibility= View.VISIBLE;
         swipeRefreshLayout.setRefreshing(true);
     }
 
@@ -198,10 +208,10 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
     }
 
     override fun requestResponseOK() {
-        if(_dialogRegisterUpdate!=null){
+        if (_dialogRegisterUpdate != null) {
             _dialogRegisterUpdate?.dismiss()
         }
-        onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
+        onMessageOk(R.color.colorPrimary, getString(R.string.request_ok));
     }
 
     override fun requestResponseError(error: String?) {
@@ -227,36 +237,70 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
 
     override fun registerUp() {
         if (presenter?.validarCampos() == true) {
-            val unidadProductiva =  UnidadProductiva()
-            unidadProductiva.Nombre=viewDialog?.edtNombreUnidadProductiva?.text.toString()
-            unidadProductiva.Descripcion=viewDialog?.etDescripcionUnidadProductiva?.text.toString()
-            unidadProductiva.UpArea=viewDialog?.edtAreaUnidadProductiva?.text.toString().toDoubleOrNull()
-            unidadProductiva.Coordenadas=viewDialog?.edtLocalizacionUnidadProductiva?.text.toString()
-            unidadProductiva.UnidadMedidaId=unidadMedidaGlobal?.Id
-            unidadProductiva.Nombre_Unidad_Medida=unidadMedidaGlobal?.Descripcion
-            unidadProductiva.Configuration_Point=true
-            unidadProductiva.Configuration_Poligon=false
-            unidadProductiva.Latitud=latitud
-            unidadProductiva.Longitud=longitud
+            val unidadProductiva = UnidadProductiva()
+            val id_user_logued = (activity as MenuMainActivity).getLastUserLogued()?.Id
+            unidadProductiva.UsuarioId = id_user_logued
+            unidadProductiva.CiudadId = municipioGlobal?.Id
+            unidadProductiva.Nombre_Ciudad = municipioGlobal?.Nombre
+            unidadProductiva.Nombre_Departamento = departamentoGlobal?.Nombre
+            unidadProductiva.nombre = viewDialog?.edtNombreUnidadProductiva?.text.toString()
+            unidadProductiva.descripcion = viewDialog?.etDescripcionUnidadProductiva?.text.toString()
+            unidadProductiva.Area = viewDialog?.edtAreaUnidadProductiva?.text.toString().toDoubleOrNull()
+            unidadProductiva.Coordenadas = viewDialog?.edtLocalizacionUnidadProductiva?.text.toString()
+            unidadProductiva.UnidadMedidaId = unidadMedidaGlobal?.Id
+            unidadProductiva.Nombre_Unidad_Medida = unidadMedidaGlobal?.Descripcion
+            unidadProductiva.Configuration_Point = true
+            unidadProductiva.Configuration_Poligon = false
+            unidadProductiva.Latitud = latitud
+            unidadProductiva.Longitud = longitud
             presenter?.registerUP(unidadProductiva)
         }
     }
 
     override fun updateUp() {
         if (presenter?.validarCampos() == true) {
-            var updateUP =  UnidadProductiva()
-            updateUP.Id=unidadProductivaGlobal!!.Id
-            updateUP.Nombre=viewDialog?.edtNombreUnidadProductiva?.text.toString()
-            updateUP.Descripcion=viewDialog?.etDescripcionUnidadProductiva?.text.toString()
-            updateUP.UpArea=viewDialog?.edtAreaUnidadProductiva?.text.toString().toDoubleOrNull()
-            updateUP.Coordenadas=viewDialog?.edtLocalizacionUnidadProductiva?.text.toString()
-            updateUP.UnidadMedidaId=unidadMedidaGlobal?.Id
-            updateUP.Nombre_Unidad_Medida=unidadMedidaGlobal?.Descripcion
-            updateUP.Configuration_Point=unidadProductivaGlobal!!.Configuration_Point
-            updateUP.Configuration_Poligon=unidadProductivaGlobal!!.Configuration_Poligon
-            updateUP.Latitud=latitud
-            updateUP.Longitud=longitud
+            val updateUP = UnidadProductiva()
+            val id_user_logued = (activity as MenuMainActivity).getLastUserLogued()?.Id
+            updateUP.UsuarioId = id_user_logued
+            updateUP.Id = unidadProductivaGlobal!!.Id
+            updateUP.CiudadId = municipioGlobal?.Id
+            updateUP.Nombre_Ciudad = municipioGlobal?.Nombre
+            updateUP.Nombre_Departamento = departamentoGlobal?.Nombre
+            updateUP.nombre = viewDialog?.edtNombreUnidadProductiva?.text.toString()
+            updateUP.descripcion = viewDialog?.etDescripcionUnidadProductiva?.text.toString()
+            updateUP.Area = viewDialog?.edtAreaUnidadProductiva?.text.toString().toDoubleOrNull()
+            updateUP.Coordenadas = viewDialog?.edtLocalizacionUnidadProductiva?.text.toString()
+            updateUP.UnidadMedidaId = unidadMedidaGlobal?.Id
+            updateUP.Nombre_Unidad_Medida = unidadMedidaGlobal?.Descripcion
+            updateUP.Configuration_Point = unidadProductivaGlobal!!.Configuration_Point
+            updateUP.Configuration_Poligon = unidadProductivaGlobal!!.Configuration_Poligon
+            updateUP.Latitud = latitud
+            updateUP.Longitud = longitud
             presenter?.updateUP(updateUP)
+        }
+    }
+
+    override fun setListSpinnerDepartamentos(listDepartamentos: List<Departamento>) {
+        if (viewDialog != null) {
+            viewDialog?.spinnerDepartamento?.setAdapter(null)
+            val departamentoArrayAdapter = ArrayAdapter<Departamento>(activity, android.R.layout.simple_spinner_dropdown_item, listDepartamentos)
+            viewDialog?.spinnerDepartamento?.setAdapter(departamentoArrayAdapter)
+            viewDialog?.spinnerDepartamento?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+                viewDialog?.spinnerMunicipio?.setText("")
+                departamentoGlobal = listDepartamentos[position]
+                presenter?.setListMunicipios(departamentoGlobal?.Id)
+            }
+        }
+    }
+
+    override fun setListSpinnerMunicipios(listMunicipios: List<Ciudad>) {
+        if (viewDialog != null) {
+            viewDialog?.spinnerMunicipio?.setAdapter(null)
+            val municipioArrayAdapter = ArrayAdapter<Ciudad>(activity, android.R.layout.simple_spinner_dropdown_item, listMunicipios)
+            viewDialog?.spinnerMunicipio?.setAdapter(municipioArrayAdapter)
+            viewDialog?.spinnerMunicipio?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+                municipioGlobal = listMunicipios[position]
+            }
         }
     }
 
@@ -265,47 +309,48 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
     }
 
 
-    override fun setListUnidadMedidaAdapterSpinner(){
-        if(viewDialog!=null){
+    override fun setListUnidadMedidaAdapterSpinner() {
+        if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadMedidaUp!!.setAdapter(null)
-            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedidaGlobal);
+            val uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedidaGlobal);
             viewDialog?.spinnerUnidadMedidaUp!!.setAdapter(uMedidaArrayAdapter);
             viewDialog?.spinnerUnidadMedidaUp!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                unidadMedidaGlobal= listUnidadMedidaGlobal!![position] as Unidad_Medida
+                unidadMedidaGlobal = listUnidadMedidaGlobal!![position] as Unidad_Medida
                 //Toast.makeText(activity,""+ unidadMedidaGlobal!!.Id.toString(),Toast.LENGTH_SHORT).show()
             }
         }
     }
 
 
-    override fun showProgressHud(){
-        var  imageView =  ImageView(activity);
+    override fun showProgressHud() {
+        var imageView = ImageView(activity);
         imageView.setBackgroundResource(R.drawable.spin_animation);
-        var drawable =  imageView.getBackground() as AnimationDrawable;
+        var drawable = imageView.getBackground() as AnimationDrawable;
         drawable.start();
         hud = KProgressHUD.create(activity)
                 .setCustomView(imageView)
                 .setWindowColor(resources.getColor(R.color.white))
-                .setLabel("Cargando...",resources.getColor(R.color.grey_luiyi));
+                .setLabel("Cargando...", resources.getColor(R.color.grey_luiyi));
         hud?.show()
     }
 
-    override fun hideProgressHud(){
+    override fun hideProgressHud() {
         hud?.dismiss()
     }
 
 
-    override fun showAlertDialogAddUnidadProductiva(unidadProductiva:UnidadProductiva?) {
+    override fun showAlertDialogAddUnidadProductiva(unidadProductiva: UnidadProductiva?) {
 
 
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_unidad_productiva, null)
+        setListSpinnerMunicipios(listMunicipios!!)
+        presenter?.setListDepartamentos()
         setListUnidadMedidaAdapterSpinner()
-        val imageViewLocalizarUnidadProductiva= viewDialog?.imageViewLocalizarUnidadProductiva
-        val btnCloseDialog= viewDialog?.ivClosetDialogUp
-        unidadProductivaGlobal=unidadProductiva
-
+        val imageViewLocalizarUnidadProductiva = viewDialog?.imageViewLocalizarUnidadProductiva
+        val btnCloseDialog = viewDialog?.ivClosetDialogUp
+        unidadProductivaGlobal = unidadProductiva
 
 
         //REGISTER
@@ -316,13 +361,16 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         else {
             viewDialog?.txtTitle?.setText(getString(R.string.tittle_edit_unidadproductiva))
             unidadMedidaGlobal = Unidad_Medida(unidadProductiva.UnidadMedidaId, unidadProductiva.Nombre_Unidad_Medida, null)
-            viewDialog?.edtNombreUnidadProductiva?.setText(unidadProductiva.Nombre)
-            viewDialog?.etDescripcionUnidadProductiva?.setText(unidadProductiva.Descripcion)
-            viewDialog?.edtAreaUnidadProductiva?.setText(unidadProductiva.UpArea.toString())
+            viewDialog?.spinnerDepartamento?.setText(unidadProductiva.Nombre_Departamento)
+            viewDialog?.spinnerMunicipio?.visibility = View.VISIBLE
+            viewDialog?.spinnerMunicipio?.setText(unidadProductiva.Nombre_Ciudad)
+            viewDialog?.edtNombreUnidadProductiva?.setText(unidadProductiva.nombre)
+            viewDialog?.etDescripcionUnidadProductiva?.setText(unidadProductiva.descripcion)
+            viewDialog?.edtAreaUnidadProductiva?.setText(unidadProductiva.Area.toString())
             viewDialog?.edtLocalizacionUnidadProductiva?.setText(unidadProductiva.Coordenadas)
             viewDialog?.spinnerUnidadMedidaUp?.setText(unidadProductiva.Nombre_Unidad_Medida)
-            latitud=unidadProductiva.Latitud!!
-            longitud= unidadProductiva.Longitud!!
+            latitud = unidadProductiva.Latitud!!
+            longitud = unidadProductiva.Longitud!!
 
         }
 
@@ -333,7 +381,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         viewDialog?.btnSaveUnidadProductiva?.setOnClickListener(this)
 
 
-        val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar)
+        val dialog = AlertDialog.Builder(context!!, android.R.style.Theme_Light_NoTitleBar)
                 .setView(viewDialog)
                 .create()
 
@@ -346,7 +394,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
         //Hide KeyBoard
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.show()
-        _dialogRegisterUpdate=dialog
+        _dialogRegisterUpdate = dialog
 
         /*
         val dialog = AlertDialog.Builder(context!!)
@@ -397,9 +445,9 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
             R.id.fabAddUnidadProductiva -> {
                 showAlertDialogAddUnidadProductiva(null)
             }
-            R.id.ivClosetDialogUp->_dialogRegisterUpdate?.dismiss()
+            R.id.ivClosetDialogUp -> _dialogRegisterUpdate?.dismiss()
 
-            R.id.imageViewLocalizarUnidadProductiva->{
+            R.id.imageViewLocalizarUnidadProductiva -> {
                 presenter?.startGps(activity as MenuMainActivity)
             }
 
@@ -408,10 +456,10 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
                 (activity as MenuMainActivity).onBackPressed()
             }
 
-            R.id.btnSaveUnidadProductiva->{
-                if(unidadProductivaGlobal!=null){
+            R.id.btnSaveUnidadProductiva -> {
+                if (unidadProductivaGlobal != null) {
                     updateUp()
-                }else{
+                } else {
                     registerUp()
                 }
             }
@@ -420,16 +468,16 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
 
     //Escuchador de eventos
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
-        if(extras!=null){
+        if (extras != null) {
             if (extras.containsKey("state_conectivity")) {
                 var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
             }
-            if(extras.containsKey("latitud") && extras.containsKey("longitud") ){
-                latitud=intent.extras!!.getDouble("latitud")
-                longitud=intent.extras!!.getDouble("longitud")
-                 hideProgressHud()
-                if(viewDialog!=null){
-                    viewDialog?.edtLocalizacionUnidadProductiva?.setText(String.format(getString(R.string.coords),latitud,longitud))
+            if (extras.containsKey("latitud") && extras.containsKey("longitud")) {
+                latitud = intent.extras!!.getDouble("latitud")
+                longitud = intent.extras!!.getDouble("longitud")
+                hideProgressHud()
+                if (viewDialog != null) {
+                    viewDialog?.edtLocalizacionUnidadProductiva?.setText(String.format(getString(R.string.coords), latitud, longitud))
                 }
             }
         }
@@ -451,7 +499,7 @@ class UnidadProductiva_Fragment: Fragment(), View.OnClickListener , SwipeRefresh
 
     override fun onPause() {
         super.onPause()
-        presenter?.onPause( activity!!.applicationContext)
+        presenter?.onPause(activity!!.applicationContext)
     }
 
     override fun onResume() {

@@ -15,8 +15,8 @@ data class CategoriaPuk(@PrimaryKey(autoincrement = true)
                    @Column(name = "Id")
                    var Id: Long? = 0,
 
-                   @SerializedName("Nombre")
-                   @Column(name = "Nombre")
+                   @SerializedName("nombre")
+                   @Column(name = "nombre")
                    var Nombre: String? = null,
 
                    @SerializedName("SIGLA")

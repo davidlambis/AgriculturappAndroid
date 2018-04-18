@@ -8,7 +8,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
@@ -81,9 +81,9 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>): RecyclerV
             btnEditUp.setColorFilter(getContext().getResources().getColor(R.color.orange))
 
 
-            txt_unidad_productiva.text = data.Nombre
-            txt_descripcion_unidadproductiva.text = data.Descripcion
-            txt_area_unidad_productiva.text = data.UpArea.toString()
+            txt_unidad_productiva.text = data.nombre
+            txt_descripcion_unidadproductiva.text = data.descripcion
+            txt_area_unidad_productiva.text = data.Area.toString()
             //txtCiudaDepartamento.text =data.Nombre_Ciudad+"-"+data.Nombre_Departamento
 
             //var badge_notification_location_up: TextView = itemView.findViewById(R.id.badge_notification_location_up)

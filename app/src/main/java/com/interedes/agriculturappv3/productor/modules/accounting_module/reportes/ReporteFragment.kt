@@ -17,17 +17,15 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_reporte.*
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.Cultivo
-import com.interedes.agriculturappv3.productor.models.Lote
-import com.interedes.agriculturappv3.productor.models.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.productor.models.ventas.Puk
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
-import com.interedes.agriculturappv3.productor.models.ventas.resports.GenreDataFactory
 import com.interedes.agriculturappv3.productor.modules.accounting_module.reportes.adapter.CategoriaPukAdapter
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import java.util.*
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.view.WindowManager
@@ -40,7 +38,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 import com.interedes.agriculturappv3.productor.models.ventas.resports.BalanceContable
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
-import javax.xml.datatype.DatatypeFactory
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.content_range_dates.view.*
 import java.text.SimpleDateFormat
@@ -402,7 +399,7 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             presenter?.setListSpinnerCultivo(loteGlobal?.Id)
 
-            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.Nombre)
+            viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
             viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.getNombreCultio())
 
