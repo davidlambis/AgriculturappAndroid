@@ -83,7 +83,7 @@
                         android:text=""/>
                     <TextView
                         android:layout_below="@+id/txtNombreCultivo"
-                        android:id="@+id/txtNombreDetalleTipoProducto"
+                        android:id="@+id/txtNombreLote"
                         android:textSize="@dimen/text_size_25"
                         android:layout_marginStart="@dimen/margin_5"
                         android:layout_width="match_parent"
@@ -91,7 +91,7 @@
                         android:layout_height="wrap_content"
                         android:text=""/>
                     <TextView
-                        android:id="@+id/txtPrecioProducto"
+                        android:id="@+id/txtDescripcion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_above="@+id/txtNombreDetalleTipoProducto"
@@ -101,11 +101,11 @@
                         android:textColor="@color/white" />
 
                     <TextView
-                        android:id="@+id/txtFechaDisponibilidadProducto"
+                        android:id="@+id/txtArea"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignStart="@+id/txtPrecioProducto"
-                        android:layout_below="@+id/txtPrecioProducto"
+                        android:layout_alignStart="@+id/txtDescripcion"
+                        android:layout_below="@+id/txtDescripcion"
                         android:text=""
                         android:gravity="end"
                         android:textColor="@color/white" />
@@ -124,7 +124,7 @@
             android:layout_margin="@dimen/margin_global"
             android:background="@drawable/fondo_general"
             app:fabCustomSize="@dimen/size_60"
-            app:backgroundTint="@color/light_green_800"
+            app:backgroundTint="@color/purple"
             android:tint="@color/white"
             android:src="@android:drawable/ic_input_add" />
     </android.support.design.widget.CoordinatorLayout>

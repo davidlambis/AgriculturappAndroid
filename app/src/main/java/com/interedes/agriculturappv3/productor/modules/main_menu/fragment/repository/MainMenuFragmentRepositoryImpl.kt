@@ -8,15 +8,14 @@ import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.TestResponse
-import com.interedes.agriculturappv3.productor.models.Ciudad
-import com.interedes.agriculturappv3.productor.models.Departamento
-import com.interedes.agriculturappv3.productor.models.GenericResponse
+import com.interedes.agriculturappv3.productor.models.*
 import com.interedes.agriculturappv3.productor.models.unidad_medida.CategoriaMedida
 import com.interedes.agriculturappv3.productor.models.unidad_medida.CategoriaMedidaResponse
 import com.interedes.agriculturappv3.productor.models.unidad_medida.UnidadMedidaResponse
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.api.TestInterface
+import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
@@ -49,6 +48,18 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
     //region Métodos Interfaz
 
     override fun getListasIniciales() {
+        //Tipos de Producto
+        val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
+        for (item in listTipoProducto) {
+            item.save()
+        }
+
+        //Detalle Tipos de Producto
+        val listDetalleTipoProducto: ArrayList<DetalleTipoProducto> = Listas.listaDetalleTipoProducto()
+        for (item in listDetalleTipoProducto) {
+            item.save()
+        }
+
         //Departamentos y Ciudades
         val lista_departamentos = SQLite.select().from(Departamento::class.java).queryList()
         val lista_ciudades = SQLite.select().from(Ciudad::class.java).queryList()
@@ -91,6 +102,7 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
             }
         })
 
+        //Unidades de Medida
         val callUnidadesMedida = apiService?.getUnidadesMedida()
         callUnidadesMedida?.enqueue(object : Callback<UnidadMedidaResponse> {
             override fun onResponse(call: Call<UnidadMedidaResponse>?, response: Response<UnidadMedidaResponse>?) {
@@ -107,6 +119,9 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
             }
 
         })
+
+
+
     }
 
     override fun logOut(usuario: Usuario?) {

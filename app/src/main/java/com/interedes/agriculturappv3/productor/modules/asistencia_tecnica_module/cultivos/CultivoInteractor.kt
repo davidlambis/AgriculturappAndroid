@@ -28,8 +28,12 @@ class CultivoInteractor : ICultivo.Interactor {
         repository?.getListas()
     }
 
-    override fun execute(cultivo_id:Long?) {
+    override fun execute(cultivo_id: Long?) {
         repository?.getListCultivos(cultivo_id)
+    }
+
+    override fun getLote(loteId: Long?) {
+        repository?.getLote(loteId)
     }
 
 }

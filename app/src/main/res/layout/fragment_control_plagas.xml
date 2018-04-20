@@ -90,7 +90,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/txtNombreDetalleTipoProducto"
+                        android:id="@+id/txtNombreLote"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/txtNombreCultivo"
@@ -100,7 +100,7 @@
                         android:textSize="@dimen/text_size_16" />
 
                     <TextView
-                        android:id="@+id/txtPrecioProducto"
+                        android:id="@+id/txtDescripcion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignStart="@+id/txtNombreCultivo"
@@ -109,11 +109,11 @@
                         android:textColor="@color/white" />
 
                     <TextView
-                        android:id="@+id/txtFechaDisponibilidadProducto"
+                        android:id="@+id/txtArea"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignStart="@+id/txtPrecioProducto"
-                        android:layout_below="@+id/txtPrecioProducto"
+                        android:layout_alignStart="@+id/txtDescripcion"
+                        android:layout_below="@+id/txtDescripcion"
                         android:gravity="end"
                         android:text="12/12/2017"
                         android:textColor="@color/white" />

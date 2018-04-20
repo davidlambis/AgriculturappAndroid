@@ -127,6 +127,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         viewDialogPlagas?.ivClosetDialogGeneral?.setOnClickListener(this)
 
         viewDialogPlagas?.title?.setText(getString(R.string.title_selected_plaga))
+        viewDialogPlagas?.logo?.setImageResource(R.drawable.ic_plagas)
 
         // val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar_Fullscreen)
 
@@ -198,7 +199,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
     //Escuchador de eventos
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
-        if(extras!=null){
+        if (extras != null) {
             if (extras.containsKey("state_conectivity")) {
                 var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
             }
@@ -250,6 +251,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         viewDialogTipoProductos?.ivClosetDialogGeneral?.setOnClickListener(this)
 
         viewDialogTipoProductos?.title?.setText(getString(R.string.title_selected_tipo_productos))
+        viewDialogTipoProductos?.logo?.setImageResource(R.drawable.ic_productos)
 
         val dialog = AlertDialog.Builder(context!!)
                 .setView(viewDialogTipoProductos!!)
@@ -329,7 +331,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
     override fun onPause() {
         super.onPause()
-        presenter?.onPause( activity!!.applicationContext)
+        presenter?.onPause(activity!!.applicationContext)
     }
 
     override fun onResume() {

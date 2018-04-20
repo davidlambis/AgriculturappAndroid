@@ -65,12 +65,12 @@ class LoteRepositoryImpl : LoteRepository {
                         mLote.save()
                         postEventOk(RequestEventLote.SAVE_EVENT, getLotes(unidad_productiva_id), mLote)
                     } else {
-                        postEventError(RequestEventLote.ERROR_EVENT, response?.message().toString())
+                        postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
                     }
                 }
 
                 override fun onFailure(call: Call<Lote>?, t: Throwable?) {
-                    postEventError(RequestEventLote.ERROR_EVENT, t?.message.toString())
+                    postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
                 }
 
             })

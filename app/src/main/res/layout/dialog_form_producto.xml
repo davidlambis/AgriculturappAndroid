@@ -234,7 +234,7 @@
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                     <EditText
-                        android:id="@+id/txtPrecioProducto"
+                        android:id="@+id/txtDescripcion"
                         style="@style/editText"
                         android:drawableLeft="@drawable/ic_numero_hectareas"
                         android:drawableStart="@drawable/ic_numero_hectareas"

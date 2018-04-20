@@ -121,8 +121,8 @@
                 android:id="@+id/spinnerTipoProducto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawableLeft="@drawable/ic_nombre_finca"
-                android:drawableStart="@drawable/ic_nombre_finca"
+                android:drawableLeft="@drawable/ic_productos"
+                android:drawableStart="@drawable/ic_productos"
                 android:hint="@string/spinner_tipo_producto"
                 android:textAlignment="textStart"
                 android:textColorHint="@color/grey_luiyi"
@@ -138,8 +138,8 @@
                 android:id="@+id/spinnerDetalleTipoProducto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawableLeft="@drawable/ic_nombre_finca"
-                android:drawableStart="@drawable/ic_nombre_finca"
+                android:drawableLeft="@drawable/ic_productos"
+                android:drawableStart="@drawable/ic_productos"
                 android:hint="@string/spinner_detalle_tipo_producto"
                 android:textAlignment="textStart"
                 android:textColorHint="@color/grey_luiyi"
@@ -165,8 +165,8 @@
                     <EditText
                         android:id="@+id/edtEstimadoCosecha"
                         style="@style/editText"
-                        android:drawableLeft="@drawable/ic_localizacion_finca"
-                        android:drawableStart="@drawable/ic_localizacion_finca"
+                        android:drawableLeft="@drawable/ic_medicion"
+                        android:drawableStart="@drawable/ic_medicion"
                         android:hint="@string/edit_text_estimado_cosecha"
                         android:inputType="numberDecimal" />
                 </android.support.design.widget.TextInputLayout>
@@ -205,8 +205,8 @@
                     <EditText
                         android:id="@+id/edtFechaInicio"
                         style="@style/editText"
-                        android:drawableLeft="@drawable/ic_localizacion_finca"
-                        android:drawableStart="@drawable/ic_localizacion_finca"
+                        android:drawableLeft="@drawable/ic_mes"
+                        android:drawableStart="@drawable/ic_mes"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:hint="@string/edit_text_fecha_inicio" />
@@ -229,8 +229,8 @@
                     <EditText
                         android:id="@+id/edtFechaFin"
                         style="@style/editText"
-                        android:drawableLeft="@drawable/ic_localizacion_finca"
-                        android:drawableStart="@drawable/ic_localizacion_finca"
+                        android:drawableLeft="@drawable/ic_mes"
+                        android:drawableStart="@drawable/ic_mes"
                         android:editable="false"
                         android:focusable="false"
                         android:focusableInTouchMode="false"

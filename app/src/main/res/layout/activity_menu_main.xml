@@ -40,10 +40,11 @@
 
         <FrameLayout
             android:id="@+id/container"
-            android:background="@drawable/fondo_general"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="@drawable/fondo_general"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
 
     </android.support.design.widget.CoordinatorLayout>
 
@@ -53,16 +54,16 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@drawable/fondo_nav_drawer2"
-        app:headerLayout="@layout/navigation_drawer_header"
-        app:itemIconTint="@color/white_solid"
-        app:itemTextColor="@color/white_solid"
-        app:elevation="@dimen/margin_30"
-        app:itemBackground="@color/black_alpha_40"
-        android:paddingTop="@dimen/margin_15"
+        android:paddingEnd="@dimen/margin_50"
         android:paddingLeft="@dimen/margin_25"
         android:paddingRight="@dimen/margin_50"
         android:paddingStart="@dimen/margin_25"
-        android:paddingEnd="@dimen/margin_50"
+        android:paddingTop="@dimen/margin_15"
+        app:elevation="@dimen/margin_30"
+        app:headerLayout="@layout/navigation_drawer_header"
+        app:itemBackground="@color/black_alpha_40"
+        app:itemIconTint="@color/white_solid"
+        app:itemTextColor="@color/white_solid"
         app:menu="@menu/menu_main" />
 
 </android.support.v4.widget.DrawerLayout>

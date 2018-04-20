@@ -307,8 +307,8 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
             productoSelectedContainer.visibility = View.VISIBLE
         }
         txtNombreCultivo?.setText(producto?.NombreCultivo)
-        txtNombreDetalleTipoProducto?.setText(producto?.NombreDetalleTipoProducto)
-        txtPrecioProducto?.setText(getString(R.string.title_adapter_precio_producto, producto?.Precio))
+        txtNombreLote?.setText(producto?.NombreDetalleTipoProducto)
+        txtDescripcion?.setText(getString(R.string.title_adapter_precio_producto, producto?.Precio))
         txtNombreProducto?.setText(producto?.Nombre)
     }
     //endregion

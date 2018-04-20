@@ -72,12 +72,12 @@
                             android:textStyle="bold" />
 
                         <ImageView
-                            android:adjustViewBounds="true"
-                            android:scaleType="centerCrop"
                             android:id="@+id/imageViewProducto"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/txtNombreDetalleProducto"
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop"
                             android:src="@drawable/aguacate" />
 
                         <com.robertlevonyan.views.expandable.Expandable
@@ -113,7 +113,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/expandable"
-                            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum "
+                            android:text="Se observan heridas redondas o irregulares de color café claro, de apariencia arrugada, gruesa, que pueden unirse y afectar gran parte del fruto. Con el quiebre de las heridas, se favorece la llegada de otros organismos, afectando su valor comercial. Se advierten heridas en hojas y ramas pequeñas; en casos severos lucen deformadas y con poco crecimiento. Así mismo, se pueden observar manchas gruesas de color oscuro y variadas formas que luego al unirse a las venas y tallos de las hojas y corteza de las ramas."
                             android:textAlignment="center"
                             android:textColor="@color/purple"
                             android:textSize="@dimen/text_size_16"

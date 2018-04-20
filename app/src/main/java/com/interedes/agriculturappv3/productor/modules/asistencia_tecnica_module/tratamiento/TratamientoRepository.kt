@@ -9,6 +9,7 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.tratamiento.events.TratamientoEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.save
@@ -56,7 +57,7 @@ class TratamientoRepository : ITratamiento.Repository {
         val listUnidadProductiva = SQLite.select().from(UnidadProductiva::class.java).queryList()
         val listLotes = SQLite.select().from(Lote::class.java).queryList()
         val listCultivos = SQLite.select().from(Cultivo::class.java).queryList()
-        val listUnidadMedida = Listas.listaUnidadMedida()
+        val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(4)).queryList()
         postEventListUnidadProductiva(TratamientoEvent.LIST_EVENT_UP, listUnidadProductiva, null)
         postEventListLotes(TratamientoEvent.LIST_EVENT_LOTE, listLotes, null)
         postEventListCultivos(TratamientoEvent.LIST_EVENT_CULTIVO, listCultivos, null);

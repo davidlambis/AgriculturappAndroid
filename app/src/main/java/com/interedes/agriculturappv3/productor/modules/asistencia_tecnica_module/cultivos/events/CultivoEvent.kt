@@ -21,7 +21,9 @@ class CultivoEvent(var eventType: Int, var mutableList: MutableList<Object>? = n
         val ITEM_EDIT_EVENT: Int = 13
         val ITEM_DELETE_EVENT: Int = 14
 
-        val LIST_EVENT_TIPO_PRODUCTO : Int = 15
-        val LIST_EVENT_DETALLE_TIPO_PRODUCTO : Int = 16
+        val LIST_EVENT_TIPO_PRODUCTO: Int = 15
+        val LIST_EVENT_DETALLE_TIPO_PRODUCTO: Int = 16
+
+        val GET_EVENT_LOTE: Int = 17
     }
 }

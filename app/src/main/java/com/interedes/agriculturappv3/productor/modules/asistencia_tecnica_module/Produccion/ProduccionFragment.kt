@@ -20,6 +20,8 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.Cultivo
@@ -100,6 +102,10 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         ivBackButton.setOnClickListener(this)
         searchFilter.setOnClickListener(this)
         setupInjection()
+
+        YoYo.with(Techniques.Pulse)
+                .repeat(5)
+                .playOn(fabAddProduccion)
     }
 
     fun setupInjection(){
@@ -561,9 +567,9 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             cultivoSeletedContainer.visibility=View.VISIBLE
         }
         txtNombreCultivo.setText(cultivo?.Nombre_Detalle_Tipo_Producto)
-        txtNombreDetalleTipoProducto.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
-        txtPrecioProducto.setText(cultivo?.FechaIncio)
-        txtFechaDisponibilidadProducto.setText(cultivo?.FechaFin)
+        txtNombreLote.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
+        txtDescripcion.setText(cultivo?.FechaIncio)
+        txtArea.setText(cultivo?.FechaFin)
     }
 
     override fun verificateConnection(): AlertDialog? {

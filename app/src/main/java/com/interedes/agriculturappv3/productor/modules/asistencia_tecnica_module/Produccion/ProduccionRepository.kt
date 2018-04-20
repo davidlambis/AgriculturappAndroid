@@ -9,6 +9,7 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Produccion.events.RequestEventProduccion
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.delete
@@ -48,7 +49,7 @@ class ProduccionRepository :IMainProduccion.Repository {
         var listUnidadProductiva = SQLite.select().from(UnidadProductiva::class.java!!).queryList()
         var listLotes = SQLite.select().from(Lote::class.java!!).queryList()
         var listCultivos = SQLite.select().from(Cultivo::class.java!!).queryList()
-        var listUnidadMedida= Listas.listaUnidadMedida()
+        val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(3)).queryList()
 
         postEventListUnidadMedida(RequestEventProduccion.LIST_EVENT_UNIDAD_MEDIDA,listUnidadMedida,null);
         postEventListUnidadProductiva(RequestEventProduccion.LIST_EVENT_UP,listUnidadProductiva,null);

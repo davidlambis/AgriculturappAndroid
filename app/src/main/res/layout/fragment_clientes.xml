@@ -88,7 +88,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/txtNombreDetalleTipoProducto"
+                        android:id="@+id/txtNombreLote"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/txtNombreCultivo"
@@ -101,14 +101,14 @@
                         android:id="@+id/txtNombreProducto"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/txtNombreDetalleTipoProducto"
+                        android:layout_above="@+id/txtNombreLote"
                         android:layout_alignStart="@+id/txtNombreCultivo"
                         android:gravity="end"
                         android:text=""
                         android:textColor="@color/white" />
 
                     <TextView
-                        android:id="@+id/txtPrecioProducto"
+                        android:id="@+id/txtDescripcion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignStart="@+id/txtNombreProducto"

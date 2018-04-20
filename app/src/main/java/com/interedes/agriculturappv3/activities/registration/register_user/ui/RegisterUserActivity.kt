@@ -25,6 +25,9 @@ import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import kotlinx.android.synthetic.main.activity_register_user.*
 import android.text.TextUtils
+import com.interedes.agriculturappv3.R.id.*
+import com.interedes.agriculturappv3.activities.registration.register_user.repository.RegisterUserRepository
+import com.interedes.agriculturappv3.activities.registration.register_user.repository.RegisterUserRepositoryImpl
 import com.interedes.agriculturappv3.productor.models.usuario.User
 import java.util.*
 
@@ -86,11 +89,31 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         spinnerMetodoPago?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             metodo_pago_id = metodosPago?.get(position)?.Id
             nombre_metodo_pago = metodosPago?.get(position)?.Nombre
+
             presenter?.loadDetalleMetodosPagoByMetodoPagoId(metodo_pago_id)
-            if (!nombre_metodo_pago.equals("Transferencia Bancaria")) {
-                textInputLayoutNumeroCuenta?.visibility = View.GONE
-                edtNumeroCuenta?.setText("")
+        }
+    }
+
+    override fun showBanco() {
+        if (nombre_metodo_pago.equals("Efectivo")) {
+            spinnerBanco?.visibility = View.GONE
+            textInputLayoutNumeroCuenta?.visibility = View.GONE
+            val repository: RegisterUserRepository
+            repository = RegisterUserRepositoryImpl()
+            val list_detalle_metodo_pago_id = repository.getDetalleMetodosPagoByMetodoPagoId(metodo_pago_id)
+            for (item in list_detalle_metodo_pago_id) {
+                if (item.Nombre.equals("Efectivo")) {
+                    detalle_metodo_pago_id = item.Id
+                }
             }
+        } else if (nombre_metodo_pago.equals("Transferencia Bancaria")) {
+            spinnerBanco?.visibility = View.VISIBLE
+            textInputLayoutNumeroCuenta?.visibility = View.GONE
+            spinnerBanco?.setText("")
+        } else {
+            spinnerBanco?.visibility = View.VISIBLE
+            spinnerBanco?.setText("")
+            textInputLayoutNumeroCuenta?.visibility = View.GONE
         }
     }
 
@@ -141,9 +164,9 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
             edtApellidos?.setError(getString(R.string.error_field_required))
             focusView = edtApellidos
             cancel = true
-        } else if (edtCorreo?.text.toString().isEmpty()) {
-            edtCorreo?.setError(getString(R.string.error_field_required))
-            focusView = edtCorreo
+        } else if (edtCedula?.text.toString().isEmpty()) {
+            edtCedula?.setError(getString(R.string.error_field_required))
+            focusView = edtCedula
             cancel = true
         } else if (edtCorreo?.text.toString().isEmpty()) {
             edtCorreo?.setError(getString(R.string.error_field_required))
@@ -207,6 +230,10 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
     override fun registerUsuario() {
         if (presenter?.validarCampos() == true) {
+            //TODO CORREGIR EL DETALLE METODO PAGO PARA COMPRADORES
+            if (detalle_metodo_pago_id == null) {
+                detalle_metodo_pago_id = 1
+            }
 
             val user = User(detalle_metodo_pago_id,
                     edtNumeroCuenta?.text?.trim().toString(),
@@ -265,10 +292,6 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         spinnerBanco?.setText("")
     }
 
-    override fun showBanco() {
-        spinnerBanco?.isEnabled = true
-        spinnerBanco?.visibility = View.VISIBLE
-    }
 
     override fun registroExitoso() {
         //Snackbar.make(container, getString(R.string.registro_exitoso), Snackbar.LENGTH_SHORT).show()
@@ -293,7 +316,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
     override fun hasNotConnectivity() {
         //Snackbar.make(container, getString(R.string.not_internet_connected), Snackbar.LENGTH_SHORT).show()
-        onMessageOk(R.color.grey_luiyi, getString(R.string.not_internet_connected))
+        onMessageOk(R.color.grey_luiyi, getString(R.string.need_internet_register))
     }
 
     private fun setInputs(b: Boolean) {
@@ -310,7 +333,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         btnRegistrar?.isEnabled = b
     }
 
-    //endregion
+//endregion
 
     //region Método Click
     override fun onClick(p0: View?) {
@@ -324,10 +347,10 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
         }
     }
-    //endregion
+//endregion
 
     //region Conexión a Internet
-    //Revisar manualmente
+//Revisar manualmente
     private fun checkConnection(): Boolean {
         return ConnectivityReceiver.isConnected
         //showSnack(isConnected);
@@ -347,10 +370,10 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         }
     }
 
-    //endregion
+//endregion
 
     //region Métodos Generales
-    //Validar Contraseña
+//Validar Contraseña
     fun validatePassword(password: String?): Boolean {
         if (password == null) {
             return false
@@ -410,7 +433,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
             onBackPressed()
         }
     }
-    //endregion
+//endregion
 
     //region Ciclo de Vida Actividad
     override fun onResume() {
@@ -424,5 +447,5 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         presenter?.onDestroy()
     }
 
-    //endregion
+//endregion
 }

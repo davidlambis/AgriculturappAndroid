@@ -2,17 +2,18 @@
     <string name="app_name">AgriculturApp</string>
 
     <!--MENU ACTIVITIES-->
-    <string name="title_menu">Menu</string>
+    <string name="title_menu">Menú</string>
     <string name="title_lote">Lote</string>
 
     <!--Titles Frfgaments-->
-    <string name="title_module_asistencia_tecnica">Asistencia Tecnica</string>
+    <string name="title_module_asistencia_tecnica">Asistencia Técnica</string>
 
     <string name="title_module_comercial">Comercial</string>
     <string name="title_module_contable">Contabilidad</string>
     <!-- GLOBALES -->
     <string name="results_global_search">Mostrando %d Resultados</string>
     <string name="error_field_required">Campo Requerido</string>
+    <string name="nombre_usuario_nav">%1s %2s</string>
 
     <string name="coords">%f  /  %f</string>
 
@@ -46,9 +47,9 @@
     <string name="text_registerUP">Registro Unidad Productiva</string>
     <string name="title_register_comprador">¡Te estás registrando como comprador!</string>
     <string name="registro_exitoso">Registrado Éxitosamente</string>
-    <string name="edit_text_description">Breve descripción de tu finca</string>
-    <string name="edit_text_nombre_finca">Nombre de Unidad Productiva</string>
-    <string name="edit_text_localizacion_finca">Localización de Unidad Productiva</string>
+    <string name="edit_text_description">Breve descripción</string>
+    <string name="edit_text_nombre_finca">Nombre</string>
+    <string name="edit_text_localizacion_finca">Localización</string>
     <string name="btn_registrar_productor">Registrar</string>
     <string name="edit_text_numero_hectareas">Número de Hectáreas</string>
     <string name="edit_text_mes_siembra">Mes de Siembra</string>
@@ -83,7 +84,7 @@
     <!-- Alerts/Errors -->
     <string name="alert">Alerta</string>
     <string name="msgAlertConn">No tienes conexión a Internet, verifica tu conexión!</string>
-    <string name="infoGPS">El sistema GPS esta desactivado, ¿Desea activarlo?</string>
+    <string name="infoGPS">El sistema GPS está desactivado, ¿Desea activarlo?</string>
     <string name="GpsOutService">Proveedor fuera de servicio de localización, intenta más
     tarde.</string>
     <string name="GpsTempUnavailable">Temporalmente no disponible el servicio de GPS.</string>
@@ -98,13 +99,13 @@
     <string name="add_lote">Agregar Lote</string>
     <string name="edit_lote">Editar Lote</string>
     <string name="message_add_lote">Digite los todos lo campos</string>
-    <string name="location_lote_select_type">Como desea ubicar el lote?</string>
+    <string name="location_lote_select_type">¿Cómo desea ubicar el lote?</string>
     <string name="tittle_add_coord_lote_gps">Agregar Lote</string>
-    <string name="location_type_gps">Ubicacion con GPS</string>
-    <string name="location_type_manual">Ubicacion Manual</string>
-    <string name="alert_delete_lote">Esta seguro que desea eliminar el lote</string>
+    <string name="location_type_gps">Ubicación con GPS</string>
+    <string name="location_type_manual">Ubicación Manual</string>
+    <string name="alert_delete_lote">¿Está seguro que desea eliminar el lote?</string>
     <string name="select_UP">Seleccione Unidad Productiva</string>
-    <string name="message_location_lote">Seleccione una opcion de ubicacion</string>
+    <string name="message_location_lote">Seleccione una opción de ubicación</string>
     <string name="message_location_lote_marker">Haga click en el mapa para ubicar el lote</string>
 
     <string name="title_list_unidad_productiva">Lista de unidades productivas</string>
@@ -117,20 +118,21 @@
     <string name="title_up">Unidad Productiva</string>
     <string name="spinner_departamento">Departamento</string>
     <string name="spinner_municipio">Municipio</string>
+    <string name="registra_up">Registra tu Unidad Productiva</string>
     <!--Produccion-->
 
 
-    <string name="tittle_producccion">Produccion</string>
-    <string name="tittle_add_producccion">Registrar Produccion</string>
-    <string name="tittle_edit_producccion">Editar Produccion</string>
+    <string name="tittle_producccion">Producción</string>
+    <string name="tittle_add_producccion">Registrar Producción</string>
+    <string name="tittle_edit_producccion">Editar Producción</string>
 
     <string name="spinner_cultivo">Cultivo</string>
     <string name="title_date_end">Fecha de Fin</string>
     <string name="title_date_start">Fechas de Inicio</string>
-    <string name="tittle_date_produccion">Fechas de Produccion</string>
+    <string name="tittle_date_produccion">Fechas de Producción</string>
 
-    <string name="tittle_select_cultivo">Seleccione el cultivo para agregar la produccion</string>
-    <string name="title_alert_delete_produccion">Esta seguro que desea eliminar la produccion</string>
+    <string name="tittle_select_cultivo">Seleccione el cultivo para agregar la producción</string>
+    <string name="title_alert_delete_produccion">¿Está seguro que desea eliminar la producción?</string>
 
     <!-- Cultivos -->
     <string name="edit_text_nombre_cultivo"> Nombre del Cultivo</string>
@@ -226,16 +228,16 @@
 
     <string name="title_add_venta">Agregar Venta</string>
     <string name="title_edit_venta">Editar Venta</string>
-    <string name="error_field_required_radio_group">Seleccione un estado de la transaccion</string>
+    <string name="error_field_required_radio_group">Seleccione un estado de la transacción</string>
     <!--Gasto-->
     <string name="title_add_gasto">Agregar Gasto</string>
     <string name="title_edit_gasto">Editar Gasto</string>
 
 
     <!--Transaccion-->
-    <string name="title_add_transaccion">Agregar Transaccion</string>
-    <string name="tittle_select_cultivo_transaccion">Seleccione el cultivo para agregar una transaccion</string>
-    <string name="tittle_puk">Seleccione Tipo Operaccion</string>
+    <string name="title_add_transaccion">Agregar Transacción</string>
+    <string name="tittle_select_cultivo_transaccion">Seleccione el cultivo para agregar una transacción</string>
+    <string name="tittle_puk">Seleccione Tipo Operacción</string>
     <string name="title_interval_transactions">Intervalo de Transacción</string>
     <string name="title_ingresos">Ingresos</string>
     <string name="title_egresos">Egresos</string>
@@ -248,13 +250,13 @@
     <string name="coordenadas">Coordenadas</string>
     <string name="name">Nombre</string>
 
-    <string name="title">Titulo</string>
+    <string name="title">Título</string>
     <string name="description">Descripción</string>
     <string name="concepto">Concepto</string>
     <string name="quantity">Cantidad</string>
     <string name="date">Fecha</string>
     <string name="description_additional">Descripción Adicional</string>
-    <string name="area">Area</string>
+    <string name="area">Área</string>
     <string name="department">Departamento</string>
     <string name="city">Ciudad</string>
 
@@ -264,7 +266,7 @@
     <string name="on_connectividad">Conectado</string>
     <string name="off_connectividad">Desconectado</string>
     <string name="btn_save">Guardar</string>
-    <string name="confirmation">Confirmacion</string>
+    <string name="confirmation">Confirmación</string>
     <string name="title_unidad">Unidad</string>
     <string name="cantidad">Cantidad</string>
     <string name="venta">Precio $</string>
@@ -278,7 +280,7 @@
     <string name="agregar">Agregar</string>
     <string name="filtrar">Filtrar</string>
     <string name="ubicar">Ubicar</string>
-    <string name="tittle_filter">Filtros de busquedad</string>
+    <string name="tittle_filter">Filtros de búsqueda</string>
     <string name="error_results">No se encontraron resultados</string>
 
     <string name="range_dates">De %1$s A %2$s</string>
@@ -293,30 +295,30 @@
 
     <!--Cliente-->
     <string name="name_usuario">Nombre Usuario</string>
-    <string name="identificacion_usuario">Identificacion Usuario</string>
+    <string name="identificacion_usuario">Identificación Usuario</string>
 
     <!-- INTERNET CONNECTION -->
     <string name="internet_connected">Conectado a Internet</string>
     <string name="not_internet_connected">No Conectado a Internet</string>
     <string name="sin_conexion">Sin Conexión</string>
-    <string name="verificate_conexion">Verifique suconexion a internet</string>
-    <string name="request_ok">Se realizo Éxitosamente</string>
+    <string name="verificate_conexion">Verifique su conexión a internet</string>
+    <string name="request_ok">Se realizó éxitosamente</string>
     <string name="error_request">Error en la petición</string>
     <string name="error_load_roles">No se pueden cargar los roles porque no hay internet</string>
     <string name="_3232_34_mts">3232.34 mts</string>
     <string name="error_take_picture_camera">Error al tomar la fotografía</string>
     <string name="error_image_selected">Debe seleccionar una imagen</string>
     <string name="title_registrate"><u>Regístrate</u></string>
-
+    <string name="need_internet_register">Necesitas internet para registrarte</string>
 
 
     <string-array name="array_type_get_location_with_conection">
-        <item>Ubicacion GPS</item>
-        <item>Ubicacion Manual</item>
+        <item>Ubicación GPS</item>
+        <item>Ubicación Manual</item>
     </string-array>
 
     <string-array name="array_type_get_location_empty_conection">
-        <item>Ubicacion GPS</item>
+        <item>Ubicación GPS</item>
     </string-array>
 
 </resources>

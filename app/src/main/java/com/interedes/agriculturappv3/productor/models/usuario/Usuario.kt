@@ -87,6 +87,9 @@ data class Usuario(@PrimaryKey
                    var AccessToken: String? = null,
 
                    @Column(getterName = "getUsuarioRemembered")
-                   var UsuarioRemembered: Boolean? = false) {}
+                   var UsuarioRemembered: Boolean? = false,
+
+                   @Column(name = "sessionId")
+                   var sessionId: Long? = 0) {}
 
 

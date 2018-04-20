@@ -21,6 +21,8 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.*
@@ -99,6 +101,10 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         ivBackButton.setOnClickListener(this)
         searchFilter.setOnClickListener(this)
         setupInjection()
+        YoYo.with(Techniques.Pulse)
+                .repeat(5)
+                .playOn(fabAddCultivo)
+
     }
 
     private fun initAdapter() {
@@ -323,6 +329,16 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         setResults(listCultivos.size)
     }
 
+    override fun setLote(lote: Lote?) {
+        if (loteSelectedContainer.visibility == View.GONE) {
+            loteSelectedContainer.visibility = View.VISIBLE
+        }
+        txtNombreUp?.setText(lote?.Nombre_Unidad_Productiva)
+        txtNombreLote?.setText(lote?.Nombre)
+        txtDescripcion?.setText(lote?.Descripcion)
+        txtArea?.setText(lote?.Area.toString())
+    }
+
 
     override fun setResults(cultivos: Int) {
         var results = String.format(getString(R.string.results_global_search),
@@ -381,6 +397,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         edtFechaInicio?.setOnClickListener(this)
         edtFechaFin?.setOnClickListener(this)
         viewDialog?.btnSaveCultivo?.setOnClickListener(this)
+        cultivoGlobal = cultivo
 
         var title: String? = null
 
@@ -476,6 +493,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                                 if (presenter?.validarListasFilterLote() == true) {
                                     dialog1.dismiss()
                                     presenter?.getListCultivos(Lote_Id)
+                                    presenter?.getLote(Lote_Id)
                                 }
                             } else {
                                 if (presenter?.validarListasFilterLote() == true) {
@@ -559,7 +577,8 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedida);
             viewDialog?.spinnerUnidadMedidaCosecha!!.setAdapter(uMedidaArrayAdapter);
             viewDialog?.spinnerUnidadMedidaCosecha!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                unidadMedidaGlobal = listUnidadMedida!![position] as Unidad_Medida
+                unidadMedidaGlobal = listUnidadMedida!![position]
+                Unidad_Medida_Id = unidadMedidaGlobal?.Id
             }
         }
     }

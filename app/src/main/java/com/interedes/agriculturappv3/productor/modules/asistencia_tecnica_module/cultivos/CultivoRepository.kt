@@ -6,6 +6,8 @@ import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.lote.Lote_Table
+import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.delete
@@ -35,20 +37,23 @@ class CultivoRepository : ICultivo.Repository {
         val listLotes = SQLite.select().from(Lote::class.java).queryList()
         postEventListLotes(CultivoEvent.LIST_EVENT_LOTES, listLotes, null);
 
-        val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
+        /*val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
         for (item in listTipoProducto) {
             item.save()
-        }
+        }*/
+        val listTipoProducto = SQLite.select().from(TipoProducto::class.java).queryList()
         postEventListTipoProducto(CultivoEvent.LIST_EVENT_TIPO_PRODUCTO, listTipoProducto, null)
 
-        val listUnidadMedida = Listas.listaUnidadMedida()
+        //val listUnidadMedida = Listas.listaUnidadMedida()
+        val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(3)).queryList()
         postEventListUnidadMedida(CultivoEvent.LIST_EVENT_UNIDAD_MEDIDA, listUnidadMedida, null)
 
 
-        val listDetalleTipoProducto: ArrayList<DetalleTipoProducto> = Listas.listaDetalleTipoProducto()
+        /*val listDetalleTipoProducto: ArrayList<DetalleTipoProducto> = Listas.listaDetalleTipoProducto()
         for (item in listDetalleTipoProducto) {
             item.save()
-        }
+        }*/
+        val listDetalleTipoProducto = SQLite.select().from(DetalleTipoProducto::class.java).queryList()
         postEventListDetalleTipoProducto(CultivoEvent.LIST_EVENT_DETALLE_TIPO_PRODUCTO, listDetalleTipoProducto, null)
     }
 
@@ -58,12 +63,21 @@ class CultivoRepository : ICultivo.Repository {
         postEventOk(CultivoEvent.READ_EVENT, cultivos, null)
     }
 
+    override fun getLote(loteId: Long?) {
+        val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.Id.eq(loteId)).querySingle()
+        postEventOkLote(CultivoEvent.GET_EVENT_LOTE, lote)
+        /*
+        var cultivo = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+        postEventOkCultivo(RequestEventProduccion.GET_EVENT_CULTIVO,cultivo)
+         */
+    }
+
     override fun getCultivos(loteId: Long?): List<Cultivo> {
         var listResponse: List<Cultivo>? = null
-        if (loteId == null || loteId == 0.toLong() ) {
-            listResponse = SQLite.select().from(Cultivo::class.java!!).queryList()
+        if (loteId == null || loteId == 0.toLong()) {
+            listResponse = SQLite.select().from(Cultivo::class.java).queryList()
         } else {
-            listResponse = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.LoteId.eq(loteId)).queryList()
+            listResponse = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(loteId)).queryList()
         }
         return listResponse;
     }
@@ -117,6 +131,14 @@ class CultivoRepository : ICultivo.Repository {
         val event = CultivoEvent(type, null, null, messageError)
         event.eventType = type
         eventBus?.post(event)
+    }
+
+    private fun postEventOkLote(type: Int, lote: Lote?) {
+        var loteMutable: Object? = null
+        if (lote != null) {
+            loteMutable = lote as Object
+        }
+        postEvent(type, null, loteMutable, null)
     }
 
     private fun postEventOk(type: Int, listCultivos: List<Cultivo>?, cultivo: Cultivo?) {

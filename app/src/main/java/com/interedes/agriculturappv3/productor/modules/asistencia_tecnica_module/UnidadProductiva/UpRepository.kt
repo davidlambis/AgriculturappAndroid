@@ -70,12 +70,12 @@ class UpRepository() : IUnidadProductiva.Repo {
                     mUnidadProductiva?.save()
                     postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
                 } else {
-                    postEventError(RequestEventUP.ERROR_EVENT, response?.message().toString())
+                    postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
                 }
             }
 
             override fun onFailure(call: Call<UnidadProductiva>?, t: Throwable?) {
-                postEventError(RequestEventUP.ERROR_EVENT, t?.message.toString())
+                postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
             }
 
         })
@@ -101,12 +101,12 @@ class UpRepository() : IUnidadProductiva.Repo {
                         mUnidadProductiva.update()
                         postEventOk(RequestEventUP.UPDATE_EVENT, getUPs(), mUnidadProductiva)
                     } else {
-                        postEventError(RequestEventUP.ERROR_EVENT, response?.message().toString())
+                        postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
                     }
                 }
 
                 override fun onFailure(call: Call<UnidadProductiva>?, t: Throwable?) {
-                    postEventError(RequestEventUP.ERROR_EVENT, t?.message.toString())
+                    postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
                 }
             })
         } else {

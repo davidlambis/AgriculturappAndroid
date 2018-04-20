@@ -63,30 +63,28 @@ class TipoProductosAdapter(val lista: ArrayList<TipoProducto>) : RecyclerView.Ad
             val imgTipoProducto: ImageView = itemView.findViewById(R.id.imgTipoProducto)
 
 
-
-
-            if(data.Nombre.equals("Aguacate")){
+            if (data.Nombre.equals("Aguacate")) {
 
                 val options = BitmapFactory.Options()
                 options.inSampleSize = 8
                 val icon = BitmapFactory.decodeResource(context.resources,
-                        R.drawable.aguacate,options)
+                        R.drawable.aguacate, options)
                 imgTipoProducto.setImageBitmap(icon)
-            }else if(data.Nombre.equals("Fríjol")){
+            } else if (data.Nombre.equals("Fríjol")) {
                 val options = BitmapFactory.Options()
                 options.inSampleSize = 8
                 val icon = BitmapFactory.decodeResource(context.resources,
-                        R.drawable.frijol,options)
+                        R.drawable.frijol, options)
                 imgTipoProducto.setImageBitmap(icon)
-            }else if(data.Nombre.equals("Plátano")){
+            } else if (data.Nombre.equals("Plátano")) {
                 val options = BitmapFactory.Options()
                 options.inSampleSize = 8
                 val icon = BitmapFactory.decodeResource(context.resources,
-                        R.drawable.platano,options)
+                        R.drawable.platano, options)
                 imgTipoProducto.setImageBitmap(icon)
             }
 
-            txtNombreTipoProducto.text=data.Nombre
+            txtNombreTipoProducto.text = data.Nombre
 
             itemView.setOnClickListener {
                 TipoProductosAdapter.instance?.postEvent(PlagasEvent.ITEM_EVENT, data)

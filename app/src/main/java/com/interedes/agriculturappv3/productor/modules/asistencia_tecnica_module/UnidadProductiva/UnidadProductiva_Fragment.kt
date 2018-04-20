@@ -31,6 +31,10 @@ import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_unidad_productiva.view.*
 import kotlinx.android.synthetic.main.fragment_unidad_productiva.*
+import android.support.v7.widget.RecyclerView
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
+
 
 /**
  * Created by usuario on 16/03/2018.
@@ -66,6 +70,8 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         UnidadProductiva_Fragment.instance = this
         presenter = UpPresenter(this);
         presenter?.onCreate()
+
+
     }
 
 
@@ -83,11 +89,17 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         swipeRefreshLayout.setOnRefreshListener(this);
         ivBackButton.setOnClickListener(this)
         setupInjection()
+
+        YoYo.with(Techniques.Pulse)
+                .repeat(5)
+                .playOn(fabAddUnidadProductiva)
+
     }
 
     fun setupInjection() {
         presenter?.getUps()
     }
+
 
     private fun initAdapter() {
         //recyclerView?.layoutManager = LinearLayoutManager(activity)

@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_3"
     app:cardBackgroundColor="@android:color/white"
     app:cardCornerRadius="6dp"
     app:cardElevation="3dp"
-    app:cardUseCompatPadding="true"
-    >
-    <RelativeLayout
+    app:cardUseCompatPadding="true">
 
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center">
+
         <ImageView
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
             android:id="@+id/imgTipoProducto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
 
             />
 
@@ -32,10 +33,10 @@
             android:layout_below="@+id/imgTipoProducto"
             android:layout_centerHorizontal="true"
             android:layout_weight="1"
-            android:textSize="@dimen/text_size_16"
-            android:textStyle="bold"
             android:text="Producto"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
 
 
         <TextView
@@ -48,8 +49,8 @@
             android:drawableEnd="@drawable/ic_hand_selected"
             android:gravity="center"
             android:padding="5dp"
-            android:textSize="@dimen/text_size_12"
             android:text="@string/selected"
-            android:textColor="@color/purple" />
+            android:textColor="@color/purple"
+            android:textSize="@dimen/text_size_12" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>

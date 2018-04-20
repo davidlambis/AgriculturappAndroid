@@ -492,6 +492,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     //region Methods Interface MainViewLote
     override fun showProgress() {
         // viewDialog?.progressBar?.visibility= View.VISIBLE;
+
         // progressBar?.visibility= View.VISIBLE;
         swipeRefreshLayout.setRefreshing(true);
     }

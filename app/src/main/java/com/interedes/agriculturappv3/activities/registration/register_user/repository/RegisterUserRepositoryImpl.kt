@@ -45,7 +45,6 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
     override fun registerUsuario(user: User) {
 
         //BACKEND
-
         val call = apiService?.postRegistroUsers(user)
         call?.enqueue(object : Callback<UserResponse> {
             override fun onResponse(call: Call<UserResponse>?, response: Response<UserResponse>?) {
@@ -75,7 +74,7 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
                                 if (task.isSuccessful) {
                                     postEvent(RegisterEvent.onRegistroExitoso)
                                 } else {
-                                    postEvent(RegisterEvent.onErrorRegistro, "Petición fallida a Firebase(registro user)")
+                                    postEvent(RegisterEvent.onErrorRegistro, task.exception.toString())
                                     Log.e("Error Firebase", task.exception.toString())
                                 }
                             }
@@ -93,15 +92,18 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
                         }
                     }
 
+                } else if (response?.code() == 400) {
+                        postEvent(RegisterEvent.onErrorRegistro, "Correo ya Registrado")
+                    Log.e("correo_registrado", response.errorBody()?.string())
                 } else {
-                    postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor(Post response code)")
-                    Log.e("Error code Post", response?.errorBody()?.string())
+                    postEvent(RegisterEvent.onErrorRegistro, "No se puede registrar, compruebe su conexión")
+                    Log.e("error", response?.message().toString())
                 }
             }
 
             override fun onFailure(call: Call<UserResponse>?, t: Throwable?) {
-                postEvent(RegisterEvent.onErrorRegistro, "Petición fallida al Servidor(Post Register)")
-                Log.e("Error Post", t?.message.toString())
+                postEvent(RegisterEvent.onErrorRegistro, t?.message.toString())
+                Log.e("error_connection", "No se puede registrar, compruebe su conexión")
             }
 
         })

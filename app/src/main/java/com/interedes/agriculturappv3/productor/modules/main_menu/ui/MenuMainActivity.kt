@@ -34,6 +34,8 @@ import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.telephony.TelephonyManager
 import com.raizlabs.android.dbflow.kotlinextensions.save
+import kotlinx.android.synthetic.main.navigation_drawer_header.*
+import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu {
@@ -93,6 +95,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         mActionBarDrawerToggle.syncState()
         navigationView.setNavigationItemSelectedListener(this)
         drawer_layout.addDrawerListener(mActionBarDrawerToggle)
+        val header = navigationView.getHeaderView(0)
+        val headerViewHolder = HeaderViewHolder(header)
+        headerViewHolder.tvNombreUsuario.setText(String.format(getString(R.string.nombre_usuario_nav), usuario_logued?.Nombre, usuario_logued?.Apellidos))
+        headerViewHolder.tvIdentificacion.setText(usuario_logued?.Email)
+
         // val header = navigationView.getHeaderView(0)
         // val headerViewHolder = HeaderViewHolder(header)
         // headerViewHolder.tvNombreUsuario.setText(usuarioLogued.getNombre() + " " + usuarioLogued.getApellido())
@@ -104,6 +111,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         // }
     }
     //endregion
+
+    class HeaderViewHolder(view: View) {
+        val tvNombreUsuario: TextView = view.findViewById(R.id.tvNombreUsuario)
+        val tvIdentificacion: TextView = view.findViewById(R.id.tvIdentificacion)
+    }
 
 
     //region EVENTS UI
@@ -120,12 +132,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         } else if (id == R.id.nav_compras_realizadas) {
 
 
-        }
-        else if (id == R.id.nav_productos) {
+        } else if (id == R.id.nav_productos) {
 
 
-        }
-        else if (id == R.id.nav_preguntas) {
+        } else if (id == R.id.nav_preguntas) {
 
 
         }

@@ -20,6 +20,8 @@ import com.interedes.agriculturappv3.activities.registration.register_rol.Regist
 import com.interedes.agriculturappv3.productor.models.login.Login
 import com.interedes.agriculturappv3.productor.models.rol.Rol
 import com.interedes.agriculturappv3.productor.models.rol.RolResponse
+import com.interedes.agriculturappv3.productor.models.usuario.Usuario
+import com.interedes.agriculturappv3.productor.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
@@ -55,6 +57,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
         //Quitar Barra de Navegacion
         if (getSupportActionBar() != null)
             getSupportActionBar()?.hide();
+        getRememberedUser()
         fabLogin?.setOnClickListener(this)
         tvRegistrarse?.setOnClickListener(this)
         if (intent.extras != null && intent.extras["correo"].equals(getString(R.string.snackbar_verificacion_correo))) {
@@ -63,6 +66,19 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
         //Registra al receiver de Internet
         //registerInternetReceiver()
         loadRoles()
+    }
+
+    private fun getRememberedUser() {
+        val last_usuario = getLastUser()
+        if (last_usuario != null) {
+            edtCorreo?.setText(last_usuario.Email)
+            edtContrasena?.setText(last_usuario.Contrasena)
+        }
+    }
+
+    private fun getLastUser(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where().orderBy(Usuario_Table.sessionId, false).querySingle()
+        return usuarioLogued
     }
 
 

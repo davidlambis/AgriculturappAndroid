@@ -23,6 +23,7 @@ interface ICultivo {
 
         //Fun Cultivo CRUD
         fun registerCultivo()
+
         fun updateCultivo()
         fun deleteCultivo(cultivo: Cultivo): AlertDialog?
         fun setListCultivos(listCultivos: List<Cultivo>)
@@ -30,10 +31,11 @@ interface ICultivo {
 
 
         //Dialog
-        fun showAlertDialogFilterCultivo(isFilter:Boolean?)
+        fun showAlertDialogFilterCultivo(isFilter: Boolean?)
 
         //Responses Messages
         fun messageErrorDialog(msg: String?): AlertDialog?
+
         fun requestResponseOk()
         fun requestResponseError(error: String?)
         fun onMessageOk(colorPrimary: Int, msg: String?)
@@ -61,6 +63,7 @@ interface ICultivo {
         //Validaciones
         fun validarListasFilterLote(): Boolean
 
+        fun setLote(lote: Lote?)
 
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
@@ -75,18 +78,21 @@ interface ICultivo {
 
         //Validacion
         fun validarCampos(): Boolean
+
         fun validarListasFilterLote(): Boolean
 
         //Methods Repository
         fun registerCultivo(cultivo: Cultivo?)
+
         fun updateCultivo(cultivo: Cultivo?)
         fun deleteCultivo(cultivo: Cultivo?)
         fun getListas()
-        fun getListCultivos(lote_id:Long?)
+        fun getListCultivos(lote_id: Long?)
 
         //METHODS VIEW
         fun setListSpinnerUnidadProductiva()
-        fun setListSpinnerLote(unidad_productiva_id:Long?)
+
+        fun setListSpinnerLote(unidad_productiva_id: Long?)
         fun setListSpinnerTipoProducto()
         fun setListSpinnerDetalleTipoProducto(detalle_tipo_produto_id: Long?)
         fun setListSpinnerUnidadMedida()
@@ -94,6 +100,7 @@ interface ICultivo {
         //Conecttion
         fun checkConnection(): Boolean
 
+        fun getLote(loteId: Long?)
     }
 
     interface Interactor {
@@ -101,17 +108,19 @@ interface ICultivo {
         fun updateCultivo(cultivo: Cultivo?)
         fun deleteCultivo(cultivo: Cultivo?)
         fun getListas()
-        fun execute(lote_id:Long?)
+        fun execute(lote_id: Long?)
+        fun getLote(loteId: Long?)
     }
 
     interface Repository {
         fun getListas()
-        fun getListCultivos(lote_id:Long?)
+        fun getListCultivos(lote_id: Long?)
         fun saveCultivo(cultivo: Cultivo)
         fun updateCultivo(cultivo: Cultivo)
         fun deleteCultivo(cultivo: Cultivo)
 
-        fun getCultivos(loteId:Long?):List<Cultivo>
+        fun getCultivos(loteId: Long?): List<Cultivo>
+        fun getLote(loteId: Long?)
 
     }
 }

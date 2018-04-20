@@ -53,6 +53,13 @@ class LoginRepositoryImpl : LoginRepository {
                                 val user_login: MutableList<UserLoginResponse>? = response.body()?.value!!
                                 val usuario = Usuario()
                                 for (item in user_login!!) {
+                                    val ultimo_usuario = getLastUser()
+                                    var session_id: Long?
+                                    if (ultimo_usuario == null) {
+                                        session_id = 1
+                                    } else {
+                                        session_id = ultimo_usuario.sessionId!! + 1
+                                    }
                                     val rol = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(item.tipouser)).querySingle()
                                     val rolNombre = rol?.Nombre
                                     usuario.DetalleMetodoPagoId = item.detalleMetodopagoId
@@ -72,6 +79,7 @@ class LoginRepositoryImpl : LoginRepository {
                                     usuario.UsuarioRemembered = true
                                     usuario.AccessToken = access_token
                                     usuario.RolNombre = rolNombre
+                                    usuario.sessionId = session_id
                                     usuario.save()
                                 }
                                 mAuth = FirebaseAuth.getInstance()
@@ -91,13 +99,13 @@ class LoginRepositoryImpl : LoginRepository {
 
 
                             } else {
-                                postEventError(LoginEvent.ERROR_EVENT, response?.message().toString())
+                                postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                                 Log.e("Get Login User Response", response?.body().toString())
                             }
                         }
 
                         override fun onFailure(call: Call<GetUserResponse>?, t: Throwable?) {
-                            postEventError(LoginEvent.ERROR_EVENT, t?.message.toString())
+                            postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                             Log.e("Failure Get Login User", t?.message.toString())
                         }
 
@@ -105,14 +113,14 @@ class LoginRepositoryImpl : LoginRepository {
                     })
 
                 } else {
-                    postEventError(LoginEvent.ERROR_EVENT, response?.message().toString())
+                    postEventError(LoginEvent.ERROR_EVENT, "Usuario o Contraseña Incorrectos")
                     Log.e("Failure Login", response?.message().toString())
                 }
 
             }
 
             override fun onFailure(call: Call<LoginResponse>?, t: Throwable?) {
-                postEventError(LoginEvent.ERROR_EVENT, t?.message.toString())
+                postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                 Log.e("Failure Login", t?.message.toString())
             }
 
@@ -137,6 +145,11 @@ class LoginRepositoryImpl : LoginRepository {
 
     private fun getLastUserLogued(): Usuario? {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
+
+    private fun getLastUser(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where().orderBy(Usuario_Table.sessionId, false).querySingle()
         return usuarioLogued
     }
 

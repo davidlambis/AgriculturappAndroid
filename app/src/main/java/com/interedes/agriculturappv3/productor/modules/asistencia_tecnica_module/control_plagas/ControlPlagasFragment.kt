@@ -174,9 +174,9 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
             cultivoSeletedContainer.visibility = View.VISIBLE
         }
         txtNombreCultivo.setText(cultivo?.Nombre)
-        txtNombreDetalleTipoProducto.setText(cultivo?.Nombre_Tipo_Producto)
-        txtPrecioProducto.setText(cultivo?.FechaIncio)
-        txtFechaDisponibilidadProducto.setText(cultivo?.FechaFin)
+        txtNombreLote.setText(cultivo?.Nombre_Tipo_Producto)
+        txtDescripcion.setText(cultivo?.FechaIncio)
+        txtArea.setText(cultivo?.FechaFin)
     }
 
     override fun updatePlaga(controlPlaga: ControlPlaga?) {
