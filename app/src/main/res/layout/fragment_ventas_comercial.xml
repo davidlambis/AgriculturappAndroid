@@ -108,7 +108,7 @@
                         android:textColor="@color/white" />
 
                     <TextView
-                        android:id="@+id/txtDescripcion"
+                        android:id="@+id/txtPrecio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignStart="@+id/txtNombreProducto"

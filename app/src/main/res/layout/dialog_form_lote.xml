@@ -122,11 +122,12 @@
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                     <EditText
-                        android:layout_height="@dimen/height_150"
+                        android:layout_height="@dimen/height_100"
                         android:gravity="start"
                         android:inputType="text|textMultiLine"
                         android:id="@+id/description_lote"
                         style="@style/editText"
+                        android:maxLength="60"
                         android:drawableLeft="@drawable/ic_apellidos"
                         android:drawableStart="@drawable/ic_apellidos"
                         android:hint="@string/description"

@@ -22,6 +22,8 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.Cultivo
@@ -86,6 +88,11 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         swipeRefreshLayout?.setOnRefreshListener(this)
         fabAddControlPlaga?.setOnClickListener(this)
         setupInjection()
+
+        YoYo.with(Techniques.Pulse)
+                .repeat(5)
+                .playOn(fabAddControlPlaga)
+
     }
 
     private fun initAdapter() {
@@ -175,7 +182,7 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         }
         txtNombreCultivo.setText(cultivo?.Nombre)
         txtNombreLote.setText(cultivo?.Nombre_Tipo_Producto)
-        txtDescripcion.setText(cultivo?.FechaIncio)
+        txtPrecio.setText(cultivo?.FechaIncio)
         txtArea.setText(cultivo?.FechaFin)
     }
 

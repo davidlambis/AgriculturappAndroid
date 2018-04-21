@@ -9,6 +9,7 @@ import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.producto.Producto_Table
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.modules.comercial_module.productos.events.ProductosEvent
 import com.interedes.agriculturappv3.services.listas.Listas
@@ -29,8 +30,10 @@ class ProductosRepository : IProductos.Repository {
         val listUnidadProductiva = SQLite.select().from(UnidadProductiva::class.java).queryList()
         val listLotes = SQLite.select().from(Lote::class.java).queryList()
         val listCultivos = SQLite.select().from(Cultivo::class.java).queryList()
-        val listUnidadMedida = Listas.listaUnidadMedida()
+        //val listUnidadMedida = Listas.listaUnidadMedida()
+        val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(2)).queryList()
         val listCalidadesProducto = Listas.listaCalidadProducto()
+
 
         postEventListUnidadMedida(ProductosEvent.LIST_EVENT_UNIDAD_MEDIDA, listUnidadMedida, null)
         postEventListUnidadProductiva(ProductosEvent.LIST_EVENT_UP, listUnidadProductiva, null)

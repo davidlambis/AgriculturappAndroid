@@ -100,7 +100,7 @@
                         android:textSize="@dimen/text_size_16" />
 
                     <TextView
-                        android:id="@+id/txtDescripcion"
+                        android:id="@+id/txtPrecio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignStart="@+id/txtNombreCultivo"
@@ -112,8 +112,8 @@
                         android:id="@+id/txtArea"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignStart="@+id/txtDescripcion"
-                        android:layout_below="@+id/txtDescripcion"
+                        android:layout_alignStart="@+id/txtPrecio"
+                        android:layout_below="@+id/txtPrecio"
                         android:gravity="end"
                         android:text="12/12/2017"
                         android:textColor="@color/white" />
@@ -133,7 +133,7 @@
             android:background="@drawable/fondo_general"
             android:src="@android:drawable/ic_input_add"
             android:tint="@color/white"
-            app:backgroundTint="@color/light_green_800"
+            app:backgroundTint="@color/purple"
             app:fabCustomSize="@dimen/size_60" />
     </android.support.design.widget.CoordinatorLayout>
 

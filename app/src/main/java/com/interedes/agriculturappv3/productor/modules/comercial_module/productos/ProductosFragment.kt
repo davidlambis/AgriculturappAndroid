@@ -309,7 +309,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.spinnerCalidadProducto?.setText(producto.NombreCalidad)
             viewDialog?.spinnerMonedaPrecio?.setText(producto.NombreUnidadMedida)
             viewDialog?.txtFechaLimiteDisponibilidad?.setText(producto.getFechaLimiteDisponibilidadFormat())
-            viewDialog?.txtDescripcion?.setText(producto.Precio.toString())
+            viewDialog?.txtPrecio?.setText(producto.Precio.toString())
 
         }
 
@@ -410,7 +410,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         }
         txtNombreCultivo.setText(cultivo?.Nombre)
         txtNombreLote.setText(cultivo?.Nombre_Tipo_Producto)
-        txtDescripcion.setText(cultivo?.FechaIncio)
+        txtPrecio.setText(cultivo?.FechaIncio)
         txtArea.setText(cultivo?.FechaFin)
 
     }
@@ -428,17 +428,17 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.spinnerCalidadProducto?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerCalidadProducto
             cancel = true
-        } else if (viewDialog?.txtNombreProducto?.text.toString().isEmpty()) {
+        } /*else if (viewDialog?.txtNombreProducto?.text.toString().isEmpty()) {
             viewDialog?.txtNombreProducto?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.txtNombreProducto
             cancel = true
-        } else if (viewDialog?.txtFechaLimiteDisponibilidad?.text.toString().isEmpty()) {
+        } */ else if (viewDialog?.txtFechaLimiteDisponibilidad?.text.toString().isEmpty()) {
             viewDialog?.txtFechaLimiteDisponibilidad?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.txtFechaLimiteDisponibilidad
             cancel = true
-        } else if (viewDialog?.txtDescripcion?.text.toString().isEmpty()) {
-            viewDialog?.txtDescripcion?.setError(getString(R.string.error_field_required))
-            focusView = viewDialog?.txtDescripcion
+        } else if (viewDialog?.txtPrecio?.text.toString().isEmpty()) {
+            viewDialog?.txtPrecio?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.txtPrecio
             cancel = true
         } else if (viewDialog?.spinnerMonedaPrecio?.text.toString().isEmpty()) {
             viewDialog?.spinnerMonedaPrecio?.setError(getString(R.string.error_field_required))
@@ -499,7 +499,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.txtDescripcionProducto?.isEnabled = b
             viewDialog?.spinnerCalidadProducto?.isEnabled = b
             viewDialog?.txtFechaLimiteDisponibilidad?.isEnabled = b
-            viewDialog?.txtDescripcion?.isEnabled = b
+            viewDialog?.txtPrecio?.isEnabled = b
             viewDialog?.spinnerMonedaPrecio?.isEnabled = b
         }
     }
@@ -510,7 +510,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.txtDescripcionProducto?.setText("")
             viewDialog?.spinnerCalidadProducto?.setText("")
             viewDialog?.txtFechaLimiteDisponibilidad?.setText("")
-            viewDialog?.txtDescripcion?.setText("")
+            viewDialog?.txtPrecio?.setText("")
             viewDialog?.spinnerMonedaPrecio?.setText("")
         }
     }
@@ -768,11 +768,11 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             val producto = Producto()
             producto.CalidadId = calidadProductoGlobal?.Id
             producto.NombreCalidad = calidadProductoGlobal?.Nombre
-            producto.Nombre = viewDialog?.txtNombreProducto?.text.toString()
+            //producto.Nombre = viewDialog?.txtNombreProducto?.text.toString()
             producto.Descripcion = viewDialog?.txtDescripcionProducto?.text.toString()
             producto.FechaLimiteDisponibilidad = fechaLimiteDisponibilidad
             producto.Imagen = Blob(imageGlobal)
-            producto.Precio = viewDialog?.txtDescripcion?.text.toString().toDoubleOrNull()
+            producto.Precio = viewDialog?.txtPrecio?.text.toString().toDoubleOrNull()
             producto.CultivoId = Cultivo_Id
             producto.NombreUnidadProductiva = unidadProductivaGlobal?.nombre
             producto.NombreLote = loteGlobal?.Nombre
@@ -787,11 +787,11 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         if (presenter?.validarCampos() == true) {
             val productoUpdate = Producto()
             productoUpdate.Id = producto.Id
-            productoUpdate.Nombre = viewDialog?.txtNombreProducto?.text.toString()
+            //productoUpdate.Nombre = viewDialog?.txtNombreProducto?.text.toString()
             productoUpdate.Descripcion = viewDialog?.txtDescripcionProducto?.text.toString()
             productoUpdate.FechaLimiteDisponibilidad = fechaLimiteDisponibilidad
             productoUpdate.Imagen = Blob(imageGlobal)
-            productoUpdate.Precio = viewDialog?.txtDescripcion?.text.toString().toDoubleOrNull()
+            productoUpdate.Precio = viewDialog?.txtPrecio?.text.toString().toDoubleOrNull()
             productoUpdate.CultivoId = Cultivo_Id
             productoUpdate.NombreUnidadProductiva = unidadProductivaGlobal?.nombre
             productoUpdate.NombreLote = loteGlobal?.Nombre

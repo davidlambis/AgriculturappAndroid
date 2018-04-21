@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.insumos.Insumo
@@ -26,7 +27,6 @@ class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<Insumo
             eventBus?.post(event)
         }
     }
-
 
 
     init {
@@ -66,10 +66,14 @@ class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<Insumo
             val expandable: Expandable = itemView.findViewById(R.id.expandable)
             val txt_descripcion_insumo: TextView = itemView.findViewById(R.id.txtIngredienteActivo)
             val btn_ver_tratamiento: Button = itemView.findViewById(R.id.btnVerTratamiento)
+            val rating_bar: RatingBar = itemView.findViewById(R.id.ratingBar)
 
             txt_nombre_insumo.text = data.Nombre
             image_view_insumo.setImageResource(data.Imagen!!)
             text_descripcion_insumo.text = data.Descripcion
+            rating_bar.rating = 4.5F
+            rating_bar.setIsIndicator(true)
+            rating_bar.isClickable = false
 
             expandable.setExpandingListener(object : ExpandingListener {
                 override fun onExpanded() {
@@ -82,7 +86,7 @@ class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<Insumo
             })
 
             btn_ver_tratamiento.setOnClickListener {
-               postEvent(InsumosEvent.ITEM_EVENT, data)
+                postEvent(InsumosEvent.ITEM_EVENT, data)
             }
         }
     }

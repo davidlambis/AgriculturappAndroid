@@ -335,7 +335,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         }
         txtNombreUp?.setText(lote?.Nombre_Unidad_Productiva)
         txtNombreLote?.setText(lote?.Nombre)
-        txtDescripcion?.setText(lote?.Descripcion)
+        txtPrecio?.setText(lote?.Descripcion)
         txtArea?.setText(lote?.Area.toString())
     }
 

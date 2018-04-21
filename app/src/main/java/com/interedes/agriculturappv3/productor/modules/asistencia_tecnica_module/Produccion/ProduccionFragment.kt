@@ -568,7 +568,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         }
         txtNombreCultivo.setText(cultivo?.Nombre_Detalle_Tipo_Producto)
         txtNombreLote.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
-        txtDescripcion.setText(cultivo?.FechaIncio)
+        txtPrecio.setText(cultivo?.FechaIncio)
         txtArea.setText(cultivo?.FechaFin)
     }
 

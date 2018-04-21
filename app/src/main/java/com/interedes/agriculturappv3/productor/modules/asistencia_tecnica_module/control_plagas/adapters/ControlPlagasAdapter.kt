@@ -62,6 +62,7 @@ class ControlPlagasAdapter(var lista: ArrayList<ControlPlaga>) : RecyclerView.Ad
         fun bindItems(data: ControlPlaga, pos: Int) = with(itemView) {
             val txtNombrePlaga: TextView = itemView.findViewById(R.id.txtNombrePlaga)
             val txtFechaAplicacion: TextView = itemView.findViewById(R.id.txtFechaAplicacion)
+            val txtInsumo: TextView = itemView.findViewById(R.id.txtInsumo)
             val txtDosis: TextView = itemView.findViewById(R.id.txtDosis)
             val txtEstadoErradicacion: TextView = itemView.findViewById(R.id.txtEstadoErradicacion)
             val btnDeleteControlPlaga: ImageButton = itemView.findViewById(R.id.btnDeleteControlPlaga)
@@ -97,7 +98,7 @@ class ControlPlagasAdapter(var lista: ArrayList<ControlPlaga>) : RecyclerView.Ad
             txtNombrePlaga.text = data.NombrePlaga
             txtFechaAplicacion.text = data.getFechaAplicacionFormat()
             txtDosis.text = data.Dosis
-
+            //txtInsumo.text = data.No
 
             btnDeleteControlPlaga.setOnClickListener {
                 postEvent(ControlPlagasEvent.ITEM_DELETE_EVENT, data)

@@ -38,8 +38,8 @@
             android:layout_height="90sp"
             android:layout_below="@+id/title"
             android:layout_gravity="center"
-            android:layout_marginBottom="-15dp"
-            android:layout_marginTop="-15dp"
+            android:layout_marginBottom="-5dp"
+            android:layout_marginTop="-5dp"
             android:src="@drawable/ic_lote"
             android:tint="@color/white_solid" />
 

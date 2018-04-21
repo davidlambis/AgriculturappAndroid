@@ -124,7 +124,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
     }
 
     private fun setInputs(b: Boolean) {
-        viewDialog?.txtFechaAplicacion?.isEnabled = b
+        //viewDialog?.txtFechaAplicacion?.isEnabled = b
         viewDialog?.txtDosis?.isEnabled = b
         viewDialog?.spinnerUnidadMedidaDosis?.isEnabled = b
     }
@@ -249,11 +249,11 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
     override fun validarCampos(): Boolean {
         var cancel = false
         var focusView: View? = null
-        if (viewDialog?.txtFechaAplicacion?.text.toString().isEmpty()) {
+        /*if (viewDialog?.txtFechaAplicacion?.text.toString().isEmpty()) {
             viewDialog?.txtFechaAplicacion?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.txtFechaAplicacion
             cancel = true
-        } else if (viewDialog?.txtDosis?.text.toString().isEmpty()) {
+        } */if (viewDialog?.txtDosis?.text.toString().isEmpty()) {
             viewDialog?.txtDosis?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.txtDosis
             cancel = true
@@ -276,7 +276,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             controlPlaga.CultivoId = cultivoGlobal?.Id
             controlPlaga.Dosis = viewDialog?.txtDosis?.text.toString()
             controlPlaga.UnidadMedidaId = unidadMedidaGlobal?.Id
-            controlPlaga.Fecha_aplicacion = fechaAplicacion
+            controlPlaga.Fecha_aplicacion = Calendar.getInstance().time
             controlPlaga.TratamientoId = tratamientoId
             controlPlaga.EnfermedadesId = enfermedadId
             controlPlaga.NombrePlaga = nombreTipoEnfermedad
@@ -354,7 +354,8 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         viewDialog = inflater.inflate(R.layout.dialog_form_control_plaga, null)
         presenter?.setListSpinnerUnidadMedida()
         viewDialog?.ivClosetDialogControlPlaga?.setOnClickListener(this)
-        viewDialog?.txtFechaAplicacion?.setOnClickListener(this)
+        //viewDialog?.txtFechaAplicacion?.setOnClickListener(this)
+
         viewDialog?.btnSaveControlPlaga?.setOnClickListener(this)
         viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.nombre)
         viewDialog?.txtLoteSelected?.setText(loteGlobal?.Nombre)
@@ -396,9 +397,9 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             R.id.btnSaveControlPlaga -> {
                 registerControlPlaga()
             }
-            R.id.txtFechaAplicacion -> {
-                updateDate()
-            }
+        /*R.id.txtFechaAplicacion -> {
+            updateDate()
+        }*/
             R.id.ivClosetDialogControlPlaga -> {
                 _dialogRegisterControlPlaga?.dismiss()
             }
@@ -413,23 +414,23 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
 
     //region Métodos
     //Fecha
-    private fun updateDate() {
-        DatePickerDialog(context, d, dateTime.get(Calendar.YEAR), dateTime.get(Calendar.MONTH), dateTime.get(Calendar.DAY_OF_MONTH)).show()
-    }
+    /* private fun updateDate() {
+         DatePickerDialog(context, d, dateTime.get(Calendar.YEAR), dateTime.get(Calendar.MONTH), dateTime.get(Calendar.DAY_OF_MONTH)).show()
+     }
 
-    internal var d: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-        dateTime.set(Calendar.YEAR, year)
-        dateTime.set(Calendar.MONTH, monthOfYear)
-        dateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        mostrarResultadosFecha()
-    }
+     internal var d: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+         dateTime.set(Calendar.YEAR, year)
+         dateTime.set(Calendar.MONTH, monthOfYear)
+         dateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+         mostrarResultadosFecha()
+     }
 
-    private fun mostrarResultadosFecha() {
-        val format1 = SimpleDateFormat("MM/dd/yyyy")
-        val formatted = format1.format(dateTime.time)
-        fechaAplicacion = dateTime.time
-        viewDialog?.txtFechaAplicacion?.setText(formatted)
-    }
+     private fun mostrarResultadosFecha() {
+         val format1 = SimpleDateFormat("MM/dd/yyyy")
+         val formatted = format1.format(dateTime.time)
+         fechaAplicacion = dateTime.time
+         viewDialog?.txtFechaAplicacion?.setText(formatted)
+     }*/
     //endregion
 
     //region ciclo de vida

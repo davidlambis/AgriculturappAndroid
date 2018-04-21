@@ -151,25 +151,25 @@
 
             </LinearLayout>
 
+            <!--  <android.support.design.widget.TextInputLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                  <EditText
+                      android:id="@+id/txtNombreProducto"
+                      style="@style/editText"
+                      android:drawableLeft="@drawable/ic_numero_hectareas"
+                      android:drawableStart="@drawable/ic_numero_hectareas"
+                      android:hint="@string/edit_text_nombre_producto"
+                      android:inputType="text"
+                      android:textAlignment="textStart" />
+              </android.support.design.widget.TextInputLayout> -->
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                <EditText
-                    android:id="@+id/txtNombreProducto"
-                    style="@style/editText"
-                    android:drawableLeft="@drawable/ic_numero_hectareas"
-                    android:drawableStart="@drawable/ic_numero_hectareas"
-                    android:hint="@string/edit_text_nombre_producto"
-                    android:inputType="text"
-                    android:textAlignment="textStart" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="@dimen/height_100"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
@@ -184,6 +184,7 @@
                     android:drawablePadding="16dp"
                     android:gravity="top"
                     android:inputType="textMultiLine"
+                    android:maxLength="60"
                     android:overScrollMode="always"
                     android:padding="15dp"
                     android:scrollbars="vertical" />
@@ -193,8 +194,8 @@
                 android:id="@+id/spinnerCalidadProducto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawableLeft="@drawable/ic_mes"
-                android:drawableStart="@drawable/ic_mes"
+                android:drawableLeft="@drawable/ic_calidad"
+                android:drawableStart="@drawable/ic_calidad"
                 android:hint="@string/spinner_calidad_producto"
                 android:textAlignment="center"
                 android:textColorHint="@color/grey_luiyi"
@@ -234,10 +235,10 @@
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                     <EditText
-                        android:id="@+id/txtDescripcion"
+                        android:id="@+id/txtPrecio"
                         style="@style/editText"
-                        android:drawableLeft="@drawable/ic_numero_hectareas"
-                        android:drawableStart="@drawable/ic_numero_hectareas"
+                        android:drawableLeft="@drawable/ic_precio"
+                        android:drawableStart="@drawable/ic_precio"
                         android:hint="@string/edit_text_precio"
                         android:inputType="numberDecimal"
                         android:textAlignment="textStart" />

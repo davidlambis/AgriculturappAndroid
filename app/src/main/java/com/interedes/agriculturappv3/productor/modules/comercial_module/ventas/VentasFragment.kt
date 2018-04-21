@@ -307,7 +307,7 @@ class VentasFragment : Fragment(), IVentas.View, View.OnClickListener, SwipeRefr
         }
         txtNombreCultivo?.setText(producto?.NombreCultivo)
         txtNombreLote?.setText(producto?.NombreDetalleTipoProducto)
-        txtDescripcion?.setText(getString(R.string.title_adapter_precio_producto, producto?.Precio))
+        txtPrecio?.setText(getString(R.string.title_adapter_precio_producto, producto?.Precio))
         txtNombreProducto?.setText(producto?.Nombre)
     }
 

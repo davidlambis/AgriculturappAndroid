@@ -83,6 +83,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="DESCRIPCIÓN"
+                                android:paddingLeft="@dimen/margin_global"
                                 android:textAlignment="center"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/text_size"
@@ -117,17 +118,29 @@
                             android:orientation="horizontal">
 
                             <android.support.v7.widget.AppCompatRatingBar
+                                android:id="@+id/ratingBar"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent" />
 
                         </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/txtRating"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/linearLayoutRatingBar"
+                            android:text="Calificación : 4.5"
+                            android:textAlignment="center"
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/text_size_16"
+                            android:textStyle="bold"/>
 
                         <Button
                             android:id="@+id/btnVerTratamiento"
                             style="@style/button"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/linearLayoutRatingBar"
+                            android:layout_below="@+id/txtRating"
                             android:layout_margin="@dimen/margin_global"
                             android:background="@drawable/custom_button"
                             android:text="@string/ver_tratamiento" />

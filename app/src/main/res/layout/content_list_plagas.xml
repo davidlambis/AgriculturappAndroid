@@ -94,6 +94,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="DESCRIPCIÓN"
+                                android:paddingLeft="@dimen/margin_global"
                                 android:textAlignment="center"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/text_size"

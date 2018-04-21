@@ -99,7 +99,7 @@
                         android:textSize="@dimen/text_size_16" />
 
                     <TextView
-                        android:id="@+id/txtDescripcion"
+                        android:id="@+id/txtPrecio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_above="@+id/txtNombreDetalleTipoProducto"
@@ -112,8 +112,8 @@
                         android:id="@+id/txtArea"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignStart="@+id/txtDescripcion"
-                        android:layout_below="@+id/txtDescripcion"
+                        android:layout_alignStart="@+id/txtPrecio"
+                        android:layout_below="@+id/txtPrecio"
                         android:gravity="end"
                         android:text=""
                         android:textColor="@color/white" />

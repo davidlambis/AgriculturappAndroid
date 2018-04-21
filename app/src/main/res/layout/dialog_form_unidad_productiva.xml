@@ -131,15 +131,15 @@
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                 <EditText
-
                     android:id="@+id/etDescripcionUnidadProductiva"
                     style="@style/editText"
-                    android:layout_height="@dimen/height_150"
+                    android:layout_height="@dimen/height_100"
                     android:drawableLeft="@drawable/ic_nombre_finca"
                     android:drawableStart="@drawable/ic_nombre_finca"
                     android:gravity="start"
                     android:hint="@string/edit_text_description"
-                    android:inputType="text|textMultiLine" />
+                    android:inputType="text|textMultiLine"
+                    android:maxLength="60" />
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
