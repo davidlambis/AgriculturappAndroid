@@ -1,7 +1,6 @@
 package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.tratamiento
 
 
-import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -20,7 +19,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.Cultivo
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.Tratamiento
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
@@ -33,7 +32,6 @@ import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.dialog_form_control_plaga.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_tratamiento.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 

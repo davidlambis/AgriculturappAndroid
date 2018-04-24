@@ -15,7 +15,6 @@ import com.interedes.agriculturappv3.productor.models.rol.Rol
 import com.interedes.agriculturappv3.productor.models.rol.Rol_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.listas.Listas
-import com.raizlabs.android.dbflow.kotlinextensions.and
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
@@ -58,7 +57,7 @@ class LoginRepositoryImpl : LoginRepository {
                                     if (ultimo_usuario == null) {
                                         session_id = 1
                                     } else {
-                                        session_id = ultimo_usuario.sessionId!! + 1
+                                        session_id = ultimo_usuario.SessionId!! + 1
                                     }
                                     val rol = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(item.tipouser)).querySingle()
                                     val rolNombre = rol?.Nombre
@@ -79,7 +78,7 @@ class LoginRepositoryImpl : LoginRepository {
                                     usuario.UsuarioRemembered = true
                                     usuario.AccessToken = access_token
                                     usuario.RolNombre = rolNombre
-                                    usuario.sessionId = session_id
+                                    usuario.SessionId = session_id
                                     usuario.save()
                                 }
                                 mAuth = FirebaseAuth.getInstance()
@@ -149,9 +148,13 @@ class LoginRepositoryImpl : LoginRepository {
     }
 
     private fun getLastUser(): Usuario? {
-        val usuarioLogued = SQLite.select().from(Usuario::class.java).where().orderBy(Usuario_Table.sessionId, false).querySingle()
-        return usuarioLogued
+        if (SQLite.select().from(Usuario::class.java).queryList().size > 0) {
+            val usuarioLogued = SQLite.select().from(Usuario::class.java).where().orderBy(Usuario_Table.SessionId, false).querySingle()
+            return usuarioLogued
+        }
+        return null
     }
+
 
     private fun getUsuario(login: Login): Usuario? {
         val sqlite_usuario = SQLite.select().from(Usuario::class.java).where(Usuario_Table.Email.eq(login.username)).and(Usuario_Table.Contrasena.eq(login.password)).querySingle()

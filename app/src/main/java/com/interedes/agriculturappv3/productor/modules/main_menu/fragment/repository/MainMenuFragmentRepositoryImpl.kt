@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.productor.modules.main_menu.fragment.repository
 
+import android.util.Base64
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -9,6 +10,10 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.TestResponse
 import com.interedes.agriculturappv3.productor.models.*
+import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
+import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProductoResponse
+import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
+import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProductoResponse
 import com.interedes.agriculturappv3.productor.models.unidad_medida.CategoriaMedida
 import com.interedes.agriculturappv3.productor.models.unidad_medida.CategoriaMedidaResponse
 import com.interedes.agriculturappv3.productor.models.unidad_medida.UnidadMedidaResponse
@@ -16,6 +21,7 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.api.TestInterface
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
@@ -49,16 +55,50 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
 
     override fun getListasIniciales() {
         //Tipos de Producto
-        val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
-        for (item in listTipoProducto) {
-            item.save()
-        }
+        //val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
+        val callTipoProducto = apiService?.getTiposProducto()
+        callTipoProducto?.enqueue(object : Callback<TipoProductoResponse> {
+            override fun onResponse(call: Call<TipoProductoResponse>?, response: Response<TipoProductoResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val tiposProducto = response.body()?.value as MutableList<TipoProducto>
+                    for (item in tiposProducto) {
+                        val byte = Base64.decode(item.Icono, Base64.DEFAULT)
+                        item.Imagen = Blob(byte)
+                        item.save()
+                    }
+                } else {
+                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+
+            override fun onFailure(call: Call<TipoProductoResponse>?, t: Throwable?) {
+                postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+
+
+        })
 
         //Detalle Tipos de Producto
-        val listDetalleTipoProducto: ArrayList<DetalleTipoProducto> = Listas.listaDetalleTipoProducto()
-        for (item in listDetalleTipoProducto) {
-            item.save()
-        }
+        //val listDetalleTipoProducto: ArrayList<DetalleTipoProducto> = Listas.listaDetalleTipoProducto()
+        val callDetalleTipoProducto = apiService?.getDetalleTiposProducto()
+        callDetalleTipoProducto?.enqueue(object : Callback<DetalleTipoProductoResponse> {
+            override fun onResponse(call: Call<DetalleTipoProductoResponse>?, response: Response<DetalleTipoProductoResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val detalleTiposProducto = response.body()?.value as MutableList<DetalleTipoProducto>
+                    for (item in detalleTiposProducto) {
+                        item.save()
+                    }
+                } else {
+                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+
+            override fun onFailure(call: Call<DetalleTipoProductoResponse>?, t: Throwable?) {
+                postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+
+
+        })
 
         //Departamentos y Ciudades
         val lista_departamentos = SQLite.select().from(Departamento::class.java).queryList()
@@ -75,11 +115,13 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                                 ciudad.save()
                             }
                         }
+                    } else {
+                        postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                     }
                 }
 
                 override fun onFailure(call: Call<TestResponse>?, t: Throwable?) {
-                    postEvent(RequestEvent.ERROR_EVENT, t?.message.toString())
+                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
 
             })
@@ -94,11 +136,13 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                     for (item in categoriasMedida) {
                         item.save()
                     }
+                } else {
+                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
             }
 
             override fun onFailure(call: Call<CategoriaMedidaResponse>?, t: Throwable?) {
-                postEvent(RequestEvent.ERROR_EVENT, t?.message.toString())
+                postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
         })
 
@@ -111,15 +155,16 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                     for (item in unidadesMedida) {
                         item.save()
                     }
+                } else {
+                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
             }
 
             override fun onFailure(call: Call<UnidadMedidaResponse>?, t: Throwable?) {
-                postEvent(RequestEvent.ERROR_EVENT, t?.message.toString())
+                postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
 
         })
-
 
 
     }

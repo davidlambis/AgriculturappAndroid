@@ -1,6 +1,6 @@
 package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.tratamiento
 
-import com.interedes.agriculturappv3.productor.models.Cultivo
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.Tratamiento
 import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga

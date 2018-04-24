@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import com.interedes.agriculturappv3.productor.models.*
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
@@ -24,7 +26,7 @@ interface ICultivo {
         //Fun Cultivo CRUD
         fun registerCultivo()
 
-        fun updateCultivo()
+        fun updateCultivo(cultivo: Cultivo?, loteId: Long?)
         fun deleteCultivo(cultivo: Cultivo): AlertDialog?
         fun setListCultivos(listCultivos: List<Cultivo>)
         fun setResults(cultivos: Int)
@@ -67,6 +69,9 @@ interface ICultivo {
 
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
+
+        fun showProgressHud()
+        fun hideProgressHud()
     }
 
     interface Presenter {
@@ -82,10 +87,10 @@ interface ICultivo {
         fun validarListasFilterLote(): Boolean
 
         //Methods Repository
-        fun registerCultivo(cultivo: Cultivo?)
+        fun registerCultivo(cultivo: Cultivo?, loteId: Long?)
 
-        fun updateCultivo(cultivo: Cultivo?)
-        fun deleteCultivo(cultivo: Cultivo?)
+        fun updateCultivo(cultivo: Cultivo?, loteId: Long?)
+        fun deleteCultivo(cultivo: Cultivo?, loteId: Long?)
         fun getListas()
         fun getListCultivos(lote_id: Long?)
 
@@ -104,23 +109,26 @@ interface ICultivo {
     }
 
     interface Interactor {
-        fun registerCultivo(cultivo: Cultivo?)
-        fun updateCultivo(cultivo: Cultivo?)
-        fun deleteCultivo(cultivo: Cultivo?)
+        fun registerCultivo(cultivo: Cultivo?, loteId: Long?)
+        fun updateCultivo(cultivo: Cultivo?, loteId: Long?)
+        fun deleteCultivo(cultivo: Cultivo?, loteId: Long?)
         fun getListas()
         fun execute(lote_id: Long?)
         fun getLote(loteId: Long?)
+        fun registerOnlineCultivo(cultivo: Cultivo?, loteId: Long?)
     }
 
     interface Repository {
         fun getListas()
         fun getListCultivos(lote_id: Long?)
-        fun saveCultivo(cultivo: Cultivo)
-        fun updateCultivo(cultivo: Cultivo)
-        fun deleteCultivo(cultivo: Cultivo)
+        fun saveCultivo(mCultivo: Cultivo, loteId: Long?)
+        fun registerOnlineCultivo(mCultivo: Cultivo?, loteId: Long?)
+        fun updateCultivo(mCultivo: Cultivo, loteId: Long?)
+        fun deleteCultivo(mCultivo: Cultivo, loteId: Long?)
 
         fun getCultivos(loteId: Long?): List<Cultivo>
         fun getLote(loteId: Long?)
+        fun getLastCultivo(): Cultivo?
 
     }
 }

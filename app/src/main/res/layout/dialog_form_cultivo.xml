@@ -247,7 +247,7 @@
                 android:id="@+id/btnSaveCultivo"
                 style="@style/button"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_global"
+                android:layout_marginTop="@dimen/margin_80"
                 android:background="@color/purple"
                 android:text="@string/btn_save" />
         </LinearLayout>

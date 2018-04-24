@@ -110,7 +110,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                 }
             })
         } else {
-            postEventError(RequestEventUP.ERROR_EVENT, "La Unidad Productiva no se ha subido")
+            postEventError(RequestEventUP.ERROR_EVENT, "Error!. La Unidad Productiva no se ha subido")
         }
     }
 

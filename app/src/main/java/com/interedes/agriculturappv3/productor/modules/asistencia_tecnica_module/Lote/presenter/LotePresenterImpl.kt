@@ -185,7 +185,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
     }
 
     override fun updateLote(lote: Lote, unidad_productiva_id: Long?) {
-        loteMainView?.showProgress()
+        loteMainView?.showProgressHud()
         if (checkConnection()) {
             loteMainView?.disableInputs()
             loteInteractor?.updateLote(lote, unidad_productiva_id)
@@ -196,7 +196,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
 
 
     override fun deleteLote(lote: Lote, unidad_productiva_id: Long?) {
-        loteMainView?.showProgress()
+        loteMainView?.showProgressHud()
         if (checkConnection()) {
             loteInteractor?.deleteLote(lote, unidad_productiva_id)
         } else {
@@ -221,6 +221,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
     }
 
     private fun onLoteDeleteOk() {
+        loteMainView?.hideProgressHud()
         loteMainView?.requestResponseOk()
     }
 
@@ -233,6 +234,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
     private fun onMessageOk() {
         loteMainView?.enableInputs()
         loteMainView?.hideProgress()
+        loteMainView?.hideProgressHud()
         loteMainView?.limpiarCampos()
         loteMainView?.requestResponseOk()
     }
@@ -240,11 +242,13 @@ class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
     private fun onMessageError(error: String?) {
         loteMainView?.enableInputs()
         loteMainView?.hideProgress()
+        loteMainView?.hideProgressHud()
         loteMainView?.requestResponseError(error)
     }
 
     private fun onMessageConectionError() {
         loteMainView?.hideProgress()
+        loteMainView?.hideProgressHud()
         loteMainView?.verificateConnection()
     }
 

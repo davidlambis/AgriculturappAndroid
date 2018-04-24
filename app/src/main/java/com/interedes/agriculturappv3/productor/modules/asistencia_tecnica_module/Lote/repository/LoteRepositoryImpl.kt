@@ -8,10 +8,12 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.lote.Lote_Table
 import com.interedes.agriculturappv3.productor.models.lote.PostLote
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.PostUnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva_Table
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
@@ -42,7 +44,7 @@ class LoteRepositoryImpl : LoteRepository {
         }
         mLote.save()
         val lotes = getLotes(unidad_productiva_id)
-        postEventOk(RequestEventLote.SAVE_EVENT, lotes, mLote);
+        postEventOk(RequestEventLote.SAVE_EVENT, lotes, mLote)
     }
 
     override fun registerOnlineLote(mLote: Lote, unidad_productiva_id: Long?) {
@@ -89,8 +91,8 @@ class LoteRepositoryImpl : LoteRepository {
         val listUp = SQLite.select().from(UnidadProductiva::class.java).where(UnidadProductiva_Table.UsuarioId.eq(getLastUserLogued()?.Id)).queryList()
         val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(1)).queryList()
 
-        postEventListUnidadMedida(RequestEventLote.LIST_EVENT_UNIDAD_MEDIDA, listUnidadMedida, null);
-        postEventListUp(RequestEventLote.LIST_EVENT_UP, listUp, null);
+        postEventListUnidadMedida(RequestEventLote.LIST_EVENT_UNIDAD_MEDIDA, listUnidadMedida, null)
+        postEventListUp(RequestEventLote.LIST_EVENT_UP, listUp, null)
     }
 
     override fun getLastLote(): Lote? {
@@ -114,15 +116,58 @@ class LoteRepositoryImpl : LoteRepository {
         return listResponse;
     }
 
-    override fun updateLote(lote: Lote, unidad_productiva_id: Long?) {
-        lote.update()
-        postEventOk(RequestEventLote.UPDATE_EVENT, getLotes(unidad_productiva_id), lote);
+    override fun updateLote(mLote: Lote, unidad_productiva_id: Long?) {
+        if (mLote.EstadoSincronizacion == true) {
+            val postLote = PostLote(mLote.Id,
+                    mLote.Area,
+                    mLote.Codigo,
+                    mLote.Localizacion,
+                    mLote.Localizacion_Poligono,
+                    mLote.Unidad_Medida_Id,
+                    mLote.Unidad_Productiva_Id)
+
+
+            val call = apiService?.updateLote(postLote, mLote.Id)
+            call?.enqueue(object : Callback<Lote> {
+                override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
+                    if (response != null && response.code() == 204) {
+                        mLote.update()
+                        postEventOk(RequestEventLote.UPDATE_EVENT, getLotes(unidad_productiva_id), mLote)
+                    } else {
+                        postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                }
+
+                override fun onFailure(call: Call<Lote>?, t: Throwable?) {
+                    postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
+                }
+            })
+
+        } else {
+            postEventError(RequestEventLote.ERROR_EVENT, "Error!. El lote no se ha subido")
+        }
     }
 
-    override fun deleteLote(lote: Lote, unidad_productiva_id: Long?) {
-        lote.delete()
-        //SQLite.delete<Lote>(Lote::class.java).where(Lote_Table.Id.eq(lote.Id)).async().getAllCultivos()
-        postEventOk(RequestEventLote.DELETE_EVENT, getLotes(unidad_productiva_id), lote);
+
+    override fun deleteLote(mLote: Lote, unidad_productiva_id: Long?) {
+        if (mLote.EstadoSincronizacion == true) {
+            val call = apiService?.deleteLote(mLote.Id)
+            call?.enqueue(object : Callback<Lote> {
+                override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
+                    if (response != null && response.code() == 204) {
+                        mLote.delete()
+                        postEventOk(RequestEventLote.DELETE_EVENT, getLotes(unidad_productiva_id), mLote)
+                    }
+                }
+
+                override fun onFailure(call: Call<Lote>?, t: Throwable?) {
+                    postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
+                }
+
+            })
+        } else {
+            postEventError(RequestEventLote.ERROR_EVENT, "Error!. El lote no se ha subido")
+        }
     }
 
     //endregion

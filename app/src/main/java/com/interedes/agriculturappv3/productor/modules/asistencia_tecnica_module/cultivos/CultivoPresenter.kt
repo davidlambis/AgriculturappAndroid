@@ -5,12 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.*
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -101,10 +103,12 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
 
             CultivoEvent.SAVE_EVENT -> {
                 val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
+                view?.hideProgressHud()
                 view?.setListCultivos(list_cultivos)
                 view?.requestResponseOk()
             }
             CultivoEvent.ERROR_EVENT -> {
+                view?.hideProgressHud()
                 view?.requestResponseError(cultivoEvent.mensajeError)
             }
             CultivoEvent.ERROR_DIALOG_EVENT -> {
@@ -160,16 +164,23 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
         }
     }
 
-    override fun registerCultivo(cultivo: Cultivo?) {
-        interactor?.registerCultivo(cultivo)
+    override fun registerCultivo(cultivo: Cultivo?, loteId: Long?) {
+        view?.showProgressHud()
+        view?.disableInputs()
+        if (checkConnection()) {
+            interactor?.registerOnlineCultivo(cultivo, loteId)
+        } else {
+            interactor?.registerCultivo(cultivo, loteId)
+        }
+
     }
 
-    override fun updateCultivo(cultivo: Cultivo?) {
-        interactor?.updateCultivo(cultivo)
+    override fun updateCultivo(cultivo: Cultivo?, loteId: Long?) {
+        interactor?.updateCultivo(cultivo, loteId)
     }
 
-    override fun deleteCultivo(cultivo: Cultivo?) {
-        interactor?.deleteCultivo(cultivo)
+    override fun deleteCultivo(cultivo: Cultivo?, loteId: Long?) {
+        interactor?.deleteCultivo(cultivo, loteId)
     }
 
 

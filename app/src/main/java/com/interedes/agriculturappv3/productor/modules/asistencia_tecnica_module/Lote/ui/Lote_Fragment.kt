@@ -610,6 +610,13 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         onMessageOk(R.color.colorPrimary, getString(R.string.request_ok));
     }
 
+    override fun requestResponseError(error: String?) {
+        if (_dialogRegisterUpdate != null) {
+            _dialogRegisterUpdate?.dismiss()
+        }
+        onMessageError(R.color.grey_luiyi, error)
+    }
+
     override fun onMessageOk(colorPrimary: Int, message: String?) {
         val color = Color.WHITE
         val snackbar = Snackbar
@@ -693,13 +700,13 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             lote.Nombre_Unidad_Productiva = unidadProductivaGlobalSppiner?.nombre
             lote.Unidad_Medida_Id = unidadMedidaGlobal?.Id
             lote.Nombre_Unidad_Medida = unidadMedidaGlobal?.Descripcion
-            presenter?.registerLote(lote, Unidad_Productiva_Id_Selected)
+            presenter?.registerLote(lote, unidadProductivaGlobalSppiner?.Id)
         }
     }
 
-    override fun updateLote() {
+    override fun updateLote(lote: Lote, unidad_productiva_id: Long?) {
         if (presenter?.validarCampos() == true) {
-            var lote = Lote()
+            //var lote = Lote()
             lote.Id = loteGlobal!!.Id
             lote.Nombre = viewDialog?.name_lote?.text.toString()
             lote.Descripcion = viewDialog?.description_lote?.text.toString()
@@ -712,13 +719,10 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
             lote.Nombre_Unidad_Productiva = loteGlobal?.Nombre_Unidad_Productiva
             lote.Unidad_Medida_Id = unidadMedidaGlobal?.Id
             lote.Nombre_Unidad_Medida = unidadMedidaGlobal?.Descripcion
-            presenter?.updateLote(lote, Unidad_Productiva_Id_Selected)
+            presenter?.updateLote(lote, loteGlobal?.Unidad_Productiva_Id)
         }
     }
 
-    override fun requestResponseError(error: String?) {
-        onMessageError(R.color.grey_luiyi, error)
-    }
 
     //UI ELements
     override fun showAlertDialogAddLote(lote: Lote?) {
@@ -843,7 +847,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 else -> {
                     _dialogTypeLocation = dialog as AlertDialog?
                     setPropertiesTypeLocationManual()
-                    showAlertDialogSelectUp()
+                    //showAlertDialogSelectUp()
                 }
             }
         })
@@ -970,7 +974,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
 
             R.id.btnSaveLote -> {
                 if (loteGlobal != null) {
-                    updateLote()
+                    updateLote(loteGlobal!!, loteGlobal?.Unidad_Productiva_Id)
                 } else {
                     registerLote()
                 }

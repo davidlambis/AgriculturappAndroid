@@ -69,16 +69,18 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     }
 
     private fun getRememberedUser() {
-        val last_usuario = getLastUser()
-        if (last_usuario != null) {
-            edtCorreo?.setText(last_usuario.Email)
-            edtContrasena?.setText(last_usuario.Contrasena)
+        if (getLastUser() != null) {
+            edtCorreo?.setText(getLastUser()?.Email)
+            edtContrasena?.setText(getLastUser()?.Contrasena)
         }
     }
 
     private fun getLastUser(): Usuario? {
-        val usuarioLogued = SQLite.select().from(Usuario::class.java).where().orderBy(Usuario_Table.sessionId, false).querySingle()
-        return usuarioLogued
+        if (SQLite.select().from(Usuario::class.java).queryList().size > 0) {
+            val usuarioLogued = SQLite.select().from(Usuario::class.java).where().orderBy(Usuario_Table.SessionId, false).querySingle()
+            return usuarioLogued
+        }
+        return null
     }
 
 

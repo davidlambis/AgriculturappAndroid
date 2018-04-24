@@ -24,8 +24,8 @@ class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter
     companion object {
         var eventBus: EventBus? = null
         fun postEventc(type: Int, lote: Lote?) {
-            var loteMitable= lote as Object
-            val event = RequestEventLote(type,null, loteMitable,null)
+            var loteMitable = lote as Object
+            val event = RequestEventLote(type, null, loteMitable, null)
             event.eventType = type
             eventBus?.post(event)
         }
@@ -79,31 +79,35 @@ class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter
 
 
             icon.setImageResource(R.drawable.ic_lote)
-            txtAdicional.visibility=View.GONE
+            txtAdicional.visibility = View.GONE
 
             btnEdit.setColorFilter(getContext().getResources().getColor(R.color.orange))
-            btnAdd.visibility=View.GONE
+            btnAdd.visibility = View.GONE
             btnEdit.setColorFilter(getContext().getResources().getColor(R.color.orange))
             btnDelete.setColorFilter(getContext().getResources().getColor(R.color.red_900))
 
 
             txt_name_lote.text = data.Nombre
             txt_description_lote.text = data.Descripcion
-            txtAreaLote.text =String.format(context.getString(R.string.cantidad_estimada)!!,data.Area, data.Nombre_Unidad_Medida)
-            txtFechaLote.text = ""
-           // txtCoordenada.text = data.Coordenadas
+            txtAreaLote.text = String.format(context.getString(R.string.cantidad_estimada)!!, data.Area, data.Nombre_Unidad_Medida)
+            if (data.EstadoSincronizacion == true) {
+                txtFechaLote.text = context.getString(R.string.Sincronizado)
+            } else {
+                txtFechaLote.text = context.getString(R.string.noSincronizado)
+            }
+            // txtCoordenada.text = data.Coordenadas
 
             //El listener en base a la posición
             itemView.setOnClickListener {
-                postEventc(RequestEventLote.ITEM_EVENT,data)
+                postEventc(RequestEventLote.ITEM_EVENT, data)
             }
 
             btnDelete.setOnClickListener {
-               postEventc(RequestEventLote.ITEM_DELETE_EVENT,data)
+                postEventc(RequestEventLote.ITEM_DELETE_EVENT, data)
             }
 
             btnEdit.setOnClickListener {
-               postEventc(RequestEventLote.ITEM_EDIT_EVENT,data)
+                postEventc(RequestEventLote.ITEM_EDIT_EVENT, data)
             }
         }
     }

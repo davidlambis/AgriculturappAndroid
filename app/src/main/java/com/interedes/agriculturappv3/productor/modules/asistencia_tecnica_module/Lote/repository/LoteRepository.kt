@@ -13,8 +13,8 @@ interface LoteRepository {
     fun getListLotes(unidad_productiva_id: Long?)
     fun saveLotes(mLote: Lote, unidad_productiva_id: Long?)
     fun registerOnlineLote(mLote: Lote, unidad_productiva_id: Long?)
-    fun updateLote(lote: Lote, unidad_productiva_id: Long?)
-    fun deleteLote(lote: Lote, unidad_productiva_id: Long?)
+    fun updateLote(mLote: Lote, unidad_productiva_id: Long?)
+    fun deleteLote(mLote: Lote, unidad_productiva_id: Long?)
     //ListUp
     fun loadListas()
     fun getLastUserLogued(): Usuario?

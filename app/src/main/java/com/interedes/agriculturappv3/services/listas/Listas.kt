@@ -4,12 +4,14 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.*
 import com.interedes.agriculturappv3.productor.models.compras.Compras
 import com.interedes.agriculturappv3.productor.models.compras.DetalleCompra
+import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.productor.models.insumos.Insumo
 import com.interedes.agriculturappv3.productor.models.ofertas.Oferta
 import com.interedes.agriculturappv3.productor.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.productor.models.plagas.FotoEnfermedad
 import com.interedes.agriculturappv3.productor.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
+import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk

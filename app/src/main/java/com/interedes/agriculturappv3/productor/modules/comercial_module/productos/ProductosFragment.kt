@@ -36,7 +36,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.Cultivo
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
@@ -297,6 +297,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         }
         //UPDATE
         else {
+            isFoto = true
             viewDialog?.txtTitle?.setText(getString(R.string.title_editar_producto))
             val byte = producto.Imagen?.getBlob()
             val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
@@ -410,8 +411,8 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         }
         txtNombreCultivo.setText(cultivo?.Nombre)
         txtNombreLote.setText(cultivo?.Nombre_Tipo_Producto)
-        txtPrecio.setText(cultivo?.FechaIncio)
-        txtArea.setText(cultivo?.FechaFin)
+        txtPrecio.setText(cultivo?.getFechaIncioFormat())
+        txtArea.setText(cultivo?.getFechaFinFormat())
 
     }
 
@@ -541,42 +542,6 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         txtResults.setText(results)
     }
 
-
-    /*
-    fun hasPermissions(context: Context?, permissions: Array<String>): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-            for (permission in permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false
-                }
-            }
-        }
-        return true
-    }
-
-
-    private fun requestPermission() {
-
-        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-        ActivityCompat.requestPermissions(activity!!, PERMISSIONS, PERMISSION_REQUEST_CODE)
-    }
-
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            PERMISSION_REQUEST_CODE -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (TAKE_CAMERA == true) {
-                    takePictureWithCamera(this)
-                } else if (CHOOSE_FROM_GALLERY == true) {
-                    choosePhotoFromGallery(this)
-                }
-            } else {
-                Toast.makeText(activity,
-                        "Permiso denegado", Toast.LENGTH_LONG).show()
-            }
-        }
-    }*/
-
     override fun takePictureWithCamera(fragment: ProductosFragment) {
         //EasyImage.openCamera(fragment, 0)
         val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
@@ -656,102 +621,6 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         return ""
     }
 
-    /*
-     private void tomarFoto() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        file = Uri.fromFile(getOutputMediaFile());
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
-        startActivityForResult(intent, 100);
-    }
-
-    private File getOutputMediaFile() {
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "Datatakeh");
-
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("Datatakeh", "failed to create directory");
-                return null;
-            }
-        }
-        if (foto1 == true) {
-            return new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_POSTE_" + "Lat:" + latitud + "_Lng:" + longitud + "_FOTO_1" + ".jpg");
-        }
-        if (foto2 == true) {
-            return new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_POSTE_" + "Lat:" + latitud + "_Lng:" + longitud + "_FOTO_2" + ".jpg");
-        } else {
-            return null;
-        }
-    }
-    */
-
-
-    /*
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK){
-            when(requestCode){
-                REQUEST_CAMERA ->{
-                    val image : Bitmap = data?.extras?.get("data") as Bitmap
-                    product_image.setImageBitmap(image)
-                }
-            }
-        }else{
-            return
-        }
-
-
-
-        /*EasyImage.handleActivityResult(requestCode, resultCode, data, activity, object : DefaultCallback() {
-            override fun onImagePicked(imageFile: File?, source: EasyImage.ImageSource?, type: Int) {
-                val extras = data?.extras
-                val image: Bitmap = extras?.get("data") as Bitmap
-                product_image?.setImageBitmap(image)
-                /*try {
-                    /*Log.d("Path",imageFile?.absolutePath)
-                    //val image: Bitmap = BitmapFactory.decodeFile(imageFile?.absolutePath)
-                    val os: OutputStream = BufferedOutputStream(FileOutputStream(imageFile))
-                    //image.compress(Bitmap.CompressFormat.JPEG, 100, os)*/
-                    val uri = Uri.fromFile(imageFile)
-
-                    /* val from = imageFile
-                     val to = File(Environment.getExternalStorageDirectory().absolutePath + "/imagen.jpg")
-                     from?.renameTo(to)
-                     val options = BitmapFactory.Options()
-                     options.inPreferredConfig = Bitmap.Config.ARGB_8888
-                     val image: Bitmap = BitmapFactory.decodeFile(to.absolutePath, options)
-                     var compressedImage: Bitmap = Compressor(activity)
-                             .setMaxHeight(400)
-                             .setQuality(100)
-                             .compressToBitmap(imageFile)*/
-
-                     //compressedImage = convertBitmapToByte(compressedImage)
-                     product_image.setImageURI(uri)
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }*/
-            }
-
-            override fun onImagePickerError(e: Exception?, source: EasyImage.ImageSource?, type: Int) {
-                super.onImagePickerError(e, source, type)
-                onMessageError(R.color.grey_luiyi, getString(R.string.error_take_picture_camera))
-            }
-
-            override fun onCanceled(source: EasyImage.ImageSource?, type: Int) {
-                super.onCanceled(source, type)
-                if (source === EasyImage.ImageSource.CAMERA) {
-                    val photoFile = EasyImage.lastlyTakenButCanceledPhoto(activity)
-                    photoFile?.delete()
-                }
-            }
-
-        })*/
-
-
-    }*/
 
     fun convertBitmapToByte(bitmapCompressed: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()
@@ -787,16 +656,25 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         if (presenter?.validarCampos() == true) {
             val productoUpdate = Producto()
             productoUpdate.Id = producto.Id
+            productoUpdate.CalidadId = producto.CalidadId
+            productoUpdate.NombreCalidad = producto.NombreCalidad
             //productoUpdate.Nombre = viewDialog?.txtNombreProducto?.text.toString()
             productoUpdate.Descripcion = viewDialog?.txtDescripcionProducto?.text.toString()
-            productoUpdate.FechaLimiteDisponibilidad = fechaLimiteDisponibilidad
-            productoUpdate.Imagen = Blob(imageGlobal)
+            val stringFecha = viewDialog?.txtFechaLimiteDisponibilidad?.text.toString()
+            val format = SimpleDateFormat("dd/MM/yyyy")
+            val date = format.parse(stringFecha)
+            productoUpdate.FechaLimiteDisponibilidad = date
+            viewDialog?.product_image?.isDrawingCacheEnabled = true
+            val bitmap = viewDialog?.product_image?.getDrawingCache()
+            val byte = convertBitmapToByte(bitmap!!)
+            productoUpdate.Imagen = Blob(byte)
             productoUpdate.Precio = viewDialog?.txtPrecio?.text.toString().toDoubleOrNull()
-            productoUpdate.CultivoId = Cultivo_Id
-            productoUpdate.NombreUnidadProductiva = unidadProductivaGlobal?.nombre
-            productoUpdate.NombreLote = loteGlobal?.Nombre
-            productoUpdate.NombreCultivo = cultivoGlobal?.Nombre
-            productoUpdate.NombreDetalleTipoProducto = cultivoGlobal?.Nombre_Detalle_Tipo_Producto
+            productoUpdate.CultivoId = producto.CultivoId
+            productoUpdate.NombreUnidadProductiva = producto.NombreUnidadProductiva
+            productoUpdate.NombreLote = producto.NombreLote
+            productoUpdate.NombreCultivo = producto.NombreCultivo
+            productoUpdate.NombreDetalleTipoProducto = producto.NombreDetalleTipoProducto
+            productoUpdate.NombreUnidadMedida = viewDialog?.spinnerMonedaPrecio?.text.toString()
             presenter?.registerProducto(productoUpdate, Cultivo_Id!!)
         }
     }

@@ -3,8 +3,8 @@ package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_modul
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.interedes.agriculturappv3.productor.models.TipoProducto
 import com.interedes.agriculturappv3.productor.models.plagas.TipoEnfermedad
+import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.plagas.events.PlagasEvent
 
 interface IPlaga {

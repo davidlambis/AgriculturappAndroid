@@ -1,27 +1,40 @@
 package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.cultivos
 
-import com.interedes.agriculturappv3.productor.models.*
+import android.util.Log
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo_Table
+import com.interedes.agriculturappv3.productor.models.cultivo.PostCultivo
+import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.lote.Lote_Table
+import com.interedes.agriculturappv3.productor.models.lote.PostLote
+import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva_Table
+import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.events.RequestEventLote
+import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class CultivoRepository : ICultivo.Repository {
 
 
     var eventBus: EventBus? = null
+    var apiService: ApiInterface? = null
 
     init {
         eventBus = GreenRobotEventBus()
+        apiService = ApiInterface.create()
     }
 
     //region Métodos Interfaz
@@ -82,21 +95,68 @@ class CultivoRepository : ICultivo.Repository {
         return listResponse;
     }
 
-    override fun saveCultivo(cultivo: Cultivo) {
-        cultivo.save()
-        postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(cultivo.LoteId), cultivo)
+    override fun saveCultivo(mCultivo: Cultivo, loteId: Long?) {
+        val last_cultivo = getLastCultivo()
+        if (last_cultivo == null) {
+            mCultivo.Id = 1
+        } else {
+            mCultivo.Id = last_cultivo.Id!! + 1
+        }
+        mCultivo.save()
+        postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
+    }
+
+    override fun registerOnlineCultivo(mCultivo: Cultivo?, loteId: Long?) {
+        val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.Id.eq(loteId)).querySingle()
+        if (lote?.EstadoSincronizacion == true) {
+            val postCultivo = PostCultivo(0,
+                    mCultivo?.Descripcion,
+                    mCultivo?.DetalleTipoProductoId,
+                    mCultivo?.EstimadoCosecha,
+                    mCultivo?.FechaFin,
+                    mCultivo?.FechaIncio,
+                    mCultivo?.LoteId,
+                    mCultivo?.Nombre,
+                    mCultivo?.siembraTotal)
+
+            val call = apiService?.postCultivo(postCultivo)
+            call?.enqueue(object : Callback<Cultivo> {
+                override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
+                    if (response != null && response.code() == 201) {
+                        mCultivo?.Id = response.body()?.Id!!
+                        mCultivo?.EstadoSincronizacion = true
+                        mCultivo?.save()
+                        postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
+                    } else {
+                        postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                        Log.e("error", response?.message().toString())
+                    }
+                }
+
+                override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
+                    postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                }
+
+            })
+        }
+    }
+
+    override fun updateCultivo(mCultivo: Cultivo, loteId: Long?) {
+        mCultivo.update()
+        postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
+    }
+
+    override fun deleteCultivo(mCultivo: Cultivo, loteId: Long?) {
+        mCultivo.delete()
+        postEventOk(CultivoEvent.DELETE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
     }
 
 
-    override fun updateCultivo(cultivo: Cultivo) {
-        cultivo.update()
-        postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(cultivo.LoteId), cultivo)
+    override fun getLastCultivo(): Cultivo? {
+        val lastCultivo = SQLite.select().from(Cultivo::class.java).where().orderBy(Cultivo_Table.Id, false).querySingle()
+        return lastCultivo
     }
 
-    override fun deleteCultivo(cultivo: Cultivo) {
-        cultivo.delete()
-        postEventOk(CultivoEvent.DELETE_EVENT, getCultivos(cultivo.LoteId), cultivo)
-    }
     //endregion
 
 

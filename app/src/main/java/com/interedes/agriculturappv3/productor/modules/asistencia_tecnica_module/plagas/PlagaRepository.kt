@@ -1,11 +1,11 @@
 package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.plagas
 
-import com.interedes.agriculturappv3.productor.models.TipoProducto
 import com.interedes.agriculturappv3.productor.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.productor.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.plagas.events.PlagasEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite

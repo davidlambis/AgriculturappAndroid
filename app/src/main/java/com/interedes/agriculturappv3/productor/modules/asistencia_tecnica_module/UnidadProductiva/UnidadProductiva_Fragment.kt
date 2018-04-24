@@ -1,24 +1,27 @@
 package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva
 
 
+import android.Manifest
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.ContextCompat.checkSelfPermission
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.Ciudad
 import com.interedes.agriculturappv3.productor.models.Departamento
@@ -32,8 +35,13 @@ import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_unidad_productiva.view.*
 import kotlinx.android.synthetic.main.fragment_unidad_productiva.*
 import android.support.v7.widget.RecyclerView
+import android.widget.*
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
+import com.google.android.gms.auth.api.signin.GoogleSignIn.hasPermissions
+import com.interedes.agriculturappv3.services.coords.CoordsServiceJava.latitud
+import com.interedes.agriculturappv3.services.coords.CoordsServiceJava.longitud
+import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 
 
 /**
@@ -60,6 +68,12 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     var listMunicipios: List<Ciudad>? = java.util.ArrayList<Ciudad>()
     private var latitud: Double = 0.0
     private var longitud: Double = 0.0
+
+    //PERMISOS
+    private val PERMISSION_REQUEST_CODE = 1
+    internal var PERMISSION_ALL = 1
+    internal var PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+
 
     companion object {
         var instance: UnidadProductiva_Fragment? = null
@@ -131,11 +145,11 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             viewDialog?.edtNombreUnidadProductiva?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.edtNombreUnidadProductiva
             cancel = true
-        } else if (viewDialog?.spinnerDepartamento?.text.toString().isEmpty()) {
+        } else if (viewDialog?.spinnerDepartamento?.text.toString().isEmpty() && viewDialog?.spinnerDepartamento?.visibility == View.VISIBLE) {
             viewDialog?.spinnerDepartamento?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerDepartamento
             cancel = true
-        } else if (viewDialog?.spinnerMunicipio?.text.toString().isEmpty()) {
+        } else if (viewDialog?.spinnerMunicipio?.text.toString().isEmpty() && viewDialog?.spinnerMunicipio?.visibility == View.VISIBLE) {
             viewDialog?.spinnerMunicipio?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerMunicipio
             cancel = true
@@ -227,7 +241,10 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     }
 
     override fun requestResponseError(error: String?) {
-
+        if (_dialogRegisterUpdate != null) {
+            _dialogRegisterUpdate?.dismiss()
+        }
+        onMessageError(R.color.grey_luiyi, error)
     }
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
@@ -269,26 +286,26 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         }
     }
 
-    override fun updateUp() {
+    override fun updateUp(unidadProductiva: UnidadProductiva?) {
         if (presenter?.validarCampos() == true) {
-            val updateUP = UnidadProductiva()
-            val id_user_logued = (activity as MenuMainActivity).getLastUserLogued()?.Id
-            updateUP.UsuarioId = id_user_logued
-            updateUP.Id = unidadProductivaGlobal!!.Id
-            updateUP.CiudadId = municipioGlobal?.Id
-            updateUP.Nombre_Ciudad = municipioGlobal?.Nombre
-            updateUP.Nombre_Departamento = departamentoGlobal?.Nombre
-            updateUP.nombre = viewDialog?.edtNombreUnidadProductiva?.text.toString()
-            updateUP.descripcion = viewDialog?.etDescripcionUnidadProductiva?.text.toString()
-            updateUP.Area = viewDialog?.edtAreaUnidadProductiva?.text.toString().toDoubleOrNull()
-            updateUP.Coordenadas = viewDialog?.edtLocalizacionUnidadProductiva?.text.toString()
-            updateUP.UnidadMedidaId = unidadMedidaGlobal?.Id
-            updateUP.Nombre_Unidad_Medida = unidadMedidaGlobal?.Descripcion
-            updateUP.Configuration_Point = unidadProductivaGlobal!!.Configuration_Point
-            updateUP.Configuration_Poligon = unidadProductivaGlobal!!.Configuration_Poligon
-            updateUP.Latitud = latitud
-            updateUP.Longitud = longitud
-            presenter?.updateUP(updateUP)
+            //val updateUP = UnidadProductiva()
+            /* val id_user_logued = (activity as MenuMainActivity).getLastUserLogued()?.Id
+             unidadProductiva?.UsuarioId = id_user_logued*/
+            unidadProductiva?.Id = unidadProductivaGlobal!!.Id
+            /* unidadProductiva?.CiudadId = municipioGlobal?.Id
+             unidadProductiva?.Nombre_Ciudad = municipioGlobal?.Nombre
+             unidadProductiva?.Nombre_Departamento = departamentoGlobal?.Nombre*/
+            unidadProductiva?.nombre = viewDialog?.edtNombreUnidadProductiva?.text.toString()
+            unidadProductiva?.descripcion = viewDialog?.etDescripcionUnidadProductiva?.text.toString()
+            unidadProductiva?.Area = viewDialog?.edtAreaUnidadProductiva?.text.toString().toDoubleOrNull()
+            unidadProductiva?.Coordenadas = viewDialog?.edtLocalizacionUnidadProductiva?.text.toString()
+            unidadProductiva?.UnidadMedidaId = unidadMedidaGlobal?.Id
+            unidadProductiva?.Nombre_Unidad_Medida = unidadMedidaGlobal?.Descripcion
+            unidadProductiva?.Configuration_Point = unidadProductivaGlobal!!.Configuration_Point
+            unidadProductiva?.Configuration_Poligon = unidadProductivaGlobal!!.Configuration_Poligon
+            unidadProductiva?.Latitud = latitud
+            unidadProductiva?.Longitud = longitud
+            presenter?.updateUP(unidadProductiva)
         }
     }
 
@@ -354,7 +371,6 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
 
     override fun showAlertDialogAddUnidadProductiva(unidadProductiva: UnidadProductiva?) {
 
-
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_unidad_productiva, null)
         setListSpinnerMunicipios(listMunicipios!!)
@@ -372,15 +388,16 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         //UPDATE
         else {
             viewDialog?.txtTitle?.setText(getString(R.string.tittle_edit_unidadproductiva))
-            unidadMedidaGlobal = Unidad_Medida(unidadProductiva.UnidadMedidaId, unidadProductiva.Nombre_Unidad_Medida, null)
-            viewDialog?.spinnerDepartamento?.setText(unidadProductiva.Nombre_Departamento)
-            viewDialog?.spinnerMunicipio?.visibility = View.VISIBLE
-            viewDialog?.spinnerMunicipio?.setText(unidadProductiva.Nombre_Ciudad)
-            viewDialog?.edtNombreUnidadProductiva?.setText(unidadProductiva.nombre)
-            viewDialog?.etDescripcionUnidadProductiva?.setText(unidadProductiva.descripcion)
-            viewDialog?.edtAreaUnidadProductiva?.setText(unidadProductiva.Area.toString())
-            viewDialog?.edtLocalizacionUnidadProductiva?.setText(unidadProductiva.Coordenadas)
-            viewDialog?.spinnerUnidadMedidaUp?.setText(unidadProductiva.Nombre_Unidad_Medida)
+            unidadMedidaGlobal = Unidad_Medida(unidadProductivaGlobal?.UnidadMedidaId, unidadProductivaGlobal?.Nombre_Unidad_Medida, null)
+            // viewDialog?.spinnerDepartamento?.setText(unidadProductivaGlobal?.Nombre_Departamento)
+            viewDialog?.spinnerDepartamento?.visibility = View.GONE
+            viewDialog?.spinnerMunicipio?.visibility = View.GONE
+            //viewDialog?.spinnerMunicipio?.setText(unidadProductivaGlobal?.Nombre_Ciudad)
+            viewDialog?.edtNombreUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
+            viewDialog?.etDescripcionUnidadProductiva?.setText(unidadProductivaGlobal?.descripcion)
+            viewDialog?.edtAreaUnidadProductiva?.setText(unidadProductivaGlobal?.Area.toString())
+            viewDialog?.edtLocalizacionUnidadProductiva?.setText(unidadProductivaGlobal?.Coordenadas)
+            viewDialog?.spinnerUnidadMedidaUp?.setText(unidadProductivaGlobal?.Nombre_Unidad_Medida)
             latitud = unidadProductiva.Latitud!!
             longitud = unidadProductiva.Longitud!!
 
@@ -455,7 +472,17 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fabAddUnidadProductiva -> {
-                showAlertDialogAddUnidadProductiva(null)
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (!hasPermissions(context, *PERMISSIONS)) {
+                        requestPermission()
+                    } else {
+                        showAlertDialogAddUnidadProductiva(null)
+                    }
+                } else {
+                    showAlertDialogAddUnidadProductiva(null)
+                }
+
+
             }
             R.id.ivClosetDialogUp -> _dialogRegisterUpdate?.dismiss()
 
@@ -470,11 +497,117 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
 
             R.id.btnSaveUnidadProductiva -> {
                 if (unidadProductivaGlobal != null) {
-                    updateUp()
+                    updateUp(unidadProductivaGlobal)
                 } else {
                     registerUp()
                 }
             }
+        }
+    }
+
+    //PERMISOS
+    fun hasPermissions(context: Context?, vararg permissions: String): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (permission in permissions) {
+                if (checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun requestPermission() {
+
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        //ContextCompat.requestPermissions(activity!!, PERMISSIONS, PERMISSION_ALL)
+        requestPermissions(PERMISSIONS, PERMISSION_ALL)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_CODE ->
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    showAlertDialogAddUnidadProductiva(null)
+                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        Toast.makeText(activity,
+                                "Permiso denegado", Toast.LENGTH_LONG).show()
+                    } else {
+                        if (hasPermissions(context, *PERMISSIONS)) {
+                            showAlertDialogAddUnidadProductiva(null)
+                        } else {
+                            val builder = AlertDialog.Builder(context!!)
+                            builder.setMessage(R.string.enable_permissions_gps_settings)
+                                    .setPositiveButton(R.string.confirm) { dialog, id ->
+                                        val intent = Intent()
+                                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                        val uri = Uri.fromParts("package", "com.interedes.agriculturappv3", null)
+                                        intent.setData(uri)
+                                        startActivity(intent)
+                                    }
+                            builder.setTitle(R.string.gps_disabled)
+                            builder.setIcon(R.drawable.logo_agr_app)
+                            // Create the AlertDialog object and return it
+                            builder.show()
+
+
+                        }
+                    }
+                }
+
+
+        /*for (permission in permissions) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity!!, permission)) {
+                Toast.makeText(activity,
+                        "Permiso denegado", Toast.LENGTH_LONG).show()
+            } else {
+                if (ActivityCompat.checkSelfPermission(context!!, permission) == PackageManager.PERMISSION_GRANTED) {
+                    showAlertDialogAddUnidadProductiva(null)
+                } else {
+                    val builder = AlertDialog.Builder(context!!)
+                    builder.setMessage(R.string.please_enable_gps)
+                            .setPositiveButton(R.string.confirm) { dialog, id ->
+                                val settingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                context!!.startActivity(settingsIntent)
+                            }
+                    builder.setTitle(R.string.gps_disabled)
+                    builder.setIcon(R.drawable.logo_agr_app)
+                }
+            }
+        }*/
+
+        /*if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            showAlertDialogAddUnidadProductiva(null)
+        } else if (!ActivityCompat.checkSelfPermission(context!!, permission) == PackageManager.PERMISSION_GRANTED) {
+            val builder = AlertDialog.Builder(context!!)
+            builder.setMessage(R.string.please_enable_gps)
+                    .setPositiveButton(R.string.confirm) { dialog, id ->
+                        val settingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                        context!!.startActivity(settingsIntent)
+                    }
+            builder.setTitle(R.string.gps_disabled)
+            builder.setIcon(R.drawable.logo_agr_app)
+
+        } else {
+            Toast.makeText(activity,
+                    "Permiso denegado", Toast.LENGTH_LONG).show()
+
+        }*//* else if ((Build.VERSION.SDK_INT >= 23 && !shouldShowRequestPermissionRationale(permissions[0])) ||
+                        (Build.VERSION.SDK_INT >= 23 && !shouldShowRequestPermissionRationale(permissions[1]))) {
+                    //Toast.makeText(MainActivity.this, "Go to Settings and Grant the permission to use this feature.", Toast.LENGTH_SHORT).show();
+                    // User selected the Never Ask Again Option
+                    Intent i = new Intent();
+                    i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    i.addCategory(Intent.CATEGORY_DEFAULT);
+                    i.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    getApplicationContext().startActivity(i);
+
+                } */
         }
     }
 
@@ -494,10 +627,10 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             }
         }
     }
-    //endregion
+//endregion
 
     //region Overrides Methods
-    //call this method in your onCreateMethod
+//call this method in your onCreateMethod
     override fun onDestroy() {
         super.onDestroy()
         presenter?.onDestroy()
@@ -518,5 +651,5 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         presenter?.onResume(activity!!.applicationContext)
         super.onResume()
     }
-    //endregion
+//endregion
 }

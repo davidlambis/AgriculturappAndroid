@@ -87,9 +87,9 @@ data class Producto(@PrimaryKey(autoincrement = true)
                     @Column(name = "NombreCalidad")
                     var NombreCalidad: String? = null) {
 
-    override fun toString(): String {
+    /*override fun toString(): String {
         return Nombre!!
-    }
+    }*/
 
     fun getFechaLimiteDisponibilidadFormat(): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())

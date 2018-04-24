@@ -94,6 +94,7 @@
     <string name="gps_disabled">Activar GPS</string>
     <string name="please_enable_gps">Necesitas habilitar el GPS</string>
     <string name="loader_gps">Iniciando GPS</string>
+    <string name="enable_permissions_gps_settings">Por favor habilita el permiso de ubicación</string>
 
     <!--NAMES LOTE-->
     <string name="add_lote">Agregar Lote</string>
@@ -311,6 +312,8 @@
     <string name="error_image_selected">Debe seleccionar una imagen</string>
     <string name="title_registrate"><u>Regístrate</u></string>
     <string name="need_internet_register">Necesitas internet para registrarte</string>
+    <string name="Sincronizado">Sincronizado</string>
+    <string name="noSincronizado">No Sincronizado</string>
 
 
     <string-array name="array_type_get_location_with_conection">

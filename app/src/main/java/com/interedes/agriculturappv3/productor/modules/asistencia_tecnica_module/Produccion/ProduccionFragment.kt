@@ -24,7 +24,7 @@ import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.Cultivo
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.produccion.Produccion
@@ -69,7 +69,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     var confFecha:Boolean?=false
 
     //Listas
-    var cultivoGlobal:Cultivo?=null
+    var cultivoGlobal: Cultivo?=null
     var unidadProductivaGlobal: UnidadProductiva?=null
     var loteGlobal: Lote?=null
     var produccionGlobal:Produccion?=null
@@ -562,14 +562,14 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     }
 
 
-    override fun setCultivo(cultivo:Cultivo?){
+    override fun setCultivo(cultivo: Cultivo?){
         if(cultivoSeletedContainer.visibility==View.GONE){
             cultivoSeletedContainer.visibility=View.VISIBLE
         }
         txtNombreCultivo.setText(cultivo?.Nombre_Detalle_Tipo_Producto)
         txtNombreLote.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
-        txtPrecio.setText(cultivo?.FechaIncio)
-        txtArea.setText(cultivo?.FechaFin)
+        txtPrecio.setText(cultivo?.getFechaIncioFormat())
+        txtArea.setText(cultivo?.getFechaFinFormat())
     }
 
     override fun verificateConnection(): AlertDialog? {

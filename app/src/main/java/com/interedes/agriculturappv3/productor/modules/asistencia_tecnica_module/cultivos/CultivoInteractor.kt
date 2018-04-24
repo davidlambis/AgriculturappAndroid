@@ -1,6 +1,6 @@
 package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.cultivos
 
-import com.interedes.agriculturappv3.productor.models.Cultivo
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 
 
 class CultivoInteractor : ICultivo.Interactor {
@@ -12,16 +12,20 @@ class CultivoInteractor : ICultivo.Interactor {
         repository = CultivoRepository()
     }
 
-    override fun registerCultivo(cultivo: Cultivo?) {
-        repository?.saveCultivo(cultivo!!)
+    override fun registerCultivo(cultivo: Cultivo?, loteId: Long?) {
+        repository?.saveCultivo(cultivo!!,loteId)
     }
 
-    override fun updateCultivo(cultivo: Cultivo?) {
-        repository?.updateCultivo(cultivo!!)
+    override fun registerOnlineCultivo(cultivo: Cultivo?, loteId: Long?) {
+        repository?.registerOnlineCultivo(cultivo, loteId)
     }
 
-    override fun deleteCultivo(cultivo: Cultivo?) {
-        repository?.deleteCultivo(cultivo!!)
+    override fun updateCultivo(cultivo: Cultivo?, loteId: Long?) {
+        repository?.updateCultivo(cultivo!!,loteId)
+    }
+
+    override fun deleteCultivo(cultivo: Cultivo?, loteId: Long?) {
+        repository?.deleteCultivo(cultivo!!,loteId)
     }
 
     override fun getListas() {

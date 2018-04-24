@@ -16,7 +16,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.TipoProducto
+import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.insumos.InsumosFragment
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.plagas.adapters.PlagasAdapter

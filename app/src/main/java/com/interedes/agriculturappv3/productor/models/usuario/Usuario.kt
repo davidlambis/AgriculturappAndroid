@@ -89,7 +89,7 @@ data class Usuario(@PrimaryKey
                    @Column(getterName = "getUsuarioRemembered")
                    var UsuarioRemembered: Boolean? = false,
 
-                   @Column(name = "sessionId")
-                   var sessionId: Long? = 0) {}
+                   @Column(name = "SessionId")
+                   var SessionId: Long? = 0) {}
 
 

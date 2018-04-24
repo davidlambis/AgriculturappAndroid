@@ -2,8 +2,8 @@ package com.interedes.agriculturappv3.productor.modules.accounting_module.report
 
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.productor.models.Cultivo
-import com.interedes.agriculturappv3.productor.models.Cultivo_Table
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
@@ -253,7 +253,7 @@ class ReporteRepository: IMainViewReportes.Repository {
         postEvent(type, transaccionListMitable,ProducciconMutable,null)
     }
 
-    private fun postEventOkCultivo(type: Int,  cultivo:Cultivo?) {
+    private fun postEventOkCultivo(type: Int,  cultivo: Cultivo?) {
         var CultivoMutable:Object?=null
         if(cultivo!=null){
             CultivoMutable = cultivo as Object

@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -25,12 +26,15 @@ import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.*
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.cultivos.adapters.CultivoAdapter
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
+import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_cultivo.view.*
@@ -74,6 +78,11 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     internal var dateTime = Calendar.getInstance()
     var Date_Selected: String? = null
     var fecha: Boolean? = false
+
+    private var hud: KProgressHUD? = null
+
+    var Fecha_Inicio: Date? = null
+    var Fecha_Fin: Date? = null
 
     companion object {
         var instance: Cultivo_Fragment? = null
@@ -154,7 +163,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                 if (cultivoGlobal == null) {
                     registerCultivo()
                 } else {
-                    updateCultivo()
+                    updateCultivo(cultivoGlobal, cultivoGlobal?.LoteId)
                 }
             }
 
@@ -263,14 +272,30 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         swipeRefreshLayout.setRefreshing(false)
     }
 
+    override fun showProgressHud() {
+        var imageView = ImageView(activity);
+        imageView.setBackgroundResource(R.drawable.spin_animation);
+        var drawable = imageView.getBackground() as AnimationDrawable;
+        drawable.start();
+
+        hud = KProgressHUD.create(activity)
+                .setCustomView(imageView)
+                .setWindowColor(resources.getColor(R.color.white))
+                .setLabel("Cargando...", resources.getColor(R.color.grey_luiyi));
+        hud?.show()
+    }
+
+    override fun hideProgressHud() {
+        hud?.dismiss()
+    }
 
     override fun registerCultivo() {
         if (presenter?.validarCampos() == true) {
             val cultivo = Cultivo()
             cultivo.Descripcion = viewDialog?.edtDescripcionCultivo?.text?.trim().toString()
             cultivo.EstimadoCosecha = viewDialog?.edtEstimadoCosecha?.text?.trim().toString().toDoubleOrNull()
-            cultivo.FechaFin = viewDialog?.edtFechaFin?.text?.trim().toString()
-            cultivo.FechaIncio = viewDialog?.edtFechaInicio?.text?.trim().toString()
+            cultivo.FechaFin = Fecha_Fin
+            cultivo.FechaIncio = Fecha_Inicio
             cultivo.LoteId = Lote_Id
             cultivo.Nombre = viewDialog?.edtNombreCultivo?.text?.trim()?.toString()
             cultivo.Unidad_Medida_Id = Unidad_Medida_Id
@@ -281,18 +306,18 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo.DetalleTipoProductoId = detalleTipoProductoGlobal?.Id
             cultivo.Nombre_Detalle_Tipo_Producto = detalleTipoProductoGlobal?.Nombre
             cultivo.Id_Tipo_Producto = tipoProductoGlobal?.Id
-            presenter?.registerCultivo(cultivo)
+            presenter?.registerCultivo(cultivo, cultivo.LoteId)
         }
     }
 
-    override fun updateCultivo() {
+    override fun updateCultivo(cultivo: Cultivo?, loteId: Long?) {
         if (presenter?.validarCampos() == true) {
             val cultivo = Cultivo()
             cultivo.Id = cultivoGlobal?.Id
             cultivo.Descripcion = viewDialog?.edtDescripcionCultivo?.text?.trim().toString()
             cultivo.EstimadoCosecha = viewDialog?.edtEstimadoCosecha?.text?.trim().toString().toDoubleOrNull()
-            cultivo.FechaFin = viewDialog?.edtFechaFin?.text?.trim().toString()
-            cultivo.FechaIncio = viewDialog?.edtFechaInicio?.text?.trim().toString()
+            cultivo.FechaFin = Fecha_Fin
+            cultivo.FechaIncio = Fecha_Inicio
             cultivo.LoteId = Lote_Id
             cultivo.Nombre = viewDialog?.edtNombreCultivo?.text?.trim()?.toString()
             cultivo.Unidad_Medida_Id = Unidad_Medida_Id
@@ -303,7 +328,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo.DetalleTipoProductoId = detalleTipoProductoGlobal?.Id
             cultivo.Nombre_Detalle_Tipo_Producto = viewDialog?.spinnerDetalleTipoProducto?.text?.toString()
             cultivo.Id_Tipo_Producto = tipoProductoGlobal?.Id
-            presenter?.updateCultivo(cultivo)
+            presenter?.updateCultivo(cultivo, cultivo.LoteId)
         }
     }
 
@@ -315,7 +340,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         })
         builder.setMessage(getString(R.string.alert_delete_cultivo));
         builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
-            presenter?.deleteCultivo(cultivo)
+            presenter?.deleteCultivo(cultivo, cultivo.LoteId)
         })
         builder.setIcon(R.drawable.ic_cultivos);
         return builder.show();
@@ -347,11 +372,16 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     }
 
     override fun requestResponseOk() {
-        _dialogRegisterUpdate?.dismiss()
+        if (_dialogRegisterUpdate != null) {
+            _dialogRegisterUpdate?.dismiss()
+        }
         onMessageOk(R.color.colorPrimary, getString(R.string.request_ok))
     }
 
     override fun requestResponseError(error: String?) {
+        if (_dialogRegisterUpdate != null) {
+            _dialogRegisterUpdate?.dismiss()
+        }
         onMessageOk(R.color.grey_luiyi, error)
     }
 
@@ -418,8 +448,8 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             viewDialog?.edtNombreCultivo?.setText(cultivo.Nombre)
             viewDialog?.edtDescripcionCultivo?.setText(cultivo.Descripcion)
             viewDialog?.edtEstimadoCosecha?.setText(cultivo.EstimadoCosecha.toString())
-            viewDialog?.edtFechaInicio?.setText(cultivo.FechaIncio)
-            viewDialog?.edtFechaFin?.setText(cultivo.FechaFin)
+            viewDialog?.edtFechaInicio?.setText(cultivo.getFechaIncioFormat())
+            viewDialog?.edtFechaFin?.setText(cultivo.getFechaFinFormat())
             viewDialog?.spinnerTipoProducto?.setText(cultivo.Nombre_Tipo_Producto)
             viewDialog?.spinnerDetalleTipoProducto?.setText(cultivo.Nombre_Detalle_Tipo_Producto)
             tipoProductoGlobal = TipoProducto(cultivo.Id_Tipo_Producto, cultivo.Nombre_Tipo_Producto)
@@ -622,6 +652,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         val format1 = SimpleDateFormat("MM/dd/yyyy")
         val formatted = format1.format(dateTime.time)
         Date_Selected = formatted
+        Fecha_Inicio = dateTime.time
         viewDialog?.edtFechaInicio?.setText(Date_Selected)
     }
 
@@ -629,6 +660,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         val format1 = SimpleDateFormat("MM/dd/yyyy")
         val formatted = format1.format(dateTime.time)
         Date_Selected = formatted
+        Fecha_Fin = dateTime.time
         viewDialog?.edtFechaFin?.setText(Date_Selected)
     }
 

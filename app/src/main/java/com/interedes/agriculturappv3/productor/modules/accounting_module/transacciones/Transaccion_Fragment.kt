@@ -27,7 +27,7 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.ventas.Puk
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
 import com.interedes.agriculturappv3.productor.modules.accounting_module.transacciones.adapter.TrannsaccionAdapter
-import com.interedes.agriculturappv3.productor.models.Cultivo
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
@@ -569,7 +569,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         //UPDATE
         else {
             estadoTransaccionGlobal=Estado_Transaccion(transaccion.EstadoId,transaccion.Nombre_Estado_Transaccion)
-            cultivoGlobal = Cultivo(transaccion.Cultivo_Id,"",0,0.0,null,null,0, transaccion.Nombre_Cultivo, null,Nombre_Detalle_Tipo_Producto = transaccion.Nombre_Detalle_Producto_Cultivo)
+            cultivoGlobal = Cultivo(transaccion.Cultivo_Id, "", 0, 0.0, null, null, 0, transaccion.Nombre_Cultivo, null, Nombre_Detalle_Tipo_Producto = transaccion.Nombre_Detalle_Producto_Cultivo)
             pukGlobal = Puk(transaccion.PucId, null, "",transaccion.Descripcion_Puk )
 
             if(CategoriaPukResources.INGRESO== typeTransaccion){

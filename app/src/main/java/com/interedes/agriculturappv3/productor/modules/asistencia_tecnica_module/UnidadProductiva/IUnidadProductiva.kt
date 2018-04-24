@@ -35,7 +35,7 @@ interface IUnidadProductiva {
         //Fun Lote CRUD
         fun registerUp()
 
-        fun updateUp()
+        fun updateUp(unidadProductiva: UnidadProductiva?)
         fun setListUps(listUnidadProductivas: List<UnidadProductiva>)
         fun setResults(unidadesProductivas: Int)
 

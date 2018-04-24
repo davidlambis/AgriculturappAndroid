@@ -26,7 +26,7 @@ import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.Cultivo
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
@@ -182,8 +182,8 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         }
         txtNombreCultivo.setText(cultivo?.Nombre)
         txtNombreLote.setText(cultivo?.Nombre_Tipo_Producto)
-        txtPrecio.setText(cultivo?.FechaIncio)
-        txtArea.setText(cultivo?.FechaFin)
+        txtPrecio.setText(cultivo?.getFechaIncioFormat())
+        txtArea.setText(cultivo?.getFechaFinFormat())
     }
 
     override fun updatePlaga(controlPlaga: ControlPlaga?) {

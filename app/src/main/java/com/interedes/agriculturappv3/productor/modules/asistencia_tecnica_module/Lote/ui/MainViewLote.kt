@@ -29,7 +29,7 @@ interface MainViewLote {
 
     //Fun Lote CRUD
     fun registerLote()
-    fun updateLote()
+    fun updateLote(lote: Lote,unidad_productiva_id:Long?)
     fun setListLotes(lotes:List<Lote>)
     fun setResults(lotes:Int)
 

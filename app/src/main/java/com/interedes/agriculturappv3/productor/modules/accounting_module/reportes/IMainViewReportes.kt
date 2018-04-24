@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import com.interedes.agriculturappv3.productor.models.Cultivo
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
@@ -47,7 +47,7 @@ interface IMainViewReportes {
         fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
         fun setListLotes(listLotes:List<Lote>?)
         fun setListCultivos(listCultivos:List<Cultivo>?)
-        fun setCultivo(cultivo:Cultivo?)
+        fun setCultivo(cultivo: Cultivo?)
 
         fun setListReportCategoriasPuk(categoriasList:List<CategoriaPuk>?)
 

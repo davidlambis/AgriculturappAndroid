@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.models
+package com.interedes.agriculturappv3.productor.models.detalletipoproducto
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
