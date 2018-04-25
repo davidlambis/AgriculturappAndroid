@@ -72,6 +72,8 @@ interface ICultivo {
 
         fun showProgressHud()
         fun hideProgressHud()
+
+        fun verificateConnection():AlertDialog?
     }
 
     interface Presenter {

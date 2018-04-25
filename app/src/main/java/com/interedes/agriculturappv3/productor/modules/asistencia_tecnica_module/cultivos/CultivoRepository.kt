@@ -113,8 +113,8 @@ class CultivoRepository : ICultivo.Repository {
                     mCultivo?.Descripcion,
                     mCultivo?.DetalleTipoProductoId,
                     mCultivo?.EstimadoCosecha,
-                    mCultivo?.FechaFin,
-                    mCultivo?.FechaIncio,
+                    mCultivo?.stringFechaFin,
+                    mCultivo?.stringFechaInicio,
                     mCultivo?.LoteId,
                     mCultivo?.Nombre,
                     mCultivo?.siembraTotal)
@@ -123,7 +123,10 @@ class CultivoRepository : ICultivo.Repository {
             call?.enqueue(object : Callback<Cultivo> {
                 override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
                     if (response != null && response.code() == 201) {
-                        mCultivo?.Id = response.body()?.Id!!
+                        val value = response.body()
+                        mCultivo?.Id = value?.Id!!
+                        mCultivo?.FechaIncio = value.FechaIncio
+                        mCultivo?.FechaFin = value.FechaFin
                         mCultivo?.EstadoSincronizacion = true
                         mCultivo?.save()
                         postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
@@ -138,17 +141,65 @@ class CultivoRepository : ICultivo.Repository {
                 }
 
             })
+        } else {
+            saveCultivo(mCultivo!!, loteId)
+            postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
         }
     }
 
     override fun updateCultivo(mCultivo: Cultivo, loteId: Long?) {
-        mCultivo.update()
-        postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
+        if (mCultivo.EstadoSincronizacion == true) {
+            val postCultivo = PostCultivo(mCultivo.Id,
+                    mCultivo.Descripcion,
+                    mCultivo.DetalleTipoProductoId,
+                    mCultivo.EstimadoCosecha,
+                    mCultivo.stringFechaFin,
+                    mCultivo.stringFechaInicio,
+                    mCultivo.LoteId,
+                    mCultivo.Nombre,
+                    mCultivo.siembraTotal)
+            val call = apiService?.updateCultivo(postCultivo, mCultivo.Id!!)
+            call?.enqueue(object : Callback<Cultivo> {
+                override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
+                    if (response != null && response.code() == 200) {
+                        mCultivo.update()
+                        postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
+                    } else {
+                        postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                }
+
+                override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
+                    postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                }
+            })
+
+
+        } else {
+            postEventError(CultivoEvent.ERROR_EVENT, "Error!. El Cultivo no se ha subido")
+        }
     }
 
     override fun deleteCultivo(mCultivo: Cultivo, loteId: Long?) {
-        mCultivo.delete()
-        postEventOk(CultivoEvent.DELETE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
+        if (mCultivo.EstadoSincronizacion == true) {
+            val call = apiService?.deleteCultivo(mCultivo.Id!!)
+            call?.enqueue(object : Callback<Cultivo> {
+                override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
+                    if (response != null && response.code() == 204) {
+                        mCultivo.delete()
+                        postEventOk(CultivoEvent.DELETE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
+                    }
+                }
+
+                override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
+                    postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                }
+
+            })
+        } else {
+            postEventError(CultivoEvent.ERROR_EVENT, "Error!. El Cultivo no se ha subido")
+        }
+
     }
 
 

@@ -23,11 +23,11 @@ data class PostCultivo(@SerializedName("Id")
 
                        @SerializedName("FechaFin")
                        @Column(name = "FechaFin")
-                       var FechaFin: Date? = null,
+                       var FechaFin: String? = null,
 
                        @SerializedName("FechaIncio")
                        @Column(name = "FechaIncio")
-                       var FechaIncio: Date? = null,
+                       var FechaIncio: String? = null,
 
                        @SerializedName("LoteId")
                        @Column(name = "LoteId")

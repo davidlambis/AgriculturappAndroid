@@ -175,7 +175,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
     }
 
     override fun registerLote(lote: Lote, unidad_productiva_id: Long?) {
-        loteMainView?.showProgress()
+        loteMainView?.showProgressHud()
         loteMainView?.disableInputs()
         if (checkConnection()) {
             loteInteractor?.registerOnlineLote(lote, unidad_productiva_id)

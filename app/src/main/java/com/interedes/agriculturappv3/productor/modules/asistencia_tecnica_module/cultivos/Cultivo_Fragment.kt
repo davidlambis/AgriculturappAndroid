@@ -28,13 +28,17 @@ import com.daimajia.androidanimations.library.YoYo
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
+import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto_Table
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
+import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto_Table
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.cultivos.adapters.CultivoAdapter
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_cultivo.view.*
@@ -83,6 +87,8 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
     var Fecha_Inicio: Date? = null
     var Fecha_Fin: Date? = null
+    var stringFechaInicio: String? = null
+    var stringFechaFin: String? = null
 
     companion object {
         var instance: Cultivo_Fragment? = null
@@ -230,6 +236,10 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         } else if (viewDialog?.spinnerDetalleTipoProducto?.text.toString().isEmpty()) {
             focusView = viewDialog?.spinnerDetalleTipoProducto
             cancel = true
+        } else if (Fecha_Inicio?.after(Fecha_Fin) == true) {
+            viewDialog?.edtFechaInicio?.setError(getString(R.string.order_dates))
+            focusView = viewDialog?.edtFechaInicio
+            cancel = true
         }
 
         if (cancel) {
@@ -294,8 +304,8 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             val cultivo = Cultivo()
             cultivo.Descripcion = viewDialog?.edtDescripcionCultivo?.text?.trim().toString()
             cultivo.EstimadoCosecha = viewDialog?.edtEstimadoCosecha?.text?.trim().toString().toDoubleOrNull()
-            cultivo.FechaFin = Fecha_Fin
-            cultivo.FechaIncio = Fecha_Inicio
+            cultivo.stringFechaInicio = viewDialog?.edtFechaInicio?.text?.trim().toString()
+            cultivo.stringFechaFin = viewDialog?.edtFechaFin?.text?.trim().toString()
             cultivo.LoteId = Lote_Id
             cultivo.Nombre = viewDialog?.edtNombreCultivo?.text?.trim()?.toString()
             cultivo.Unidad_Medida_Id = Unidad_Medida_Id
@@ -312,23 +322,23 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
     override fun updateCultivo(cultivo: Cultivo?, loteId: Long?) {
         if (presenter?.validarCampos() == true) {
-            val cultivo = Cultivo()
-            cultivo.Id = cultivoGlobal?.Id
-            cultivo.Descripcion = viewDialog?.edtDescripcionCultivo?.text?.trim().toString()
-            cultivo.EstimadoCosecha = viewDialog?.edtEstimadoCosecha?.text?.trim().toString().toDoubleOrNull()
-            cultivo.FechaFin = Fecha_Fin
-            cultivo.FechaIncio = Fecha_Inicio
-            cultivo.LoteId = Lote_Id
-            cultivo.Nombre = viewDialog?.edtNombreCultivo?.text?.trim()?.toString()
-            cultivo.Unidad_Medida_Id = Unidad_Medida_Id
-            cultivo.Nombre_Unidad_Medida = viewDialog?.spinnerUnidadMedidaCosecha?.text?.toString()
-            cultivo.NombreUnidadProductiva = viewDialog?.txtUnidadProductivaSelected?.text.toString()
-            cultivo.NombreLote = viewDialog?.txtLoteSelected?.text.toString()
-            cultivo.Nombre_Tipo_Producto = tipoProductoGlobal?.Nombre
-            cultivo.DetalleTipoProductoId = detalleTipoProductoGlobal?.Id
-            cultivo.Nombre_Detalle_Tipo_Producto = viewDialog?.spinnerDetalleTipoProducto?.text?.toString()
-            cultivo.Id_Tipo_Producto = tipoProductoGlobal?.Id
-            presenter?.updateCultivo(cultivo, cultivo.LoteId)
+            //cultivo?.Id = cultivoGlobal?.Id
+            cultivo?.Id = cultivoGlobal?.Id
+            cultivo?.Descripcion = viewDialog?.edtDescripcionCultivo?.text?.trim().toString()
+            cultivo?.EstimadoCosecha = viewDialog?.edtEstimadoCosecha?.text?.trim().toString().toDoubleOrNull()
+            cultivo?.stringFechaInicio = viewDialog?.edtFechaInicio?.text?.trim().toString()
+            cultivo?.stringFechaFin = viewDialog?.edtFechaFin?.text?.trim().toString()
+            cultivo?.LoteId = loteId
+            cultivo?.Nombre = viewDialog?.edtNombreCultivo?.text?.trim()?.toString()
+            cultivo?.Unidad_Medida_Id = unidadMedidaGlobal?.Id
+            cultivo?.Nombre_Unidad_Medida = viewDialog?.spinnerUnidadMedidaCosecha?.text?.toString()
+            cultivo?.NombreUnidadProductiva = viewDialog?.txtUnidadProductivaSelected?.text.toString()
+            cultivo?.NombreLote = viewDialog?.txtLoteSelected?.text.toString()
+            cultivo?.Nombre_Tipo_Producto = tipoProductoGlobal?.Nombre
+            cultivo?.DetalleTipoProductoId = detalleTipoProductoGlobal?.Id
+            cultivo?.Nombre_Detalle_Tipo_Producto = viewDialog?.spinnerDetalleTipoProducto?.text?.toString()
+            cultivo?.Id_Tipo_Producto = tipoProductoGlobal?.Id
+            presenter?.updateCultivo(cultivo, cultivo?.LoteId)
         }
     }
 
@@ -385,6 +395,17 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         onMessageOk(R.color.grey_luiyi, error)
     }
 
+    override fun verificateConnection(): AlertDialog? {
+        var builder = AlertDialog.Builder(activity!!)
+        builder.setTitle(getString(R.string.alert));
+        builder.setMessage(getString(R.string.verificate_conexion));
+        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            dialog.dismiss()
+        })
+        builder.setIcon(R.drawable.ic_lote);
+        return builder.show();
+    }
+
     override fun onMessageOk(colorPrimary: Int, msg: String?) {
         val color = Color.WHITE
         val snackbar = Snackbar
@@ -436,24 +457,25 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             viewDialog?.txtUnidadProductivaSelected?.text = unidadProductivaGlobal?.nombre
             viewDialog?.txtLoteSelected?.text = loteGlobal?.Nombre
             viewDialog?.txtTitle?.text = getString(R.string.title_add_cultivo)
-            title
+            //title
         }
         //UPDATE
         else {
             viewDialog?.txtTitle?.text = getString(R.string.tittle_edit_cultivo)
             presenter?.setListSpinnerDetalleTipoProducto(cultivo.Id_Tipo_Producto)
             viewDialog?.txtUnidadProductivaSelected?.text = cultivo.NombreUnidadProductiva
-            viewDialog?.txtLoteSelected?.text = cultivo?.NombreLote
+            viewDialog?.txtLoteSelected?.text = cultivo.NombreLote
             viewDialog?.spinnerUnidadMedidaCosecha?.setText(cultivo.Nombre_Unidad_Medida)
             viewDialog?.edtNombreCultivo?.setText(cultivo.Nombre)
             viewDialog?.edtDescripcionCultivo?.setText(cultivo.Descripcion)
             viewDialog?.edtEstimadoCosecha?.setText(cultivo.EstimadoCosecha.toString())
-            viewDialog?.edtFechaInicio?.setText(cultivo.getFechaIncioFormat())
-            viewDialog?.edtFechaFin?.setText(cultivo.getFechaFinFormat())
+            viewDialog?.edtFechaInicio?.setText(cultivo.stringFechaInicio)
+            viewDialog?.edtFechaFin?.setText(cultivo.stringFechaFin)
             viewDialog?.spinnerTipoProducto?.setText(cultivo.Nombre_Tipo_Producto)
             viewDialog?.spinnerDetalleTipoProducto?.setText(cultivo.Nombre_Detalle_Tipo_Producto)
-            tipoProductoGlobal = TipoProducto(cultivo.Id_Tipo_Producto, cultivo.Nombre_Tipo_Producto)
-            detalleTipoProductoGlobal = DetalleTipoProducto(cultivo.DetalleTipoProductoId, cultivo.Nombre_Detalle_Tipo_Producto)
+            unidadMedidaGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(cultivo.Unidad_Medida_Id)).querySingle()
+            tipoProductoGlobal = SQLite.select().from(TipoProducto::class.java).where(TipoProducto_Table.Id.eq(cultivo.Id_Tipo_Producto)).querySingle()
+            detalleTipoProductoGlobal = SQLite.select().from(DetalleTipoProducto::class.java).where(DetalleTipoProducto_Table.Id.eq(cultivo.DetalleTipoProductoId)).querySingle()
         }
 
         val dialog = AlertDialog.Builder(context!!, android.R.style.Theme_Light_NoTitleBar)
@@ -649,18 +671,22 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     }
 
     private fun mostrarResultadosFechaInicio() {
-        val format1 = SimpleDateFormat("MM/dd/yyyy")
+        // val format1 = SimpleDateFormat("MM/dd/yyyy")
+        val format1 = SimpleDateFormat("yyyy-MM-dd")
         val formatted = format1.format(dateTime.time)
         Date_Selected = formatted
         Fecha_Inicio = dateTime.time
+        stringFechaInicio = Date_Selected
         viewDialog?.edtFechaInicio?.setText(Date_Selected)
     }
 
     private fun mostrarResultadosFechaFin() {
-        val format1 = SimpleDateFormat("MM/dd/yyyy")
+        // val format1 = SimpleDateFormat("MM/dd/yyyy")
+        val format1 = SimpleDateFormat("yyyy-MM-dd")
         val formatted = format1.format(dateTime.time)
         Date_Selected = formatted
         Fecha_Fin = dateTime.time
+        stringFechaFin = Date_Selected
         viewDialog?.edtFechaFin?.setText(Date_Selected)
     }
 

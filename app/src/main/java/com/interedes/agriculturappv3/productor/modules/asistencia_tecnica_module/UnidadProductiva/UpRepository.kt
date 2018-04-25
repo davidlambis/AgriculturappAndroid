@@ -97,7 +97,7 @@ class UpRepository() : IUnidadProductiva.Repo {
             val call = apiService?.updateUnidadProductiva(updateUnidadProductiva, mUnidadProductiva.Id!!)
             call?.enqueue(object : Callback<UnidadProductiva> {
                 override fun onResponse(call: Call<UnidadProductiva>?, response: Response<UnidadProductiva>?) {
-                    if (response != null && response.code() == 204) {
+                    if (response != null && response.code() == 200) {
                         mUnidadProductiva.update()
                         postEventOk(RequestEventUP.UPDATE_EVENT, getUPs(), mUnidadProductiva)
                     } else {

@@ -5,6 +5,8 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.events.RequestEventLote
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.productor.models.lote.Lote_Table
 import com.interedes.agriculturappv3.productor.models.lote.PostLote
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
@@ -15,15 +17,13 @@ import com.interedes.agriculturappv3.productor.models.usuario.Usuario
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
-/**
- * Created by EnuarMunoz on 7/03/18.
- */
 class LoteRepositoryImpl : LoteRepository {
 
     var eventBus: EventBus? = null
@@ -36,16 +36,23 @@ class LoteRepositoryImpl : LoteRepository {
 
     //region METHODS
     override fun saveLotes(mLote: Lote, unidad_productiva_id: Long?) {
-        val last_lote = getLastLote()
-        if (last_lote == null) {
-            mLote.Id = 1
+        val up_area = SQLite.select().from(UnidadProductiva::class.java).where(UnidadProductiva_Table.Id.eq(unidad_productiva_id)).querySingle()?.Area
+        val total_areas = area_lotes(mLote, unidad_productiva_id)
+        if (total_areas!! < up_area!!) {
+            val last_lote = getLastLote()
+            if (last_lote == null) {
+                mLote.Id = 1
+            } else {
+                mLote.Id = last_lote.Id + 1
+            }
+            mLote.save()
+            val lotes = getLotes(unidad_productiva_id)
+            postEventOk(RequestEventLote.SAVE_EVENT, lotes, mLote)
         } else {
-            mLote.Id = last_lote.Id + 1
+            postEventError(RequestEventLote.ERROR_EVENT, "No se puede registrar. El área total de lotes supera el área de la Unidad Productiva")
         }
-        mLote.save()
-        val lotes = getLotes(unidad_productiva_id)
-        postEventOk(RequestEventLote.SAVE_EVENT, lotes, mLote)
     }
+
 
     override fun registerOnlineLote(mLote: Lote, unidad_productiva_id: Long?) {
         val unidad_productiva = SQLite.select().from(UnidadProductiva::class.java).where(UnidadProductiva_Table.Id.eq(unidad_productiva_id)).querySingle()
@@ -58,28 +65,53 @@ class LoteRepositoryImpl : LoteRepository {
                     mLote.Unidad_Medida_Id,
                     mLote.Unidad_Productiva_Id)
 
-            val call = apiService?.postLote(postLote)
-            call?.enqueue(object : Callback<Lote> {
-                override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
-                    if (response != null && response.code() == 201) {
-                        mLote.Id = response.body()?.Id!!
-                        mLote.EstadoSincronizacion = true
-                        mLote.save()
-                        postEventOk(RequestEventLote.SAVE_EVENT, getLotes(unidad_productiva_id), mLote)
-                    } else {
+
+            val up_area = SQLite.select().from(UnidadProductiva::class.java).where(UnidadProductiva_Table.Id.eq(unidad_productiva_id)).querySingle()?.Area
+            val total_areas = area_lotes(mLote, unidad_productiva_id)
+
+            if (total_areas!! > up_area!!) {
+                postEventError(RequestEventLote.ERROR_EVENT, "No se puede registrar. El área total de lotes supera el área de la Unidad Productiva")
+            } else {
+                val call = apiService?.postLote(postLote)
+                call?.enqueue(object : Callback<Lote> {
+                    override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
+                        if (response != null && response.code() == 201) {
+                            mLote.Id = response.body()?.Id!!
+                            mLote.EstadoSincronizacion = true
+                            mLote.save()
+                            postEventOk(RequestEventLote.SAVE_EVENT, getLotes(unidad_productiva_id), mLote)
+                        } else {
+                            postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Lote>?, t: Throwable?) {
                         postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
                     }
-                }
 
-                override fun onFailure(call: Call<Lote>?, t: Throwable?) {
-                    postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
-                }
+                })
+            }
 
-            })
         } else {
-            saveLotes(mLote, unidad_productiva_id)
-            postEventOk(RequestEventLote.SAVE_EVENT, getLotes(unidad_productiva_id), mLote)
+            val up_area = SQLite.select().from(UnidadProductiva::class.java).where(UnidadProductiva_Table.Id.eq(unidad_productiva_id)).querySingle()?.Area
+            val total_areas = area_lotes(mLote, unidad_productiva_id)
+            if (total_areas!! > up_area!!) {
+                postEventError(RequestEventLote.ERROR_EVENT, "No se puede registrar. El área total de lotes supera el área de la Unidad Productiva")
+            } else {
+                saveLotes(mLote, unidad_productiva_id)
+                postEventOk(RequestEventLote.SAVE_EVENT, getLotes(unidad_productiva_id), mLote)
+            }
         }
+    }
+
+    private fun area_lotes(mLote: Lote, unidad_productiva_id: Long?): Double? {
+        val lotes_up = SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).queryList()
+        var suma_areas = 0.0
+        for (item in lotes_up) {
+            suma_areas = suma_areas + item.Area!!
+        }
+        val total_areas = suma_areas + mLote.Area!!
+        return total_areas
     }
 
     override fun getListLotes(unidad_productiva_id: Long?) {
@@ -130,7 +162,7 @@ class LoteRepositoryImpl : LoteRepository {
             val call = apiService?.updateLote(postLote, mLote.Id)
             call?.enqueue(object : Callback<Lote> {
                 override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
-                    if (response != null && response.code() == 204) {
+                    if (response != null && response.code() == 200) {
                         mLote.update()
                         postEventOk(RequestEventLote.UPDATE_EVENT, getLotes(unidad_productiva_id), mLote)
                     } else {
@@ -156,6 +188,12 @@ class LoteRepositoryImpl : LoteRepository {
                 override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
                     if (response != null && response.code() == 204) {
                         mLote.delete()
+                        val cultivos_lote = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(mLote.Id)).queryList()
+                        if (cultivos_lote.size > 0) {
+                            for (item in cultivos_lote) {
+                                item.delete()
+                            }
+                        }
                         postEventOk(RequestEventLote.DELETE_EVENT, getLotes(unidad_productiva_id), mLote)
                     }
                 }

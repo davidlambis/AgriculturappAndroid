@@ -2,14 +2,17 @@ package com.interedes.agriculturappv3.productor.models.cultivo
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo_Table.FechaIncio
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Table(database = DataSource::class)
-data class Cultivo(@PrimaryKey(autoincrement = true)
+data class Cultivo(@PrimaryKey
                    @SerializedName("Id")
                    @Column(name = "Id")
                    var Id: Long? = 0,
@@ -28,11 +31,11 @@ data class Cultivo(@PrimaryKey(autoincrement = true)
 
                    @SerializedName("FechaFin")
                    @Column(name = "FechaFin")
-                   var FechaFin: Date? = null,
+                   var FechaFin: String ? = null,
 
                    @SerializedName("FechaIncio")
                    @Column(name = "FechaIncio")
-                   var FechaIncio: Date? = null,
+                   var FechaIncio: String? = null,
 
                    @SerializedName("LoteId")
                    @Column(name = "LoteId")
@@ -68,7 +71,13 @@ data class Cultivo(@PrimaryKey(autoincrement = true)
                    var Nombre_Detalle_Tipo_Producto: String? = null,
 
                    @Column(getterName = "getEstadoSincronizacion")
-                   var EstadoSincronizacion: Boolean? = false) {
+                   var EstadoSincronizacion: Boolean? = false,
+
+                   @Column(name = "stringFechaInicio")
+                   var stringFechaInicio: String? = null,
+
+                   @Column(name = "stringFechaFin")
+                   var stringFechaFin: String? = null) {
 
     override fun toString(): String {
         return String.format("%s - %s", Nombre, Nombre_Detalle_Tipo_Producto);
@@ -80,12 +89,12 @@ data class Cultivo(@PrimaryKey(autoincrement = true)
 
 
     fun getFechaIncioFormat(): String {
-        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val sdf = SimpleDateFormat("yyyy-mm-dd", Locale.getDefault())
         return sdf.format(FechaIncio)
     }
 
     fun getFechaFinFormat(): String {
-        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val sdf = SimpleDateFormat("yyyy-mm-dd", Locale.getDefault())
         return sdf.format(FechaFin)
     }
 

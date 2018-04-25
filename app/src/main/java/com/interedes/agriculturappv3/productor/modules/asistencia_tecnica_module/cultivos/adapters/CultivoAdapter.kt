@@ -28,7 +28,6 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
     }
 
 
-
     init {
         eventBus = GreenRobotEventBus()
 
@@ -77,14 +76,12 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
 
 
             icon.setImageResource(R.drawable.ic_cultivos)
-            txtAdicional.visibility=View.GONE
+            txtAdicional.visibility = View.GONE
 
             btnEdit.setColorFilter(getContext().getResources().getColor(R.color.orange))
-            btnAdd.visibility=View.GONE
+            btnAdd.visibility = View.GONE
             btnEdit.setColorFilter(getContext().getResources().getColor(R.color.orange))
             btnDelete.setColorFilter(getContext().getResources().getColor(R.color.red_900))
-
-
 
 
             //val txt_nombre_cultivo: TextView = itemView.findViewById(R.id.txtNombreCultivo)
@@ -93,15 +90,15 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
             txt_nombre_cultivo.text = data.Nombre_Detalle_Tipo_Producto
             txt_descripcion_cultivo.text = data.Descripcion
 
-            txt_cosecha_estimada.text = String.format(context.getString(R.string.cantidad_estimada)!!,data.EstimadoCosecha, data.Nombre_Unidad_Medida)
-            txt_fechas_cultivo.setText(String.format(context.getString(R.string.range_dates)!!, data.FechaIncio, data.FechaFin))
+            txt_cosecha_estimada.text = String.format(context.getString(R.string.cantidad_estimada)!!, data.EstimadoCosecha, data.Nombre_Unidad_Medida)
+            txt_fechas_cultivo.setText(String.format(context.getString(R.string.range_dates)!!, data.stringFechaInicio, data.stringFechaFin))
 
             itemView.setOnClickListener {
                 postEvent(CultivoEvent.ITEM_EVENT, data)
             }
 
             btnEdit.setOnClickListener {
-             postEvent(CultivoEvent.ITEM_EDIT_EVENT, data)
+                postEvent(CultivoEvent.ITEM_EDIT_EVENT, data)
             }
 
             btnDelete.setOnClickListener {

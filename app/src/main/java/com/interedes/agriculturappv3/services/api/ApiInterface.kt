@@ -120,6 +120,17 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST("odata/Agp2/Cultivos")
     fun postCultivo(@Body body: PostCultivo): Call<Cultivo>
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @PATCH("odata/Agp2/Cultivos({Id})")
+    fun updateCultivo(@Body body: PostCultivo, @Path("Id") Id: Long): Call<Cultivo>
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @DELETE("odata/Agp2/Cultivos({Id})")
+    fun deleteCultivo(@Path("Id") Id: Long): Call<Cultivo>
+
     //endregion
 
 

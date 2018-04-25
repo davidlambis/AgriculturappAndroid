@@ -36,11 +36,13 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.adapter.LoteAdapter
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.presenter.LotePresenter
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.presenter.LotePresenterImpl
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_lote.view.*
@@ -707,7 +709,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     override fun updateLote(lote: Lote, unidad_productiva_id: Long?) {
         if (presenter?.validarCampos() == true) {
             //var lote = Lote()
-            lote.Id = loteGlobal!!.Id
+            //lote.Id = loteGlobal!!.Id
             lote.Nombre = viewDialog?.name_lote?.text.toString()
             lote.Descripcion = viewDialog?.description_lote?.text.toString()
             lote.Area = viewDialog?.area_lote?.text.toString().toDoubleOrNull()
@@ -758,7 +760,8 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         //UPDATE
         else {
             viewDialog?.txtTitle?.setText(getString(R.string.edit_lote))
-            unidadMedidaGlobal = Unidad_Medida(lote.Id, lote.Nombre_Unidad_Medida, null)
+            //unidadMedidaGlobal = Unidad_Medida(lote.Id, lote.Nombre_Unidad_Medida, null)
+            unidadMedidaGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(lote.Unidad_Medida_Id)).querySingle()
             viewDialog?.name_lote?.setText(lote.Nombre)
             viewDialog?.description_lote?.setText(lote.Descripcion)
             viewDialog?.area_lote?.setText(lote.Area.toString())

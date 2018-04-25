@@ -121,6 +121,7 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
             CultivoEvent.UPDATE_EVENT -> {
                 val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
                 view?.setListCultivos(list_cultivos)
+                view?.hideProgressHud()
                 view?.requestResponseOk()
             }
             CultivoEvent.DELETE_EVENT -> {
@@ -176,7 +177,13 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
     }
 
     override fun updateCultivo(cultivo: Cultivo?, loteId: Long?) {
-        interactor?.updateCultivo(cultivo, loteId)
+        view?.showProgressHud()
+        view?.disableInputs()
+        if (checkConnection()) {
+            interactor?.updateCultivo(cultivo, loteId)
+        } else {
+            onMessageConnectionError()
+        }
     }
 
     override fun deleteCultivo(cultivo: Cultivo?, loteId: Long?) {
@@ -225,7 +232,11 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
     //endregion
 
     //region Messages/Notificaciones
-
+    private fun onMessageConnectionError() {
+        view?.hideProgress()
+        view?.hideProgressHud()
+        view?.verificateConnection()
+    }
 
     //endregion
 

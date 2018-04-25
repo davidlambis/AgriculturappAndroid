@@ -14,6 +14,7 @@
     <string name="results_global_search">Mostrando %d Resultados</string>
     <string name="error_field_required">Campo Requerido</string>
     <string name="nombre_usuario_nav">%1s %2s</string>
+    <string name="order_dates">Error en el orden de las fechas</string>
 
     <string name="coords">%f  /  %f</string>
 
