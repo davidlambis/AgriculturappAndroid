@@ -87,7 +87,7 @@ data class Cultivo(@PrimaryKey
         return String.format("%s - %s", Nombre, Nombre_Detalle_Tipo_Producto);
     }
 
-
+/*
     fun getFechaIncioFormat(): String {
         val sdf = SimpleDateFormat("yyyy-mm-dd", Locale.getDefault())
         return sdf.format(FechaIncio)
@@ -96,6 +96,6 @@ data class Cultivo(@PrimaryKey
     fun getFechaFinFormat(): String {
         val sdf = SimpleDateFormat("yyyy-mm-dd", Locale.getDefault())
         return sdf.format(FechaFin)
-    }
+    } */
 
 }

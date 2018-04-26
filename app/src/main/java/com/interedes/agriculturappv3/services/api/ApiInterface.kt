@@ -11,6 +11,9 @@ import com.interedes.agriculturappv3.productor.models.login.LoginResponse
 import com.interedes.agriculturappv3.productor.models.lote.PostLote
 import com.interedes.agriculturappv3.productor.models.rol.RolResponse
 import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPagoResponse
+import com.interedes.agriculturappv3.productor.models.producto.CalidadProductoResponse
+import com.interedes.agriculturappv3.productor.models.producto.PostProducto
+import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.rol.AspNetRolResponse
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProductoResponse
 import com.interedes.agriculturappv3.productor.models.unidad_medida.CategoriaMedidaResponse
@@ -81,6 +84,10 @@ interface ApiInterface {
     @GET("odata/Agp2/UnidadMedidas")
     fun getUnidadesMedida(): Call<UnidadMedidaResponse>
 
+    //Get Calidades Producto
+    @GET("odata/Agp2/Calidads")
+    fun getCalidadesProducto(): Call<CalidadProductoResponse>
+
     //region UNIDADES PRODUCTIVAS
     //Post Unidad Productiva
     //TODO Requiere Token
@@ -131,6 +138,23 @@ interface ApiInterface {
     @DELETE("odata/Agp2/Cultivos({Id})")
     fun deleteCultivo(@Path("Id") Id: Long): Call<Cultivo>
 
+    //endregion
+
+    //region Productos
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @POST("odata/Agp2/Productos")
+    fun postProducto(@Body body: PostProducto): Call<Producto>
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @PATCH("odata/Agp2/Productos({Id})")
+    fun updateProducto(@Body body: PostProducto, @Path("Id") Id: Long): Call<Producto>
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @DELETE("odata/Agp2/Productos({Id})")
+    fun deleteProducto(@Path("Id") Id: Long): Call<Producto>
     //endregion
 
 

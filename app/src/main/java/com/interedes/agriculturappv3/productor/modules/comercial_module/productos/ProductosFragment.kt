@@ -34,6 +34,8 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
@@ -90,6 +92,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     var PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
 
     var imageGlobal: ByteArray? = null
+    // var imageGlobalRutaFoto: String? = null
 
     var isFoto: Boolean? = false
 
@@ -120,7 +123,9 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         searchFilter.setOnClickListener(this)
         fabAddProducto.setOnClickListener(this)
         setupInjection()
-
+        YoYo.with(Techniques.Pulse)
+                .repeat(5)
+                .playOn(fabAddProducto)
     }
 
     //region ADAPTER
@@ -299,7 +304,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         else {
             isFoto = true
             viewDialog?.txtTitle?.setText(getString(R.string.title_editar_producto))
-            val byte = producto.Imagen?.getBlob()
+            val byte = producto.blobImagen?.getBlob()
             val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
             viewDialog?.product_image?.setImageBitmap(bitmap)
             viewDialog?.txtUnidadProductivaSelected?.setText(producto.NombreUnidadProductiva)
@@ -309,7 +314,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.txtDescripcionProducto?.setText(producto.Descripcion)
             viewDialog?.spinnerCalidadProducto?.setText(producto.NombreCalidad)
             viewDialog?.spinnerMonedaPrecio?.setText(producto.NombreUnidadMedida)
-            viewDialog?.txtFechaLimiteDisponibilidad?.setText(producto.getFechaLimiteDisponibilidadFormat())
+            viewDialog?.txtFechaLimiteDisponibilidad?.setText(producto.FechaLimiteDisponibilidad)
             viewDialog?.txtPrecio?.setText(producto.Precio.toString())
 
         }
@@ -411,8 +416,8 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         }
         txtNombreCultivo.setText(cultivo?.Nombre)
         txtNombreLote.setText(cultivo?.Nombre_Tipo_Producto)
-        txtPrecio.setText(cultivo?.getFechaIncioFormat())
-        txtArea.setText(cultivo?.getFechaFinFormat())
+        txtPrecio.setText(cultivo?.FechaIncio)
+        txtArea.setText(cultivo?.FechaFin)
 
     }
 
@@ -567,7 +572,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                         isFoto = true
                         val bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, contentURI)
                         imageGlobal = convertBitmapToByte(bitmap)
-                        //saveImage(bitmap)
+                        //imageGlobalRutaFoto = saveImage(bitmap)
                         //Toast.makeText(context, "Image Saved!", Toast.LENGTH_SHORT).show()
                         viewDialog?.product_image?.setImageBitmap(bitmap)
 
@@ -584,7 +589,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                     val thumbnail = data.extras?.get("data") as Bitmap
                     imageGlobal = convertBitmapToByte(thumbnail)
                     viewDialog?.product_image?.setImageBitmap(thumbnail)
-                    // saveImage(thumbnail)
+                    //imageGlobalRutaFoto = saveImage(thumbnail)
                     // Toast.makeText(context, thumbnail.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
@@ -639,10 +644,14 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             producto.NombreCalidad = calidadProductoGlobal?.Nombre
             //producto.Nombre = viewDialog?.txtNombreProducto?.text.toString()
             producto.Descripcion = viewDialog?.txtDescripcionProducto?.text.toString()
-            producto.FechaLimiteDisponibilidad = fechaLimiteDisponibilidad
-            producto.Imagen = Blob(imageGlobal)
+            producto.FechaLimiteDisponibilidad = viewDialog?.txtFechaLimiteDisponibilidad?.text.toString()
+            producto.blobImagen = Blob(imageGlobal)
+            val stringBuilder = StringBuilder()
+            stringBuilder.append("data:image/jpeg;base64,")
+            stringBuilder.append(android.util.Base64.encodeToString(imageGlobal, android.util.Base64.DEFAULT))
+            producto.Imagen = stringBuilder.toString()
             producto.Precio = viewDialog?.txtPrecio?.text.toString().toDoubleOrNull()
-            producto.CultivoId = Cultivo_Id
+            producto.cultivoId = Cultivo_Id
             producto.NombreUnidadProductiva = unidadProductivaGlobal?.nombre
             producto.NombreLote = loteGlobal?.Nombre
             producto.NombreCultivo = cultivoGlobal?.Nombre
@@ -652,30 +661,37 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         }
     }
 
-    override fun updateProducto(producto: Producto) {
+    override fun updateProducto(mProducto: Producto) {
         if (presenter?.validarCampos() == true) {
-            val productoUpdate = Producto()
-            productoUpdate.Id = producto.Id
-            productoUpdate.CalidadId = producto.CalidadId
-            productoUpdate.NombreCalidad = producto.NombreCalidad
+            //val productoUpdate = Producto()
+            //productoUpdate.Id = mProducto.Id
+            mProducto.CalidadId = calidadProductoGlobal?.Id
+            mProducto.NombreCalidad = calidadProductoGlobal?.Nombre
             //productoUpdate.Nombre = viewDialog?.txtNombreProducto?.text.toString()
-            productoUpdate.Descripcion = viewDialog?.txtDescripcionProducto?.text.toString()
-            val stringFecha = viewDialog?.txtFechaLimiteDisponibilidad?.text.toString()
+            mProducto.Descripcion = viewDialog?.txtDescripcionProducto?.text.toString()
+            /*val stringFecha = viewDialog?.txtFechaLimiteDisponibilidad?.text.toString()
             val format = SimpleDateFormat("dd/MM/yyyy")
-            val date = format.parse(stringFecha)
-            productoUpdate.FechaLimiteDisponibilidad = date
-            viewDialog?.product_image?.isDrawingCacheEnabled = true
-            val bitmap = viewDialog?.product_image?.getDrawingCache()
-            val byte = convertBitmapToByte(bitmap!!)
-            productoUpdate.Imagen = Blob(byte)
-            productoUpdate.Precio = viewDialog?.txtPrecio?.text.toString().toDoubleOrNull()
-            productoUpdate.CultivoId = producto.CultivoId
-            productoUpdate.NombreUnidadProductiva = producto.NombreUnidadProductiva
-            productoUpdate.NombreLote = producto.NombreLote
-            productoUpdate.NombreCultivo = producto.NombreCultivo
-            productoUpdate.NombreDetalleTipoProducto = producto.NombreDetalleTipoProducto
-            productoUpdate.NombreUnidadMedida = viewDialog?.spinnerMonedaPrecio?.text.toString()
-            presenter?.registerProducto(productoUpdate, Cultivo_Id!!)
+            val date = format.parse(stringFecha)*/
+            mProducto.FechaLimiteDisponibilidad = viewDialog?.txtFechaLimiteDisponibilidad?.text.toString()
+            if (imageGlobal != null) {
+                mProducto.blobImagen = Blob(imageGlobal)
+                val stringBuilder = StringBuilder()
+                stringBuilder.append("data:image/jpeg;base64,")
+                stringBuilder.append(android.util.Base64.encodeToString(imageGlobal, android.util.Base64.DEFAULT))
+                mProducto.Imagen = stringBuilder.toString()
+            } else {
+                viewDialog?.product_image?.isDrawingCacheEnabled = true
+                val bitmap = viewDialog?.product_image?.getDrawingCache()
+                val byte = convertBitmapToByte(bitmap!!)
+                mProducto.blobImagen = Blob(byte)
+                val stringBuilder = StringBuilder()
+                stringBuilder.append("data:image/jpeg;base64,")
+                stringBuilder.append(android.util.Base64.encodeToString(byte, android.util.Base64.DEFAULT))
+                mProducto.Imagen = stringBuilder.toString()
+            }
+            mProducto.Precio = viewDialog?.txtPrecio?.text.toString().toDoubleOrNull()
+            mProducto.NombreUnidadMedida = viewDialog?.spinnerMonedaPrecio?.text.toString()
+            presenter?.updateProducto(mProducto, Cultivo_Id!!)
         }
     }
 
@@ -688,7 +704,10 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     }
 
     override fun requestResponseError(error: String?) {
-
+        if (_dialogRegisterUpdate != null) {
+            _dialogRegisterUpdate?.dismiss()
+        }
+        Snackbar.make(container_fragment, error.toString(), Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onMessageOk(colorPrimary: Int, msg: String?) {
@@ -713,9 +732,10 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         val builder = AlertDialog.Builder(context!!)
         builder.setTitle(getString(R.string.alert))
         builder.setMessage(getString(R.string.verificate_conexion))
-        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
-            dialog.dismiss()
-        })
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.
+                OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
         builder.setIcon(R.drawable.ic_productos)
         return builder.show()
     }
@@ -761,7 +781,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     }
 
     private fun mostrarResultadosFechaLimiteDisponibilidad() {
-        val format1 = SimpleDateFormat("dd/MM/yyyy")
+        val format1 = SimpleDateFormat("yyyy-MM-dd")
         val formatted = format1.format(dateTime.time)
         fechaLimiteDisponibilidad = dateTime.time
         viewDialog?.txtFechaLimiteDisponibilidad?.setText(formatted)

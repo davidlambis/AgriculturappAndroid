@@ -85,6 +85,11 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
                 val list = event.mutableList as List<Producto>
                 view?.setListProductos(list)
             }
+
+            ProductosEvent.ERROR_EVENT -> {
+                view?.hideDialogProgress()
+                view?.requestResponseError(event.mensajeError)
+            }
         //LIST EVENTS
             ProductosEvent.LIST_EVENT_UNIDAD_MEDIDA -> {
                 listUnidadMedidaGlobal = event.mutableList as List<Unidad_Medida>
@@ -153,15 +158,29 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
     override fun registerProducto(producto: Producto, cultivo_id: Long) {
         view?.disableInputs()
         view?.showDialogProgress()
-        interactor?.registerProducto(producto, cultivo_id)
+        if (checkConnection()) {
+            interactor?.registerOnlineProducto(producto, cultivo_id)
+        } else {
+            interactor?.registerProducto(producto, cultivo_id)
+        }
     }
 
-    override fun updateProducto(producto: Producto, cultivo_id: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun updateProducto(mProducto: Producto, cultivo_id: Long) {
+        view?.showDialogProgress()
+        if (checkConnection()) {
+            view?.disableInputs()
+            interactor?.updateProducto(mProducto, cultivo_id)
+        } else {
+            onMessageConnectionError()
+        }
     }
 
     override fun deleteProducto(producto: Producto, cultivo_id: Long?) {
-        interactor?.deleteProducto(producto, cultivo_id)
+        if (checkConnection()) {
+            interactor?.deleteProducto(producto, cultivo_id)
+        } else {
+            onMessageConnectionError()
+        }
     }
 
     override fun getListProductos(cultivo_id: Long?) {
@@ -203,6 +222,11 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
         view?.hideDialogProgress()
         view?.limpiarCampos()
         view?.requestResponseOK()
+    }
+
+    private fun onMessageConnectionError() {
+        view?.hideDialogProgress()
+        view?.verificateConnection()
     }
     //endregion
 }

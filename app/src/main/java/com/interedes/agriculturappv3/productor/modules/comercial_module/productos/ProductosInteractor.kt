@@ -14,8 +14,12 @@ class ProductosInteractor : IProductos.Interactor {
         repository?.registerProducto(producto, cultivo_id)
     }
 
-    override fun updateProducto(producto: Producto, cultivo_id: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun registerOnlineProducto(producto: Producto, cultivo_id: Long) {
+        repository?.registerOnlineProducto(producto, cultivo_id)
+    }
+
+    override fun updateProducto(mProducto: Producto, cultivo_id: Long) {
+        repository?.updateProducto(mProducto, cultivo_id)
     }
 
     override fun deleteProducto(producto: Producto, cultivo_id: Long?) {

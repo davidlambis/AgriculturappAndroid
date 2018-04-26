@@ -170,7 +170,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
             viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.Nombre)
             viewDialogFilter?.spinnerProducto?.visibility = View.VISIBLE
-            viewDialogFilter?.spinnerProducto?.setText(productoGlobal?.Nombre)
+            viewDialogFilter?.spinnerProducto?.setText(productoGlobal?.NombreDetalleTipoProducto)
         }
 
         viewDialogFilter?.ivCloseButtonDialogFilter?.setOnClickListener(this)
@@ -309,7 +309,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         txtNombreCultivo?.setText(producto?.NombreCultivo)
         txtNombreLote?.setText(producto?.NombreDetalleTipoProducto)
         txtPrecio?.setText(getString(R.string.title_adapter_precio_producto, producto?.Precio))
-        txtNombreProducto?.setText(producto?.Nombre)
+        //txtNombreProducto?.setText(producto?.Nom)
     }
     //endregion
 

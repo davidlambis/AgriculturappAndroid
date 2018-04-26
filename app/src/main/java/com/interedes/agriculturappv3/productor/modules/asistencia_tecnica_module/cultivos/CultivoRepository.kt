@@ -12,6 +12,8 @@ import com.interedes.agriculturappv3.productor.models.detalletipoproducto.Detall
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.lote.Lote_Table
 import com.interedes.agriculturappv3.productor.models.lote.PostLote
+import com.interedes.agriculturappv3.productor.models.producto.Producto
+import com.interedes.agriculturappv3.productor.models.producto.Producto_Table
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva

@@ -182,8 +182,8 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         }
         txtNombreCultivo.setText(cultivo?.Nombre)
         txtNombreLote.setText(cultivo?.Nombre_Tipo_Producto)
-        txtPrecio.setText(cultivo?.getFechaIncioFormat())
-        txtArea.setText(cultivo?.getFechaFinFormat())
+        txtPrecio.setText(cultivo?.FechaIncio)
+        txtArea.setText(cultivo?.FechaFin)
     }
 
     override fun updatePlaga(controlPlaga: ControlPlaga?) {

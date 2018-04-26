@@ -134,7 +134,7 @@ class VentasPresenter(var view: IVentas.View?) : IVentas.Presenter {
     }
 
     override fun setListSpinnerProducto(cultivo_id: Long?) {
-        val list = listProductosGlobal?.filter { producto: Producto -> producto.CultivoId == cultivo_id }
+        val list = listProductosGlobal?.filter { producto: Producto -> producto.cultivoId == cultivo_id }
         view?.setListProductos(list)
     }
 

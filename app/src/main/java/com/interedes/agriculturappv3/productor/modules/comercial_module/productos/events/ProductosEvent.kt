@@ -20,6 +20,8 @@ data class ProductosEvent(var eventType: Int,
         val DELETE_EVENT : Int = 9
         val ITEM_EDIT_EVENT: Int = 10
         val ITEM_DELETE_EVENT: Int = 11
+
+        val ERROR_EVENT : Int = 12
     }
 
 }

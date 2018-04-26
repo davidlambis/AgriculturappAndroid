@@ -170,7 +170,7 @@ class VentasFragment : Fragment(), IVentas.View, View.OnClickListener, SwipeRefr
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
             viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.Nombre)
             viewDialogFilter?.spinnerProducto?.visibility = View.VISIBLE
-            viewDialogFilter?.spinnerProducto?.setText(productoGlobal?.Nombre)
+            viewDialogFilter?.spinnerProducto?.setText(productoGlobal?.NombreDetalleTipoProducto)
         }
 
         viewDialogFilter?.ivCloseButtonDialogFilter?.setOnClickListener(this)
@@ -308,7 +308,7 @@ class VentasFragment : Fragment(), IVentas.View, View.OnClickListener, SwipeRefr
         txtNombreCultivo?.setText(producto?.NombreCultivo)
         txtNombreLote?.setText(producto?.NombreDetalleTipoProducto)
         txtPrecio?.setText(getString(R.string.title_adapter_precio_producto, producto?.Precio))
-        txtNombreProducto?.setText(producto?.Nombre)
+        //txtNombreProducto?.setText(producto?.Nombre)
     }
 
 

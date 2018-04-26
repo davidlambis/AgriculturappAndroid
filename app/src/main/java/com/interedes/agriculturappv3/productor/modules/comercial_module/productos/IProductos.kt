@@ -27,7 +27,7 @@ interface IProductos {
         //Fun Productos CRUD
         fun registerProducto()
 
-        fun updateProducto(producto: Producto)
+        fun updateProducto(mProducto: Producto)
         fun setListProductos(listProductos: List<Producto>)
         fun setResults(productos: Int)
         //Response Notify
@@ -59,8 +59,8 @@ interface IProductos {
 
         fun setCultivo(cultivo: Cultivo?)
 
-        fun takePictureWithCamera(fragment : ProductosFragment)
-        fun choosePhotoFromGallery(fragment : ProductosFragment)
+        fun takePictureWithCamera(fragment: ProductosFragment)
+        fun choosePhotoFromGallery(fragment: ProductosFragment)
     }
 
     interface Presenter {
@@ -80,7 +80,7 @@ interface IProductos {
         //Methods
         fun registerProducto(producto: Producto, cultivo_id: Long)
 
-        fun updateProducto(producto: Producto, cultivo_id: Long)
+        fun updateProducto(mProducto: Producto, cultivo_id: Long)
         fun deleteProducto(producto: Producto, cultivo_id: Long?)
         fun getListProductos(cultivo_id: Long?)
         fun getListas()
@@ -102,7 +102,8 @@ interface IProductos {
 
     interface Interactor {
         fun registerProducto(producto: Producto, cultivo_id: Long)
-        fun updateProducto(producto: Producto, cultivo_id: Long)
+        fun registerOnlineProducto(producto: Producto, cultivo_id: Long)
+        fun updateProducto(mProducto: Producto, cultivo_id: Long)
         fun deleteProducto(producto: Producto, cultivo_id: Long?)
         fun getListProductos(cultivo_id: Long?)
         fun getListas()
@@ -114,9 +115,11 @@ interface IProductos {
         fun getListas()
         fun getListProducto(cultivo_id: Long?)
         fun getProductos(cultivo_id: Long?): List<Producto>
-        fun registerProducto(producto: Producto, cultivo_id: Long)
-        fun updateProducto(producto: Producto, cultivo_id: Long)
-        fun deleteProducto(producto: Producto, cultivo_id: Long?)
+        fun registerProducto(mProducto: Producto, cultivo_id: Long)
+        fun registerOnlineProducto(mProducto: Producto, cultivo_id: Long)
+        fun updateProducto(mProducto: Producto, cultivo_id: Long)
+        fun deleteProducto(mProducto: Producto, cultivo_id: Long?)
         fun getCultivo(cultivo_id: Long?)
+        fun getLastProducto(): Producto?
     }
 }

@@ -312,6 +312,7 @@
     <string name="error_take_picture_camera">Error al tomar la fotografía</string>
     <string name="error_image_selected">Debe seleccionar una imagen</string>
     <string name="title_registrate"><u>Regístrate</u></string>
+    <string name="title_restart_password"><u>Reiniciar Contraseña</u></string>
     <string name="need_internet_register">Necesitas internet para registrarte</string>
     <string name="Sincronizado">Sincronizado</string>
     <string name="noSincronizado">No Sincronizado</string>

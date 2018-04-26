@@ -12,6 +12,8 @@ import com.interedes.agriculturappv3.productor.TestResponse
 import com.interedes.agriculturappv3.productor.models.*
 import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProductoResponse
+import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
+import com.interedes.agriculturappv3.productor.models.producto.CalidadProductoResponse
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProductoResponse
 import com.interedes.agriculturappv3.productor.models.unidad_medida.CategoriaMedida
@@ -165,6 +167,29 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
             }
 
         })
+
+        //Calidades de Producto
+        val callCalidadProducto = apiService?.getCalidadesProducto()
+        callCalidadProducto?.enqueue(object : Callback<CalidadProductoResponse> {
+            override fun onResponse(call: Call<CalidadProductoResponse>?, response: Response<CalidadProductoResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val calidadesProducto = response.body()?.value as MutableList<CalidadProducto>
+                    for (item in calidadesProducto) {
+                        item.save()
+                    }
+                } else {
+                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+
+            override fun onFailure(call: Call<CalidadProductoResponse>?, t: Throwable?) {
+                postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+
+        })
+
+        //Categorías de Producto
+
 
 
     }

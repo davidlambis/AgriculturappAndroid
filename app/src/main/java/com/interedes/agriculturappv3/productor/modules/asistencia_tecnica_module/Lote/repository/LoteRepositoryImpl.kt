@@ -188,12 +188,6 @@ class LoteRepositoryImpl : LoteRepository {
                 override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
                     if (response != null && response.code() == 204) {
                         mLote.delete()
-                        val cultivos_lote = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(mLote.Id)).queryList()
-                        if (cultivos_lote.size > 0) {
-                            for (item in cultivos_lote) {
-                                item.delete()
-                            }
-                        }
                         postEventOk(RequestEventLote.DELETE_EVENT, getLotes(unidad_productiva_id), mLote)
                     }
                 }
