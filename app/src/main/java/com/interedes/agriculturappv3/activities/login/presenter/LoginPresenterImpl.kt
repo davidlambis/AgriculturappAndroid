@@ -1,5 +1,7 @@
 package com.interedes.agriculturappv3.activities.login.presenter
 
+import android.support.v4.content.ContextCompat
+import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.events.LoginEvent
 import com.interedes.agriculturappv3.activities.login.interactor.LoginInteractor
 import com.interedes.agriculturappv3.activities.login.interactor.LoginInteractorImpl
@@ -39,6 +41,10 @@ class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
             LoginEvent.SAVE_EVENT -> {
                 loginView?.navigateToMainActivity()
             }
+            LoginEvent.RESET_PASSWORD_EVENT -> {
+                loginView?.hideProgress()
+                loginView?.onMessageOk(R.color.colorPrimary, "Contraseña Actualizada.Revisa tu correo")
+            }
         }
     }
 
@@ -56,6 +62,16 @@ class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
             loginInteractor?.ingresar(login)
         } else {
             loginInteractor?.getSqliteUsuario(login)
+        }
+    }
+
+    override fun resetPassword(correo: String) {
+        if (loginView?.checkConnection()!!) {
+            loginView?.disableInputs()
+            loginView?.showProgress()
+            loginInteractor?.resetPassword(correo)
+        } else {
+            loginView?.onMessageError(R.color.grey_luiyi, "No Conectado a Internet")
         }
     }
     //endregion

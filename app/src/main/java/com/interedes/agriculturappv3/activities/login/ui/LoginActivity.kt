@@ -14,6 +14,9 @@ import android.view.View
 import android.widget.TextView
 import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.R.id.edtContrasena
+import com.interedes.agriculturappv3.R.id.edtCorreo
+import com.interedes.agriculturappv3.R.string.cancel
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenter
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenterImpl
 import com.interedes.agriculturappv3.activities.registration.register_rol.RegisterRolActivity
@@ -60,6 +63,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
         getRememberedUser()
         fabLogin?.setOnClickListener(this)
         tvRegistrarse?.setOnClickListener(this)
+        tvResetPassword?.setOnClickListener(this)
         if (intent.extras != null && intent.extras["correo"].equals(getString(R.string.snackbar_verificacion_correo))) {
             onMessageOk(R.color.colorPrimary, getString(R.string.snackbar_verificacion_correo))
         }
@@ -95,6 +99,13 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
                 val i = Intent(this, RegisterRolActivity::class.java)
                 i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(i)
+            }
+            R.id.tvResetPassword -> {
+                /* if (edtCorreo?.text.toString().isEmpty()) {
+                     edtCorreo?.setError(getString(R.string.error_field_required))
+                 } else {
+                     presenter?.resetPassword(edtCorreo?.text?.trim().toString())
+                 } */
             }
 
         }

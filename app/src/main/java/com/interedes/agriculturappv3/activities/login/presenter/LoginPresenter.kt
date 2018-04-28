@@ -11,4 +11,5 @@ interface LoginPresenter {
     fun validarCampos(): Boolean?
 
     fun ingresar(login: Login)
+    fun resetPassword(correo : String)
 }

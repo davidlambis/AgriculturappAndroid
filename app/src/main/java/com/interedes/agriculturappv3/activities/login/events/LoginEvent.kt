@@ -9,5 +9,6 @@ data class LoginEvent(var eventType: Int,
     companion object {
         val SAVE_EVENT: Int = 0
         val ERROR_EVENT: Int = 1
+        val RESET_PASSWORD_EVENT: Int = 2
     }
 }

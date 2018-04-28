@@ -6,6 +6,7 @@ interface LoginRepository {
 
     fun ingresar(login: Login)
     fun getSqliteUsuario(login: Login)
+    fun resetPassword(correo : String)
     //fun updateUsuario(usuario: Usuario)
     //fun getSqliteUsuario(usuario : Usuario)
 }

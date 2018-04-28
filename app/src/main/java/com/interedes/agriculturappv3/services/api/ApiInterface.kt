@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.services.api
 
+import com.interedes.agriculturappv3.productor.models.ResetPassword
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.cultivo.PostCultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
@@ -59,6 +60,11 @@ interface ApiInterface {
     //Get Usuarios
     @GET("odata/agriculturebd/Usuarios")
     fun getUsuarios(): Call<UsuarioResponse>
+
+    //Reset Password
+    @Headers("Content-Type: application/json")
+    @POST("auth/reset-password")
+    fun resetPassword(@Body body: ResetPassword): Call<ResetPassword>
 
     //Post Login
     @Headers("Content-Type: application/json")

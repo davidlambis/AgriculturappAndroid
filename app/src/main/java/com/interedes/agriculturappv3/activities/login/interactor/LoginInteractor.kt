@@ -6,4 +6,5 @@ interface LoginInteractor {
 
     fun ingresar(login: Login)
     fun getSqliteUsuario(login: Login)
+    fun resetPassword(correo : String)
 }

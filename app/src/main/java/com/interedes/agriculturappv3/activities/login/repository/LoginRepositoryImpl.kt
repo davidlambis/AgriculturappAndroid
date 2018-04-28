@@ -10,12 +10,16 @@ import com.interedes.agriculturappv3.productor.models.login.Login
 import com.interedes.agriculturappv3.productor.models.usuario.*
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.ResetPassword
 import com.interedes.agriculturappv3.productor.models.login.LoginResponse
+import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.rol.Rol
 import com.interedes.agriculturappv3.productor.models.rol.Rol_Table
+import com.interedes.agriculturappv3.productor.modules.comercial_module.productos.events.ProductosEvent
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
@@ -140,6 +144,23 @@ class LoginRepositoryImpl : LoginRepository {
         }
     }
 
+    override fun resetPassword(correo: String) {
+        val resetPassword = ResetPassword(correo)
+        val call = apiService?.resetPassword(resetPassword)
+        call?.enqueue(object : Callback<ResetPassword> {
+            override fun onResponse(call: Call<ResetPassword>?, response: Response<ResetPassword>?) {
+                if (response != null && response.code() == 200) {
+                    postEventUsuarioOk(LoginEvent.RESET_PASSWORD_EVENT, null)
+                } else {
+                    postEventError(LoginEvent.ERROR_EVENT, "Usuario o Contraseña Incorrectos")
+                }
+            }
+
+            override fun onFailure(call: Call<ResetPassword>?, t: Throwable?) {
+                postEventError(ProductosEvent.ERROR_EVENT, "Comprueba tu conexión")
+            }
+        })
+    }
     //region Querys Sqlite
 
     private fun getLastUserLogued(): Usuario? {
