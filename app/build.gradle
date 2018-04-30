@@ -84,6 +84,8 @@ dependencies {
     implementation "com.google.firebase:firebase-database:$rootProject.ext.firebaseVersion"
     implementation "com.google.firebase:firebase-storage:$rootProject.ext.firebaseVersion"
     implementation "com.google.firebase:firebase-messaging:$rootProject.ext.firebaseVersion"
+    implementation "com.google.firebase:firebase-core:$rootProject.ext.firebaseVersion"
+
 
     compile "com.google.android.gms:play-services:$rootProject.ext.firebaseVersion"
     compile "com.google.android.gms:play-services-maps:$rootProject.ext.firebaseVersion"
@@ -122,6 +124,8 @@ dependencies {
    //For Single and Flowable queries:
     compile "io.reactivex.rxjava2:rxjava:$rxjavaVersion"
     compile "io.reactivex.rxjava2:rxandroid:$rxandroidVerion"*/
+
+    //Anumaciones
     compile 'com.daimajia.easing:library:2.0@aar'
     compile 'com.daimajia.androidanimations:library:2.3@aar'
 

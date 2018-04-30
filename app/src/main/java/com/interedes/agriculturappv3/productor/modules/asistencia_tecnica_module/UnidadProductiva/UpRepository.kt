@@ -160,7 +160,6 @@ class UpRepository() : IUnidadProductiva.Repo {
         postEvent(type, ciudadMutable, null, messageError)
     }
 
-
     private fun postEventOk(type: Int, listUnidadProductivas: List<UnidadProductiva>?, unidadProductiva: UnidadProductiva?) {
         var UpListMutable = listUnidadProductivas as MutableList<Object>
         var UpMutable: Object? = null

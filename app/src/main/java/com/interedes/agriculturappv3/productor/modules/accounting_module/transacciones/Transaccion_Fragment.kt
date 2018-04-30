@@ -473,7 +473,15 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
                 var data: Estado_Transaccion = list.filter { s -> s.Id ==rb.id.toLong()}.single()
                 estadoTransaccionGlobal=data
             }
+
+            if (transaccion != null) {
+                if(item.Nombre?.toLowerCase()?.contains(transaccion.Nombre_Estado_Transaccion!!.toLowerCase())!!){
+                    rb.isChecked=true;
+                }
+            }
+
             viewDialog?.radioGroupEstados?.addView(rb)
+
         }
         /*viewDialog?.package_lst?.layoutManager = GridLayoutManager(activity, 3)
         estadoTransaccionList?.clear()

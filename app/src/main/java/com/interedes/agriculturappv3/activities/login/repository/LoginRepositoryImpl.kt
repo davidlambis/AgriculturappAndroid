@@ -100,18 +100,15 @@ class LoginRepositoryImpl : LoginRepository {
 
                                 })
 
-
                             } else {
                                 postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                                 Log.e("Get Login User Response", response?.body().toString())
                             }
                         }
-
                         override fun onFailure(call: Call<GetUserResponse>?, t: Throwable?) {
                             postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                             Log.e("Failure Get Login User", t?.message.toString())
                         }
-
 
                     })
 

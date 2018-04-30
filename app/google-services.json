@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "453054541523",
-    "firebase_url": "https://agriculturapp-a0e3a.firebaseio.com",
-    "project_id": "agriculturapp-a0e3a",
-    "storage_bucket": "agriculturapp-a0e3a.appspot.com"
+    "project_number": "1066179598728",
+    "firebase_url": "https://agriculturapp-dedb6.firebaseio.com",
+    "project_id": "agriculturapp-dedb6",
+    "storage_bucket": "agriculturapp-dedb6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:453054541523:android:c51df02cff20ff2e",
+        "mobilesdk_app_id": "1:1066179598728:android:c51df02cff20ff2e",
         "android_client_info": {
           "package_name": "com.interedes.agriculturappv3"
         }
       },
       "oauth_client": [
         {
-          "client_id": "453054541523-ee16prqh4na0fe08rr34esa40sfksccr.apps.googleusercontent.com",
+          "client_id": "1066179598728-h4h0g69f178n9n1rl7v8ht37o45nhhqh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAKNwRbRZsz6rXFet1OSGaNLzvgjZEM19c"
+          "current_key": "AIzaSyCGvn-sUt0cWusgXVg1m0kGcD0qwfzml5Q"
         }
       ],
       "services": {
