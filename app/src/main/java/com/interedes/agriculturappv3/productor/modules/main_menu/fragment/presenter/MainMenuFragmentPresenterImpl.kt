@@ -43,6 +43,7 @@ class MainMenuFragmentPresenterImpl(var view: MainMenuFragmentView?) : MainMenuF
             RequestEvent.ERROR_EVENT -> {
                 view?.errorLogOut(event.mensajeError)
             }
+
             RequestEvent.UPDATE_EVENT -> {
                 view?.navigateToLogin()
             }

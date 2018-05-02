@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
@@ -78,7 +79,6 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
         iconMenu?.isVisible = false
 
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val window = (activity as MenuMainActivity).getWindow()
             // clear FLAG_TRANSLUCENT_STATUS flag:
@@ -111,7 +111,8 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
                 } else if (lista[position].Identificador.equals("contabilidad")) {
                     (activity as MenuMainActivity).replaceFragment(AccountingFragment())
                 } else if (lista[position].Identificador.equals("salir")) {
-                    presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
+                   // presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
+                    showExit()
                 }
             }
             recyclerView?.adapter = adapter
@@ -126,7 +127,6 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
             }
             recyclerView?.adapter = adapter
         }
-
     }
 
     //Broadcast Receiver
@@ -139,7 +139,11 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
     }
 
     override fun navigateToLogin() {
-        showExit()
+       // showExit()
+        FirebaseAuth.getInstance().signOut()
+        startActivity(Intent(activity, LoginActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
+        activity!!.finish()
     }
 
     override fun errorLogOut(error: String?) {
@@ -166,14 +170,12 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
 
     //region Métodos
     fun showExit(): Dialog {
-        val builder = AlertDialog.Builder(context!!)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle("Confirmación")
         builder.setNegativeButton("Cancelar") { dialog, which -> Log.i("Dialogos", "Confirmacion Cancelada.") }
         builder.setMessage("¿Cerrar Sesión?")
         builder.setPositiveButton("Aceptar") { dialog, which ->
-            startActivity(Intent(activity, LoginActivity::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
-            activity!!.finish()
+            presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
         }
         builder.setIcon(R.mipmap.ic_launcher)
         return builder.show()

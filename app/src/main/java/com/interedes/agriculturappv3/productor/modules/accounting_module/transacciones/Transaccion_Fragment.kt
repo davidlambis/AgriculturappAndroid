@@ -469,6 +469,11 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
             val rb = RadioButton(this.context)
             rb.id = id!!.toInt()
             rb.setText(item.Nombre)
+
+           // var lpView =  LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT,1f)
+           // rb.layoutParams=lpView
+
+
             rb.setOnClickListener {
                 var data: Estado_Transaccion = list.filter { s -> s.Id ==rb.id.toLong()}.single()
                 estadoTransaccionGlobal=data

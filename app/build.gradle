@@ -129,6 +129,11 @@ dependencies {
     compile 'com.daimajia.easing:library:2.0@aar'
     compile 'com.daimajia.androidanimations:library:2.3@aar'
 
+    //Picaso
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+
+
 
     def SupportLibVersion = '27.1.0'
     compile "com.android.support:appcompat-v7:$SupportLibVersion",
@@ -144,7 +149,6 @@ dependencies {
 
 /*
 */
-
 kapt {
     generateStubs = true
 }

@@ -38,14 +38,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <RadioButton android:id="@+id/radioFiltersByAllCultivo"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="@string/title_filter_report_all_cultivos"
                     android:checked="true"
                     android:onClick="onRadioButtonClicked"/>
                 <RadioButton
+                    android:layout_weight="1"
                     android:id="@+id/radioFilterByCultivo"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/title_filter_report_by_cultivo" />

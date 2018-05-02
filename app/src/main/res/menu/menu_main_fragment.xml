@@ -3,7 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_menu_icon"
-        android:title="Actualizar Listas"
+        android:title=""
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_menu_icon_chat"
+        android:title=""
+        android:icon="@drawable/ic_sms"
         app:showAsAction="always" />
 
 </menu>

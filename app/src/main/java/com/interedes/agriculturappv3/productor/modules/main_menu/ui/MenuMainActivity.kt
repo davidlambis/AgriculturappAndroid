@@ -33,12 +33,21 @@ import android.content.Context.TELEPHONY_SERVICE
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.telephony.TelephonyManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.interedes.agriculturappv3.activities.chat.ChatUsersActivity
+import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
+import com.interedes.agriculturappv3.productor.modules.account.AccountFragment
 import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.navigation_drawer_header.*
 import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
 
 
-class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu {
+class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu,View.OnClickListener {
+
 
     // var coordsService: CoordsService? = null
     //var coordsGlobal:Coords?=null
@@ -48,6 +57,12 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     var menuItemGlobal: MenuItem? = null
     var mPhoneNumber: String? = null
 
+
+    //Firebase
+    //FIREBASE
+    private var mUserDBRef: DatabaseReference? = null
+    private var mStorageRef: StorageReference? = null
+    private var mCurrentUserID: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +79,35 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         setAdapterFragment()
         // this.coordsService = CoordsService(this)
         //fragmentManager.beginTransaction().add(R.id.container, AccountingFragment()).commit()
+
+        //Firebase
+        mCurrentUserID = FirebaseAuth.getInstance().currentUser!!.uid
+        //init firebase
+        mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
+        mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
+
+        populateTheViews()
+    }
+
+    private fun populateTheViews() {
+        mUserDBRef?.child(FirebaseAuth.getInstance().currentUser!!.uid)?.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val currentuser = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
+                try {
+                    val userPhoto = currentuser!!.Imagen
+                    val userName = currentuser!!.Nombre
+                    val userLastName = currentuser!!.Apellido
+                    val userIdentification = currentuser!!.Cedula
+                    Picasso.with(applicationContext).load(userPhoto).placeholder(R.drawable.ic_logo_productor).into(circleImageView)
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+
+            }
+        })
     }
 
     fun setAdapterFragment() {
@@ -99,6 +143,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val headerViewHolder = HeaderViewHolder(header)
         headerViewHolder.tvNombreUsuario.setText(String.format(getString(R.string.nombre_usuario_nav), usuario_logued?.Nombre, usuario_logued?.Apellidos))
         headerViewHolder.tvIdentificacion.setText(usuario_logued?.Email)
+
+        headerViewHolder.tvNombreUsuario.setOnClickListener(this)
 
         // val header = navigationView.getHeaderView(0)
         // val headerViewHolder = HeaderViewHolder(header)
@@ -143,6 +189,15 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         drawer_layout.closeDrawer(GravityCompat.START)
 
         return true
+    }
+
+    override fun onClick(p0: View?) {
+        when (p0?.id) {
+            R.id.tvNombreUsuario -> {
+                drawer_layout.closeDrawer(GravityCompat.START)
+                replaceFragment(AccountFragment())
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -254,6 +309,18 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         menuItemGlobal?.isVisible = false
         return true
         //return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        when (item.itemId) {
+            R.id.action_menu_icon_chat -> {
+                startActivity(Intent(this, ChatUsersActivity::class.java))
+                return true
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     //endregion

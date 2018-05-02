@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.interedes.agriculturappv3.activities.splash.SplashActivity"
+            android:name=".activities.splash.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -34,45 +34,43 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.interedes.agriculturappv3.activities.home.HomeActivity"
+            android:name=".activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <!--<activity
+        <!--
+            <activity
             android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity"
             android:configChanges="screenSize|orientation"
             android:theme="@style/LoginTheme"
-            android:windowSoftInputMode="stateHidden" />-->
+            android:windowSoftInputMode="stateHidden" />
+        -->
 
         <activity
-            android:name="com.interedes.agriculturappv3.activities.login.ui.LoginActivity"
+            android:name=".activities.login.ui.LoginActivity"
             android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
-            android:name="com.interedes.agriculturappv3.activities.registration.register_rol.RegisterRolActivity"
-            android:parentActivityName="com.interedes.agriculturappv3.activities.home.HomeActivity"
+            android:name=".activities.registration.register_rol.RegisterRolActivity"
+            android:parentActivityName=".activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.interedes.agriculturappv3.activities.registration.register_user.ui.RegisterUserActivity"
+            android:name=".activities.registration.register_user.ui.RegisterUserActivity"
             android:configChanges="screenSize|orientation"
-            android:parentActivityName="com.interedes.agriculturappv3.activities.registration.register_rol.RegisterRolActivity"
+            android:parentActivityName=".activities.registration.register_rol.RegisterRolActivity"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
             android:name=".productor.modules.ui.main_menu.MenuMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
-            android:name="com.interedes.agriculturappv3.activities.MapsActivity"
+            android:name=".activities.MapsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <!-- Maps -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/maps" />
@@ -85,6 +83,8 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name=".activities.chat.ChatUsersActivity" />
+        <activity android:name=".activities.chat.ChatMessageActivity"></activity>
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.activities.registration.register_user.repository
 
 import android.util.Log
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
@@ -25,7 +26,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import com.google.firebase.auth.FirebaseUser
-import java.util.*
+import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
 
 
 class RegisterUserRepositoryImpl : RegisterUserRepository {
@@ -52,32 +53,32 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
                     //FIREBASE
                     FirebaseAuth.getInstance()?.createUserWithEmailAndPassword(user.Email!!, user.Password!!)?.addOnCompleteListener { task: Task<AuthResult> ->
                         if (task.isSuccessful) {
-                            val currentUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
-                            val uid: String? = currentUser?.uid
-                            val reference: DatabaseReference? = mDatabase?.child("Users")?.child(uid)
-                            //val token: String? = FirebaseInstanceId.getInstance()?.token
-                            // val uuid_tipo_user = user.Tipouser as UUID?
-                            val rol: Rol? = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(user.Tipouser)).querySingle()
-                            val rolName = rol?.Nombre
 
-                            val userMap = HashMap<String?, String?>()
-                            userMap.put("Rol", rolName)
-                            userMap.put("Nombres", response.body()?.nombre)
-                            userMap.put("Apellidos", response.body()?.apellido)
-                            userMap.put("Cedula", response.body()?.identification)
-                            userMap.put("Correo", response.body()?.email)
-                            userMap.put("Celular", response.body()?.phoneNumber)
-                            //userMap.put("FotoEnfermedad", "")
-                            // userMap.put("Token", token!!)
+                            val newUser = task.result.user
+                            //success creating user, now set display name as name
+                            val profileUpdates = UserProfileChangeRequest.Builder()
+                                    .setDisplayName(user.Nombre+" "+user.Apellido)
+                                    .build()
 
-                            reference?.setValue(userMap)?.addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    postEvent(RegisterEvent.onRegistroExitoso)
-                                } else {
-                                    postEvent(RegisterEvent.onErrorRegistro, task.exception.toString())
-                                    Log.e("Error Firebase", task.exception.toString())
-                                }
-                            }
+                            newUser.updateProfile(profileUpdates)
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+
+                                            /***CREATE USER IN FIREBASE DB AND REDIRECT ON SUCCESS */
+                                            /***CREATE USER IN FIREBASE DB AND REDIRECT ON SUCCESS */
+                                            //createUserInDb(newUser.uid, newUser.displayName, newUser.email)
+                                            createUserInDb(newUser.uid,user)
+
+                                        } else {
+                                            //error
+                                            //Toast.makeText(this@SignUpActivity, "Error " + task.exception!!.localizedMessage, Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+
+
+
+
+
 
                         } else {
                             try {
@@ -108,6 +109,53 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
 
         })
 
+    }
+
+
+
+    private fun createUserInDb(user_id: String,user:User) {
+        //val currentUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+        //val uid: String? = currentUser?.uid
+       // val reference: DatabaseReference? = mDatabase?.child("Users")?.child(uid)
+        /*---------------*/
+        //val token: String? = FirebaseInstanceId.getInstance()?.token
+        // val uuid_tipo_user = user.Tipouser as UUID?
+
+        val rol: Rol? = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(user.Tipouser)).querySingle()
+        val rolName = rol?.Nombre
+        val reference: DatabaseReference?  = FirebaseDatabase.getInstance().reference.child("Users")
+        var userFirebase = UserFirebase(user_id, user.Nombre, user.Apellido, user.Identification, user.Email, rolName)
+        reference?.child(user_id)?.setValue(userFirebase)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
+            if (!task.isSuccessful) {
+                //error
+                postEvent(RegisterEvent.onErrorRegistro, task.exception.toString())
+                Log.e("Error Firebase", task.exception.toString())
+            } else {
+                //success adding user to db as well
+                //go to users chat list
+                postEvent(RegisterEvent.onRegistroExitoso)
+            }
+        })
+       /*
+        val userMap = HashMap<String?, String?>()
+        userMap.put("Rol", rolName)
+        userMap.put("Nombres", response.body()?.nombre)
+        userMap.put("Apellidos", response.body()?.apellido)
+        userMap.put("Cedula", response.body()?.identification)
+        userMap.put("Correo", response.body()?.email)
+        userMap.put("Celular", response.body()?.phoneNumber)
+        //userMap.put("FotoEnfermedad", "")
+        // userMap.put("Token", token!!)
+
+        reference?.setValue(userMap)?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                postEvent(RegisterEvent.onRegistroExitoso)
+            } else {
+                postEvent(RegisterEvent.onErrorRegistro, task.exception.toString())
+                Log.e("Error Firebase", task.exception.toString())
+            }
+        }
+        */
     }
 
     //region Métodos Interfaz

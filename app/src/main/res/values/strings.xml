@@ -249,6 +249,9 @@
     <string name="title_filter_report_by_cultivo">Filtrar por cultivo</string>
     <string name="title_filter_report">Filtrar reporte</string>
 
+
+    <!--Cuenta-->
+    <string name="tittle_account">Cuenta</string>
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
     <string name="name">Nombre</string>
@@ -295,6 +298,7 @@
     <string name="price">$ %1$,.0f</string>
     <string name="price_empty_signe">%.0f</string>
     <string name="search_cultivo">Buscar Cultivo</string>
+
 
     <!--Cliente-->
     <string name="name_usuario">Nombre Usuario</string>
