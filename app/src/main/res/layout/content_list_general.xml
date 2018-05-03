@@ -26,11 +26,20 @@
                 android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
+
                 <ImageView
                     android:id="@+id/contentIcon"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:visibility="gone"
+                    android:id="@+id/contentIconUser"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                   />
+
             </LinearLayout>
             <LinearLayout
                 android:paddingStart="@dimen/margin_5"
@@ -97,6 +106,7 @@
 
         </LinearLayout>
     <LinearLayout
+        android:id="@+id/options"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

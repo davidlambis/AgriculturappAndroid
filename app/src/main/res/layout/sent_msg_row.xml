@@ -21,7 +21,7 @@
             android:textColor="@android:color/holo_red_dark" />
         -->
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -37,8 +37,19 @@
                 android:layout_marginEnd="5dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_marginStart="20dp"
-                android:text=""
+                android:text="Hola asdfasfsdfs f sd f sdf  sdf s f sd f dsf  s fs df s f wer  wr ew r ew r ewr"
                 android:textColor="#ffffff" />
+
+            <TextView
+                android:textAlignment="textEnd"
+                android:id="@+id/txtHour"
+                android:gravity="end"
+                android:layout_gravity="end"
+                android:layout_marginRight="@dimen/margin_5"
+                android:textSize="@dimen/text_size_12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""/>
 <!--
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageView2"

@@ -52,6 +52,9 @@ class AccountFragment : Fragment(),View.OnClickListener {
     private var mStorageRef: StorageReference? = null
     private var mCurrentUserID: String? = null
 
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -94,11 +97,13 @@ class AccountFragment : Fragment(),View.OnClickListener {
                     val userName = currentuser!!.Nombre
                     val userLastName = currentuser!!.Apellido
                     val userIdentification = currentuser!!.Cedula
+                    val userPhone = currentuser!!.Telefono
 
                     Picasso.with(activity).load(userPhoto).placeholder(R.drawable.ic_foto_producto_square).into(user_image)
                     edtNombres.setText(userName)
                     edtApellidos.setText(userLastName)
                     edtCedula.setText(userIdentification)
+                    edtCelular.setText(userPhone)
 
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -143,10 +148,11 @@ class AccountFragment : Fragment(),View.OnClickListener {
                 val userDisplayName = edtNombres.getText().toString().trim()
                 val userLastName = edtApellidos.getText().toString().trim()
                 val userIdentificationName = edtCedula.getText().toString().trim()
+                val userPhone = edtCelular.getText().toString().trim()
 
                 /**Call the Firebase methods**/
                 try {
-                    updateUser(userDisplayName,userLastName,userIdentificationName)
+                    updateUser(userDisplayName,userLastName,userIdentificationName,userPhone)
                     updateUserPhoto(imageGlobal)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -221,11 +227,12 @@ class AccountFragment : Fragment(),View.OnClickListener {
     //region METHODS FIREBASE
 
 
-    private fun updateUser(newDisplayName: String, newLastName: String,newIdentificacion: String) {
+    private fun updateUser(newDisplayName: String, newLastName: String,newIdentificacion: String,phone:String) {
         val childUpdates = HashMap<String, Any>()
         childUpdates["nombre"] = newDisplayName
         childUpdates["apellido"] = newLastName
         childUpdates["cedula"] = newIdentificacion
+        childUpdates["telefono"] = phone
         mUserDBRef?.child(mCurrentUserID)?.updateChildren(childUpdates)
     }
 

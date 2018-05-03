@@ -124,7 +124,7 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
         val rol: Rol? = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(user.Tipouser)).querySingle()
         val rolName = rol?.Nombre
         val reference: DatabaseReference?  = FirebaseDatabase.getInstance().reference.child("Users")
-        var userFirebase = UserFirebase(user_id, user.Nombre, user.Apellido, user.Identification, user.Email, rolName)
+        var userFirebase = UserFirebase(user_id, user.Nombre, user.Apellido, user.Identification, user.Email, rolName, user.PhoneNumber)
         reference?.child(user_id)?.setValue(userFirebase)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
             if (!task.isSuccessful) {
                 //error

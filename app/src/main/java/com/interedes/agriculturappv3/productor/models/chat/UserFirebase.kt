@@ -23,7 +23,12 @@ data class UserFirebase(
         @SerializedName("Rol")
         var Rol: String? = null,
 
+        @SerializedName("Telefono")
+        var Telefono: String? = null,
+
         @SerializedName("Imagen")
         var Imagen: String? = null
+
+
 ) {
 }

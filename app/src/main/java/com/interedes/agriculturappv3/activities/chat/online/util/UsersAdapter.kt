@@ -1,27 +1,24 @@
-package com.interedes.agriculturappv3.activities.chat.util
+package com.interedes.agriculturappv3.activities.chat.online.util
 
-import android.content.Context
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.activities.chat.ChatMessageActivity
-import com.interedes.agriculturappv3.activities.chat.ChatUsersActivity
+import com.interedes.agriculturappv3.activities.chat.online.ChatMessageActivity
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
 import com.squareup.picasso.Picasso
-
-
-
+import de.hdodenhof.circleimageview.CircleImageView
 
 
 class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
+
 
     companion object {
         var eventBus: EventBus? = null
@@ -44,7 +41,7 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.user_single_row, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.content_list_general, parent, false)
         return ViewHolder(v)
     }
 
@@ -78,13 +75,23 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
         fun bindItems(data: UserFirebase, pos: Int) = with(itemView) {
 
 
-            var personNameTxtV: TextView = itemView.findViewById(R.id.userName)
-            var personImageImgV: ImageView = itemView.findViewById(R.id.userImage)
+            var personNameTxtV: TextView = itemView.findViewById(R.id.txtTitle)
+            var personImageImgV: ImageView = itemView.findViewById(R.id.contentIcon)
+            personImageImgV.visibility=View.GONE
+
+            var txtUserType: TextView = itemView.findViewById(R.id.txtDescription)
+
+            var optionsContent: LinearLayout = itemView.findViewById(R.id.options)
+            optionsContent.visibility=View.GONE
+
+            var contentIconUser: CircleImageView = itemView.findViewById(R.id.contentIconUser)
+            contentIconUser.visibility=View.VISIBLE
 
 
             personNameTxtV.setText(data.Nombre+" "+data.Apellido)
+            txtUserType.setText(data.Rol)
             try {
-                Picasso.with(context).load(data.Imagen).placeholder(R.mipmap.ic_launcher).into(personImageImgV)
+                Picasso.with(context).load(data.Imagen).placeholder(R.mipmap.ic_launcher).into(contentIconUser)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

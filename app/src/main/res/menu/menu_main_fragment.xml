@@ -6,10 +6,17 @@
         android:title=""
         app:showAsAction="always" />
 
+
+    <item
+        android:id="@+id/action_menu_email"
+        android:title=""
+        android:icon="@drawable/ic_stat_email"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/action_menu_icon_chat"
         android:title=""
-        android:icon="@drawable/ic_sms"
+        android:icon="@drawable/ic_stat_chat"
         app:showAsAction="always" />
 
 </menu>

@@ -1,7 +1,5 @@
 package com.interedes.agriculturappv3.productor.modules.ui.main_menu
 
-import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
@@ -29,21 +27,17 @@ import com.interedes.agriculturappv3.productor.modules.main_menu.ui.MainViewMenu
 import com.interedes.agriculturappv3.services.Const
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import android.view.MenuInflater
-import android.content.Context.TELEPHONY_SERVICE
-import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
-import android.telephony.TelephonyManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.interedes.agriculturappv3.activities.chat.ChatUsersActivity
+import com.interedes.agriculturappv3.activities.chat.chat_sms.Chat_Sms_Activity
+import com.interedes.agriculturappv3.activities.chat.online.ChatUsersActivity
 import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
 import com.interedes.agriculturappv3.productor.modules.account.AccountFragment
-import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.navigation_drawer_header.*
-import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu,View.OnClickListener {
@@ -145,6 +139,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         headerViewHolder.tvIdentificacion.setText(usuario_logued?.Email)
 
         headerViewHolder.tvNombreUsuario.setOnClickListener(this)
+        headerViewHolder.circleImageView.setOnClickListener(this)
 
         // val header = navigationView.getHeaderView(0)
         // val headerViewHolder = HeaderViewHolder(header)
@@ -160,6 +155,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     class HeaderViewHolder(view: View) {
         val tvNombreUsuario: TextView = view.findViewById(R.id.tvNombreUsuario)
+        val circleImageView: CircleImageView = view.findViewById(R.id.circleImageView)
         val tvIdentificacion: TextView = view.findViewById(R.id.tvIdentificacion)
     }
 
@@ -197,6 +193,12 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 drawer_layout.closeDrawer(GravityCompat.START)
                 replaceFragment(AccountFragment())
             }
+            R.id.circleImageView -> {
+                drawer_layout.closeDrawer(GravityCompat.START)
+                replaceFragment(AccountFragment())
+            }
+
+
         }
     }
 
@@ -316,6 +318,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         when (item.itemId) {
             R.id.action_menu_icon_chat -> {
                 startActivity(Intent(this, ChatUsersActivity::class.java))
+                return true
+            }
+
+            R.id.action_menu_email -> {
+                startActivity(Intent(this, Chat_Sms_Activity::class.java))
                 return true
             }
 
