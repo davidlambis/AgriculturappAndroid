@@ -4,7 +4,6 @@ import android.Manifest
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.interedes.agriculturappv3.R
-import kotlinx.android.synthetic.main.activity_chat_users.*
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.content.Intent
@@ -28,13 +27,17 @@ import android.widget.Toast
 import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsAdapter
 import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsUserAdapter
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
-import kotlinx.android.synthetic.main.content_recyclerview.*
+import kotlinx.android.synthetic.main.activity_chat__sms_.*
 import java.util.*
 
 
 class Chat_Sms_Activity : AppCompatActivity() {
 
     private val TAG = "SMSCHATAPP"
+    val TAG_USER_NAME = "USER_NAME"
+
+    var contactUserName:String?=""
+    var contactNumber:String?=""
 
      var PERMISSIONS = arrayOf(
             Manifest.permission.READ_PHONE_STATE,
@@ -52,6 +55,7 @@ class Chat_Sms_Activity : AppCompatActivity() {
 
 
     ///
+    private var mLayoutManager: LinearLayoutManager? = null
     var smsLisMessages = ArrayList<Sms>()
     private var adapter: SmsAdapter? = null
 
@@ -71,6 +75,12 @@ class Chat_Sms_Activity : AppCompatActivity() {
         setToolbarInjection()
         initAdapter()
 
+        messagesRecyclerView?.setHasFixedSize(true)
+        // use a linear layout manager
+        mLayoutManager = LinearLayoutManager(this)
+        mLayoutManager?.setStackFromEnd(true)
+        messagesRecyclerView?.setLayoutManager(mLayoutManager)
+
         /*PreferenceManager.setDefaultValues(this, R.xml.settings, false)
         //Start the service to display notifications
         val notificationServiceIntent = Intent(this, NotificationService::class.java)
@@ -81,6 +91,11 @@ class Chat_Sms_Activity : AppCompatActivity() {
 
         //Bind the info to our listview
 
+        val intent = intent
+        contactNumber = intent.getStringExtra(TAG)
+        contactUserName = intent.getStringExtra(TAG_USER_NAME)
+        nameUserTo.setText(contactUserName)
+        adressUserTo.setText(contactNumber)
 
 
         if (Build.VERSION.SDK_INT >= 23) {
@@ -113,9 +128,7 @@ class Chat_Sms_Activity : AppCompatActivity() {
         }
 
 
-        var contactNumber = ""
-        val intent = intent
-        contactNumber = intent.getStringExtra(TAG)
+
 
         val qStr = arrayOf(contactNumber)
 
@@ -156,6 +169,17 @@ class Chat_Sms_Activity : AppCompatActivity() {
                 c.moveToNext()
             }
 
+            //Ordenar
+            Collections.sort(smsLisMessages, object : Comparator<Sms> {
+                override fun compare(lhs: Sms, rhs: Sms): Int {
+                    // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                    return if (lhs._id?.toInt()!! > rhs._id?.toInt()!!) -1 else if (lhs._id?.toInt()!! < rhs._id?.toInt()!!) 1 else 0
+                }
+            })
+
+            //Reordenar Lista
+            Collections.reverse(smsLisMessages)
+
             setListSms(smsLisMessages)
         }
     }
@@ -169,9 +193,9 @@ class Chat_Sms_Activity : AppCompatActivity() {
 
 
     private fun initAdapter() {
-        recyclerView?.layoutManager = LinearLayoutManager(this)
+        messagesRecyclerView?.layoutManager = LinearLayoutManager(this)
         adapter = SmsAdapter(ArrayList<Sms>())
-        recyclerView?.adapter = adapter
+        messagesRecyclerView?.adapter = adapter
     }
 
 
@@ -182,10 +206,11 @@ class Chat_Sms_Activity : AppCompatActivity() {
     }
 
 
+    /*
     private fun populaterecyclerView() {
         adapter = SmsAdapter(smsLisMessages)
         usersRecyclerView.setAdapter(adapter)
-    }
+    }*/
 
 
     //This method handles user clicks on the menu option buttons.

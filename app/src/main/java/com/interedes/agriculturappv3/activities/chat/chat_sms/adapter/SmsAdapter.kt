@@ -94,6 +94,21 @@ class SmsAdapter(var mMessagesList: ArrayList<Sms>) : RecyclerView.Adapter<SmsAd
 
             var messageTextView: TextView = itemView.findViewById(R.id.chatMsgTextView)
             var txtHour: TextView = itemView.findViewById(R.id.txtHour)
+
+
+
+            try {
+                var strGotDate = data._time;
+                var longGotDate = strGotDate?.toLong()
+                // Format that date
+                var formattedGotDate =  SimpleDateFormat("h:mm a").format(longGotDate);
+                txtHour.setText(formattedGotDate)
+
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+
+
             /*
             try {
                 var dateObjStart = Date()

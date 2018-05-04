@@ -70,8 +70,10 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                             .setContentText(messageContent)
                     builder.setAutoCancel(true)
                     val TAG = "SMSCHATAPP"
+                    val TAG_USER_NAME = "USER_NAME"
                     val notificationIntent = Intent(context, Chat_Sms_Activity::class.java)
                     notificationIntent.putExtra(TAG,smsAddress)
+                    notificationIntent.putExtra(TAG_USER_NAME,messageAdress)
 
                     // The stack builder object will contain an artificial back stack for the started Activity.
                     // This ensures that navigating backward from the Activity leads out of your application to the Home screen.

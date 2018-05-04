@@ -116,8 +116,10 @@ class SmsUserAdapter(var lista: ArrayList<SmsUser>) : RecyclerView.Adapter<SmsUs
             itemView.setOnClickListener {
                 //postEventc(RequestEventProduccion.ITEM_EVENT,data)
                 val TAG = "SMSCHATAPP"
+                val TAG_USER_NAME = "USER_NAME"
                 val goToUpdate = Intent(context, Chat_Sms_Activity::class.java)
                 goToUpdate.putExtra(TAG, data._address)
+                goToUpdate.putExtra(TAG_USER_NAME, data._user_name)
                 context.startActivity(goToUpdate)
 
                 Toast.makeText(context,"Chat Sms ",Toast.LENGTH_SHORT).show()

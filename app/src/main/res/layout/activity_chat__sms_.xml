@@ -32,14 +32,26 @@
                     android:layout_marginRight="@dimen/margin_3"
                     android:layout_height="30dp"
                     android:src="@drawable/default_avata" />
-
-                <TextView
-                    android:text=""
-                    android:textSize="@dimen/text_size_18"
-                    android:id="@+id/nameUserTo"
-                    android:textColor="@color/white_solid"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:text=""
+                        android:textSize="@dimen/text_size_18"
+                        android:id="@+id/nameUserTo"
+                        android:textColor="@color/white_solid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text=""
+                        android:textSize="@dimen/text_size_18"
+                        android:id="@+id/adressUserTo"
+                        android:textColor="@color/white_solid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
             </LinearLayout>
 
 
