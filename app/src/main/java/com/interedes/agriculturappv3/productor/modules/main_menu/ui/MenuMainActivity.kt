@@ -32,6 +32,7 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.interedes.agriculturappv3.activities.chat.chat_sms.Chat_Sms_Activity
+import com.interedes.agriculturappv3.activities.chat.chat_sms.UserSmsActivity
 import com.interedes.agriculturappv3.activities.chat.online.ChatUsersActivity
 import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
 import com.interedes.agriculturappv3.productor.modules.account.AccountFragment
@@ -322,7 +323,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             }
 
             R.id.action_menu_email -> {
-                startActivity(Intent(this, Chat_Sms_Activity::class.java))
+                startActivity(Intent(this, UserSmsActivity::class.java))
                 return true
             }
 

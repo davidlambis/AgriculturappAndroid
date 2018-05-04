@@ -74,6 +74,7 @@
                             android:id="@+id/textInputLayoutContrasena"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            app:passwordToggleEnabled="true"
                             android:background="@drawable/sombra_drawing_up"
                             android:textColorHint="@color/grey_luiyi"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">

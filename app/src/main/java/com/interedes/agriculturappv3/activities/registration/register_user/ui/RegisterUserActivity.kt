@@ -237,7 +237,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
             val user = User(detalle_metodo_pago_id,
                     edtNumeroCuenta?.text?.trim().toString(),
-                    edtCorreo?.text?.trim()?.toString(),
+                    edtCorreo?.text?.trim()?.toString()?.toLowerCase(),
                     edtContrasena?.text?.trim()?.toString(),
                     edtConfirmarContrasena?.text?.trim()?.toString(),
                     rol_id,

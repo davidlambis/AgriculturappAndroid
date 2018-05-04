@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
@@ -85,6 +84,15 @@
             android:name=".activities.chat.chat_sms.Chat_Sms_Activity"
             android:parentActivityName=".productor.modules.ui.main_menu.MenuMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.chat.chat_sms.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".productor.modules.ui.main_menu.MenuMainActivity" />
+
+        <activity
+            android:parentActivityName=".productor.modules.ui.main_menu.MenuMainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".activities.chat.chat_sms.UserSmsActivity"></activity>
 
         <!-- Maps -->
         <meta-data
@@ -105,7 +113,7 @@
         <service
             android:name=".activities.chat.chat_sms.NotificationService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <receiver
             android:name=".activities.chat.chat_sms.MySmsBroadcastReceiver"
@@ -115,9 +123,7 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".activities.chat.chat_sms.SettingsActivity"
-            android:label="@string/title_activity_settings" />
+
     </application>
 
 </manifest>

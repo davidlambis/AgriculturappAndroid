@@ -11,7 +11,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.activities.chat.online.util.MessagesAdapter
+import com.interedes.agriculturappv3.activities.chat.online.adapters.MessagesAdapter
 import com.interedes.agriculturappv3.productor.models.chat.ChatMessage
 import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
 import kotlinx.android.synthetic.main.activity_chat_message.*
@@ -152,7 +152,7 @@ class ChatMessageActivity : AppCompatActivity() {
                 try {
                     nameUserTo.setText(mReceiverName)
                     try {
-                        Picasso.with(applicationContext).load(recepient.Imagen).placeholder(R.mipmap.ic_launcher).into(imgUserTo)
+                        Picasso.with(applicationContext).load(recepient.Imagen).placeholder(R.drawable.default_avata).into(imgUserTo)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

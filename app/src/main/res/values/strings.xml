@@ -39,6 +39,7 @@
 
     <!--STRING ACTIVITY REGISTER USER-->
     <string name="title_usuario">Usuarios</string>
+    <string name="title_sms_text">Mensajes de Texto</string>
     <string name="title_productor">Productor</string>
     <string name="title_comprador">Comprador</string>
     <string name="title_help_register">Necesito ayuda para registrarme</string>
@@ -332,6 +333,14 @@
         <item>Ubicación GPS</item>
     </string-array>
 
+
+    <!--CHAT SMS-->
+    <string name="tittle_sms_messajes">My bandeja de entrada de mensajes</string>
+    <string name="idenfication_sms_app">AgriculturApp</string>
+    <string name="idenfication_send_sms_app">AgriculturApp:</string>
+
+
+    <!--CONFIGURATION-->
 
     <!--Notification Messages-->
     <string name="pref_notifications">Notifications On</string>

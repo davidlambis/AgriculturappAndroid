@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.activities.chat.online.util
+package com.interedes.agriculturappv3.activities.chat.online.adapters
 
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
@@ -91,7 +91,7 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
             personNameTxtV.setText(data.Nombre+" "+data.Apellido)
             txtUserType.setText(data.Rol)
             try {
-                Picasso.with(context).load(data.Imagen).placeholder(R.mipmap.ic_launcher).into(contentIconUser)
+                Picasso.with(context).load(data.Imagen).placeholder(R.drawable.default_avata).into(contentIconUser)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

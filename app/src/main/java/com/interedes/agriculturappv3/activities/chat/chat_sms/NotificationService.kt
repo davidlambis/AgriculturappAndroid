@@ -41,18 +41,18 @@ class NotificationService: Service() {
         serviceHandler = ServiceHandler(serviceLooper)
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
-        val msg = serviceHandler!!.obtainMessage()
-        msg.arg1 = startId
-        serviceHandler!!.sendMessage(msg)
+        val msg = serviceHandler?.obtainMessage()
+        msg?.arg1 = startId
+        serviceHandler?.sendMessage(msg)
 
         // If we get killed, after returning from here, restart
         return START_STICKY
     }
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent?): IBinder? {
         // We don't provide binding, so return null
         return null
     }

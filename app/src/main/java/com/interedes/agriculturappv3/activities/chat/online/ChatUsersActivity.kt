@@ -12,7 +12,7 @@ import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.activities.chat.online.util.UsersAdapter
+import com.interedes.agriculturappv3.activities.chat.online.adapters.UsersAdapter
 import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
 import kotlinx.android.synthetic.main.activity_chat_users.*
 import java.util.ArrayList
@@ -60,6 +60,10 @@ class ChatUsersActivity : AppCompatActivity() {
         mUsersDBRef?.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.childrenCount > 0) {
+
+                    mUsersList.clear()
+
+
                     for (snap in dataSnapshot.children) {
                         var user = snap.getValue<UserFirebase>(UserFirebase::class.java)
                         //if not current user, as we do not want to show ourselves then chat with ourselves lol

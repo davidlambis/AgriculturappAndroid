@@ -75,11 +75,6 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
                                         }
                                     }
 
-
-
-
-
-
                         } else {
                             try {
                                 throw task.exception!!
