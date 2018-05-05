@@ -147,17 +147,18 @@ class UserSmsActivity : AppCompatActivity() {
 
             for (objSms in smsListMessage){
 
-                if(objSms._msg?.contains(getString(R.string.idenfication_sms_app))!!){
+                if(objSms._msg?.contains(getString(R.string.idenfication_send_sms_app))!!){
 
                     var verificateAddress = smsListUser?.filter { smsuser: SmsUser -> smsuser._address == objSms._address }
                     if(verificateAddress.size>0){
                         var item:SmsUser= verificateAddress.get(0)
                         smsListUser?.remove(item)
                     }
-                    var newMsg=objSms._msg?.replace(getString(R.string.idenfication_sms_app),"")
+
+                    var newMsg=objSms._msg?.replace(getString(R.string.idenfication_send_sms_app),"")
                     val phoneNumber =  objSms._address
                     val contactName = getContactDisplayNameByNumber(phoneNumber)
-                    var objSms = SmsUser(
+                    var objSmsUser = SmsUser(
                             objSms._id,
                             objSms._address,
                             contactName,
@@ -166,7 +167,7 @@ class UserSmsActivity : AppCompatActivity() {
                             objSms._time,
                             objSms._folderName
                     )
-                    smsListUser.add(objSms)
+                    smsListUser.add(objSmsUser)
                 }
             }
 

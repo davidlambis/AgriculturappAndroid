@@ -21,6 +21,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
 import android.support.v7.widget.LinearLayoutManager
+import android.telephony.SmsManager
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -31,7 +32,8 @@ import kotlinx.android.synthetic.main.activity_chat__sms_.*
 import java.util.*
 
 
-class Chat_Sms_Activity : AppCompatActivity() {
+class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
+
 
     private val TAG = "SMSCHATAPP"
     val TAG_USER_NAME = "USER_NAME"
@@ -97,6 +99,8 @@ class Chat_Sms_Activity : AppCompatActivity() {
         nameUserTo.setText(contactUserName)
         adressUserTo.setText(contactNumber)
 
+        sendMessageImagebutton.setOnClickListener(this)
+
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (!hasPermissions(applicationContext, *PERMISSIONS)) {
@@ -146,6 +150,8 @@ class Chat_Sms_Activity : AppCompatActivity() {
         val totalSMS = c.getCount()
 
         if (c.moveToFirst()) {
+
+            smsLisMessages.clear()
             for (i in 0 until totalSMS) {
 
                 var typeMessage:String?=""
@@ -164,6 +170,14 @@ class Chat_Sms_Activity : AppCompatActivity() {
                         c.getString(c.getColumnIndexOrThrow("date")),
                         typeMessage
                 )
+
+                var smsNew:String?=""
+
+
+                if(objSms._msg?.contains(getString(R.string.idenfication_send_sms_app))!!){
+                    smsNew=objSms._msg?.replace(getString(R.string.idenfication_send_sms_app),"")
+                    objSms._msg=smsNew
+                }
 
                 smsLisMessages.add(objSms)
                 c.moveToNext()
@@ -187,6 +201,7 @@ class Chat_Sms_Activity : AppCompatActivity() {
     fun setListSms(sms: List<Sms>) {
         adapter?.clear()
         adapter?.setItems(sms)
+        messagesRecyclerView.scrollToPosition(smsLisMessages.size-1);
       //  setResults(sms.size)
     }
 
@@ -201,8 +216,51 @@ class Chat_Sms_Activity : AppCompatActivity() {
 
 
     fun updateList(smsMessage: String) {
+        refreshSmsInbox()
         //arrayAdapter?.insert(smsMessage, 0)
         //arrayAdapter?.notifyDataSetChanged()
+    }
+
+    override fun onClick(p0: View?) {
+        when (p0?.id) {
+
+            R.id.sendMessageImagebutton -> {
+
+                var cancel = false
+                var focusView: View? = null
+                if (messageEditText?.text.toString().isEmpty()) {
+                    messageEditText?.setError(getString(R.string.error_field_required))
+                    focusView = messageEditText
+                    cancel = true
+                }
+
+
+                if (cancel) {
+                    focusView?.requestFocus()
+                } else {
+                    sendSMS()
+                }
+            }
+        }
+    }
+
+    protected fun sendSMS() {
+        val toPhoneNumber =contactNumber
+        val smsMessage = getString(R.string.idenfication_send_sms_app)+" "+messageEditText.getText().toString()
+        try {
+            val smsManager = SmsManager.getDefault()
+            smsManager.sendTextMessage(toPhoneNumber, null, smsMessage, null, null)
+
+            Toast.makeText(applicationContext, "SMS sent.",
+                    Toast.LENGTH_LONG).show()
+            messageEditText.setText("")
+            refreshSmsInbox()
+        } catch (e: Exception) {
+            Toast.makeText(applicationContext,
+                    "Sending SMS failed.",
+                    Toast.LENGTH_LONG).show()
+            e.printStackTrace()
+        }
     }
 
 
@@ -268,7 +326,6 @@ class Chat_Sms_Activity : AppCompatActivity() {
     }
 
     private fun requestPermission() {
-
         //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL)
     }

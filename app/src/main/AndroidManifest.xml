@@ -82,7 +82,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.chat.chat_sms.Chat_Sms_Activity"
-            android:parentActivityName=".productor.modules.ui.main_menu.MenuMainActivity"
+            android:parentActivityName=".activities.chat.chat_sms.UserSmsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.chat.chat_sms.SettingsActivity"

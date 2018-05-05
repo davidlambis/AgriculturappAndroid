@@ -57,7 +57,7 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
 
                 if (notificationsOn) {
 
-                    var messageContent= smsBody.replace(context.getString(R.string.idenfication_sms_app),"")
+                    var messageContent= smsBody.replace(context.getString(R.string.idenfication_send_sms_app),"")
                     var messageAdress=getContactDisplayNameByNumber(smsAddress,context)
                     if(messageAdress.equals("")){
                         messageAdress=smsAddress
@@ -106,10 +106,10 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                 Toast.makeText(context, smsMessageStr, Toast.LENGTH_SHORT).show()
                 //This updates the UI with message
 
-                if(Chat_Sms_Activity.instance!=null){
-                    val inst = Chat_Sms_Activity.instance
-                    inst.updateList(smsMessageStr)
-                }
+                //if(Chat_Sms_Activity.instance!=null){
+                val inst = Chat_Sms_Activity.instance
+                inst.updateList(smsMessageStr)
+                //}
 
 
                 val instUserAct = UserSmsActivity.instance

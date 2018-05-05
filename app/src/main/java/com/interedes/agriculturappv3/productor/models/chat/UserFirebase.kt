@@ -28,6 +28,14 @@ data class UserFirebase(
         @SerializedName("Status")
         var Status: String? = null,
 
+        @SerializedName("Last_Online")
+        var Last_Online: Long? = null,
+
+        @SerializedName("Token_Account")
+        var Token_Account: String? = null,
+
+
+
         @SerializedName("Imagen")
         var Imagen: String? = null
 

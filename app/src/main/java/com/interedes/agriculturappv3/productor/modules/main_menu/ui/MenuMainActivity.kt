@@ -86,10 +86,13 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         //Status Chat
         var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
-        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/userLastOnlineRef")
+        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
         userStatus?.setValue(Status_Chat.ONLINE)
         userStatus?.onDisconnect()?.setValue(Status_Chat.OFFLINE)
         userLastOnlineRef?.onDisconnect()?.setValue(ServerValue.TIMESTAMP);
+
+
+
 
     }
 
@@ -280,6 +283,15 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     //region Implemetacion Interfaz ViewMenu
     override fun onConnectivity() {
+       /// mUserDBRef?.database?.goOnline()
+        /*
+        var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
+        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
+        userStatus?.setValue(Status_Chat.ONLINE)
+        userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
+
+        */
+
         val retIntent = Intent(Const.SERVICE_CONECTIVITY)
         retIntent.putExtra("state_conectivity", true)
         this?.sendBroadcast(retIntent)
@@ -287,6 +299,12 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     override fun offConnectivity() {
+      /*  var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
+        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
+        userStatus?.setValue(Status_Chat.ONLINE)
+        userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);*/
+
+       // mUserDBRef?.database?.goOffline()
         val retIntent = Intent(Const.SERVICE_CONECTIVITY)
         retIntent.putExtra("state_conectivity", false)
         this?.sendBroadcast(retIntent)

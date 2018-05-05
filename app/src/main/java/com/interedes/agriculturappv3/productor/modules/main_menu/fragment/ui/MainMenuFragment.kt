@@ -141,11 +141,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
 
     override fun navigateToLogin() {
        // showExit()
-
-        FirebaseAuth.getInstance().signOut()
-        var userStatus= (activity as MenuMainActivity).mUserDBRef?.child((activity as MenuMainActivity).mCurrentUserID+"/status")
-        userStatus?.setValue(Status_Chat.OFFLINE)
-
+        (activity as MenuMainActivity).mUserDBRef?.database?.goOffline()
         startActivity(Intent(activity, LoginActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
         activity!!.finish()
