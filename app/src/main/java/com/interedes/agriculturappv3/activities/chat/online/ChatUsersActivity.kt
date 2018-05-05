@@ -28,17 +28,24 @@ class ChatUsersActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_users)
-
         setToolbarInjection()
         //assign firebase auth
         mAuth = FirebaseAuth.getInstance()
         mUsersDBRef = FirebaseDatabase.getInstance().reference.child("Users")
         //initialize the recyclerview variables
 
-        usersRecyclerView.setHasFixedSize(true)
+        //usersRecyclerView.setHasFixedSize(true)
         // use a linear layout manager
-        mLayoutManager = LinearLayoutManager(this)
-        usersRecyclerView.setLayoutManager(mLayoutManager)
+       // mLayoutManager = LinearLayoutManager(this)
+       // usersRecyclerView.setLayoutManager(mLayoutManager)
+        initAdapter()
+    }
+
+
+    private fun initAdapter() {
+        usersRecyclerView?.layoutManager = LinearLayoutManager(this)
+        adapter = UsersAdapter(ArrayList<UserFirebase>())
+        usersRecyclerView?.adapter = adapter
     }
 
     private fun setToolbarInjection() {
@@ -50,10 +57,9 @@ class ChatUsersActivity : AppCompatActivity() {
         toolbar.title = getString(R.string.title_usuario)
     }
 
-
     private fun populaterecyclerView() {
-        adapter = UsersAdapter(mUsersList)
-        usersRecyclerView.setAdapter(adapter)
+        adapter?.clear()
+        adapter?.setItems(mUsersList)
     }
 
     private fun queryUsersAndAddthemToList() {
@@ -63,13 +69,11 @@ class ChatUsersActivity : AppCompatActivity() {
 
                     mUsersList.clear()
 
-
                     for (snap in dataSnapshot.children) {
                         var user = snap.getValue<UserFirebase>(UserFirebase::class.java)
                         //if not current user, as we do not want to show ourselves then chat with ourselves lol
                         try {
                             var  auth= mAuth?.currentUser?.uid
-
                             if(!user?.User_Id.equals(auth))
                              {
                                 mUsersList.add(user!!)
@@ -89,9 +93,6 @@ class ChatUsersActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(adapter!=null){
-            adapter?.clear()
-        }
 
         checkIfUserIsSignIn()
         /**query usrs and add them to a list */

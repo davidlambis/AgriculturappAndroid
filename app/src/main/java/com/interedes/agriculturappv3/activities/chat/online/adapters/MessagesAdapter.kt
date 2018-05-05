@@ -6,11 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.online.ChatMessageActivity
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.chat.ChatMessage
+import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.ParseException
@@ -35,27 +40,15 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
     }
 
     init {
+
         eventBus = GreenRobotEventBus()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         //Llama al método del holder para cargar los items
         var item = mMessagesList[position]
 
-        /*
-        mUserDBRef?.child(item.receiverId)?.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError?) {
-
-            }
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.value != null) {
-                    //val avataStr = dataSnapshot.value as String
-                    var user = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
-
-                    //notifyDataSetChanged()
-                }
-            }
-        })*/
 
         holder.bindItems(item, position)
     }
@@ -123,6 +116,8 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
+
+
 
 
 

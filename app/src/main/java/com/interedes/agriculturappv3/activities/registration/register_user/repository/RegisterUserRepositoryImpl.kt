@@ -27,6 +27,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import com.google.firebase.auth.FirebaseUser
 import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
+import com.interedes.agriculturappv3.services.resources.Status_Chat
 
 
 class RegisterUserRepositoryImpl : RegisterUserRepository {
@@ -119,7 +120,7 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
         val rol: Rol? = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(user.Tipouser)).querySingle()
         val rolName = rol?.Nombre
         val reference: DatabaseReference?  = FirebaseDatabase.getInstance().reference.child("Users")
-        var userFirebase = UserFirebase(user_id, user.Nombre, user.Apellido, user.Identification, user.Email, rolName, user.PhoneNumber)
+        var userFirebase = UserFirebase(user_id, user.Nombre, user.Apellido, user.Identification, user.Email, rolName, user.PhoneNumber,Status_Chat.OFFLINE)
         reference?.child(user_id)?.setValue(userFirebase)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
             if (!task.isSuccessful) {
                 //error

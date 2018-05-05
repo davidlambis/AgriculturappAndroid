@@ -29,6 +29,7 @@ import com.interedes.agriculturappv3.productor.modules.main_menu.fragment.presen
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.Resources_Menu
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.Status_Chat
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_main_menu.*
 
@@ -42,7 +43,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
     var presenter: MainMenuFragmentPresenter? = null
 
     companion object {
-        var connectivity_state: Boolean? = false
+
     }
 
     init {
@@ -140,7 +141,11 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
 
     override fun navigateToLogin() {
        // showExit()
+
         FirebaseAuth.getInstance().signOut()
+        var userStatus= (activity as MenuMainActivity).mUserDBRef?.child((activity as MenuMainActivity).mCurrentUserID+"/status")
+        userStatus?.setValue(Status_Chat.OFFLINE)
+
         startActivity(Intent(activity, LoginActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
         activity!!.finish()

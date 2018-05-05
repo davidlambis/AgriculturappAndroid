@@ -36,6 +36,7 @@ import com.interedes.agriculturappv3.activities.chat.chat_sms.UserSmsActivity
 import com.interedes.agriculturappv3.activities.chat.online.ChatUsersActivity
 import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
 import com.interedes.agriculturappv3.productor.modules.account.AccountFragment
+import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.navigation_drawer_header.*
@@ -55,9 +56,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     //Firebase
     //FIREBASE
-    private var mUserDBRef: DatabaseReference? = null
-    private var mStorageRef: StorageReference? = null
-    private var mCurrentUserID: String? = null
+     var mUserDBRef: DatabaseReference? = null
+     var mStorageRef: StorageReference? = null
+     var mCurrentUserID: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +83,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
 
         populateTheViews()
+
+        //Status Chat
+        var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
+        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/userLastOnlineRef")
+        userStatus?.setValue(Status_Chat.ONLINE)
+        userStatus?.onDisconnect()?.setValue(Status_Chat.OFFLINE)
+        userLastOnlineRef?.onDisconnect()?.setValue(ServerValue.TIMESTAMP);
+
     }
 
     private fun populateTheViews() {

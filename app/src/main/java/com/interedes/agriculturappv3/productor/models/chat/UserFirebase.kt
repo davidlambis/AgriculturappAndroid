@@ -19,16 +19,17 @@ data class UserFirebase(
         @SerializedName("Correo")
         var Correo: String? = null,
 
-
         @SerializedName("Rol")
         var Rol: String? = null,
 
         @SerializedName("Telefono")
         var Telefono: String? = null,
 
+        @SerializedName("Status")
+        var Status: String? = null,
+
         @SerializedName("Imagen")
         var Imagen: String? = null
-
 
 ) {
 }

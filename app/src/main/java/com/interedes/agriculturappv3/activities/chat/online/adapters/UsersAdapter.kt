@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.activities.chat.online.adapters
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +9,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.online.ChatMessageActivity
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
+import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -21,6 +27,8 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
 
 
     companion object {
+        lateinit var instance: UsersAdapter
+        var mUsersDBRef: DatabaseReference? = null
         var eventBus: EventBus? = null
         /*fun postEventc(type: Int, produccion: Produccion?) {
             var produccionMutable= produccion as Object
@@ -31,6 +39,7 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
     }
 
     init {
+        instance=this
         eventBus = GreenRobotEventBus()
 
     }
@@ -81,11 +90,29 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
 
             var txtUserType: TextView = itemView.findViewById(R.id.txtDescription)
 
+            var txtDescripcionAdditional: TextView = itemView.findViewById(R.id.txtDescripcionAdditional)
+            txtDescripcionAdditional.setText(data.Status)
+
             var optionsContent: LinearLayout = itemView.findViewById(R.id.options)
             optionsContent.visibility=View.GONE
 
+            var contentQuantdate: LinearLayout = itemView.findViewById(R.id.contentQuantdate)
+            contentQuantdate.visibility=View.GONE
+
             var contentIconUser: CircleImageView = itemView.findViewById(R.id.contentIconUser)
             contentIconUser.visibility=View.VISIBLE
+
+            var imgStatus: ImageView = itemView.findViewById(R.id.imgStatus)
+            imgStatus.visibility=View.VISIBLE
+
+            if(data.Status.equals(Status_Chat.ONLINE)){
+                imgStatus.setImageResource(R.drawable.is_online_user)
+            }else{
+                imgStatus.setImageResource(R.drawable.is_offline_user)
+            }
+
+
+
 
 
             personNameTxtV.setText(data.Nombre+" "+data.Apellido)
@@ -96,6 +123,29 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
                 e.printStackTrace()
             }
 
+
+            //Change State
+            mUsersDBRef?.child(data.User_Id)?.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError?) {
+
+                }
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.value != null) {
+                        //val avataStr = dataSnapshot.value as String
+                        var user = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
+                        txtDescripcionAdditional.setText(user?.Status)
+                        if(user?.Status.equals(Status_Chat.ONLINE)){
+                            imgStatus.setImageResource(R.drawable.is_online_user)
+                        }else{
+                            imgStatus.setImageResource(R.drawable.is_offline_user)
+                        }
+
+                        UsersAdapter.instance.notifyDataSetChanged()
+                    }
+                }
+            })
+
             itemView.setOnClickListener {
                 //postEventc(RequestEventProduccion.ITEM_EVENT,data)
                 val goToUpdate = Intent(context, ChatMessageActivity::class.java)
@@ -103,6 +153,7 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
                 goToUpdate.putExtra("FOTO", data.Imagen)
                 context.startActivity(goToUpdate)
             }
+
 
 
 /*
