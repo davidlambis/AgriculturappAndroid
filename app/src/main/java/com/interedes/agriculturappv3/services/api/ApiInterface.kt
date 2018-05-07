@@ -108,7 +108,7 @@ interface ApiInterface {
     @PATCH("odata/Agp2/UnidadProductivas({Id})")
     fun updateUnidadProductiva(@Body body: PostUnidadProductiva, @Path("Id") Id: Long): Call<UnidadProductiva>
 
-//http://18.233.87.16/odata/Agp2/Departamentos?$expand=Ciudads
+
     @GET("odata/Agp2/Departamentos?\$expand=Ciudads")
     fun getDepartamentos(): Call<DeparmentsResponse>
     //endregion
