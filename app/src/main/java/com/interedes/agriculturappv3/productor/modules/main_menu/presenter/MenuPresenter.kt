@@ -8,7 +8,7 @@ import android.content.Context
 interface MenuPresenter {
 
     fun onCreate()
-    fun onDestroy()
+    fun onDestroy(context:Context)
     fun onResume(context: Context)
 
 

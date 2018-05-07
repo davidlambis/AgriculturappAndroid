@@ -190,10 +190,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
                 override fun onFailure(call: Call<DetalleMetodoPagoResponse>?, t: Throwable?) {
 
                 }
-
             })
         }
-
     }
 
 /*

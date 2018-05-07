@@ -1,8 +1,10 @@
 package com.interedes.agriculturappv3.activities.chat.chat_sms
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -14,18 +16,20 @@ import android.provider.ContactsContract
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsUserAdapter
+import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
 import kotlinx.android.synthetic.main.activity_user_sms.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import java.util.*
 
-class UserSmsActivity : AppCompatActivity() {
+class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
 
     var PERMISSIONS = arrayOf(
@@ -62,6 +66,7 @@ class UserSmsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_user_sms)
         setToolbarInjection()
         initAdapter()
+        swipeRefreshLayout.setOnRefreshListener(this)
         PreferenceManager.setDefaultValues(this, R.xml.settings, false)
         //Start the service to display notifications
         val notificationServiceIntent = Intent(this, NotificationService::class.java)
@@ -172,6 +177,7 @@ class UserSmsActivity : AppCompatActivity() {
             }
 
             setListSms(smsListUser)
+            swipeRefreshLayout.isRefreshing=false
         }
     }
 
@@ -210,13 +216,6 @@ class UserSmsActivity : AppCompatActivity() {
         }
         return name
     }
-
-
-
-
-
-
-
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -306,5 +305,32 @@ class UserSmsActivity : AppCompatActivity() {
 
 
     //endregion
+
+
+    private val mNotificationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            var extras = intent.extras
+            if (extras != null) {
+               // if (extras.containsKey("new_message")) {
+                    refreshSmsInbox()
+               // }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_RECYVE_MESSAGE))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(this.mNotificationReceiver);
+    }
+
+    override fun onRefresh() {
+        swipeRefreshLayout.isRefreshing=true
+        refreshSmsInbox()
+    }
 
 }

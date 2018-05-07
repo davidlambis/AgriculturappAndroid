@@ -25,6 +25,7 @@ class AgriculturApplication : Application() {
         //Firebase
         FirebaseApp.initializeApp(this)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+
         //DbFlow
         //FlowManager.init(this)
         FlowManager.init(FlowConfig.Builder(this).build())

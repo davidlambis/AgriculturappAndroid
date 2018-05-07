@@ -1,7 +1,6 @@
 package com.interedes.agriculturappv3.services.api
 
-import com.interedes.agriculturappv3.productor.TestResponse
-import com.interedes.agriculturappv3.productor.models.rol.RolResponse
+import com.interedes.agriculturappv3.productor.models.departments.DeparmentsResponse
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -13,7 +12,7 @@ import java.util.concurrent.TimeUnit
 interface TestInterface {
 
     @GET("api/ResponseDataSync")
-    fun getDepartamentos(): Call<TestResponse>
+    fun getDepartamentos(): Call<DeparmentsResponse>
 
 
     companion object Factory {

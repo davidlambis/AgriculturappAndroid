@@ -88,7 +88,10 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
                        var Nombre_Detalle_Producto_Cultivo: String? = null,
 
                        @Column(name = "Nombre_Estado_Transaccion")
-                       var Nombre_Estado_Transaccion: String? = null
+                       var Nombre_Estado_Transaccion: String? = null,
+
+                       @Column(getterName = "getEstado_Sincronizacion")
+                       var Estado_Sincronizacion: Boolean? = false
 
 ): KParcelable {
 

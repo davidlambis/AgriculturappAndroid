@@ -305,6 +305,8 @@
     <!--Cliente-->
     <string name="name_usuario">Nombre Usuario</string>
     <string name="identificacion_usuario">Identificación Usuario</string>
+    <string name="tittle_register_success">! Felicitaciones !</string>
+    <string name="description_register_success">Te has registrado exitosamente, recuerda confirmar la cuenta en tu dirección de correo electronico</string>
 
     <!-- INTERNET CONNECTION -->
     <string name="internet_connected">Conectado a Internet</string>
@@ -338,6 +340,8 @@
     <string name="tittle_sms_messajes">My bandeja de entrada de mensajes</string>
     <string name="idenfication_sms_app">AgriculturApp</string>
     <string name="idenfication_send_sms_app">AgriculturApp:</string>
+    <string name="online">En linea</string>
+    <string name="offline">Desconectado</string>
 
 
     <!--CONFIGURATION-->

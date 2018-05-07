@@ -6,7 +6,12 @@ package com.interedes.agriculturappv3.services
 class Const {
 
     companion object {
+
         var SERVICE_LOCATION="com.interedes.agriculturappv3.action.LOCATION"
         var SERVICE_CONECTIVITY="com.interedes.agriculturappv3.action.CONECTIVITY"
+
+
+        //recive
+        val SERVICE_RECYVE_MESSAGE="RECIVE_MESSAGE"
     }
 }

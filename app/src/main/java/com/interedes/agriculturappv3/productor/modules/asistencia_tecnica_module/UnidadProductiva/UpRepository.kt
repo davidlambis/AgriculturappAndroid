@@ -5,8 +5,8 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.productor.models.Ciudad
-import com.interedes.agriculturappv3.productor.models.Departamento
+import com.interedes.agriculturappv3.productor.models.departments.Ciudad
+import com.interedes.agriculturappv3.productor.models.departments.Departamento
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.PostUnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva_Table

@@ -32,6 +32,9 @@ import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_main_menu.*
+import com.google.firebase.auth.FirebaseUser
+
+
 
 
 /**
@@ -63,6 +66,20 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
         getListasIniciales()
         loadItems()
         setupInit()
+    }
+
+
+    private fun checkIfUserIsSignIn() {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            // User is signed in
+        } else {
+            // No user is signed in
+            /**go to login user first */
+            startActivity(Intent(activity, LoginActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
+            activity!!.finish()
+        }
     }
 
 
@@ -141,7 +158,8 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
 
     override fun navigateToLogin() {
        // showExit()
-        (activity as MenuMainActivity).mUserDBRef?.database?.goOffline()
+        //(activity as MenuMainActivity).mUserDBRef?.database?.goOffline()
+        (activity as MenuMainActivity).makeUserOffline()
         startActivity(Intent(activity, LoginActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
         activity!!.finish()

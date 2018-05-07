@@ -22,7 +22,6 @@ class NotificationService: Service() {
             val filter = IntentFilter()
             filter.addAction("android.provider.Telephony.SMS_RECIEVED")
             filter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
-
             registerReceiver(receiver, filter)
             //            registerReceiver(notificationReceiver, filter);
         }

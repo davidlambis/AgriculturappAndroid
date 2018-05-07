@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.productor.modules.main_menu.presenter
 
 import android.content.Context
 import android.content.IntentFilter
+import android.net.ConnectivityManager
 import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.productor.modules.main_menu.ui.MainViewMenu
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
@@ -11,21 +12,25 @@ import com.interedes.agriculturappv3.services.internet_connection.ConnectivityRe
  */
 class MenuPresenterImpl(var menuMainView: MainViewMenu?): ConnectivityReceiver.connectivityReceiverListener, MenuPresenter {
 
+    var connectivityReceiver: ConnectivityReceiver? = null
 
     override fun onCreate() {
-
+        connectivityReceiver = ConnectivityReceiver()
     }
 
-    override fun onDestroy() {
+    override fun onDestroy(context:Context) {
+        context.unregisterReceiver(connectivityReceiver)
         menuMainView = null
+
     }
 
     override fun onResume(context: Context) {
-        val intentFilter = IntentFilter()
+
        /* intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         val connectivityReceiver = ConnectivityReceiver()
         context.registerReceiver(connectivityReceiver, intentFilter)*/
         /*register connection status listener*/
+        context.registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         AgriculturApplication.instance.setConnectivityListener(this)
     }
 

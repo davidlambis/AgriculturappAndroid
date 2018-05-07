@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
 import android.content.SharedPreferences
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.BaseColumns
@@ -17,6 +18,7 @@ import android.provider.ContactsContract
 import android.support.v4.app.NotificationCompat
 import android.telephony.SmsMessage
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.services.Const
 
 
 class MySmsBroadcastReceiver: BroadcastReceiver() {
@@ -65,9 +67,12 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
 
                     //Build the notification:
                     val builder = NotificationCompat.Builder(context)
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSmallIcon(R.drawable.ic_stat_agrapp_icon_notificacion)
                             .setContentTitle("$messageAdress")
                             .setContentText(messageContent)
+                            .setLargeIcon(((context.resources.getDrawable(R.mipmap.ic_launcher) as (BitmapDrawable)).bitmap))
+                            .setStyle(NotificationCompat.BigTextStyle()
+                                    .bigText(messageContent))
                     builder.setAutoCancel(true)
                     val TAG = "SMSCHATAPP"
                     val TAG_USER_NAME = "USER_NAME"
@@ -105,20 +110,21 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
 
                 Toast.makeText(context, smsMessageStr, Toast.LENGTH_SHORT).show()
                 //This updates the UI with message
-
-                //if(Chat_Sms_Activity.instance!=null){
+                /*
+                if(Chat_Sms_Activity.instance!=null){
                 val inst = Chat_Sms_Activity.instance
-                inst.updateList(smsMessageStr)
-                //}
-
-
+                inst?.updateList(smsMessageStr)
+                }
                 val instUserAct = UserSmsActivity.instance
-                instUserAct.refreshSmsInbox()
+                instUserAct.refreshSmsInbox()*/
+
+                val retIntent = Intent(Const.SERVICE_RECYVE_MESSAGE)
+                retIntent.putExtra("new_message", smsMessageStr)
+               context.sendBroadcast(retIntent)
+
 
             }
         }
-
-
     }
 
     fun getContactDisplayNameByNumber(number: String?, context:Context?): String {

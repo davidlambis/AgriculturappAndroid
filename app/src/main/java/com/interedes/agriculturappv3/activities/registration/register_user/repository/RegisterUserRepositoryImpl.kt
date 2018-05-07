@@ -120,7 +120,7 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
         val rol: Rol? = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(user.Tipouser)).querySingle()
         val rolName = rol?.Nombre
         val reference: DatabaseReference?  = FirebaseDatabase.getInstance().reference.child("Users")
-        var userFirebase = UserFirebase(user_id, user.Nombre, user.Apellido, user.Identification, user.Email, rolName, user.PhoneNumber,Status_Chat.OFFLINE, ServerValue.TIMESTAMP.toString().toLong(), user.Password)
+        var userFirebase = UserFirebase(user_id, user.Nombre, user.Apellido, user.Identification, user.Email, rolName, user.PhoneNumber,Status_Chat.OFFLINE, 0, user.Password)
         reference?.child(user_id)?.setValue(userFirebase)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
             if (!task.isSuccessful) {
                 //error
@@ -129,6 +129,8 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
             } else {
                 //success adding user to db as well
                 //go to users chat list
+                var userLastOnlineRef= reference?.child(user_id+"/last_Online")
+                userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
                 postEvent(RegisterEvent.onRegistroExitoso)
             }
         })
@@ -152,6 +154,10 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
             }
         }
         */
+    }
+
+    fun getCreationDate(): Map<String, String> {
+        return ServerValue.TIMESTAMP
     }
 
     //region Métodos Interfaz

@@ -97,7 +97,6 @@ class LoginRepositoryImpl : LoginRepository {
                                             Log.e("Error Post", firebaseException.toString())
                                         }
                                     }
-
                                 })
 
                             } else {
@@ -116,19 +115,16 @@ class LoginRepositoryImpl : LoginRepository {
                     postEventError(LoginEvent.ERROR_EVENT, "Usuario o Contraseña Incorrectos")
                     Log.e("Failure Login", response?.message().toString())
                 }
-
             }
-
             override fun onFailure(call: Call<LoginResponse>?, t: Throwable?) {
                 postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                 Log.e("Failure Login", t?.message.toString())
             }
-
-
         })
-
-
     }
+
+
+
 
     override fun getSqliteUsuario(login: Login) {
         val usuario_sqlite = getUsuario(login)

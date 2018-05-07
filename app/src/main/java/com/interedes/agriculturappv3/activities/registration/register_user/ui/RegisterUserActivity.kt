@@ -25,6 +25,11 @@ import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import kotlinx.android.synthetic.main.activity_register_user.*
 import android.text.TextUtils
+import android.view.WindowManager
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.GravityEnum
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
 import com.interedes.agriculturappv3.R.id.*
 import com.interedes.agriculturappv3.activities.registration.register_user.repository.RegisterUserRepository
 import com.interedes.agriculturappv3.activities.registration.register_user.repository.RegisterUserRepositoryImpl
@@ -295,10 +300,46 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
     override fun registroExitoso() {
         //Snackbar.make(container, getString(R.string.registro_exitoso), Snackbar.LENGTH_SHORT).show()
-        val i = Intent(this, LoginActivity::class.java)
-        i.putExtra("correo", getString(R.string.snackbar_verificacion_correo))
-        i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(i)
+        showAlertRegistroExitoso()
+    }
+
+
+     fun showAlertRegistroExitoso() {
+        val inflater = this.layoutInflater
+        var viewDialogFilter = inflater.inflate(R.layout.register_user_success, null)
+
+        val dialog = MaterialDialog.Builder(this)
+                .title(title)
+                .customView(viewDialogFilter!!, true)
+                .positiveText(R.string.confirm)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.light_green_800)
+                .limitIconToDefaultSize()
+                .backgroundColorRes(R.color.white_solid)
+                // .negativeColorRes(R.color.material_red_400)
+                .iconRes(R.drawable.ic_registro)
+                .dividerColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                .positiveColor(Color.WHITE)
+                .autoDismiss(false)
+                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .theme(Theme.DARK)
+                .onPositive(
+                        { dialog1, which ->
+                            val i = Intent(this, LoginActivity::class.java)
+                            i.putExtra("correo", getString(R.string.snackbar_verificacion_correo))
+                            i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(i)
+                        })
+
+                .build()
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.show()
+        dialog.getWindow().setAttributes(lp)
     }
 
     override fun registroError(error: String?) {

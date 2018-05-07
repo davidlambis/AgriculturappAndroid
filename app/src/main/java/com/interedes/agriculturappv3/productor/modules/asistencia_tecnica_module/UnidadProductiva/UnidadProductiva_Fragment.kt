@@ -13,7 +13,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.ContextCompat.checkSelfPermission
@@ -23,8 +22,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.Ciudad
-import com.interedes.agriculturappv3.productor.models.Departamento
+import com.interedes.agriculturappv3.productor.models.departments.Ciudad
+import com.interedes.agriculturappv3.productor.models.departments.Departamento
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.up.adapter.UnidadProductivaAdapter
@@ -34,14 +33,9 @@ import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_unidad_productiva.view.*
 import kotlinx.android.synthetic.main.fragment_unidad_productiva.*
-import android.support.v7.widget.RecyclerView
 import android.widget.*
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
-import com.google.android.gms.auth.api.signin.GoogleSignIn.hasPermissions
-import com.interedes.agriculturappv3.services.coords.CoordsServiceJava.latitud
-import com.interedes.agriculturappv3.services.coords.CoordsServiceJava.longitud
-import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 
 
 /**
@@ -84,10 +78,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         UnidadProductiva_Fragment.instance = this
         presenter = UpPresenter(this);
         presenter?.onCreate()
-
-
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

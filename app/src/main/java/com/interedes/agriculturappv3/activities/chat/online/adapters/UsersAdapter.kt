@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.github.thunder413.datetimeutils.DateTimeUtils
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -21,6 +22,7 @@ import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import java.util.*
 
 
 class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
@@ -91,13 +93,15 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
             var txtUserType: TextView = itemView.findViewById(R.id.txtDescription)
 
             var txtDescripcionAdditional: TextView = itemView.findViewById(R.id.txtDescripcionAdditional)
-            txtDescripcionAdditional.setText(data.Status)
+
+
 
             var optionsContent: LinearLayout = itemView.findViewById(R.id.options)
             optionsContent.visibility=View.GONE
 
-            var contentQuantdate: LinearLayout = itemView.findViewById(R.id.contentQuantdate)
-            contentQuantdate.visibility=View.GONE
+           // var contentQuantdate: LinearLayout = itemView.findViewById(R.id.contentQuantdate)
+           // contentQuantdate.visibility=View.GONE
+            var txtDate: TextView = itemView.findViewById(R.id.txtDate)
 
             var contentIconUser: CircleImageView = itemView.findViewById(R.id.contentIconUser)
             contentIconUser.visibility=View.VISIBLE
@@ -105,10 +109,23 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
             var imgStatus: ImageView = itemView.findViewById(R.id.imgStatus)
             imgStatus.visibility=View.VISIBLE
 
+
+
+
+
+
             if(data.Status.equals(Status_Chat.ONLINE)){
                 imgStatus.setImageResource(R.drawable.is_online_user)
+                txtDescripcionAdditional.setText( context.getString(R.string.online))
+                txtDate.setText("")
             }else{
                 imgStatus.setImageResource(R.drawable.is_offline_user)
+                txtDescripcionAdditional.setText( context.getString(R.string.offline))
+                if(data.Last_Online!=null){
+                    txtDate.setText(DateTimeUtils.getTimeAgo(context, Date(data.Last_Online!!)))
+                }
+
+
             }
 
 
@@ -134,12 +151,26 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
                     if (dataSnapshot.value != null) {
                         //val avataStr = dataSnapshot.value as String
                         var user = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
-                        txtDescripcionAdditional.setText(user?.Status)
+
                         if(user?.Status.equals(Status_Chat.ONLINE)){
                             imgStatus.setImageResource(R.drawable.is_online_user)
+                            txtDescripcionAdditional.setText( context.getString(R.string.online))
+                            txtDate.setText("")
                         }else{
                             imgStatus.setImageResource(R.drawable.is_offline_user)
+                            txtDescripcionAdditional.setText( context.getString(R.string.offline))
+                            if(data.Last_Online!=null){
+                                txtDate.setText(DateTimeUtils.getTimeAgo(context, Date(user?.Last_Online!!)))
+                            }
                         }
+
+
+                        try {
+                            Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.default_avata).into(contentIconUser)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
 
                         UsersAdapter.instance.notifyDataSetChanged()
                     }

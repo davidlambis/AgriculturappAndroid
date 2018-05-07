@@ -1,17 +1,15 @@
 package com.interedes.agriculturappv3.activities.chat.chat_sms
 
 import android.Manifest
+import android.content.*
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.interedes.agriculturappv3.R
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.content.Intent
 import android.preference.PreferenceManager
 import android.view.View
 import android.widget.AdapterView
-import android.content.ContentResolver
-import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -27,6 +25,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsAdapter
 import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsUserAdapter
+import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
 import kotlinx.android.synthetic.main.activity_chat__sms_.*
 import java.util.*
@@ -63,7 +62,7 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
 
 
     companion object {
-        lateinit var instance: Chat_Sms_Activity
+        var instance: Chat_Sms_Activity?=null
         val NOTIFICATION_ID = 8675309
     }
 
@@ -340,5 +339,26 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
 
             }
         }
+    }
+
+    private val mNotificationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            var extras = intent.extras
+            if (extras != null) {
+               // if (extras.containsKey("new_message")) {
+                    updateList("")
+               // }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_RECYVE_MESSAGE))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(this.mNotificationReceiver);
     }
 }

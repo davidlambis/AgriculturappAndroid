@@ -51,7 +51,10 @@ data class Produccion(@PrimaryKey(autoincrement = true)
                       var NombreLote: String? = null,
 
                       @Column(name = "NombreCultivo")
-                      var NombreCultivo: String? = null
+                      var NombreCultivo: String? = null,
+
+                      @Column(getterName = "getEstado_Sincronizacion")
+                      var Estado_Sincronizacion: Boolean? = false
 
 
 ) {

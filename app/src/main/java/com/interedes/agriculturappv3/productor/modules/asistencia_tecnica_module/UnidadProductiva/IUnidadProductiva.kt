@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import com.interedes.agriculturappv3.productor.models.Ciudad
-import com.interedes.agriculturappv3.productor.models.Departamento
+import com.interedes.agriculturappv3.productor.models.departments.Ciudad
+import com.interedes.agriculturappv3.productor.models.departments.Departamento
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario

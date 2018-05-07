@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.models
+package com.interedes.agriculturappv3.productor.models.departments
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
@@ -48,7 +48,7 @@ class Departamento : BaseModel() {
     @Column
     var codigodpto: Long ?= 0
 
-    @SerializedName("ciudades")
+    @SerializedName("Ciudads")
     var ciudades: ArrayList<Ciudad> ?= ArrayList<Ciudad>()
 
     override fun toString(): String {

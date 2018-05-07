@@ -1,7 +1,9 @@
 package com.interedes.agriculturappv3.productor.modules.ui.main_menu
 
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
+import android.net.ConnectivityManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -31,11 +33,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.activities.chat.chat_sms.Chat_Sms_Activity
 import com.interedes.agriculturappv3.activities.chat.chat_sms.UserSmsActivity
 import com.interedes.agriculturappv3.activities.chat.online.ChatUsersActivity
 import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
 import com.interedes.agriculturappv3.productor.modules.account.AccountFragment
+import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
@@ -59,6 +63,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
      var mUserDBRef: DatabaseReference? = null
      var mStorageRef: StorageReference? = null
      var mCurrentUserID: String? = null
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,16 +91,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         populateTheViews()
 
+
+
         //Status Chat
-        var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
-        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
-        userStatus?.setValue(Status_Chat.ONLINE)
-        userStatus?.onDisconnect()?.setValue(Status_Chat.OFFLINE)
-        userLastOnlineRef?.onDisconnect()?.setValue(ServerValue.TIMESTAMP);
-
-
-
-
+        makeUserOnline()
     }
 
     private fun populateTheViews() {
@@ -289,16 +290,16 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
         userStatus?.setValue(Status_Chat.ONLINE)
         userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
-
         */
-
         val retIntent = Intent(Const.SERVICE_CONECTIVITY)
         retIntent.putExtra("state_conectivity", true)
         this?.sendBroadcast(retIntent)
         onMessageOk(R.color.colorPrimary, getString(R.string.on_connectividad))
+        makeUserOnline()
     }
 
     override fun offConnectivity() {
+
       /*  var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
         var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
         userStatus?.setValue(Status_Chat.ONLINE)
@@ -309,7 +310,46 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         retIntent.putExtra("state_conectivity", false)
         this?.sendBroadcast(retIntent)
         onMessageError(R.color.grey_luiyi, getString(R.string.off_connectividad))
+        makeUserOffline()
     }
+
+
+
+
+    fun makeUserOnline()
+    {
+        /*
+        // Firebase Status
+        var fbquery = FirebaseDatabase.getInstance().getReference("status/" + user.userId).setValue("online")
+
+
+        // Adding on disconnect hook
+        FirebaseDatabase.getInstance().getReference("/status/" + user.userId)
+                .onDisconnect()     // Set up the disconnect hook
+                .setValue("offline");
+
+                */
+        var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
+        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
+        userStatus?.setValue(Status_Chat.ONLINE)
+        userStatus?.onDisconnect()?.setValue(Status_Chat.OFFLINE)
+        userLastOnlineRef?.onDisconnect()?.setValue(ServerValue.TIMESTAMP);
+
+    }
+
+    fun makeUserOffline()
+    {
+        var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
+        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
+        userStatus?.setValue(Status_Chat.OFFLINE)
+        userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
+        // Firebase
+        //var fbquery = FirebaseDatabase.getInstance().getReference("status/" + mCurrentUserID).setValue(Status_Chat.OFFLINE)
+        //var fbquery2 = FirebaseDatabase.getInstance().getReference("last_Online/" + mCurrentUserID).setValue(ServerValue.TIMESTAMP)
+    }
+
+
+
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
         val color = Color.WHITE
@@ -361,13 +401,18 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     //endregion
 
 
+
+
+
+
     override fun onResume() {
         super.onResume()
         presenter?.onResume(this)
     }
 
     override fun onDestroy() {
-        presenter?.onDestroy()
+
+        presenter?.onDestroy(this)
         super.onDestroy()
     }
 

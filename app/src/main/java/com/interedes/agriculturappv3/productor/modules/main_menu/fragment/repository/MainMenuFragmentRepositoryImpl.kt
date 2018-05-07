@@ -8,8 +8,9 @@ import com.interedes.agriculturappv3.productor.models.usuario.Usuario
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.productor.TestResponse
-import com.interedes.agriculturappv3.productor.models.*
+import com.interedes.agriculturappv3.productor.models.departments.DeparmentsResponse
+import com.interedes.agriculturappv3.productor.models.departments.Ciudad
+import com.interedes.agriculturappv3.productor.models.departments.Departamento
 import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProductoResponse
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
@@ -22,7 +23,6 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.UnidadMedida
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.api.TestInterface
-import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -40,13 +40,11 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
     var mUserDatabase: DatabaseReference? = null
     var mAuth: FirebaseAuth? = null
     var mUserReference: DatabaseReference? = null
-    var testService: TestInterface? = null
 
     init {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
         mDatabase = FirebaseDatabase.getInstance().reference
-        testService = TestInterface.create()
         //mUserDatabase = mDatabase.child("Users")
         //mAuth = FirebaseAuth.getInstance()
         //mUserReference = mUserDatabase?.child(mAuth?.currentUser?.uid)
@@ -98,21 +96,20 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
             override fun onFailure(call: Call<DetalleTipoProductoResponse>?, t: Throwable?) {
                 postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
-
-
         })
 
         //Departamentos y Ciudades
         val lista_departamentos = SQLite.select().from(Departamento::class.java).queryList()
         val lista_ciudades = SQLite.select().from(Ciudad::class.java).queryList()
         if (lista_departamentos.size <= 0 || lista_ciudades.size <= 0) {
-            val call = testService?.getDepartamentos()
-            call?.enqueue(object : Callback<TestResponse> {
-                override fun onResponse(call: Call<TestResponse>?, response: Response<TestResponse>?) {
+            val call = apiService?.getDepartamentos()
+            call?.enqueue(object : Callback<DeparmentsResponse> {
+                override fun onResponse(call: Call<DeparmentsResponse>?, response: Response<DeparmentsResponse>?) {
                     if (response != null && response.code() == 200) {
-                        val departamentos: MutableList<Departamento> = response.body()?.departCiudades!!
+                        val departamentos: MutableList<Departamento> = response.body()?.value!!
                         for (item in departamentos) {
                             item.save()
+
                             for (ciudad in item.ciudades!!) {
                                 ciudad.save()
                             }
@@ -122,7 +119,7 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                     }
                 }
 
-                override fun onFailure(call: Call<TestResponse>?, t: Throwable?) {
+                override fun onFailure(call: Call<DeparmentsResponse>?, t: Throwable?) {
                     postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
 
