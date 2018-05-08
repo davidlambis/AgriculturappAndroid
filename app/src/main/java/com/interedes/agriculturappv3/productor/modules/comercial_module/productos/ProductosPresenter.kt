@@ -11,7 +11,7 @@ import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.modules.comercial_module.productos.events.ProductosEvent
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
@@ -24,7 +24,7 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
     var eventBus: EventBus? = null
 
     //GLOBALS
-    var listUnidadProductivaGlobal: List<UnidadProductiva>? = ArrayList<UnidadProductiva>()
+    var listUnidadProductivaGlobal: List<Unidad_Productiva>? = ArrayList<Unidad_Productiva>()
     var listLoteGlobal: List<Lote>? = ArrayList<Lote>()
     var listCultivosGlobal: List<Cultivo>? = ArrayList<Cultivo>()
     var listUnidadMedidaGlobal: List<Unidad_Medida>? = ArrayList<Unidad_Medida>()
@@ -96,7 +96,7 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
             }
 
             ProductosEvent.LIST_EVENT_UP -> {
-                listUnidadProductivaGlobal = event.mutableList as List<UnidadProductiva>
+                listUnidadProductivaGlobal = event.mutableList as List<Unidad_Productiva>
             }
 
             ProductosEvent.LIST_EVENT_LOTE -> {

@@ -16,7 +16,7 @@ class IClientes {
 
         fun setListClientes(listClientes: List<Usuario>)
         fun setResults(clientes: Int)
-        /* fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
+        /* fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
          fun setListLotes(listLotes: List<Lote>?)
          fun setListCultivos(listCultivos: List<Cultivo>?)
          fun setListProductos(listProductos: List<Producto>?)*/

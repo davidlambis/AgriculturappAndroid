@@ -8,7 +8,7 @@ import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.ofertas.Oferta
 import com.interedes.agriculturappv3.productor.models.producto.Producto
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.modules.comercial_module.ofertas.events.OfertasEvent
 
 interface IOfertas {
@@ -19,7 +19,7 @@ interface IOfertas {
 
         fun setListOfertas(listOfertas: List<Oferta>)
         fun setResults(ofertas: Int)
-        fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
+        fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
         fun setListLotes(listLotes: List<Lote>?)
         fun setListCultivos(listCultivos: List<Cultivo>?)
         fun setListProductos(listProductos: List<Producto>?)

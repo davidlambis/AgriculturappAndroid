@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 
 /**
  * Created by EnuarMunoz on 7/03/18.
@@ -33,8 +33,8 @@ interface MainViewLote {
     fun setListLotes(lotes:List<Lote>)
     fun setResults(lotes:Int)
 
-    //List UnidadProductiva
-    fun setListUP(listUnidadProductiva:List<UnidadProductiva>)
+    //List Unidad_Productiva
+    fun setListUP(listUnidadProductiva:List<Unidad_Productiva>)
     fun setListUPAdapterSpinner()
 
     ///ListUnidad Medida
@@ -48,6 +48,7 @@ interface MainViewLote {
 
     //ProgresHud
     fun showProgressHud()
+    fun showProgressHudCoords()
     fun hideProgressHud()
 
     //Response Notify

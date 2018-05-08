@@ -76,7 +76,7 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
 
 
             icon.setImageResource(R.drawable.ic_cultivos)
-            txtAdicional.visibility = View.GONE
+            //txtAdicional.visibility = View.GONE
 
             btnEdit.setColorFilter(getContext().getResources().getColor(R.color.orange))
             btnAdd.visibility = View.GONE
@@ -84,10 +84,19 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
             btnDelete.setColorFilter(getContext().getResources().getColor(R.color.red_900))
 
 
+            if (data.EstadoSincronizacion == true) {
+                txtAdicional.setTextColor(resources.getColor(R.color.green))
+                txtAdicional.text = context.getString(R.string.Sincronizado)
+            } else {
+                txtAdicional.setTextColor(resources.getColor(R.color.green))
+                txtAdicional.text = context.getString(R.string.noSincronizado)
+            }
+
+
             //val txt_nombre_cultivo: TextView = itemView.findViewById(R.id.txtNombreCultivo)
 
             //txt_nombre_cultivo.text = data.Nombre
-            txt_nombre_cultivo.text = data.Nombre_Detalle_Tipo_Producto
+            txt_nombre_cultivo.text = data.Nombre_Detalle_Tipo_Producto +"( ${data.Nombre})"
             txt_descripcion_cultivo.text = data.Descripcion
 
             txt_cosecha_estimada.text = String.format(context.getString(R.string.cantidad_estimada)!!, data.EstimadoCosecha, data.Nombre_Unidad_Medida)

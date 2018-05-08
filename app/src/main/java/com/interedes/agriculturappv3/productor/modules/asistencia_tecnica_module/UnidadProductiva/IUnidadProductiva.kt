@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.productor.models.departments.Ciudad
 import com.interedes.agriculturappv3.productor.models.departments.Departamento
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
@@ -29,14 +29,14 @@ interface IUnidadProductiva {
 
         //ProgresHud
         fun showProgressHud()
-
+        fun showProgressHudCoords()
         fun hideProgressHud()
 
         //Fun Lote CRUD
         fun registerUp()
 
-        fun updateUp(unidadProductiva: UnidadProductiva?)
-        fun setListUps(listUnidadProductivas: List<UnidadProductiva>)
+        fun updateUp(unidadProductiva: Unidad_Productiva?)
+        fun setListUps(listUnidadProductivas: List<Unidad_Productiva>)
         fun setResults(unidadesProductivas: Int)
 
 
@@ -52,7 +52,7 @@ interface IUnidadProductiva {
         fun onMessageError(colorPrimary: Int, msg: String?)
 
         //Dialog
-        fun showAlertDialogAddUnidadProductiva(unidadProductiva: UnidadProductiva?)
+        fun showAlertDialogAddUnidadProductiva(unidadProductiva: Unidad_Productiva?)
 
         fun verificateConnection(): AlertDialog?
 
@@ -74,9 +74,9 @@ interface IUnidadProductiva {
 
         fun validarCampos(): Boolean
 
-        fun registerUP(unidadProductivaModel: UnidadProductiva?)
-        fun updateUP(unidadProductivaModel: UnidadProductiva?)
-        fun deleteUP(unidadProductivaModel: UnidadProductiva?)
+        fun registerUP(unidadProductivaModel: Unidad_Productiva?)
+        fun updateUP(unidadProductivaModel: Unidad_Productiva?)
+        fun deleteUP(unidadProductivaModel: Unidad_Productiva?)
         fun getUps()
 
 
@@ -87,8 +87,10 @@ interface IUnidadProductiva {
 
         //Coords Service
         fun startGps(activity: Activity)
-
         fun closeServiceGps()
+        fun getStatusServiceCoords():Boolean?
+        fun setStatusServiceCoords(status:Boolean?)
+
         //Conecttion
         fun checkConnection(): Boolean
 
@@ -96,25 +98,25 @@ interface IUnidadProductiva {
     }
 
     interface Interactor {
-        fun registerUP(unidadProductivaModel: UnidadProductiva?)
-        fun updateUP(unidadProductivaModel: UnidadProductiva?)
-        fun deleteUP(unidadProductivaModel: UnidadProductiva?)
+        fun registerUP(unidadProductivaModel: Unidad_Productiva?)
+        fun updateUP(unidadProductivaModel: Unidad_Productiva?)
+        fun deleteUP(unidadProductivaModel: Unidad_Productiva?)
         fun execute()
         fun getListas()
-        fun registerOnlineUP(unidadProductivaModel: UnidadProductiva?)
+        fun registerOnlineUP(unidadProductivaModel: Unidad_Productiva?)
     }
 
     interface Repo {
-        //val uPs: List<UnidadProductiva>
+        //val uPs: List<Unidad_Productiva>
         fun getListas()
 
         fun getListUPs()
-        fun getUPs(): List<UnidadProductiva>
-        fun saveUp(mUnidadProductiva: UnidadProductiva)
-        fun registerOnlineUP(mUnidadProductiva: UnidadProductiva?)
-        fun updateUp(mUnidadProductiva: UnidadProductiva)
-        fun deleteUp(mUnidadProductiva: UnidadProductiva)
+        fun getUPs(): List<Unidad_Productiva>
+        fun saveUp(mUnidadProductiva: Unidad_Productiva)
+        fun registerOnlineUP(mUnidadProductiva: Unidad_Productiva?)
+        fun updateUp(mUnidadProductiva: Unidad_Productiva)
+        fun deleteUp(mUnidadProductiva: Unidad_Productiva)
         fun getLastUserLogued(): Usuario?
-        fun getLastUp(): UnidadProductiva?
+        fun getLastUp(): Unidad_Productiva?
     }
 }

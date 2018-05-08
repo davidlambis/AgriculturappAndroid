@@ -25,8 +25,8 @@ data class CategoriaPuk(@PrimaryKey(autoincrement = true)
 
 
                         var Valor_Total: Double?=null,
-
-                        var transaccions: List<Transaccion>? = null
+                       // var transaccions: List<Transaccion>? = null
+                        var transaccions: ArrayList<Transaccion> ?= ArrayList<Transaccion>()
 
                    ): ExpandableGroup<Transaccion>(Nombre, transaccions) {
 

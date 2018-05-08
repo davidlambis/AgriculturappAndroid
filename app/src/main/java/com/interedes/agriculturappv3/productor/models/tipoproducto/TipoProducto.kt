@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.productor.models.tipoproducto
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
@@ -22,7 +23,13 @@ data class TipoProducto(@PrimaryKey
                         var Icono: String? = null,
 
                         @Column(name = "Imagen")
-                        var Imagen: Blob? = null) {
+                        var Imagen: Blob? = null,
+
+                        @SerializedName("DetalleTipoProductos")
+                        var DetalleTipoProductos: ArrayList<DetalleTipoProducto>?= ArrayList<DetalleTipoProducto>()
+)
+
+{
 
     override fun toString(): String {
         return Nombre!!

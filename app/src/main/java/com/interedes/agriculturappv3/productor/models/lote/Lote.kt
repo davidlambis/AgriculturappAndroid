@@ -9,6 +9,9 @@ import com.raizlabs.android.dbflow.structure.BaseModel
 
 
 @Table(name = "Lote", database = DataSource::class)
+
+
+
 class Lote : BaseModel() {
 
     @PrimaryKey

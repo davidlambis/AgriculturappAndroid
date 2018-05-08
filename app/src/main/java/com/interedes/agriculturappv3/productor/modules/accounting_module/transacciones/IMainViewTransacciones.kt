@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.ventas.Puk
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
@@ -46,7 +46,7 @@ interface IMainViewTransacciones {
 
         //Set sppiners
         fun setListUnidadMedida(listUnidadMedida:List<Unidad_Medida>?)
-        fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
+        fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
         fun setListLotes(listLotes:List<Lote>?)
         fun setListCultivos(listCultivos:List<Cultivo>?)
         fun setCultivo(cultivo: Cultivo?)

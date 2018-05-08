@@ -7,7 +7,7 @@ import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.control_plagas.events.ControlPlagasEvent
 
 
@@ -19,7 +19,7 @@ interface IControlPlagas {
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
 
         //Set sppiners
-        fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
+        fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
 
         fun setListLotes(listLotes: List<Lote>?)
         fun setListCultivos(listCultivos: List<Cultivo>?)

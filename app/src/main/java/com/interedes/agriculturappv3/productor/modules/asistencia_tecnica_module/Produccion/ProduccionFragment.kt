@@ -26,7 +26,7 @@ import com.daimajia.androidanimations.library.YoYo
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.produccion.Produccion
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Produccion.adapter.ProduccionAdapter
@@ -70,7 +70,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
     //Listas
     var cultivoGlobal: Cultivo?=null
-    var unidadProductivaGlobal: UnidadProductiva?=null
+    var unidadProductivaGlobal: Unidad_Productiva?=null
     var loteGlobal: Lote?=null
     var produccionGlobal:Produccion?=null
 
@@ -149,7 +149,14 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             viewDialog?.spinnerUnidadMedidaProduccion?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerUnidadMedidaProduccion
             cancel = true
-        }  /* else if (!edtCorreo.text.toString().trim().matches(email_pattern.toRegex())) {
+        }
+       else if (fechaInicio?.after(fechaFin) == true) {
+           viewDialog?.txtFechaInicio?.setError(getString(R.string.order_dates))
+           focusView = viewDialog?.txtFechaInicio
+           cancel = true
+       }
+
+        /* else if (!edtCorreo.text.toString().trim().matches(email_pattern.toRegex())) {
             edtCorreo?.setError(getString(R.string.edit_text_error_correo))
             focusView = edtCorreo
             cancel = true
@@ -237,14 +244,13 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     override fun registerProduccion() {
         if (presenter?.validarCampos() == true) {
             val producccion =  Produccion()
+            producccion.Id=0
             producccion.FechaInicio=fechaInicio
             producccion.FechaFin=fechaFin
             producccion.ProduccionReal=viewDialog?.txtCantidadProduccionReal?.text.toString().toDoubleOrNull()
             producccion.CultivoId=Cultivo_Id
             producccion.UnidadMedidaId=unidadMedidaGlobal?.Id
             producccion.NombreUnidadMedida=unidadMedidaGlobal?.Descripcion
-
-
             producccion.NombreUnidadProductiva=viewDialog?.txtUnidadProductivaSelected?.text.toString()
             producccion.NombreLote= viewDialog?.txtLoteSelected?.text.toString()
             producccion.NombreCultivo=viewDialog?.txtCultivoSelected?.text.toString()
@@ -254,22 +260,21 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         }
     }
 
-    override fun updateProduccion(produccion:Produccion) {
+    override fun updateProduccion(producccion:Produccion) {
         if (presenter?.validarCampos() == true) {
-            val producccion =  Produccion()
-            producccion.Id=produccion.Id
+            //val producccion =  Produccion()
+            //producccion.Id=produccion.Id
             producccion.FechaInicio=fechaInicio
             producccion.FechaFin=fechaFin
             producccion.ProduccionReal=viewDialog?.txtCantidadProduccionReal?.text.toString().toDoubleOrNull()
             producccion.CultivoId=Cultivo_Id
             producccion.UnidadMedidaId=unidadMedidaGlobal?.Id
             producccion.NombreUnidadMedida=unidadMedidaGlobal?.Descripcion
-
-
+            producccion.Estado_Sincronizacion=producccion.Estado_Sincronizacion
             producccion.NombreUnidadProductiva=viewDialog?.txtUnidadProductivaSelected?.text.toString()
             producccion.NombreLote= viewDialog?.txtLoteSelected?.text.toString()
             producccion.NombreCultivo=viewDialog?.txtCultivoSelected?.text.toString()
-            presenter?.registerProdcuccion(producccion,Cultivo_Id!! )
+            presenter?.updateProducccion(producccion,Cultivo_Id!! )
         }
     }
 
@@ -295,7 +300,10 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     }
 
     override fun requestResponseError(error: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (_dialogRegisterUpdate != null) {
+            _dialogRegisterUpdate?.dismiss()
+        }
+        onMessageError(R.color.grey_luiyi, error)
     }
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
@@ -312,6 +320,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     }
 
     override fun onMessageError(colorPrimary: Int, message: String?) {
+
         onMessageOk(colorPrimary, message)
     }
 
@@ -502,10 +511,10 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         return builder.show();
     }
 
-    override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?) {
+    override fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?) {
         if(viewDialogFilter!=null){
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
-            var unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
+            var unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
             viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialogFilter?.spinnerLote?.setText("")
@@ -514,7 +523,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
                 viewDialogFilter?.spinnerCultivo?.setText("")
                 viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
 
-                unidadProductivaGlobal= listUnidadProductiva!![position] as UnidadProductiva
+                unidadProductivaGlobal= listUnidadProductiva!![position] as Unidad_Productiva
                 presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             }
             presenter?.setListSpinnerLote(null)

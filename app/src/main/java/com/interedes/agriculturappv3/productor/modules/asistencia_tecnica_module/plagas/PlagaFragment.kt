@@ -287,7 +287,6 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
         */
 
-
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())
         lp.width = WindowManager.LayoutParams.MATCH_PARENT

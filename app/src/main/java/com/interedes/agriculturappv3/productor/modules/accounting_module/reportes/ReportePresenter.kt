@@ -8,7 +8,7 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.productor.models.ventas.resports.BalanceContable
 import com.interedes.agriculturappv3.productor.modules.accounting_module.reportes.events.RequestEventReporte
@@ -23,7 +23,7 @@ class ReportePresenter(var mainView: IMainViewReportes.MainView?):IMainViewRepor
     var eventBus: EventBus? = null
 
     //GLOBALS
-    var listUnidadProductivaGlobal:List<UnidadProductiva>?= ArrayList<UnidadProductiva>()
+    var listUnidadProductivaGlobal:List<Unidad_Productiva>?= ArrayList<Unidad_Productiva>()
     var listLoteGlobal:List<Lote>?= ArrayList<Lote>()
     var listCultivosGlobal:List<Cultivo>?= ArrayList<Cultivo>()
 
@@ -96,7 +96,7 @@ class ReportePresenter(var mainView: IMainViewReportes.MainView?):IMainViewRepor
 
         //LIST EVENTS
             RequestEventReporte.LIST_EVENT_UP -> {
-                listUnidadProductivaGlobal= event.mutableList as List<UnidadProductiva>
+                listUnidadProductivaGlobal= event.mutableList as List<Unidad_Productiva>
             }
 
             RequestEventReporte.LIST_EVENT_LOTE -> {

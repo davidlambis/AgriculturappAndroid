@@ -9,7 +9,7 @@ import com.interedes.agriculturappv3.productor.models.detalletipoproducto.Detall
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.cultivos.events.CultivoEvent
 
 interface ICultivo {
@@ -48,7 +48,7 @@ interface ICultivo {
 
         //Spinners y Date Pickers
         //Unidades Productivas
-        fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
+        fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
 
         //Tipo Producto
         fun setListTipoProducto(listTipoProducto: List<TipoProducto>?)
@@ -72,6 +72,7 @@ interface ICultivo {
 
         fun showProgressHud()
         fun hideProgressHud()
+
 
         fun verificateConnection():AlertDialog?
     }

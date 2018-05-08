@@ -145,33 +145,53 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="wrap_content"
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.9"
-                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+                    android:orientation="horizontal">
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
-                    <EditText
-                        android:id="@+id/edtLocalizacionUnidadProductiva"
-                        style="@style/editText"
-                        android:drawableLeft="@drawable/ic_localizacion_finca"
-                        android:drawableStart="@drawable/ic_localizacion_finca"
-                        android:enabled="false"
-                        android:hint="@string/edit_text_localizacion_finca"
-                        android:inputType="text" />
-                </android.support.design.widget.TextInputLayout>
+                        <EditText
+                            android:id="@+id/edtLocalizacionUnidadProductiva"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_localizacion_finca"
+                            android:drawableStart="@drawable/ic_localizacion_finca"
+                            android:enabled="false"
+                            android:hint="@string/edit_text_localizacion_finca"
+                            android:inputType="text" />
+                    </android.support.design.widget.TextInputLayout>
+                    <ImageView
+                        android:id="@+id/imageViewLocalizarUnidadProductiva"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_apuntador"
+                        android:tint="@color/light_green_800" />
 
+
+
+
+                </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/imageViewLocalizarUnidadProductiva"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="0.1"
-                    android:src="@drawable/ic_apuntador"
-                    android:tint="@color/light_green_800" />
+                    android:id="@+id/imageViewStopLocalizarUnidadProductiva"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/ic_pause_circle_filled"
+                    android:textAlignment="center"
+                    android:tint="@color/light_green_800"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
 
             </LinearLayout>
 

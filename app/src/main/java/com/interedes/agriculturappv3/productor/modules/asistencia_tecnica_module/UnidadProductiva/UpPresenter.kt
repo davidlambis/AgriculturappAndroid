@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.libs.EventBus
@@ -19,12 +19,14 @@ import org.greenrobot.eventbus.Subscribe
 import java.util.ArrayList
 
 class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Presenter {
+
+
     var coordsService: CoordsServiceKotlin? = null
     var IUpInteractor: IUnidadProductiva.Interactor? = null
     var eventBus: EventBus? = null
     var listDepartamentoGlobal: List<Departamento>? = ArrayList<Departamento>()
     var listMunicipiosGlobal: List<Ciudad>? = ArrayList<Ciudad>()
-
+    private var serviceCoordsIsRunning:Boolean?=false;
 
     init {
         IUpInteractor = UpInteractor()
@@ -71,8 +73,16 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
     override fun startGps(activity: Activity) {
         coordsService = CoordsServiceKotlin(activity)
         if (CoordsServiceKotlin.instance!!.isLocationEnabled()) {
-            IUpView?.showProgressHud()
+            IUpView?.showProgressHudCoords()
         }
+    }
+
+    override fun getStatusServiceCoords(): Boolean? {
+       return serviceCoordsIsRunning
+    }
+
+    override fun setStatusServiceCoords(status: Boolean?) {
+        serviceCoordsIsRunning=status
     }
 
     override fun closeServiceGps() {
@@ -88,19 +98,19 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
     override fun onEventMainThread(requestEvent: RequestEventUP?) {
         when (requestEvent?.eventType) {
             RequestEventUP.READ_EVENT -> {
-                IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
+                IUpView?.setListUps(requestEvent.mutableList as List<Unidad_Productiva>)
             }
             RequestEventUP.SAVE_EVENT -> {
-                IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
+                IUpView?.setListUps(requestEvent.mutableList as List<Unidad_Productiva>)
                 closeServiceGps()
                 onUPsaveOk()
             }
             RequestEventUP.UPDATE_EVENT -> {
-                IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
+                IUpView?.setListUps(requestEvent.mutableList as List<Unidad_Productiva>)
                 onUPUpdateOk()
             }
             RequestEventUP.DELETE_EVENT -> {
-                IUpView?.setListUps(requestEvent.mutableList as List<UnidadProductiva>)
+                IUpView?.setListUps(requestEvent.mutableList as List<Unidad_Productiva>)
                 onUPDeleteOk()
             }
             RequestEventUP.ERROR_EVENT -> {
@@ -117,12 +127,12 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
 
         ////EVENTS ONITEM CLICK
             RequestEventUP.ITEM_EVENT -> {
-                var unidadProductiva = requestEvent.objectMutable as UnidadProductiva
+                var unidadProductiva = requestEvent.objectMutable as Unidad_Productiva
                 IUpView?.showAlertDialogAddUnidadProductiva(unidadProductiva)
             }
 
             RequestEventUP.ITEM_EDIT_EVENT -> {
-                var unidadProductiva = requestEvent.objectMutable as UnidadProductiva
+                var unidadProductiva = requestEvent.objectMutable as Unidad_Productiva
                 IUpView?.showAlertDialogAddUnidadProductiva(unidadProductiva)
             }
 
@@ -167,7 +177,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
         return false
     }
 
-    override fun registerUP(unidadProductivaModel: UnidadProductiva?) {
+    override fun registerUP(unidadProductivaModel: Unidad_Productiva?) {
         IUpView?.disableInputs()
         IUpView?.showProgress()
         if (checkConnection()) {
@@ -177,7 +187,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
         }
     }
 
-    override fun updateUP(unidadProductivaModel: UnidadProductiva?) {
+    override fun updateUP(unidadProductivaModel: Unidad_Productiva?) {
         if (checkConnection()) {
             IUpView?.showProgress()
             IUpInteractor?.updateUP(unidadProductivaModel)
@@ -186,9 +196,17 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
         }
     }
 
-    override fun deleteUP(unidadProductivaModel: UnidadProductiva?) {
+    override fun deleteUP(unidadProductivaModel: Unidad_Productiva?) {
         IUpView?.showProgress()
-        IUpInteractor?.registerUP(unidadProductivaModel)
+        if(unidadProductivaModel?.Estado_Sincronizacion==true){
+            if (checkConnection()) {
+                IUpInteractor?.deleteUP(unidadProductivaModel)
+            } else {
+                onMessageConectionError()
+            }
+        }else{
+            IUpInteractor?.deleteUP(unidadProductivaModel)
+        }
     }
 
     override fun getUps() {

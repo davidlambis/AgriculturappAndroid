@@ -34,9 +34,10 @@ import com.google.maps.android.SphericalUtil
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.lote.Lote
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.adapter.LoteAdapter
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.presenter.LotePresenter
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.presenter.LotePresenterImpl
@@ -98,9 +99,9 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     //Globals
 
     var unidadMedidaGlobal: Unidad_Medida? = null
-    var unidadProductivaGlobalSppiner: UnidadProductiva? = null
-    var unidadProductivaGlobalDialog: UnidadProductiva? = null
-    var listUnidadProductivaGlobal: List<UnidadProductiva>? = ArrayList<UnidadProductiva>()
+    var unidadProductivaGlobalSppiner: Unidad_Productiva? = null
+    var unidadProductivaGlobalDialog: Unidad_Productiva? = null
+    var listUnidadProductivaGlobal: List<Unidad_Productiva>? = ArrayList<Unidad_Productiva>()
     var listUnidadMedidaGlobal: List<Unidad_Medida>? = ArrayList<Unidad_Medida>()
 
     private var DIALOG_SELECTT_POSITION_UP: Int = 0
@@ -429,7 +430,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         }
         if (UBICATION_MANUAL == true) {
             // Creating a marker
-            LastMarkerDrawingLote = drawMarker(latLng, latLng.latitude.toString() + " / " + latLng.longitude, "Location", BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+            LastMarkerDrawingLote = drawMarker(latLng, latLng.latitude.toString() + " / " + latLng.longitude, getString(R.string.location_gps), BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             txtCoordsLote.setText(String.format(getString(R.string.coords), latLng.latitude, latLng.longitude))
         }
     }
@@ -636,7 +637,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         onMessageOk(colorPrimary, message)
     }
 
-    override fun setListUP(listUnidadProductiva: List<UnidadProductiva>) {
+    override fun setListUP(listUnidadProductiva: List<Unidad_Productiva>) {
         listUnidadProductivaGlobal = listUnidadProductiva
     }
 
@@ -648,10 +649,10 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(null);
-            var upArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductivaGlobal);
+            var upArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductivaGlobal);
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(upArrayAdapter);
             viewDialog?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                unidadProductivaGlobalSppiner = listUnidadProductivaGlobal!![position] as UnidadProductiva
+                unidadProductivaGlobalSppiner = listUnidadProductivaGlobal!![position] as Unidad_Productiva
                 /// Toast.makeText(activity,""+Unidad_Productiva_Id.toString(),Toast.LENGTH_SHORT).show()
             }
         }
@@ -761,14 +762,16 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         else {
             viewDialog?.txtTitle?.setText(getString(R.string.edit_lote))
             //unidadMedidaGlobal = Unidad_Medida(lote.Id, lote.Nombre_Unidad_Medida, null)
+            var unidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Id.eq(lote.Unidad_Productiva_Id)).querySingle()
             unidadMedidaGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(lote.Unidad_Medida_Id)).querySingle()
             viewDialog?.name_lote?.setText(lote.Nombre)
             viewDialog?.description_lote?.setText(lote.Descripcion)
             viewDialog?.area_lote?.setText(lote.Area.toString())
             viewDialog?.coordenadas_lote?.setText(lote.Coordenadas)
-            viewDialog?.spinnerUnidadProductiva?.setText(lote.Nombre_Unidad_Productiva)
+            viewDialog?.spinnerUnidadProductiva?.setText(unidadProductiva?.nombre)
             viewDialog?.spinnerUnidadMedidaLote?.setText(lote.Nombre_Unidad_Medida)
-            viewDialog?.spinnerUnidadProductiva?.visibility = View.GONE
+            viewDialog?.spinnerUnidadProductiva?.setDropDownHeight(0)
+            //viewDialog?.spinnerUnidadProductiva?.visibility = View.GONE
         }
 
         /*
@@ -858,18 +861,29 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         return builder.show();
     }
 
+
+
     override fun showProgressHud() {
+        hud = KProgressHUD.create(activity)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setWindowColor(getResources().getColor(R.color.colorPrimary))
+                .setLabel("Cargando...", resources.getColor(R.color.white));
+        hud?.show()
+    }
+
+    override fun showProgressHudCoords(){
         var imageView = ImageView(activity);
         imageView.setBackgroundResource(R.drawable.spin_animation);
         var drawable = imageView.getBackground() as AnimationDrawable;
         drawable.start();
-
         hud = KProgressHUD.create(activity)
                 .setCustomView(imageView)
                 .setWindowColor(resources.getColor(R.color.white))
                 .setLabel("Cargando...", resources.getColor(R.color.grey_luiyi));
         hud?.show()
+
     }
+
 
     override fun hideProgressHud() {
         hud?.dismiss()
@@ -945,7 +959,14 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
                 } else if (UBICATION_MANUAL == true) {
                     contentButtonsDrawingLoteMapa.visibility = View.VISIBLE
                     app_bar.layoutParams.width = AppBarLayout.LayoutParams.MATCH_PARENT
-                    app_bar.layoutParams.height = AppBarLayout.LayoutParams.MATCH_PARENT
+                    //app_bar.layoutParams.height = container_fragment.height
+                    app_bar.layoutParams.height =AppBarLayout.LayoutParams.MATCH_PARENT
+                    //app_bar.layoutParams.height=WindowManager.LayoutParams.FLAG_FULLSCREEN
+                    //val appbar = findViewById(R.id.appbar) as AppBarLayout
+                    //val heightDp = (resources.displayMetrics.heightPixels / 1).toFloat()
+                   /// val lp = app_bar.layoutParams as CoordinatorLayout.LayoutParams
+                    //lp.height = heightDp.toInt()
+
                 } else if (UBICATION_GPS == true) {
                     showAlertDialogAddLote(null)
                 }

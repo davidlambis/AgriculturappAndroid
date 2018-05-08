@@ -10,14 +10,12 @@ import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.productor.models.lote.Lote_Table
 import com.interedes.agriculturappv3.productor.models.lote.PostLote
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.PostUnidadProductiva
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva_Table
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario_Table
-import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.raizlabs.android.dbflow.kotlinextensions.delete
+import com.interedes.agriculturappv3.services.resources.CategoriaMediaResources
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,7 +34,7 @@ class LoteRepositoryImpl : LoteRepository {
 
     //region METHODS
     override fun saveLotes(mLote: Lote, unidad_productiva_id: Long?) {
-        val up_area = SQLite.select().from(UnidadProductiva::class.java).where(UnidadProductiva_Table.Id.eq(unidad_productiva_id)).querySingle()?.Area
+        val up_area = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Id.eq(unidad_productiva_id)).querySingle()?.Area
         val total_areas = area_lotes(mLote, unidad_productiva_id)
         if (total_areas!! < up_area!!) {
             val last_lote = getLastLote()
@@ -55,7 +53,7 @@ class LoteRepositoryImpl : LoteRepository {
 
 
     override fun registerOnlineLote(mLote: Lote, unidad_productiva_id: Long?) {
-        val unidad_productiva = SQLite.select().from(UnidadProductiva::class.java).where(UnidadProductiva_Table.Id.eq(unidad_productiva_id)).querySingle()
+        val unidad_productiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Id.eq(unidad_productiva_id)).querySingle()
         if (unidad_productiva?.Estado_Sincronizacion == true) {
             val postLote = PostLote(0,
                     mLote.Area,
@@ -65,8 +63,7 @@ class LoteRepositoryImpl : LoteRepository {
                     mLote.Unidad_Medida_Id,
                     mLote.Unidad_Productiva_Id)
 
-
-            val up_area = SQLite.select().from(UnidadProductiva::class.java).where(UnidadProductiva_Table.Id.eq(unidad_productiva_id)).querySingle()?.Area
+            val up_area = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Id.eq(unidad_productiva_id)).querySingle()?.Area
             val total_areas = area_lotes(mLote, unidad_productiva_id)
 
             if (total_areas!! > up_area!!) {
@@ -93,13 +90,13 @@ class LoteRepositoryImpl : LoteRepository {
             }
 
         } else {
-            val up_area = SQLite.select().from(UnidadProductiva::class.java).where(UnidadProductiva_Table.Id.eq(unidad_productiva_id)).querySingle()?.Area
+            val up_area = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Id.eq(unidad_productiva_id)).querySingle()?.Area
             val total_areas = area_lotes(mLote, unidad_productiva_id)
             if (total_areas!! > up_area!!) {
                 postEventError(RequestEventLote.ERROR_EVENT, "No se puede registrar. El área total de lotes supera el área de la Unidad Productiva")
             } else {
                 saveLotes(mLote, unidad_productiva_id)
-                postEventOk(RequestEventLote.SAVE_EVENT, getLotes(unidad_productiva_id), mLote)
+                ///postEventOk(RequestEventLote.SAVE_EVENT, getLotes(unidad_productiva_id), mLote)
             }
         }
     }
@@ -120,8 +117,8 @@ class LoteRepositoryImpl : LoteRepository {
     }
 
     override fun loadListas() {
-        val listUp = SQLite.select().from(UnidadProductiva::class.java).where(UnidadProductiva_Table.UsuarioId.eq(getLastUserLogued()?.Id)).queryList()
-        val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(1)).queryList()
+        val listUp = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.UsuarioId.eq(getLastUserLogued()?.Id)).queryList()
+        val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(CategoriaMediaResources.Area)).queryList()
 
         postEventListUnidadMedida(RequestEventLote.LIST_EVENT_UNIDAD_MEDIDA, listUnidadMedida, null)
         postEventListUp(RequestEventLote.LIST_EVENT_UP, listUp, null)
@@ -198,7 +195,16 @@ class LoteRepositoryImpl : LoteRepository {
 
             })
         } else {
-            postEventError(RequestEventLote.ERROR_EVENT, "Error!. El lote no se ha subido")
+            //Verificate if cultivos register
+            var vericateRegisterCultivos= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(mLote.Id)).querySingle()
+            if(vericateRegisterCultivos!=null){
+
+                postEventError(RequestEventLote.ERROR_EVENT, "Error!. El lote no se ha podido eliminar, recuerde eliminar los cultivos")
+            }else{
+                mLote.delete()
+                postEventOk(RequestEventLote.DELETE_EVENT, getLotes(unidad_productiva_id), mLote)
+            }
+
         }
     }
 
@@ -219,7 +225,7 @@ class LoteRepositoryImpl : LoteRepository {
         postEvent(type, null, null, messageError)
     }
 
-    private fun postEventListUp(type: Int, listUnidadProductiva: List<UnidadProductiva>?, messageError: String?) {
+    private fun postEventListUp(type: Int, listUnidadProductiva: List<Unidad_Productiva>?, messageError: String?) {
         var upMutable = listUnidadProductiva as MutableList<Object>
         postEvent(type, upMutable, null, messageError)
     }

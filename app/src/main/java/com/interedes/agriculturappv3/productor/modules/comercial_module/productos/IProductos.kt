@@ -9,7 +9,7 @@ import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.modules.comercial_module.productos.events.ProductosEvent
 
 interface IProductos {
@@ -42,7 +42,7 @@ interface IProductos {
 
         fun setListCalidad(listCalidadProducto: List<CalidadProducto>?)
 
-        fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
+        fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
         fun setListLotes(listLotes: List<Lote>?)
         fun setListCultivos(listCultivos: List<Cultivo>?)
 

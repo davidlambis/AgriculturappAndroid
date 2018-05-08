@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.productor.models.ventas.resports.BalanceContable
 import com.interedes.agriculturappv3.productor.modules.accounting_module.reportes.events.RequestEventReporte
@@ -44,7 +44,7 @@ interface IMainViewReportes {
         fun requestResponseItemOK(string1:String?, string2:String?)
 
         //Set sppiners
-        fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
+        fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
         fun setListLotes(listLotes:List<Lote>?)
         fun setListCultivos(listCultivos:List<Cultivo>?)
         fun setCultivo(cultivo: Cultivo?)

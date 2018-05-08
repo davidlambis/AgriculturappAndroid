@@ -7,18 +7,22 @@ import com.interedes.agriculturappv3.productor.models.produccion.Produccion
  */
 class ProduccionInteractor:IMainProduccion.Interactor {
 
+
     var repository: IMainProduccion.Repository? = null
 
     init {
         this.repository = ProduccionRepository()
     }
 
-    override fun registerProduccion(produccion: Produccion, cultivo_id: Long) {
+    override fun saveProduccion(produccion: Produccion, cultivo_id: Long) {
        repository?.saveProduccion(produccion,cultivo_id)
     }
 
-    override fun updateProducccion(produccion: Produccion, cultivo_id: Long) {
-        repository?.updateProduccion(produccion,cultivo_id)
+
+
+
+    override fun saveProduccionOnline(produccion: Produccion, cultivo_id: Long) {
+        repository?.saveProduccionOnline(produccion,cultivo_id)
     }
 
     override fun deleteProducccion(produccion: Produccion, cultivo_id: Long?) {

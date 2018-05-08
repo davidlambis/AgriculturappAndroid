@@ -11,15 +11,13 @@ import com.interedes.agriculturappv3.productor.models.cultivo.PostCultivo
 import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.lote.Lote_Table
-import com.interedes.agriculturappv3.productor.models.lote.PostLote
-import com.interedes.agriculturappv3.productor.models.producto.Producto
-import com.interedes.agriculturappv3.productor.models.producto.Producto_Table
+import com.interedes.agriculturappv3.productor.models.produccion.Produccion
+import com.interedes.agriculturappv3.productor.models.produccion.Produccion_Table
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva_Table
-import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.events.RequestEventLote
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.resources.CategoriaMediaResources
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
@@ -42,7 +40,7 @@ class CultivoRepository : ICultivo.Repository {
     //region Métodos Interfaz
     override fun getListas() {
         //get Unidades Productivas
-        val listUnidadesProductivas: List<UnidadProductiva> = SQLite.select().from(UnidadProductiva::class.java).queryList()
+        val listUnidadesProductivas: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java).queryList()
         if (listUnidadesProductivas.size > 0) {
             postEventListUnidadProductiva(CultivoEvent.LIST_EVENT_UNIDAD_PRODUCTIVA, listUnidadesProductivas, null)
         } else {
@@ -60,7 +58,7 @@ class CultivoRepository : ICultivo.Repository {
         postEventListTipoProducto(CultivoEvent.LIST_EVENT_TIPO_PRODUCTO, listTipoProducto, null)
 
         //val listUnidadMedida = Listas.listaUnidadMedida()
-        val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(3)).queryList()
+        val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(CategoriaMediaResources.Cosecha)).queryList()
         postEventListUnidadMedida(CultivoEvent.LIST_EVENT_UNIDAD_MEDIDA, listUnidadMedida, null)
 
 
@@ -145,7 +143,7 @@ class CultivoRepository : ICultivo.Repository {
             })
         } else {
             saveCultivo(mCultivo!!, loteId)
-            postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
+            //postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
         }
     }
 
@@ -170,13 +168,10 @@ class CultivoRepository : ICultivo.Repository {
                         postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
                     }
                 }
-
                 override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
                     postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
                 }
             })
-
-
         } else {
             postEventError(CultivoEvent.ERROR_EVENT, "Error!. El Cultivo no se ha subido")
         }
@@ -192,14 +187,19 @@ class CultivoRepository : ICultivo.Repository {
                         postEventOk(CultivoEvent.DELETE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
                     }
                 }
-
                 override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
                     postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
                 }
-
             })
         } else {
-            postEventError(CultivoEvent.ERROR_EVENT, "Error!. El Cultivo no se ha subido")
+            var vericateRegisterProduccion= SQLite.select().from(Produccion::class.java).where(Produccion_Table.CultivoId.eq(mCultivo.Id)).querySingle()
+            if(vericateRegisterProduccion!=null){
+                postEventError(CultivoEvent.ERROR_EVENT, "Error!.El cultivo no se ha podido eliminar, recuerde eliminar la produccion primero")
+            }else{
+                mCultivo.delete()
+                postEventOk(CultivoEvent.DELETE_EVENT,  getCultivos(mCultivo.LoteId), mCultivo)
+            }
+           /// postEventError(CultivoEvent.ERROR_EVENT, "Error!. El Cultivo no se ha eliminado")
         }
 
     }
@@ -214,7 +214,7 @@ class CultivoRepository : ICultivo.Repository {
 
 
     //region Events
-    private fun postEventListUnidadProductiva(type: Int, listUnidadProductiva: List<UnidadProductiva>?, messageError: String?) {
+    private fun postEventListUnidadProductiva(type: Int, listUnidadProductiva: List<Unidad_Productiva>?, messageError: String?) {
         val unidadProductivaMutable = listUnidadProductiva as MutableList<Object>
         postEvent(type, unidadProductivaMutable, null, messageError)
     }

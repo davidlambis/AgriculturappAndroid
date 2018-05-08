@@ -22,7 +22,7 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.Tratamiento
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.control_plagas.ControlPlagasFragment
@@ -45,7 +45,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
     var nombreTipoEnfermedad: String? = null
     var nombreTipoProducto: String? = null
     var viewDialogFilter: View? = null
-    var unidadProductivaGlobal: UnidadProductiva? = null
+    var unidadProductivaGlobal: Unidad_Productiva? = null
     var loteGlobal: Lote? = null
     var tipoProductoId: Long? = 0
     var cultivoGlobal: Cultivo? = null
@@ -186,10 +186,10 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         return false
     }
 
-    override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?) {
+    override fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?) {
         if (viewDialogFilter != null) {
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
-            val unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
+            val unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
             viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialogFilter?.spinnerLote?.setText("")

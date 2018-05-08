@@ -168,6 +168,7 @@
                     <EditText
                         android:id="@+id/edtEstimadoCosecha"
                         style="@style/editText"
+                        android:textSize="@dimen/text_size_15"
                         android:drawableLeft="@drawable/ic_medicion"
                         android:drawableStart="@drawable/ic_medicion"
                         android:hint="@string/edit_text_estimado_cosecha"

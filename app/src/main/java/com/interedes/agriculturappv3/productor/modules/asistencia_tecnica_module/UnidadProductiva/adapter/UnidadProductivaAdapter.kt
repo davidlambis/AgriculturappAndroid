@@ -1,6 +1,5 @@
 package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.up.adapter
 
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
@@ -17,11 +16,11 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 /**
  * Created by usuario on 16/03/2018.
  */
-class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>) : RecyclerView.Adapter<UnidadProductivaAdapter.ViewHolder>() {
+class UnidadProductivaAdapter(val lista: ArrayList<Unidad_Productiva>) : RecyclerView.Adapter<UnidadProductivaAdapter.ViewHolder>() {
 
     companion object {
         var eventBus: EventBus? = null
-        fun postEventc(type: Int, unidadProductiva: UnidadProductiva?) {
+        fun postEventc(type: Int, unidadProductiva: Unidad_Productiva?) {
             var unidadMitable = unidadProductiva as Object
             val event = RequestEventUP(type, null, unidadMitable, null)
             event.eventType = type
@@ -49,7 +48,7 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>) : Recycler
     }
 
 
-    fun setItems(newItems: List<UnidadProductiva>) {
+    fun setItems(newItems: List<Unidad_Productiva>) {
         lista.addAll(newItems)
         notifyDataSetChanged()
 
@@ -62,7 +61,7 @@ class UnidadProductivaAdapter(val lista: ArrayList<UnidadProductiva>) : Recycler
 
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindItems(data: UnidadProductiva, pos: Int) = with(itemView) {
+        fun bindItems(data: Unidad_Productiva, pos: Int) = with(itemView) {
 
 
             var txt_unidad_productiva: TextView = itemView.findViewById(R.id.txtTitle)

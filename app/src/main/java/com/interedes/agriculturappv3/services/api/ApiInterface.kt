@@ -5,7 +5,7 @@ import com.interedes.agriculturappv3.productor.models.ResetPassword
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.cultivo.PostCultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPagoResponse
 import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProductoResponse
 import com.interedes.agriculturappv3.productor.models.login.Login
@@ -13,6 +13,8 @@ import com.interedes.agriculturappv3.productor.models.login.LoginResponse
 import com.interedes.agriculturappv3.productor.models.lote.PostLote
 import com.interedes.agriculturappv3.productor.models.rol.RolResponse
 import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPagoResponse
+import com.interedes.agriculturappv3.productor.models.produccion.PostProduccion
+import com.interedes.agriculturappv3.productor.models.produccion.Produccion
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProductoResponse
 import com.interedes.agriculturappv3.productor.models.producto.PostProducto
 import com.interedes.agriculturappv3.productor.models.producto.Producto
@@ -29,6 +31,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 import retrofit2.http.GET
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
 
 interface ApiInterface {
@@ -47,8 +51,8 @@ interface ApiInterface {
     fun getDetalleMetodoPagos(): Call<DetalleMetodoPagoResponse>
 
     //Get Tipo Productos
-    @GET("odata/Agp2/TipoProductos")
-    fun getTiposProducto(): Call<TipoProductoResponse>
+    @GET("odata/Agp2/TipoProductos?\$expand=DetalleTipoProductos")
+    fun getTipoAndDetalleTipoProducto(): Call<TipoProductoResponse>
 
     @GET("odata/Agp2/DetalleTipoProductos")
     fun getDetalleTiposProducto(): Call<DetalleTipoProductoResponse>
@@ -100,17 +104,23 @@ interface ApiInterface {
     //TODO Requiere Token
     @Headers("Content-Type: application/json")
     @POST("odata/Agp2/UnidadProductivas")
-    fun postUnidadProductiva(@Body body: PostUnidadProductiva): Call<UnidadProductiva>
+    fun postUnidadProductiva(@Body body: PostUnidadProductiva): Call<Unidad_Productiva>
 
     //Patch Unidad Productiva
     //TODO Requiere Token
     @Headers("Content-Type: application/json")
     @PATCH("odata/Agp2/UnidadProductivas({Id})")
-    fun updateUnidadProductiva(@Body body: PostUnidadProductiva, @Path("Id") Id: Long): Call<UnidadProductiva>
+    fun updateUnidadProductiva(@Body body: PostUnidadProductiva, @Path("Id") Id: Long): Call<Unidad_Productiva>
 
 
     @GET("odata/Agp2/Departamentos?\$expand=Ciudads")
     fun getDepartamentos(): Call<DeparmentsResponse>
+
+
+    @Headers("Content-Type: application/json")
+    @DELETE("odata/Agp2/UnidadProductivas({Id})")
+    fun deleteUnidadProductiva(@Path("Id") Id: Long?): Call<Unidad_Productiva>
+
     //endregion
 
     //region LOTES
@@ -149,7 +159,29 @@ interface ApiInterface {
     @DELETE("odata/Agp2/Cultivos({Id})")
     fun deleteCultivo(@Path("Id") Id: Long): Call<Cultivo>
 
+
+
     //endregion
+
+
+    //region Produccion
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @POST("odata/Agp2/Produccions")
+    fun postProduccion(@Body body: PostProduccion): Call<PostProduccion>
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @PATCH("odata/Agp2/Produccions({Id})")
+    fun updateProduccion(@Body body: PostProduccion, @Path("Id") Id: Long): Call<PostProduccion>
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @DELETE("odata/Agp2/Produccions({Id})")
+    fun deleteProduccion(@Path("Id") Id: Long): Call<PostProduccion>
+    //endregion
+
+
+
 
     //region Productos
     //TODO Requiere Token
@@ -172,6 +204,8 @@ interface ApiInterface {
     //endregion
 
     companion object Factory {
+
+
         internal val okHttpClient = OkHttpClient.Builder()
                 .readTimeout(5, TimeUnit.MINUTES) //Tiempo de respuesta del servicio
                 .connectTimeout(5, TimeUnit.MINUTES)
@@ -181,12 +215,17 @@ interface ApiInterface {
                 .setLenient()
                 .create()*/
 
+        private val gson: Gson? = GsonBuilder()
+        .setDateFormat("yyyy-MM-dd'T'HH:mm")
+        .create();
+
+
         val BASE_URL = "http://18.233.87.16/"
         fun create(): ApiInterface {
             val retrofit = Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(okHttpClient)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
 
             return retrofit.create(ApiInterface::class.java);

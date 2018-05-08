@@ -82,9 +82,9 @@ class ProduccionAdapter(var lista: ArrayList<Produccion>) : RecyclerView.Adapter
 
 
             icon.setImageResource(R.drawable.ic_produccion_cultivo)
-            txtAdicional.visibility=View.GONE
+            //txtAdicional.visibility=View.GONE
             txtCantidadProduccion.visibility=View.GONE
-            txtAdicional.visibility=View.GONE
+            //txtAdicional.visibility=View.GONE
             txt_descripcion.visibility=View.GONE
 
 
@@ -104,6 +104,16 @@ class ProduccionAdapter(var lista: ArrayList<Produccion>) : RecyclerView.Adapter
 
             txtFechasProduccion.text = String.format(context.getString(R.string.range_dates)!!,data.getFechaInicioFormat(), data.getFechafinFormat())
             txt_title.text = String.format(context.getString(R.string.cantidad_estimada)!!,data.ProduccionReal, data.NombreUnidadMedida)
+
+
+            if (data.Estado_Sincronizacion == true) {
+                txtAdicional.setTextColor(resources.getColor(R.color.green))
+                txtAdicional.text = context.getString(R.string.Sincronizado)
+            } else {
+                txtAdicional.setTextColor(resources.getColor(R.color.green))
+                txtAdicional.text = context.getString(R.string.noSincronizado)
+            }
+
 
 
 

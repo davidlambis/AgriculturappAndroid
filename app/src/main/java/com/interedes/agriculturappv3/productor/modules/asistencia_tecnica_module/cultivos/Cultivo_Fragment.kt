@@ -34,7 +34,7 @@ import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto_Table
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.cultivos.adapters.CultivoAdapter
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -72,7 +72,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     var Unidad_Medida_Id: Long? = 0
     var Lote_Id: Long? = 0
 
-    var unidadProductivaGlobal: UnidadProductiva? = null
+    var unidadProductivaGlobal: Unidad_Productiva? = null
     var unidadMedidaGlobal: Unidad_Medida? = null
     var loteGlobal: Lote? = null
     var tipoProductoGlobal: TipoProducto? = null
@@ -160,11 +160,9 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                 (activity as MenuMainActivity).onBackPressed()
             }
 
-
             R.id.searchFilter -> {
                 showAlertDialogFilterCultivo(true)
             }
-
             R.id.btnSaveCultivo -> {
                 if (cultivoGlobal == null) {
                     registerCultivo()
@@ -283,17 +281,14 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     }
 
     override fun showProgressHud() {
-        var imageView = ImageView(activity);
-        imageView.setBackgroundResource(R.drawable.spin_animation);
-        var drawable = imageView.getBackground() as AnimationDrawable;
-        drawable.start();
-
         hud = KProgressHUD.create(activity)
-                .setCustomView(imageView)
-                .setWindowColor(resources.getColor(R.color.white))
-                .setLabel("Cargando...", resources.getColor(R.color.grey_luiyi));
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setWindowColor(getResources().getColor(R.color.colorPrimary))
+                .setLabel("Cargando...", resources.getColor(R.color.white));
         hud?.show()
     }
+
+
 
     override fun hideProgressHud() {
         hud?.dismiss()
@@ -322,7 +317,6 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
     override fun updateCultivo(cultivo: Cultivo?, loteId: Long?) {
         if (presenter?.validarCampos() == true) {
-            //cultivo?.Id = cultivoGlobal?.Id
             cultivo?.Id = cultivoGlobal?.Id
             cultivo?.Descripcion = viewDialog?.edtDescripcionCultivo?.text?.trim().toString()
             cultivo?.EstimadoCosecha = viewDialog?.edtEstimadoCosecha?.text?.trim().toString().toDoubleOrNull()
@@ -370,8 +364,8 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         }
         txtNombreUp?.setText(lote?.Nombre_Unidad_Productiva)
         txtNombreLote?.setText(lote?.Nombre)
-        txtPrecio?.setText(lote?.Descripcion)
-        txtArea?.setText(lote?.Area.toString())
+        //txtPrecio?.setText(lote?.Descripcion)
+        txtPrecio?.setText(lote?.Area.toString()+" ${lote?.Nombre_Unidad_Medida}")
     }
 
 
@@ -568,14 +562,14 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     }
 
 
-    override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?) {
+    override fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?) {
         if (viewDialogFilter != null) {
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
-            val unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
+            val unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
             viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialogFilter?.spinnerLote?.setText("")
-                unidadProductivaGlobal = listUnidadProductiva!![position] as UnidadProductiva
+                unidadProductivaGlobal = listUnidadProductiva!![position] as Unidad_Productiva
                 presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             }
         }

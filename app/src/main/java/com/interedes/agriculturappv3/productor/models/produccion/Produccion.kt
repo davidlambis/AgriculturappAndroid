@@ -12,7 +12,7 @@ import java.util.*
  * Created by usuario on 20/03/2018.
  */
 @Table(database = DataSource::class)
-data class Produccion(@PrimaryKey(autoincrement = true)
+data class Produccion(@PrimaryKey
                       @SerializedName("Id")
                       @Column(name = "Id")
                       var Id: Long? = 0,
@@ -37,7 +37,7 @@ data class Produccion(@PrimaryKey(autoincrement = true)
                       @Column(name = "ProduccionReal")
                       var ProduccionReal: Double? = null,
 
-                      @SerializedName("UnidadMedidaId")
+                      @SerializedName("unidadMedidaId")
                       @Column(name = "UnidadMedidaId")
                       var UnidadMedidaId: Long? = null,
 

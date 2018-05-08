@@ -40,7 +40,7 @@ import com.daimajia.androidanimations.library.YoYo
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
@@ -66,7 +66,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
     //Listas
     var cultivoGlobal: Cultivo? = null
-    var unidadProductivaGlobal: UnidadProductiva? = null
+    var unidadProductivaGlobal: Unidad_Productiva? = null
     var loteGlobal: Lote? = null
 
     var Cultivo_Id: Long? = null
@@ -334,10 +334,10 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         _dialogRegisterUpdate = dialog
     }
 
-    override fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?) {
+    override fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?) {
         if (viewDialogFilter != null) {
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
-            val unidadProductivaArrayAdapter = ArrayAdapter<UnidadProductiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
+            val unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
             viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialogFilter?.spinnerLote?.setText("")
@@ -346,7 +346,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 viewDialogFilter?.spinnerCultivo?.setText("")
                 viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
 
-                unidadProductivaGlobal = listUnidadProductiva!![position] as UnidadProductiva
+                unidadProductivaGlobal = listUnidadProductiva!![position] as Unidad_Productiva
                 presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
             }
             presenter?.setListSpinnerLote(null)

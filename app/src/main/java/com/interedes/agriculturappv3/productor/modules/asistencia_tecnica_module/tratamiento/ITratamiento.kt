@@ -8,7 +8,7 @@ import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.Tratamiento
 import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.tratamiento.events.TratamientoEvent
 
 
@@ -17,7 +17,7 @@ interface ITratamiento {
     interface View {
         fun setTratamiento(tratamiento: Tratamiento?)
         fun showAlertDialogFilterControlPlaga()
-        fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
+        fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
         fun setListLotes(listLotes: List<Lote>?)
         fun setListCultivos(listCultivos: List<Cultivo>?)
         fun validarListasAddControlPlaga(): Boolean

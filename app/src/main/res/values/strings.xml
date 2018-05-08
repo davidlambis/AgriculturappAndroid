@@ -98,6 +98,7 @@
     <string name="please_enable_gps">Necesitas habilitar el GPS</string>
     <string name="loader_gps">Iniciando GPS</string>
     <string name="enable_permissions_gps_settings">Por favor habilita el permiso de ubicación</string>
+    <string name="location_gps">Ubicacion Actual</string>
 
     <!--NAMES LOTE-->
     <string name="add_lote">Agregar Lote</string>
@@ -141,7 +142,7 @@
     <!-- Cultivos -->
     <string name="edit_text_nombre_cultivo"> Nombre del Cultivo</string>
     <string name="edit_text_descripcion_cultivo">Descripción</string>
-    <string name="edit_text_estimado_cosecha">Cosecha</string>
+    <string name="edit_text_estimado_cosecha">Cosecha Estimada</string>
     <string name="edit_text_fecha_inicio">Fecha de Inicio</string>
     <string name="edit_text_fecha_fin">Fecha de Fin</string>
     <string name="spinner_unidad_productiva">Unidad Productiva</string>
@@ -324,6 +325,8 @@
     <string name="need_internet_register">Necesitas internet para registrarte</string>
     <string name="Sincronizado">Sincronizado</string>
     <string name="noSincronizado">No Sincronizado</string>
+
+    <string name="init_service_coords">Iniciar serrvicio de coordenadas para obtener ubicacion</string>
 
 
     <string-array name="array_type_get_location_with_conection">

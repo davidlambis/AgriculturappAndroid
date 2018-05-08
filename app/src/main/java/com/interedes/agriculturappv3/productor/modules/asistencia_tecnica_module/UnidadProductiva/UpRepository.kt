@@ -1,15 +1,17 @@
 package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva
 
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.departments.Ciudad
 import com.interedes.agriculturappv3.productor.models.departments.Departamento
+import com.interedes.agriculturappv3.productor.models.lote.Lote
+import com.interedes.agriculturappv3.productor.models.lote.Lote_Table
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.PostUnidadProductiva
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva_Table
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
@@ -35,7 +37,7 @@ class UpRepository() : IUnidadProductiva.Repo {
         postEventOk(RequestEventUP.READ_EVENT, getUPs(), null)
     }
 
-    override fun saveUp(mUnidadProductiva: UnidadProductiva) {
+    override fun saveUp(mUnidadProductiva: Unidad_Productiva) {
         val last_up = getLastUp()
         if (last_up == null) {
             mUnidadProductiva.Id = 1
@@ -46,7 +48,7 @@ class UpRepository() : IUnidadProductiva.Repo {
         postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
     }
 
-    override fun registerOnlineUP(mUnidadProductiva: UnidadProductiva?) {
+    override fun registerOnlineUP(mUnidadProductiva: Unidad_Productiva?) {
 
         //TODO Ciudad Id de la tabla del backend
         val postUnidadProductiva = PostUnidadProductiva(0,
@@ -60,9 +62,9 @@ class UpRepository() : IUnidadProductiva.Repo {
 
         // mUnidadProductiva?.CiudadId = 1
         val call = apiService?.postUnidadProductiva(postUnidadProductiva)
-        call?.enqueue(object : Callback<UnidadProductiva> {
+        call?.enqueue(object : Callback<Unidad_Productiva> {
 
-            override fun onResponse(call: Call<UnidadProductiva>?, response: Response<UnidadProductiva>?) {
+            override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
                 if (response != null && response.code() == 201) {
                     val idUP = response.body()?.Id
                     mUnidadProductiva?.Id = idUP
@@ -74,7 +76,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                 }
             }
 
-            override fun onFailure(call: Call<UnidadProductiva>?, t: Throwable?) {
+            override fun onFailure(call: Call<Unidad_Productiva>?, t: Throwable?) {
                 postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
             }
 
@@ -82,7 +84,7 @@ class UpRepository() : IUnidadProductiva.Repo {
 
     }
 
-    override fun updateUp(mUnidadProductiva: UnidadProductiva) {
+    override fun updateUp(mUnidadProductiva: Unidad_Productiva) {
         if (mUnidadProductiva.Estado_Sincronizacion == true) {
             val updateUnidadProductiva = PostUnidadProductiva(mUnidadProductiva.Id,
                     mUnidadProductiva.Area,
@@ -95,8 +97,8 @@ class UpRepository() : IUnidadProductiva.Repo {
 
             // mUnidadProductiva?.CiudadId = 1
             val call = apiService?.updateUnidadProductiva(updateUnidadProductiva, mUnidadProductiva.Id!!)
-            call?.enqueue(object : Callback<UnidadProductiva> {
-                override fun onResponse(call: Call<UnidadProductiva>?, response: Response<UnidadProductiva>?) {
+            call?.enqueue(object : Callback<Unidad_Productiva> {
+                override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
                     if (response != null && response.code() == 200) {
                         mUnidadProductiva.update()
                         postEventOk(RequestEventUP.UPDATE_EVENT, getUPs(), mUnidadProductiva)
@@ -105,7 +107,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                     }
                 }
 
-                override fun onFailure(call: Call<UnidadProductiva>?, t: Throwable?) {
+                override fun onFailure(call: Call<Unidad_Productiva>?, t: Throwable?) {
                     postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
                 }
             })
@@ -114,18 +116,41 @@ class UpRepository() : IUnidadProductiva.Repo {
         }
     }
 
-    override fun deleteUp(mUnidadProductiva: UnidadProductiva) {
-        mUnidadProductiva.delete()
-        postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
+    override fun deleteUp(mUnidadProductiva: Unidad_Productiva) {
+        if (mUnidadProductiva.Estado_Sincronizacion == true) {
+            val call = apiService?.deleteUnidadProductiva(mUnidadProductiva.Id)
+            call?.enqueue(object : Callback<Unidad_Productiva> {
+                override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
+                    if (response != null && response.code() == 204) {
+                        mUnidadProductiva.delete()
+                        postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
+                    }
+                }
+                override fun onFailure(call: Call<Unidad_Productiva>?, t: Throwable?) {
+                    postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
+                }
+            })
+        } else {
+            //Verificate if cultivos register
+            //Verificate if cultivos register
+            var vericateRegisterLotes= SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(mUnidadProductiva.Id)).querySingle()
+            if(vericateRegisterLotes!=null){
+                postEventError(RequestEventUP.ERROR_EVENT, "Error!.La unidad productiva no se ha podido eliminar")
+            }else{
+                mUnidadProductiva.delete()
+                postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
+            }
+
+        }
     }
 
-    override fun getUPs(): List<UnidadProductiva> {
+    override fun getUPs(): List<Unidad_Productiva> {
         val usuario = getLastUserLogued()
-        return SQLite.select().from(UnidadProductiva::class.java).where(UnidadProductiva_Table.UsuarioId.eq(usuario?.Id)).queryList()
+        return SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id)).queryList()
     }
 
-    override fun getLastUp(): UnidadProductiva? {
-        val lastUnidadProductiva = SQLite.select().from(UnidadProductiva::class.java).where().orderBy(UnidadProductiva_Table.Id, false).querySingle()
+    override fun getLastUp(): Unidad_Productiva? {
+        val lastUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).where().orderBy(Unidad_Productiva_Table.Id, false).querySingle()
         return lastUnidadProductiva
     }
 
@@ -160,7 +185,7 @@ class UpRepository() : IUnidadProductiva.Repo {
         postEvent(type, ciudadMutable, null, messageError)
     }
 
-    private fun postEventOk(type: Int, listUnidadProductivas: List<UnidadProductiva>?, unidadProductiva: UnidadProductiva?) {
+    private fun postEventOk(type: Int, listUnidadProductivas: List<Unidad_Productiva>?, unidadProductiva: Unidad_Productiva?) {
         var UpListMutable = listUnidadProductivas as MutableList<Object>
         var UpMutable: Object? = null
         if (unidadProductiva != null) {

@@ -56,7 +56,7 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
     override fun getListasIniciales() {
         //Tipos de Producto
         //val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
-        val callTipoProducto = apiService?.getTiposProducto()
+        val callTipoProducto = apiService?.getTipoAndDetalleTipoProducto()
         callTipoProducto?.enqueue(object : Callback<TipoProductoResponse> {
             override fun onResponse(call: Call<TipoProductoResponse>?, response: Response<TipoProductoResponse>?) {
                 if (response != null && response.code() == 200) {
@@ -65,6 +65,10 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                         val byte = Base64.decode(item.Icono, Base64.DEFAULT)
                         item.Imagen = Blob(byte)
                         item.save()
+
+                        for (detalleTipoProducto in item.DetalleTipoProductos!!) {
+                            detalleTipoProducto.save()
+                        }
                     }
                 } else {
                     postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
@@ -78,25 +82,7 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
 
         })
 
-        //Detalle Tipos de Producto
-        //val listDetalleTipoProducto: ArrayList<DetalleTipoProducto> = Listas.listaDetalleTipoProducto()
-        val callDetalleTipoProducto = apiService?.getDetalleTiposProducto()
-        callDetalleTipoProducto?.enqueue(object : Callback<DetalleTipoProductoResponse> {
-            override fun onResponse(call: Call<DetalleTipoProductoResponse>?, response: Response<DetalleTipoProductoResponse>?) {
-                if (response != null && response.code() == 200) {
-                    val detalleTiposProducto = response.body()?.value as MutableList<DetalleTipoProducto>
-                    for (item in detalleTiposProducto) {
-                        item.save()
-                    }
-                } else {
-                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                }
-            }
 
-            override fun onFailure(call: Call<DetalleTipoProductoResponse>?, t: Throwable?) {
-                postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
-            }
-        })
 
         //Departamentos y Ciudades
         val lista_departamentos = SQLite.select().from(Departamento::class.java).queryList()

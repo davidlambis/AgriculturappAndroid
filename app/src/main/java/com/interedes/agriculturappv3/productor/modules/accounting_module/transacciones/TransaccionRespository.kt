@@ -9,7 +9,7 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.productor.models.lote.Lote
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion_Table
 import com.interedes.agriculturappv3.services.listas.Listas
@@ -27,7 +27,7 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
     }
 
     override fun getListas() {
-        var listUnidadProductiva = SQLite.select().from(UnidadProductiva::class.java!!).queryList()
+        var listUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java!!).queryList()
         var listLotes = SQLite.select().from(Lote::class.java!!).queryList()
         var listCultivos = SQLite.select().from(Cultivo::class.java!!).queryList()
         var listUnidadMedida= Listas.listaUnidadMedida()
@@ -87,7 +87,7 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
         postEvent(type, upMutable,null,messageError)
     }
 
-    private fun postEventListUnidadProductiva(type: Int, listUnidadMedida:List<UnidadProductiva>?, messageError:String?) {
+    private fun postEventListUnidadProductiva(type: Int, listUnidadMedida:List<Unidad_Productiva>?, messageError:String?) {
         var upMutable= listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }

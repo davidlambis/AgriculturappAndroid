@@ -13,7 +13,7 @@ import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 import java.util.ArrayList
@@ -23,7 +23,7 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
 
     var interactor: ICultivo.Interactor? = null
     var eventBus: EventBus? = null
-    var listUnidadProductivaGlobal: List<UnidadProductiva>? = ArrayList<UnidadProductiva>()
+    var listUnidadProductivaGlobal: List<Unidad_Productiva>? = ArrayList<Unidad_Productiva>()
     var listLoteGlobal: List<Lote>? = ArrayList<Lote>()
 
     var listTipoProductosGlobal: List<TipoProducto>? = ArrayList<TipoProducto>()
@@ -74,7 +74,7 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
     override fun onEventMainThread(cultivoEvent: CultivoEvent?) {
         when (cultivoEvent?.eventType) {
             CultivoEvent.LIST_EVENT_UNIDAD_PRODUCTIVA -> {
-                val list_unidad_productiva = cultivoEvent.mutableList as List<UnidadProductiva>
+                val list_unidad_productiva = cultivoEvent.mutableList as List<Unidad_Productiva>
                 listUnidadProductivaGlobal = list_unidad_productiva
             }
 
@@ -187,7 +187,16 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
     }
 
     override fun deleteCultivo(cultivo: Cultivo?, loteId: Long?) {
-        interactor?.deleteCultivo(cultivo, loteId)
+
+        if(cultivo?.EstadoSincronizacion==true){
+            if (checkConnection()) {
+                interactor?.deleteCultivo(cultivo, loteId)
+            } else {
+                onMessageConnectionError()
+            }
+        }else{
+            interactor?.deleteCultivo(cultivo, loteId)
+        }
     }
 
 

@@ -94,9 +94,9 @@ class Listas {
             return lista_comercial_productor
         }
 
-        /*fun listaUP(): ArrayList<UnidadProductiva> {
-            val listaUP = ArrayList<UnidadProductiva>()
-            listaUP.add(UnidadProductiva(1,
+        /*fun listaUP(): ArrayList<Unidad_Productiva> {
+            val listaUP = ArrayList<Unidad_Productiva>()
+            listaUP.add(Unidad_Productiva(1,
                     "Unidad Productiva 1",
                     null,
                     null,
@@ -113,7 +113,7 @@ class Listas {
                     null,
                     null
             ))
-            listaUP.add(UnidadProductiva(2, "Unidad Productiva 2", null, null, null, null,
+            listaUP.add(Unidad_Productiva(2, "Unidad Productiva 2", null, null, null, null,
                     null,
                     null,
                     null,
@@ -124,7 +124,7 @@ class Listas {
                     null,
                     null,
                     null))
-            listaUP.add(UnidadProductiva(3, "Unidad Productiva 3", null, null, null, null,
+            listaUP.add(Unidad_Productiva(3, "Unidad Productiva 3", null, null, null, null,
                     null,
                     null,
                     null,
@@ -135,7 +135,7 @@ class Listas {
                     null,
                     null,
                     null))
-            listaUP.add(UnidadProductiva(4, "Unidad Productiva 4", null, null, null, null,
+            listaUP.add(Unidad_Productiva(4, "Unidad Productiva 4", null, null, null, null,
                     null,
                     null,
                     null,
@@ -146,7 +146,7 @@ class Listas {
                     null,
                     null,
                     null))
-            listaUP.add(UnidadProductiva(5, "Unidad Productiva 5", null, null, null, null,
+            listaUP.add(Unidad_Productiva(5, "Unidad Productiva 5", null, null, null, null,
                     null,
                     null,
                     null,
@@ -157,7 +157,7 @@ class Listas {
                     null,
                     null,
                     null))
-            listaUP.add(UnidadProductiva(6, "Unidad Productiva 6", null, null, null, null,
+            listaUP.add(Unidad_Productiva(6, "Unidad Productiva 6", null, null, null, null,
                     null,
                     null,
                     null,
@@ -245,7 +245,11 @@ class Listas {
 
         fun listaInsumos(): ArrayList<Insumo> {
             val lista_insumos = ArrayList<Insumo>()
-            lista_insumos.add(Insumo(Id = 1, Descripcion = "Insumo para Roña(Aguacate)", Nombre = "Kocide", EnfermedadId = 1, Imagen = R.drawable.kocide))
+            lista_insumos.add(Insumo(Id = 1,
+                    Descripcion = "Insumo para Roña(Aguacate)",
+                    Nombre = "Kocide",
+                    EnfermedadId = 1,
+                    Imagen = R.drawable.kocide))
             return lista_insumos
         }
 

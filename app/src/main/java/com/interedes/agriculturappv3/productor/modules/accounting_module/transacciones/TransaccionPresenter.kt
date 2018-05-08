@@ -12,7 +12,7 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.ventas.Estado_Transaccion
 import com.interedes.agriculturappv3.services.Const
@@ -26,7 +26,7 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
     var eventBus: EventBus? = null
 
     //GLOBALS
-    var listUnidadProductivaGlobal:List<UnidadProductiva>?= ArrayList<UnidadProductiva>()
+    var listUnidadProductivaGlobal:List<Unidad_Productiva>?= ArrayList<Unidad_Productiva>()
     var listLoteGlobal:List<Lote>?= ArrayList<Lote>()
     var listCultivosGlobal:List<Cultivo>?= ArrayList<Cultivo>()
     var listUnidadMedidaGlobal:List<Unidad_Medida>?= ArrayList<Unidad_Medida>()
@@ -132,7 +132,7 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
             }
 
             RequestEventTransaccion.LIST_EVENT_UP -> {
-                listUnidadProductivaGlobal= event.mutableList as List<UnidadProductiva>
+                listUnidadProductivaGlobal= event.mutableList as List<Unidad_Productiva>
             }
 
             RequestEventTransaccion.LIST_EVENT_LOTE -> {

@@ -9,25 +9,120 @@ import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo_Table
+import com.interedes.agriculturappv3.productor.models.produccion.PostProduccion
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
+
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by usuario on 20/03/2018.
  */
 class ProduccionRepository :IMainProduccion.Repository {
 
+
     var eventBus: EventBus? = null
+    var apiService: ApiInterface? = null
     init {
         eventBus = GreenRobotEventBus()
+        apiService = ApiInterface.create()
     }
 
     //region METHODS
+    override fun saveProduccionOnline(produccion: Produccion, cultivo_id: Long) {
+
+        //UPDATE
+        /*-------------------------------------------------------------------------------------------------------*/
+        if(produccion.Id!!>0){
+            if (produccion.Estado_Sincronizacion == true) {
+                val format1 = SimpleDateFormat("yyyy-MM-dd")
+                val fecha_inicio = format1.format(produccion.FechaInicio)
+                val fecha_fecha_fin = format1.format(produccion.FechaFin)
+                val postProduccion = PostProduccion(
+                        produccion.Id,
+                        produccion.CultivoId,
+                        fecha_inicio,
+                        fecha_fecha_fin,
+                        produccion.UnidadMedidaId,
+                        produccion.ProduccionReal
+                )
+                val call = apiService?.updateProduccion(postProduccion, produccion.Id!!)
+                call?.enqueue(object : Callback<PostProduccion> {
+                    override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
+                        if (response != null && response.code() == 200) {
+                            produccion.update()
+                            postEventOk(RequestEventProduccion.UPDATE_EVENT, getProductions(cultivo_id), produccion)
+                        } else {
+                            postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
+                        }
+                    }
+                    override fun onFailure(call: Call<PostProduccion>?, t: Throwable?) {
+                        postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                })
+            } else {
+                postEventError(RequestEventProduccion.ERROR_EVENT, "Error!. El Cultivo no se ha actualizado")
+            }
+
+         //REGISTER
+         /*-------------------------------------------------------------------------------------------------------*/
+        }else{
+            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+            if (cultivo?.EstadoSincronizacion == true) {
+
+                val format1 = SimpleDateFormat("yyyy-MM-dd")
+                val fecha_inicio = format1.format(produccion.FechaInicio)
+                val fecha_fecha_fin = format1.format(produccion.FechaFin)
+                val postProduccion = PostProduccion(
+                        0
+                        ,
+                        produccion.CultivoId,
+                        fecha_inicio,
+                        fecha_fecha_fin,
+                        produccion.UnidadMedidaId,
+                        produccion.ProduccionReal
+                )
+                val call = apiService?.postProduccion(postProduccion)
+                call?.enqueue(object : Callback<PostProduccion> {
+                    override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
+                        if (response != null && response.code() == 201 || response?.code() == 200) {
+
+                            produccion.Id = response.body()?.Id!!
+                            produccion.Estado_Sincronizacion = true
+                            produccion.save()
+                            postEventOk(RequestEventProduccion.SAVE_EVENT, getProductions(cultivo_id), produccion)
+                        } else {
+                            postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
+                        }
+                    }
+                    override fun onFailure(call: Call<PostProduccion>?, t: Throwable?) {
+                        postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                })
+                //}
+            } else {
+                saveProduccion(produccion,cultivo_id)
+            }
+        }
+    }
+
     override fun saveProduccion(produccion: Produccion,cultivo_id:Long) {
+        val las_prduccion = getLastProduccion()
+        if (las_prduccion == null) {
+            produccion.Id = 1
+        } else {
+            produccion.Id = las_prduccion.Id!! + 1
+        }
         produccion.save()
         var listProduccion = getProductions(cultivo_id)
         postEventOk(RequestEventProduccion.SAVE_EVENT,listProduccion,null);
@@ -45,7 +140,7 @@ class ProduccionRepository :IMainProduccion.Repository {
     }
 
     override fun getListas() {
-        var listUnidadProductiva = SQLite.select().from(UnidadProductiva::class.java!!).queryList()
+        var listUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java!!).queryList()
         var listLotes = SQLite.select().from(Lote::class.java!!).queryList()
         var listCultivos = SQLite.select().from(Cultivo::class.java!!).queryList()
         val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(3)).queryList()
@@ -66,15 +161,32 @@ class ProduccionRepository :IMainProduccion.Repository {
         return listResponse;
     }
 
-    override fun updateProduccion(produccion: Produccion,unidad_productiva_id:Long) {
-        produccion.update()
-        postEventOk(RequestEventProduccion.UPDATE_EVENT, getProductions(unidad_productiva_id),produccion);
-    }
+
 
     override fun deleteProduccion(produccion: Produccion,cultivo_id: Long?) {
-        produccion.delete()
-        //SQLite.delete<Lote>(Lote::class.java).where(Lote_Table.Id.eq(lote.Id)).async().getListProductos()
-        postEventOk(RequestEventProduccion.DELETE_EVENT, getProductions(cultivo_id),produccion);
+        if (produccion.Estado_Sincronizacion == true) {
+            val call = apiService?.deleteProduccion(produccion.Id!!)
+            call?.enqueue(object : Callback<PostProduccion> {
+                override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
+                    if (response != null && response.code() == 204 || response?.code() == 200) {
+                        produccion.delete()
+                        postEventOk(RequestEventProduccion.DELETE_EVENT, getProductions(cultivo_id), produccion)
+                    }
+                }
+                override fun onFailure(call: Call<PostProduccion>?, t: Throwable?) {
+                    postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
+                }
+            })
+        } else {
+            produccion.delete()
+            postEventOk(RequestEventProduccion.DELETE_EVENT, getProductions(cultivo_id), produccion)
+            /// postEventError(CultivoEvent.ERROR_EVENT, "Error!. El Cultivo no se ha eliminado")
+        }
+    }
+
+    fun getLastProduccion(): Produccion? {
+        val lastProduccion = SQLite.select().from(Produccion::class.java).where().orderBy(Produccion_Table.Id, false).querySingle()
+        return lastProduccion
     }
     //endregion
 
@@ -85,7 +197,7 @@ class ProduccionRepository :IMainProduccion.Repository {
         postEvent(type, upMutable,null,messageError)
     }
 
-    private fun postEventListUnidadProductiva(type: Int, listUnidadMedida:List<UnidadProductiva>?, messageError:String?) {
+    private fun postEventListUnidadProductiva(type: Int, listUnidadMedida:List<Unidad_Productiva>?, messageError:String?) {
         var upMutable= listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }
@@ -116,6 +228,8 @@ class ProduccionRepository :IMainProduccion.Repository {
         }
         postEvent(type,null,CultivoMutable,null)
     }
+
+
 
 
     private fun postEventError(type: Int,messageError:String) {

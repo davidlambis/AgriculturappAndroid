@@ -8,7 +8,7 @@ import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.produccion.Produccion
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Produccion.events.RequestEventProduccion
 
 /**
@@ -47,7 +47,7 @@ interface IMainProduccion {
 
         //Set sppiners
         fun setListUnidadMedida(listUnidadMedida:List<Unidad_Medida>?)
-        fun setListUnidadProductiva(listUnidadProductiva: List<UnidadProductiva>?)
+        fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
         fun setListLotes(listLotes:List<Lote>?)
         fun setListCultivos(listCultivos:List<Cultivo>?)
         fun setCultivo(cultivo: Cultivo?)
@@ -98,8 +98,9 @@ interface IMainProduccion {
     }
 
     interface Interactor {
-        fun registerProduccion(produccion: Produccion,cultivo_id:Long)
-        fun updateProducccion(produccion: Produccion,cultivo_id:Long)
+        fun saveProduccionOnline(produccion: Produccion,cultivo_id:Long)
+
+        fun saveProduccion(produccion: Produccion,cultivo_id:Long)
         fun deleteProducccion(produccion: Produccion,cultivo_id:Long?)
         fun execute(cultivo_id:Long?)
         fun getListas()
@@ -110,8 +111,8 @@ interface IMainProduccion {
         fun getListas()
         fun getListProduccion(cultivo_id:Long?)
         fun getProductions(cultivo_id:Long?): List<Produccion>
+        fun saveProduccionOnline(produccion: Produccion,cultivo_id:Long)
         fun saveProduccion(produccion: Produccion,cultivo_id:Long)
-        fun updateProduccion(produccion: Produccion,cultivo_id:Long)
         fun deleteProduccion(produccion: Produccion,cultivo_id:Long?)
         fun getCultivo(cultivo_id:Long?)
     }

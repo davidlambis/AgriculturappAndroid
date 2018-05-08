@@ -11,7 +11,7 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Produccion.events.RequestEventProduccion
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -28,7 +28,7 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
     var eventBus: EventBus? = null
 
     //GLOBALS
-    var listUnidadProductivaGlobal:List<UnidadProductiva>?= ArrayList<UnidadProductiva>()
+    var listUnidadProductivaGlobal:List<Unidad_Productiva>?= ArrayList<Unidad_Productiva>()
     var listLoteGlobal:List<Lote>?= ArrayList<Lote>()
     var listCultivosGlobal:List<Cultivo>?= ArrayList<Cultivo>()
     var listUnidadMedidaGlobal:List<Unidad_Medida>?= ArrayList<Unidad_Medida>()
@@ -131,7 +131,7 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
             }
 
             RequestEventProduccion.LIST_EVENT_UP -> {
-                listUnidadProductivaGlobal= event.mutableList as List<UnidadProductiva>
+                listUnidadProductivaGlobal= event.mutableList as List<Unidad_Productiva>
             }
 
             RequestEventProduccion.LIST_EVENT_LOTE -> {
@@ -166,31 +166,44 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
         return false
     }
 
+
+
+
     override fun registerProdcuccion(producccion: Produccion, cultivo_Id: Long) {
         mainView?.showProgress()
         //if(checkConnection()){
         mainView?.disableInputs()
-        interactor?.registerProduccion(producccion, cultivo_Id)
+        if(checkConnection()){
+            interactor?.saveProduccionOnline(producccion,cultivo_Id)
+        }else{
+            interactor?.saveProduccion(producccion, cultivo_Id)
+        }
     }
 
     override fun updateProducccion(produccion: Produccion, cultivo_id: Long) {
         mainView?.showProgress()
-        if (checkConnection()) {
+        if(checkConnection()){
             mainView?.disableInputs()
-            interactor?.registerProduccion(produccion, cultivo_id)
-        } else {
+            interactor?.saveProduccionOnline(produccion,cultivo_id)
+        }else{
             onMessageConectionError()
         }
     }
 
 
+
     override fun deleteProduccion(producccion: Produccion, cultivo_id: Long?) {
         mainView?.showProgress()
-        if (checkConnection()) {
+        if(producccion.Estado_Sincronizacion==true){
+            if (checkConnection()) {
+                interactor?.deleteProducccion(producccion, cultivo_id)
+            } else {
+                onMessageConectionError()
+            }
+        }else{
             interactor?.deleteProducccion(producccion, cultivo_id)
-        } else {
-            onMessageConectionError()
         }
+
     }
 
     override fun getListProduccion(cultivo_id:Long?) {

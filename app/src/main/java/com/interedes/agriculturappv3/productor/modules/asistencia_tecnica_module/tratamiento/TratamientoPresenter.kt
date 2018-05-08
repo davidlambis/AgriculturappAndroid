@@ -12,7 +12,7 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.tratamiento.events.TratamientoEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -24,7 +24,7 @@ class TratamientoPresenter(var view: ITratamiento.View?) : ITratamiento.Presente
     var interactor: ITratamiento.Interactor? = null
 
     //GLOBALS
-    var listUnidadProductivaGlobal: List<UnidadProductiva>? = ArrayList<UnidadProductiva>()
+    var listUnidadProductivaGlobal: List<Unidad_Productiva>? = ArrayList<Unidad_Productiva>()
     var listLoteGlobal: List<Lote>? = ArrayList<Lote>()
     var listCultivosGlobal: List<Cultivo>? = ArrayList<Cultivo>()
     var listUnidadMedidaGlobal: List<Unidad_Medida>? = ArrayList<Unidad_Medida>()
@@ -127,7 +127,7 @@ class TratamientoPresenter(var view: ITratamiento.View?) : ITratamiento.Presente
             }
 
             TratamientoEvent.LIST_EVENT_UP -> {
-                listUnidadProductivaGlobal = tratamientoEvent.mutableList as List<UnidadProductiva>
+                listUnidadProductivaGlobal = tratamientoEvent.mutableList as List<Unidad_Productiva>
             }
 
             TratamientoEvent.LIST_EVENT_LOTE -> {

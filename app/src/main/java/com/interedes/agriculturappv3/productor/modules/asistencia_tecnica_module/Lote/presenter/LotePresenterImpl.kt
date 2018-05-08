@@ -14,7 +14,7 @@ import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Lote.ui.MainViewLote
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
@@ -97,7 +97,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
     override fun startGps(activity: Activity) {
         coordsService = CoordsServiceKotlin(activity)
         if (CoordsServiceKotlin.instance!!.isLocationEnabled()) {
-            loteMainView?.showProgressHud()
+            loteMainView?.showProgressHudCoords()
         }
     }
 
@@ -150,7 +150,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
 
         //LIST EVENTS
             RequestEventLote.LIST_EVENT_UP -> {
-                var list = eventLote.mutableList as List<UnidadProductiva>
+                var list = eventLote.mutableList as List<Unidad_Productiva>
                 loteMainView?.setListUP(list)
             }
 
@@ -197,11 +197,19 @@ class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
 
     override fun deleteLote(lote: Lote, unidad_productiva_id: Long?) {
         loteMainView?.showProgressHud()
-        if (checkConnection()) {
+
+        if(lote.EstadoSincronizacion==true){
+            if (checkConnection()) {
+                loteInteractor?.deleteLote(lote, unidad_productiva_id)
+            } else {
+                onMessageConectionError()
+            }
+
+        }else{
             loteInteractor?.deleteLote(lote, unidad_productiva_id)
-        } else {
-            onMessageConectionError()
         }
+
+
     }
 
 

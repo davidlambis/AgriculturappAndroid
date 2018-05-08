@@ -12,7 +12,7 @@ import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.producto.Producto_Table
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.modules.comercial_module.productos.events.ProductosEvent
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.raizlabs.android.dbflow.kotlinextensions.delete
@@ -35,7 +35,7 @@ class ProductosRepository : IProductos.Repository {
 
     //region Métodos Interfaz
     override fun getListas() {
-        val listUnidadProductiva = SQLite.select().from(UnidadProductiva::class.java).queryList()
+        val listUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).queryList()
         val listLotes = SQLite.select().from(Lote::class.java).queryList()
         val listCultivos = SQLite.select().from(Cultivo::class.java).queryList()
         //val listUnidadMedida = Listas.listaUnidadMedida()
@@ -200,7 +200,7 @@ class ProductosRepository : IProductos.Repository {
         postEvent(type, upMutable, null, messageError)
     }
 
-    private fun postEventListUnidadProductiva(type: Int, listUp: List<UnidadProductiva>?, messageError: String?) {
+    private fun postEventListUnidadProductiva(type: Int, listUp: List<Unidad_Productiva>?, messageError: String?) {
         val upMutable = listUp as MutableList<Object>
         postEvent(type, upMutable, null, messageError)
     }

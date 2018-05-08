@@ -8,7 +8,8 @@ import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo_Table
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -17,14 +18,15 @@ class ControlPlagasRepository : IControlPlagas.Repository {
 
 
     var eventBus: EventBus? = null
-
+    var apiService: ApiInterface? = null
     init {
         eventBus = GreenRobotEventBus()
+        apiService = ApiInterface.create()
     }
 
     //region Métodos Interfaz
     override fun getListas() {
-        val listUnidadProductiva = SQLite.select().from(UnidadProductiva::class.java).queryList()
+        val listUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).queryList()
         val listLotes = SQLite.select().from(Lote::class.java).queryList()
         val listCultivos = SQLite.select().from(Cultivo::class.java).queryList()
 
@@ -65,7 +67,7 @@ class ControlPlagasRepository : IControlPlagas.Repository {
     //endregion
 
     //region Events
-    private fun postEventListUnidadProductiva(type: Int, listUp: List<UnidadProductiva>?, messageError: String?) {
+    private fun postEventListUnidadProductiva(type: Int, listUp: List<Unidad_Productiva>?, messageError: String?) {
         var upMutable = listUp as MutableList<Object>
         postEvent(type, upMutable, null, messageError)
     }

@@ -10,7 +10,7 @@ import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.control_plagas.events.ControlPlagasEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.UnidadProductiva
+import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -23,7 +23,7 @@ class ControlPlagasPresenter(var view: IControlPlagas.View?) : IControlPlagas.Pr
     var interactor: IControlPlagas.Interactor? = null
 
     //GLOBALS
-    var listUnidadProductivaGlobal: List<UnidadProductiva>? = ArrayList<UnidadProductiva>()
+    var listUnidadProductivaGlobal: List<Unidad_Productiva>? = ArrayList<Unidad_Productiva>()
     var listLoteGlobal: List<Lote>? = ArrayList<Lote>()
     var listCultivosGlobal: List<Cultivo>? = ArrayList<Cultivo>()
 
@@ -114,7 +114,7 @@ class ControlPlagasPresenter(var view: IControlPlagas.View?) : IControlPlagas.Pr
             }
         //LIST EVENTS
             ControlPlagasEvent.LIST_EVENT_UP -> {
-                listUnidadProductivaGlobal = event.mutableList as List<UnidadProductiva>
+                listUnidadProductivaGlobal = event.mutableList as List<Unidad_Productiva>
             }
 
             ControlPlagasEvent.LIST_EVENT_LOTE -> {
