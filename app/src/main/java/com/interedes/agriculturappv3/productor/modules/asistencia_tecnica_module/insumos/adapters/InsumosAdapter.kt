@@ -69,7 +69,7 @@ class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<Insumo
             val rating_bar: RatingBar = itemView.findViewById(R.id.ratingBar)
 
             txt_nombre_insumo.text = data.Nombre
-            image_view_insumo.setImageResource(data.Imagen!!)
+            image_view_insumo.setImageResource(data.Foto!!)
             text_descripcion_insumo.text = data.Descripcion
             rating_bar.rating = 4.5F
             rating_bar.setIsIndicator(true)

@@ -12,6 +12,7 @@ import com.interedes.agriculturappv3.productor.models.plagas.FotoEnfermedad
 import com.interedes.agriculturappv3.productor.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
+import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.usuario.Usuario
 import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
@@ -237,11 +238,13 @@ class Listas {
 
         fun listaFotosEnfermedad(): ArrayList<FotoEnfermedad> {
             val lista_fotos_enfermedad = ArrayList<FotoEnfermedad>()
-            lista_fotos_enfermedad.add(FotoEnfermedad(Id = 1, Codigo = "fotenf1ag", FechaCreacion = "03/22/2018", Hora = "17:32", Ruta = "", Titulo = "Foto Roña Aguacate", EnfermedadesId = 1))
-            lista_fotos_enfermedad.add(FotoEnfermedad(Id = 2, Codigo = "fotenf1fr", FechaCreacion = "03/22/2018", Hora = "17:36", Ruta = "", Titulo = "Foto mancha angular Fríjol", EnfermedadesId = 2))
-            lista_fotos_enfermedad.add(FotoEnfermedad(Id = 3, Codigo = "fotenf1pl", FechaCreacion = "03/22/2018", Hora = "17:37", Ruta = "", Titulo = "Foto moko Plátano", EnfermedadesId = 3))
+            lista_fotos_enfermedad.add(FotoEnfermedad(Id = 1, Descripcion = "fotenf1ag", FechaCreacion = "03/22/2018", Hora = "17:32", Ruta = "", Titulo = "Foto Roña Aguacate", EnfermedadesId = 1))
+            lista_fotos_enfermedad.add(FotoEnfermedad(Id = 2, Descripcion = "fotenf1fr", FechaCreacion = "03/22/2018", Hora = "17:36", Ruta = "", Titulo = "Foto mancha angular Fríjol", EnfermedadesId = 2))
+            lista_fotos_enfermedad.add(FotoEnfermedad(Id = 3, Descripcion = "fotenf1pl", FechaCreacion = "03/22/2018", Hora = "17:37", Ruta = "", Titulo = "Foto moko Plátano", EnfermedadesId = 3))
             return lista_fotos_enfermedad
         }
+
+
 
         fun listaInsumos(): ArrayList<Insumo> {
             val lista_insumos = ArrayList<Insumo>()
@@ -249,13 +252,13 @@ class Listas {
                     Descripcion = "Insumo para Roña(Aguacate)",
                     Nombre = "Kocide",
                     EnfermedadId = 1,
-                    Imagen = R.drawable.kocide))
+                    Foto = R.drawable.kocide))
             return lista_insumos
         }
 
         fun listaTratamientos(): ArrayList<Tratamiento> {
             val lista_tratamientos = ArrayList<Tratamiento>()
-            lista_tratamientos.add(Tratamiento(Id = 1, Desc_Aplicacion = "10 a 20 cc/Bomba de 20 L", Desc_Formulacion = "Polvo soluble", IngredienteActivo = "Hidróxido de Cobre 53,8 %", InsumoId = 1, Modo_Accion = "", Nombre_Comercial = "KOCIDE", proveedor = "", precioAproximado = 0.0))
+            lista_tratamientos.add(Tratamiento(Id = 1, Desc_Aplicacion = "10 a 20 cc/Bomba de 20 L", Desc_Formulacion = "Polvo soluble", IngredienteActivo = "Hidróxido de Cobre 53,8 %", InsumoId = 1, Modo_Accion = "", Nombre_Comercial = "KOCIDE", proveedor = ""))
             return lista_tratamientos
         }
 

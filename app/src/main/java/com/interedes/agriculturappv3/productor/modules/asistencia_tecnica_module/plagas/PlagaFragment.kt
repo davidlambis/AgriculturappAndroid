@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.productor.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.insumos.InsumosFragment
@@ -39,7 +40,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     var presenter: IPlaga.Presenter? = null
 
     //List Plagas
-    var plagasList: ArrayList<TipoEnfermedad>? = ArrayList<TipoEnfermedad>()
+    var plagasList: ArrayList<Enfermedad>? = ArrayList<Enfermedad>()
 
     //List Tipo Producto
     var ListTipoProductoGlobal: ArrayList<TipoProducto>? = ArrayList<TipoProducto>()
@@ -98,7 +99,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         presenter?.getPlagasByTipoProducto(tipoProductoId)
     }
 
-    override fun setListPlagas(list_plagas: ArrayList<TipoEnfermedad>) {
+    override fun setListPlagas(list_plagas: ArrayList<Enfermedad>) {
         dialogPlaga?.dismiss()
         adapter?.clear()
         plagasList?.clear()
@@ -107,7 +108,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         setResults(list_plagas.size)
     }
 
-    override fun setDialogListPlagas(list_plagas: ArrayList<TipoEnfermedad>) {
+    override fun setDialogListPlagas(list_plagas: ArrayList<Enfermedad>) {
         val inflater = this.layoutInflater
         viewDialogPlagas = inflater.inflate(R.layout.dialog_list_general, null)
 
@@ -163,13 +164,13 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         dialogPlaga = dialog*/
     }
 
-    override fun verInsumos(tipoEnfermedad: TipoEnfermedad) {
+    override fun verInsumos(enfermedad: Enfermedad) {
         val bundle = Bundle()
-        Tipo_Enfermedad_id = tipoEnfermedad.Id
+        Tipo_Enfermedad_id = enfermedad.Id
         bundle.putLong("tipoEnfermedadId", Tipo_Enfermedad_id!!)
-        bundle.putString("nombreTipoEnfermedad", tipoEnfermedad.Nombre)
-        bundle.putString("nombreTipoProducto", tipoEnfermedad.NombreTipoProducto)
-        bundle.putLong("tipoProductoId", tipoEnfermedad.TipoProductoId!!)
+        bundle.putString("nombreTipoEnfermedad", enfermedad.NombreTipoEnfermedad)
+        bundle.putString("nombreTipoProducto", enfermedad.NombreTipoProducto)
+        bundle.putLong("tipoProductoId", enfermedad.TipoProductoId!!)
         bundle.putLong("enfermedadId", Enfermedad_Id!!)
         val insumosFragment: InsumosFragment
         insumosFragment = InsumosFragment()
@@ -193,9 +194,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         // plagas_search_view.setQuery(tipoProducto.Nombre, false)
     }
 
-    override fun setIdEnfermedad(enfermedadId: Long?) {
-        Enfermedad_Id = enfermedadId
-    }
+
 
     //Escuchador de eventos
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {

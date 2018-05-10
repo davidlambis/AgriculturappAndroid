@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
 
 @Table(name = "Laboratorio", database = DataSource::class)
-data class Laboratorio(@PrimaryKey(autoincrement = true)
+data class Laboratorio(@PrimaryKey
                        @SerializedName("Id")
                        @Column(name = "Id")
                        var Id: Long? = 0,

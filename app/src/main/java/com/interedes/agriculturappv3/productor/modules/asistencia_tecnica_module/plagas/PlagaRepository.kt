@@ -5,6 +5,7 @@ import com.interedes.agriculturappv3.productor.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.plagas.events.PlagasEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.plagas.Enfermedad_Table
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.save
@@ -21,66 +22,16 @@ class PlagaRepository : IPlaga.Repository {
 
     //region Interfaz
     override fun getPlagasByTipoProducto(tipoProductoId: Long?) {
-        /*val lista_tipo_enfermedad = Listas.listaTipoEnfermedad()
-        val lista_all_enfermedad = Listas.listaEnfermedad()
-        var enfermedad: Enfermedad? = null
-        val lista = ArrayList<TipoEnfermedad>()
-
-
-        for (item in lista_tipo_enfermedad) {
-            if (item.TipoProductoId == tipoProductoId) {
-                lista.add(item)
-            }
-        }
-        for (e in lista_all_enfermedad) {
-            for (l in lista) {
-                if (l.Id == e.TipoEnfermedadId) {
-                    enfermedad = e
-                }
-            }
-        }
-        postEventOk(PlagasEvent.READ_EVENT, lista, null)
-        postEventEnfermedad(PlagasEvent.SET_ENFERMEDAD_EVENT, enfermedad)*/
-
-        //Trae el listado de todos los tipos de enfermedad y enfermedades y guarda en sqlite
-        for (item in Listas.listaTipoEnfermedad()) {
-            item.save()
-        }
-        for (item in Listas.listaEnfermedad()) {
-            item.save()
-        }
-
-        //Listas Tipo_Enfermedades
-        val lista_all_tipo_enfermedades = getAllListTipoEnfermedad()
-        val lista_tipo_enfermedad = ArrayList<TipoEnfermedad>()
-        for (item in lista_all_tipo_enfermedades) {
-            if (item.TipoProductoId == tipoProductoId) {
-                lista_tipo_enfermedad.add(item)
-            }
-        }
-
-        //Listas Enfermedades
-        val lista_all_enfermedades = getAllListEnfermedad()
-        var enfermedad: Enfermedad? = null
-        for (a in lista_all_enfermedades) {
-            for (b in lista_tipo_enfermedad) {
-                if (b.Id == a.TipoEnfermedadId) {
-                    enfermedad = a
-                }
-            }
-        }
-
-
-        postEventOk(PlagasEvent.READ_EVENT, lista_tipo_enfermedad, null)
-        postEventEnfermedad(PlagasEvent.SET_ENFERMEDAD_EVENT, enfermedad)
+        var enfermedadesByProducto= SQLite.select().from(Enfermedad::class.java).where(Enfermedad_Table.TipoProductoId.eq(tipoProductoId)).queryList()
+        postEventOk(PlagasEvent.READ_EVENT, enfermedadesByProducto, null)
     }
 
 
-    override fun setPlaga(tipoEnfermedadId: Long?) {
-        val lista_all_tipo_enfermedades = getAllListTipoEnfermedad()
-        val lista = ArrayList<TipoEnfermedad>()
+    override fun setPlaga(enfermedadId: Long?) {
+        val lista_all_tipo_enfermedades = getAllListEnfermedad()
+        val lista = ArrayList<Enfermedad>()
         for (item in lista_all_tipo_enfermedades) {
-            if (item.Id == tipoEnfermedadId) {
+            if (item.Id == enfermedadId) {
                 lista.add(item)
             }
         }
@@ -94,8 +45,8 @@ class PlagaRepository : IPlaga.Repository {
         postEventListaTiposProducto(PlagasEvent.LOAD_LIST_TIPO_PRODUCTO, lista_tipo_producto)
     }
 
-    private fun getAllListTipoEnfermedad(): List<TipoEnfermedad> {
-        return SQLite.select().from(TipoEnfermedad::class.java).queryList()
+    private fun getAllLisEnfermedad(): List<Enfermedad> {
+        return SQLite.select().from(Enfermedad::class.java).queryList()
     }
 
     private fun getAllListEnfermedad(): List<Enfermedad> {
@@ -129,7 +80,7 @@ class PlagaRepository : IPlaga.Repository {
 
      */
 
-    private fun postEventOk(type: Int, listPlagas: List<TipoEnfermedad>?, plaga: TipoEnfermedad?) {
+    private fun postEventOk(type: Int, listPlagas: List<Enfermedad>?, plaga: Enfermedad?) {
         val plagaListMutable = listPlagas as MutableList<Object>
         var plagaMutable: Object? = null
         if (plaga != null) {

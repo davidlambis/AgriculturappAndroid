@@ -21,7 +21,7 @@ import com.afollestad.materialdialogs.Theme
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.productor.models.lote.Lote
-import com.interedes.agriculturappv3.productor.models.Tratamiento
+import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
@@ -158,7 +158,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         txtFormulacion?.setText(getString(R.string.formulacion, tratamiento?.Desc_Formulacion))
         txtAplicacion?.setText(getString(R.string.aplicacion, tratamiento?.Desc_Aplicacion))
         txtModoAccion?.setText(getString(R.string.modo_accion, tratamiento?.Modo_Accion))
-        txtPrecioAprox?.setText(String.format(getString(R.string.precio_aproximado, tratamiento?.precioAproximado)))
+      //  txtPrecioAprox?.setText(String.format(getString(R.string.precio_aproximado, tratamiento?.precioAproximado)))
 
     }
 

@@ -12,6 +12,10 @@ import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+import android.util.Base64
+import android.util.Log
+import com.raizlabs.android.dbflow.data.Blob
 
 
 /**
@@ -62,9 +66,8 @@ class TipoProductosAdapter(val lista: ArrayList<TipoProducto>) : RecyclerView.Ad
             val txtNombreTipoProducto: TextView = itemView.findViewById(R.id.txtNombreDetalleTipoProducto)
             val imgTipoProducto: ImageView = itemView.findViewById(R.id.imgTipoProducto)
 
-
+            /*
             if (data.Nombre.equals("Aguacate")) {
-
                 val options = BitmapFactory.Options()
                 options.inSampleSize = 8
                 val icon = BitmapFactory.decodeResource(context.resources,
@@ -82,6 +85,19 @@ class TipoProductosAdapter(val lista: ArrayList<TipoProducto>) : RecyclerView.Ad
                 val icon = BitmapFactory.decodeResource(context.resources,
                         R.drawable.platano, options)
                 imgTipoProducto.setImageBitmap(icon)
+            }*/
+
+            if(data.Imagen!=null){
+               // val bitmap = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+               // imgTipoProducto.setImageBitmap(bitmap)
+                try {
+                    val foto = data.Imagen?.blob
+                    val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+                    imgTipoProducto.setImageBitmap(bitmapBlob)
+                }catch (ex:Exception){
+                    var ss= ex.toString()
+                    Log.d("Convert Image", "defaultValue = " + ss);
+                }
             }
 
             txtNombreTipoProducto.text = data.Nombre

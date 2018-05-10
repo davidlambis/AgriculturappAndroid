@@ -7,7 +7,7 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
 
 @Table(database = DataSource::class)
-data class TipoEnfermedad(@PrimaryKey(autoincrement = true)
+data class TipoEnfermedad(@PrimaryKey
                           @SerializedName("Id")
                           @Column(name = "Id")
                           var Id: Long? = 0,
@@ -17,6 +17,8 @@ data class TipoEnfermedad(@PrimaryKey(autoincrement = true)
                           @SerializedName("Nombre")
                           @Column(name = "Nombre")
                           var Nombre: String? = null,
+
+
                           @SerializedName("NombreCientifico")
                           @Column(name = "NombreCientifico")
                           var NombreCientifico: String? = null,
@@ -26,4 +28,8 @@ data class TipoEnfermedad(@PrimaryKey(autoincrement = true)
                           @Column(name = "NombreTipoProducto")
                           var NombreTipoProducto: String? = null,
                           @Column(name = "Imagen")
-                          var Imagen: Int? = 0) {}
+                          var Imagen: Int? = 0
+
+
+
+                          ) {}

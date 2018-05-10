@@ -14,7 +14,6 @@ import com.interedes.agriculturappv3.productor.models.lote.PostLote
 import com.interedes.agriculturappv3.productor.models.rol.RolResponse
 import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPagoResponse
 import com.interedes.agriculturappv3.productor.models.produccion.PostProduccion
-import com.interedes.agriculturappv3.productor.models.produccion.Produccion
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProductoResponse
 import com.interedes.agriculturappv3.productor.models.producto.PostProducto
 import com.interedes.agriculturappv3.productor.models.producto.Producto
@@ -33,11 +32,15 @@ import java.util.concurrent.TimeUnit
 import retrofit2.http.GET
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.interedes.agriculturappv3.productor.models.plagas.EnfermedadResponseApi
+import com.interedes.agriculturappv3.productor.models.tratamiento.TratamientoResponse
 
 
 interface ApiInterface {
 
     //region Peticiones
+
+
     //Get Roles
     @GET("odata/Agp2/Rols")
     fun getRoles(): Call<RolResponse>
@@ -88,7 +91,7 @@ interface ApiInterface {
     fun getAspNetRolesByTipoUser(@Header("Authorization") token: String, @Query("\$filter") filter: String): Call<AspNetRolResponse>
 
     //Get Categorías Medida
-    @GET("odata/Agp2/CategoriaMedidas")
+    @GET("odata/Agp2/CategoriaMedidas?\$expand=UnidadMedidas")
     fun getCategoriasMedida(): Call<CategoriaMedidaResponse>
 
     //Get Unidades Medida
@@ -181,8 +184,6 @@ interface ApiInterface {
     //endregion
 
 
-
-
     //region Productos
     //TODO Requiere Token
     @Headers("Content-Type: application/json")
@@ -201,7 +202,21 @@ interface ApiInterface {
     //endregion
 
 
+    //region Plagas y Enfermedades
+    @GET("odata/Agp2/Enfermedades?\$expand=TipoEnfermedad,TipoProducto,Fotos")
+    fun getEnfermedades(): Call<EnfermedadResponseApi>
+
+
+   // @GET("odata/Agp2/Tratamientos?\$expand=Insumo(\$expand=Laboratorio,TipoInsumo),Calificacions")
+   @GET("odata/Agp2/Tratamientos?\$expand=Insumo(\$expand=Laboratorio,TipoInsumo),Calificacions")
+    fun getTratamientos(): Call<TratamientoResponse>
+
     //endregion
+
+    //endregion
+
+
+
 
     companion object Factory {
 

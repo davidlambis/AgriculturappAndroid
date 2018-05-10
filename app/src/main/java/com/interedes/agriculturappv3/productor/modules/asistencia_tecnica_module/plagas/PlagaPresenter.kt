@@ -60,19 +60,16 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
     override fun onEventMainThread(plagasEvent: PlagasEvent?) {
         when (plagasEvent?.eventType) {
             PlagasEvent.READ_EVENT -> {
-                val list_plagas = plagasEvent.mutableList as ArrayList<TipoEnfermedad>
+                val list_plagas = plagasEvent.mutableList as ArrayList<Enfermedad>
                 view?.setDialogListPlagas(list_plagas)
                 //view?.setListPlagas(list_plagas)
             }
             PlagasEvent.SET_EVENT -> {
-                val list_plagas = plagasEvent.mutableList as ArrayList<TipoEnfermedad>
+                val list_plagas = plagasEvent.mutableList as ArrayList<Enfermedad>
                 view?.setListPlagas(list_plagas)
             }
 
-            PlagasEvent.SET_ENFERMEDAD_EVENT -> {
-                val enfermedad = plagasEvent.objectMutable as Enfermedad
-                view?.setIdEnfermedad(enfermedad.Id)
-            }
+
 
             PlagasEvent.LOAD_LIST_TIPO_PRODUCTO -> {
                 val lista_tipo_producto = plagasEvent.mutableList as ArrayList<TipoProducto>
@@ -80,10 +77,9 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
             }
 
             ///
-
             PlagasEvent.ITEM_SELECT_PLAGA_EVENT -> {
-                val plaga = plagasEvent.objectMutable as TipoEnfermedad
-                val list_plagas = ArrayList<TipoEnfermedad>()
+                val plaga = plagasEvent.objectMutable as Enfermedad
+                val list_plagas = ArrayList<Enfermedad>()
                 list_plagas.add(plaga)
                 view?.setListPlagas(list_plagas)
             }
@@ -93,7 +89,7 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
                 view?.getPlagasByTipoProducto(tipo_producto.Id)
             }
             PlagasEvent.ITEM_OPEN_EVENT -> {
-                val tipo_enfermedad = plagasEvent.objectMutable as TipoEnfermedad
+                val tipo_enfermedad = plagasEvent.objectMutable as Enfermedad
                 view?.verInsumos(tipo_enfermedad)
             }
         }

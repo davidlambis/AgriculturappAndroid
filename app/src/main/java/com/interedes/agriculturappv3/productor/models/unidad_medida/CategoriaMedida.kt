@@ -13,7 +13,10 @@ data class CategoriaMedida(@PrimaryKey
                            var Id: Long? = 0,
                            @SerializedName("nombreCategoria")
                            @Column(name = "nombreCategoria")
-                           var nombreCategoria: String? = null) {
+                           var nombreCategoria: String? = null,
+                           @SerializedName("UnidadMedidas")
+                           var UnidadMedidas: ArrayList<Unidad_Medida>?= ArrayList<Unidad_Medida>()
+                           ) {
 
     override fun toString(): String {
         return nombreCategoria!!

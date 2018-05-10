@@ -1,6 +1,8 @@
 package com.interedes.agriculturappv3.productor.modules.main_menu.fragment.repository
 
+import android.graphics.BitmapFactory
 import android.util.Base64
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -11,24 +13,25 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.productor.models.departments.DeparmentsResponse
 import com.interedes.agriculturappv3.productor.models.departments.Ciudad
 import com.interedes.agriculturappv3.productor.models.departments.Departamento
-import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProducto
-import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProductoResponse
+import com.interedes.agriculturappv3.productor.models.plagas.Enfermedad
+import com.interedes.agriculturappv3.productor.models.plagas.EnfermedadResponseApi
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.productor.models.producto.CalidadProductoResponse
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProductoResponse
 import com.interedes.agriculturappv3.productor.models.unidad_medida.CategoriaMedida
 import com.interedes.agriculturappv3.productor.models.unidad_medida.CategoriaMedidaResponse
-import com.interedes.agriculturappv3.productor.models.unidad_medida.UnidadMedidaResponse
-import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.interedes.agriculturappv3.services.api.TestInterface
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.google.gson.JsonParser
+import com.google.gson.Gson
+import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento
+import com.interedes.agriculturappv3.productor.models.tratamiento.TratamientoResponse
 
 
 class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
@@ -62,10 +65,19 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                 if (response != null && response.code() == 200) {
                     val tiposProducto = response.body()?.value as MutableList<TipoProducto>
                     for (item in tiposProducto) {
-                        val byte = Base64.decode(item.Icono, Base64.DEFAULT)
-                        item.Imagen = Blob(byte)
-                        item.save()
 
+                        try {
+                            val base64String = item?.Icono
+                            val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                            val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                            item.Imagen = Blob(byte)
+
+                        }catch (ex:Exception){
+                            var ss= ex.toString()
+                            Log.d("Convert Image", "defaultValue = " + ss);
+                        }
+
+                        item.save()
                         for (detalleTipoProducto in item.DetalleTipoProductos!!) {
                             detalleTipoProducto.save()
                         }
@@ -74,14 +86,100 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                     postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
             }
-
             override fun onFailure(call: Call<TipoProductoResponse>?, t: Throwable?) {
                 postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
-
-
         })
 
+        //Enfermedades
+        val callEnfermedades = apiService?.getEnfermedades()
+        callEnfermedades?.enqueue(object : Callback<EnfermedadResponseApi> {
+            override fun onResponse(call: Call<EnfermedadResponseApi>?, enfermedadResponse: Response<EnfermedadResponseApi>?) {
+                if (enfermedadResponse != null && enfermedadResponse.code() == 200) {
+                    val enfermedades = enfermedadResponse.body()?.value as MutableList<Enfermedad>
+                    for (item in enfermedades){
+                        item.NombreTipoEnfermedad=item.TipoEnfermedad?.Nombre
+                        item.NombreTipoProducto=item.TipoProducto?.Nombre
+                        item.NombreCientificoTipoEnfermedad=item.TipoEnfermedad?.NombreCientifico
+                        item.DescripcionTipoEnfermedad=item.TipoEnfermedad?.Descripcion
+
+                        item.save()
+                       if(item.Fotos!=null){
+                           for (itemFoto in item?.Fotos!!){
+
+                               try {
+                                   val base64String = itemFoto?.Ruta
+                                   val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                   val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                   itemFoto.blobImagen = Blob(byte)
+
+                               }catch (ex:Exception){
+                                   var ss= ex.toString()
+                                   Log.d("Convert Image", "defaultValue = " + ss);
+                               }
+
+                               itemFoto.save()
+                           }
+                       }
+                    }
+                } else {
+                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<EnfermedadResponseApi>?, t: Throwable?) {
+                postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+
+
+        //Tratamientos, Calificaciones e Insumos
+        val callTrtamientos = apiService?.getTratamientos()
+        callTrtamientos?.enqueue(object : Callback<TratamientoResponse> {
+            override fun onResponse(call: Call<TratamientoResponse>?, tratamientoResponse: Response<TratamientoResponse>?) {
+                if (tratamientoResponse != null && tratamientoResponse.code() == 200) {
+                    val tratamientos = tratamientoResponse.body()?.value as MutableList<Tratamiento>
+                    for (item in tratamientos){
+                        item.save()
+                        if(item.Insumo!=null){
+                            if(item?.Insumo?.Imagen!=null || item?.Insumo?.Imagen!=""){
+                                try {
+                                    val base64String = item?.Insumo?.Imagen
+                                    val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                    val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                    item.Insumo?.blobImagen = Blob(byte)
+                                }catch (ex:Exception){
+                                    var ss= ex.toString()
+                                    Log.d("Convert Image", "defaultValue = " + ss);
+                                }
+                            }
+
+                            if(item.Insumo?.Laboratorio!=null){
+                                item.Insumo?.NombreLaboratorio=item.Insumo?.Laboratorio?.Nombre
+                                item.Insumo?.Laboratorio?.save()
+                            }
+
+                            if(item.Insumo?.TipoInsumo!=null){
+                                item.Insumo?.NombreTipoInsumo=item.Insumo?.TipoInsumo?.Nombre
+                                item.Insumo?.TipoInsumo?.save()
+                            }
+
+                            item.Insumo?.save()
+                        }
+
+                        if(item.Calificacions!=null){
+                            for (calification in item?.Calificacions!!){
+                                calification.save()
+                            }
+                        }
+                    }
+                } else {
+                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<TratamientoResponse>?, t: Throwable?) {
+                postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
 
 
         //Departamentos y Ciudades
@@ -95,7 +193,6 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                         val departamentos: MutableList<Departamento> = response.body()?.value!!
                         for (item in departamentos) {
                             item.save()
-
                             for (ciudad in item.ciudades!!) {
                                 ciudad.save()
                             }
@@ -104,11 +201,9 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                         postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                     }
                 }
-
                 override fun onFailure(call: Call<DeparmentsResponse>?, t: Throwable?) {
                     postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
-
             })
         }
 
@@ -120,36 +215,20 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                     val categoriasMedida = response.body()?.value as MutableList<CategoriaMedida>
                     for (item in categoriasMedida) {
                         item.save()
+                        for (itemUnidadmedida in item?.UnidadMedidas!!){
+                            itemUnidadmedida.save()
+                        }
                     }
                 } else {
                     postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
             }
-
             override fun onFailure(call: Call<CategoriaMedidaResponse>?, t: Throwable?) {
                 postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
         })
 
-        //Unidades de Medida
-        val callUnidadesMedida = apiService?.getUnidadesMedida()
-        callUnidadesMedida?.enqueue(object : Callback<UnidadMedidaResponse> {
-            override fun onResponse(call: Call<UnidadMedidaResponse>?, response: Response<UnidadMedidaResponse>?) {
-                if (response != null && response.code() == 200) {
-                    val unidadesMedida = response.body()?.value as MutableList<Unidad_Medida>
-                    for (item in unidadesMedida) {
-                        item.save()
-                    }
-                } else {
-                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                }
-            }
 
-            override fun onFailure(call: Call<UnidadMedidaResponse>?, t: Throwable?) {
-                postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
-            }
-
-        })
 
         //Calidades de Producto
         val callCalidadProducto = apiService?.getCalidadesProducto()
@@ -170,11 +249,23 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
             }
 
         })
-
         //Categorías de Producto
+    }
 
 
+    fun <T> getObjectList(jsonString: String, cls: Class<T>): List<T> {
+        val list = ArrayList<T>()
+        try {
+            val gson = Gson()
+            val arry = JsonParser().parse(jsonString).asJsonArray
+            for (jsonElement in arry) {
+                list.add(gson.fromJson(jsonElement, cls))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
+        return list
     }
 
     override fun logOut(usuario: Usuario?) {
