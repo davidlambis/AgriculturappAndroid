@@ -5,6 +5,8 @@ import com.interedes.agriculturappv3.productor.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.insumos.events.InsumosEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento
+import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento_Table
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -36,7 +38,7 @@ class InsumosRepository : InterfaceInsumos.Repository {
             }
         }
         postEventOk(InsumosEvent.READ_EVENT, lista_insumos, null) */
-        for (item in Listas.listaInsumos()) {
+       /* for (item in Listas.listaInsumos()) {
             item.save()
         }
 
@@ -56,8 +58,12 @@ class InsumosRepository : InterfaceInsumos.Repository {
                 }
             }
         }
+        */
 
-        postEventOk(InsumosEvent.READ_EVENT, lista_insumos, null)
+
+        var trtamientosList= SQLite.select().from(Tratamiento::class.java).where(Tratamiento_Table.EnfermedadesId.eq(tipoEnfermedadId)).queryList()
+
+        postEventOk(InsumosEvent.READ_EVENT, trtamientosList, null)
     }
 
     /*
@@ -75,7 +81,7 @@ class InsumosRepository : InterfaceInsumos.Repository {
 
     //region Events
     //Main Post Event
-    private fun postEventOk(type: Int, listInsumos: List<Insumo>?, insumo: Insumo?) {
+    private fun postEventOk(type: Int, listInsumos: List<Tratamiento>?, insumo: Insumo?) {
         val insumoListMutable = listInsumos as MutableList<Object>
         var insumoMutable: Object? = null
         if (insumo != null) {

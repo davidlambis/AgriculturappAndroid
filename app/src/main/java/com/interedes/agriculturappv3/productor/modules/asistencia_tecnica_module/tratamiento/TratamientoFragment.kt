@@ -2,11 +2,13 @@ package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_modul
 
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,10 +26,13 @@ import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
+import com.interedes.agriculturappv3.productor.models.insumos.Insumo
+import com.interedes.agriculturappv3.productor.models.insumos.Insumo_Table
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.control_plagas.ControlPlagasFragment
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.dialog_form_control_plaga.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
@@ -39,6 +44,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
 
 
     //Variables globales
+
     var insumoId: Long? = 0
     var tipoEnfermedadId: Long? = 0
     var enfermedadId: Long? = 0
@@ -89,6 +95,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         super.onViewCreated(view, savedInstanceState)
         val c = this.arguments
         if (c != null) {
+            tratamientoId = c.getLong("tratamientoId")
             insumoId = c.getLong("insumoId")
             tipoProductoId = c.getLong("tipoProductoId")
             enfermedadId = c.getLong("enfermedadId")
@@ -100,7 +107,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
     }
 
     private fun setupInjection() {
-        presenter?.getTratamiento(insumoId)
+        presenter?.getTratamiento(tratamientoId)
     }
 
     //region Métodos Interfaz
@@ -158,6 +165,21 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         txtFormulacion?.setText(getString(R.string.formulacion, tratamiento?.Desc_Formulacion))
         txtAplicacion?.setText(getString(R.string.aplicacion, tratamiento?.Desc_Aplicacion))
         txtModoAccion?.setText(getString(R.string.modo_accion, tratamiento?.Modo_Accion))
+
+        var firtsInsumo= SQLite.select().from(Insumo::class.java).where(Insumo_Table.Id.eq(tratamiento?.InsumoId)).querySingle()
+        if(firtsInsumo!=null){
+            if(firtsInsumo.blobImagen!=null){
+                try {
+                    val foto = firtsInsumo.blobImagen?.blob
+                    //data.blobImagenEnfermedad= Blob(firtsFoto.blobImagen?.blob)
+                    val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+                    imageViewInsumo.setImageBitmap(bitmapBlob)
+                }catch (ex:Exception){
+                    var ss= ex.toString()
+                    Log.d("Convert Image", "defaultValue = " + ss);
+                }
+            }
+        }
       //  txtPrecioAprox?.setText(String.format(getString(R.string.precio_aproximado, tratamiento?.precioAproximado)))
 
     }

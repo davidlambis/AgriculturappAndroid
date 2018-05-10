@@ -55,7 +55,7 @@ data class Tratamiento(@PrimaryKey
 
 
                        @SerializedName("Insumo")
-                       var Insumo: Insumo?=Insumo(),
+                       var Insumo: Insumo?=null,
 
                        @SerializedName("Calificacions")
                        var Calificacions: ArrayList<Calificacion_Tratamiento>?= ArrayList<Calificacion_Tratamiento>()

@@ -11,19 +11,14 @@
     app:cardElevation="5dp"
     app:cardUseCompatPadding="true">
 
-    <View
-        android:id="@+id/indicator_element_sincronize_status"
-        android:layout_width="10dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:background="@color/colorPrimary" />
+
 
     <LinearLayout
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="@dimen/activity_horizontal_margin">
+       >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,7 +32,6 @@
                 android:shrinkColumns="*"
                 android:stretchColumns="*">
 
-
                 <TableRow
                     android:id="@+id/tableRow3"
                     android:layout_width="match_parent"
@@ -48,6 +42,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
+                        android:layout_gravity="center"
                         android:orientation="vertical">
 
                         <TextView
@@ -55,18 +50,20 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Insumo 1"
+
                             android:textAlignment="center"
                             android:textColor="@color/purple"
-                            android:textSize="@dimen/text_size_18"
+                            android:textSize="@dimen/text_size_12"
                             android:textStyle="bold" />
 
                         <ImageView
                             android:id="@+id/imageViewInsumo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/height_100"
                             android:layout_below="@+id/txtNombreComercial"
+                            android:layout_centerInParent="true"
                             android:adjustViewBounds="true"
-                            android:scaleType="centerCrop"
+                            android:scaleType="centerInside"
                             android:src="@drawable/aguacate" />
 
                         <com.robertlevonyan.views.expandable.Expandable
@@ -74,19 +71,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/imageViewInsumo"
-                            android:layout_marginTop="@dimen/margin_global"
+                            android:layout_marginTop="@dimen/text_size_12"
                             app:exp_backgroundColor="@color/amber_luiyi"
                             app:exp_expandIndicator="@drawable/ic_down_arrow"
                             app:exp_headerBackgroundColor="@color/amber_luiyi">
 
                             <TextView
+                                android:layout_gravity="center"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="DESCRIPCIÓN"
-                                android:paddingLeft="@dimen/margin_global"
                                 android:textAlignment="center"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/text_size"
+                                android:textSize="@dimen/margin_10"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -98,15 +95,15 @@
                         </com.robertlevonyan.views.expandable.Expandable>
 
                         <TextView
+                            android:padding="@dimen/margin_5"
                             android:id="@+id/txtIngredienteActivo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/expandable"
-                            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum "
+                            android:text=""
                             android:textAlignment="center"
                             android:textColor="@color/purple"
-                            android:textSize="@dimen/text_size_16"
-                            android:textStyle="bold"
+                            android:textSize="@dimen/text_size_12"
                             android:visibility="gone" />
 
                         <LinearLayout
@@ -117,9 +114,23 @@
                             android:gravity="center"
                             android:orientation="horizontal">
 
+                           <!-- <android.support.v7.widget.AppCompatRatingBar
+                                android:id="@+id/ratingBar"
+                                android:numStars="5"
+                                android:scaleX="0.5"
+                                android:scaleY="0.5"
+                                android:stepSize="1.0"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent" />-->
+
                             <android.support.v7.widget.AppCompatRatingBar
                                 android:id="@+id/ratingBar"
+                                android:numStars="5"
+                                style="@style/RatingBar"
                                 android:layout_width="wrap_content"
+                                android:progressBackgroundTint="@color/colorPrimary"
+                                android:progressTint="@color/dark_green"
+                                android:secondaryProgressTint="@color/colorPrimary"
                                 android:layout_height="match_parent" />
 
                         </LinearLayout>
@@ -136,12 +147,13 @@
                             android:textStyle="bold"/>
 
                         <Button
+                            android:layout_margin="@dimen/margin_10"
                             android:id="@+id/btnVerTratamiento"
                             style="@style/button"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/txtRating"
-                            android:layout_margin="@dimen/margin_global"
+                            android:textSize="@dimen/text_size_12"
                             android:background="@drawable/custom_button"
                             android:text="@string/ver_tratamiento" />
 

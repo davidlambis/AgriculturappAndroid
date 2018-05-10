@@ -45,7 +45,7 @@ interface ITratamiento {
     interface Presenter {
         fun onCreate()
         fun onDestroy()
-        fun getTratamiento(insumoId: Long?)
+        fun getTratamiento(tratamientoId: Long?)
         fun onEventMainThread(tratamientoEvent: TratamientoEvent?)
         fun setListSpinnerUnidadProductiva()
         fun setListSpinnerLote(unidad_productiva_id: Long?)
@@ -62,13 +62,13 @@ interface ITratamiento {
     }
 
     interface Interactor {
-        fun getTratamiento(insumoId: Long?)
+        fun getTratamiento(tratamientoId: Long?)
         fun getListas()
         fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?)
     }
 
     interface Repository {
-        fun getTratamiento(insumoId: Long?)
+        fun getTratamiento(tratamientoId: Long?)
         fun getListas()
         fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?)
     }

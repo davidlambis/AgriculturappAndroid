@@ -9,6 +9,7 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.tratamiento.events.TratamientoEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento_Table
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.services.listas.Listas
@@ -30,27 +31,9 @@ class TratamientoRepository : ITratamiento.Repository {
         postEventControlPlaga(TratamientoEvent.SAVE_CONTROL_PLAGA_EVENT, list_control_plagas)
     }
 
-    override fun getTratamiento(insumoId: Long?) {
-        /* val lista_all_tratamientos = Listas.listaTratamientos()
-         var tratamiento: Tratamiento? = null
-         for (item in lista_all_tratamientos) {
-             if (item.InsumoId == insumoId) {
-                 tratamiento = item
-             }
-         }
-         postEventOk(TratamientoEvent.SET_EVENT, tratamiento)*/
-        for (item in Listas.listaTratamientos()) {
-            item.save()
-        }
-
-        val lista_all_tratamientos = SQLite.select().from(Tratamiento::class.java).queryList()
-        var tratamiento: Tratamiento? = null
-        for (item in lista_all_tratamientos) {
-            if (item.InsumoId == insumoId) {
-                tratamiento = item
-            }
-        }
-        postEventOk(TratamientoEvent.SET_EVENT, tratamiento)
+    override fun getTratamiento(tratamientoId: Long?) {
+        val firstTratamientoInsumo = SQLite.select().from(Tratamiento::class.java).where(Tratamiento_Table.Id.eq(tratamientoId)).querySingle()
+        postEventOk(TratamientoEvent.SET_EVENT, firstTratamientoInsumo)
     }
 
     override fun getListas() {
@@ -106,7 +89,6 @@ class TratamientoRepository : ITratamiento.Repository {
         val unidadMedidaMutable = listUnidadMedida as MutableList<Object>
         postEvent(type, unidadMedidaMutable, null, messageError)
     }
-
 
     private fun postEvent(type: Int, listModel: MutableList<Object>?, model: Object?, errorMessage: String?) {
         val event = TratamientoEvent(type, listModel, model, errorMessage)

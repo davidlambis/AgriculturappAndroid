@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.interedes.agriculturappv3.productor.models.insumos.Insumo
+import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.insumos.events.InsumosEvent
 
 
@@ -13,9 +14,9 @@ interface InterfaceInsumos {
         fun showRefresh()
         fun hideRefresh()
         fun getInsumosByPlaga(tipoEnfermedadId: Long?)
-        fun setInsumosList(listInsumos: List<Insumo>)
+        fun setTratamientosList(listTratamiento: List<Tratamiento>)
         fun setResults(insumos: Int)
-        fun verTratamiento(insumoId : Long?)
+        fun verTratamiento(tratamiento:Tratamiento? )
        // fun setDialogListInsumos(listInsumos: List<Insumo>)
        //Events
        fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)

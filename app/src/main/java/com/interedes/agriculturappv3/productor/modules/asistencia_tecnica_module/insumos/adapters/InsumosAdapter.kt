@@ -1,6 +1,8 @@
 package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.insumos.adapters
 
+import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +15,18 @@ import com.interedes.agriculturappv3.productor.models.insumos.Insumo
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.insumos.events.InsumosEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.insumos.Insumo_Table
+import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.robertlevonyan.views.expandable.Expandable
 import com.robertlevonyan.views.expandable.ExpandingListener
 
-class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<InsumosAdapter.ViewHolder>() {
+class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<InsumosAdapter.ViewHolder>() {
 
     companion object {
         var eventBus: EventBus? = null
-        fun postEvent(type: Int, insumo: Insumo?) {
-            val insumoMutable = insumo as Object
+        fun postEvent(type: Int, tratamiento: Tratamiento?) {
+            val insumoMutable = tratamiento as Object
             val event = InsumosEvent(type, null, insumoMutable, null)
             event.eventType = type
             eventBus?.post(event)
@@ -47,7 +52,7 @@ class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<Insumo
         return lista.size
     }
 
-    fun setItems(newItems: List<Insumo>) {
+    fun setItems(newItems: List<Tratamiento>) {
         lista.addAll(newItems)
         notifyDataSetChanged()
 
@@ -59,7 +64,7 @@ class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<Insumo
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindItems(data: Insumo, pos: Int) = with(itemView) {
+        fun bindItems(data: Tratamiento, pos: Int) = with(itemView) {
             val txt_nombre_insumo: TextView = itemView.findViewById(R.id.txtNombreComercial)
             val image_view_insumo: ImageView = itemView.findViewById(R.id.imageViewInsumo)
             val text_descripcion_insumo: TextView = itemView.findViewById(R.id.txtIngredienteActivo)
@@ -68,9 +73,26 @@ class InsumosAdapter(val lista: ArrayList<Insumo>) : RecyclerView.Adapter<Insumo
             val btn_ver_tratamiento: Button = itemView.findViewById(R.id.btnVerTratamiento)
             val rating_bar: RatingBar = itemView.findViewById(R.id.ratingBar)
 
-            txt_nombre_insumo.text = data.Nombre
-            image_view_insumo.setImageResource(data.Foto!!)
-            text_descripcion_insumo.text = data.Descripcion
+            txt_nombre_insumo.text = data.Nombre_Comercial
+            var firtsInsumo= SQLite.select().from(Insumo::class.java).where(Insumo_Table.Id.eq(data.InsumoId)).querySingle()
+            if(firtsInsumo!=null){
+
+                if(firtsInsumo.blobImagen!=null){
+                    try {
+                        val foto = firtsInsumo.blobImagen?.blob
+                        //data.blobImagenEnfermedad= Blob(firtsFoto.blobImagen?.blob)
+                        val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+                        image_view_insumo.setImageBitmap(bitmapBlob)
+
+                    }catch (ex:Exception){
+                        var ss= ex.toString()
+                        Log.d("Convert Image", "defaultValue = " + ss);
+                    }
+                }
+            }
+
+
+            text_descripcion_insumo.text = data.Desc_Formulacion
             rating_bar.rating = 4.5F
             rating_bar.setIsIndicator(true)
             rating_bar.isClickable = false

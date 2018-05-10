@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.productor.models.insumos.Insumo
+import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.insumos.adapters.InsumosAdapter
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.tratamiento.TratamientoFragment
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
@@ -31,7 +33,7 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
     var presenter: InterfaceInsumos.Presenter? = null
 
     //List Insumos
-    var insumosList: ArrayList<Insumo>? = ArrayList<Insumo>()
+    var insumosList: ArrayList<Tratamiento>? = ArrayList<Tratamiento>()
 
     var dialogInsumo: MaterialDialog? = null
 
@@ -78,7 +80,7 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
     }
 
     private fun initAdapter() {
-        recyclerView?.layoutManager = LinearLayoutManager(activity)
+        recyclerView?.layoutManager = GridLayoutManager(activity,2)
         adapter = InsumosAdapter(insumosList!!)
         recyclerView?.adapter = adapter
     }
@@ -93,7 +95,7 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
         presenter?.getInsumosByPlaga(tipoEnfermedadId)
     }
 
-    override fun setInsumosList(listInsumos: List<Insumo>) {
+    override fun setTratamientosList(listInsumos: List<Tratamiento>) {
         dialogInsumo?.dismiss()
         adapter?.clear()
         insumosList?.clear()
@@ -102,9 +104,10 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
         setResults(listInsumos.size)
     }
 
-    override fun verTratamiento(insumoId: Long?) {
+    override fun verTratamiento(tratamiento: Tratamiento?) {
         val bundle = Bundle()
-        bundle.putLong("insumoId", insumoId!!)
+        bundle.putLong("insumoId", tratamiento?.InsumoId!!)
+        bundle.putLong("tratamientoId", tratamiento?.Id!!)
         bundle.putLong("tipoProductoId", tipoProductoId!!)
         bundle.putString("nombreTipoEnfermedad", nombreTipoEnfermedad)
         bundle.putLong("enfermedadId", enfermedadId!!)

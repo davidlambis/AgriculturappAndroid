@@ -79,11 +79,12 @@
                                 <ImageView
                                     android:id="@+id/imageViewInsumo"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="@dimen/height_200"
                                     android:layout_below="@+id/txtNombreComercial"
+                                    android:layout_centerInParent="true"
                                     android:adjustViewBounds="true"
-                                    android:scaleType="centerCrop"
-                                    android:src="@drawable/kocide" />
+                                    android:scaleType="centerInside"
+                                    android:src="@drawable/aguacate" />
 
 
                                 <TextView
@@ -138,13 +139,27 @@
                                     android:textSize="@dimen/text_size_18"
                                     android:textStyle="bold" />
 
+                                <android.support.v7.widget.AppCompatRatingBar
+                                    android:id="@+id/ratingBar"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/txtPrecioAprox"
+                                    android:layout_centerHorizontal="true"
+                                    android:numStars="5"
+                                    android:rating="4.5"
+                                    android:isIndicator="true"
+                                    android:progressBackgroundTint="@color/colorPrimary"
+                                    android:progressTint="@color/dark_green"
+                                    android:secondaryProgressTint="@color/colorPrimary"
+                                    />
+
 
                                 <Button
                                     android:id="@+id/btnControlPlaga"
                                     style="@style/button"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/txtPrecioAprox"
+                                    android:layout_below="@+id/ratingBar"
                                     android:layout_margin="@dimen/margin_global"
                                     android:background="@drawable/custom_button"
                                     android:text="@string/btn_control_plaga" />
