@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_modul
 
 import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -68,15 +69,17 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
             val txt_nombre_insumo: TextView = itemView.findViewById(R.id.txtNombreComercial)
             val image_view_insumo: ImageView = itemView.findViewById(R.id.imageViewInsumo)
             val text_descripcion_insumo: TextView = itemView.findViewById(R.id.txtIngredienteActivo)
-            val expandable: Expandable = itemView.findViewById(R.id.expandable)
-            val txt_descripcion_insumo: TextView = itemView.findViewById(R.id.txtIngredienteActivo)
+           /// val expandable: Expandable = itemView.findViewById(R.id.expandable)
+            //val txt_descripcion_insumo: TextView = itemView.findViewById(R.id.txtIngredienteActivo)
             val btn_ver_tratamiento: Button = itemView.findViewById(R.id.btnVerTratamiento)
             val rating_bar: RatingBar = itemView.findViewById(R.id.ratingBar)
+            val txtrating_bar: TextView = itemView.findViewById(R.id.txtRating)
 
-            txt_nombre_insumo.text = data.Nombre_Comercial
+
+
+            txt_nombre_insumo.text = data.Nombre_Insumo
             var firtsInsumo= SQLite.select().from(Insumo::class.java).where(Insumo_Table.Id.eq(data.InsumoId)).querySingle()
             if(firtsInsumo!=null){
-
                 if(firtsInsumo.blobImagen!=null){
                     try {
                         val foto = firtsInsumo.blobImagen?.blob
@@ -93,10 +96,17 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
 
 
             text_descripcion_insumo.text = data.Desc_Formulacion
-            rating_bar.rating = 4.5F
+            text_descripcion_insumo.maxLines=2
+            text_descripcion_insumo.ellipsize= TextUtils.TruncateAt.END
+
+            var calificacionTratamiento:Float?= data?.CalificacionPromedio?.toFloat()
+            rating_bar.rating = calificacionTratamiento!!
             rating_bar.setIsIndicator(true)
             rating_bar.isClickable = false
 
+            txtrating_bar.setText(context.getString(R.string.calificacion_tratamiento,data?.CalificacionPromedio))
+
+            /*
             expandable.setExpandingListener(object : ExpandingListener {
                 override fun onExpanded() {
                     txt_descripcion_insumo.visibility = View.VISIBLE
@@ -106,6 +116,8 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
                     txt_descripcion_insumo.visibility = View.GONE
                 }
             })
+
+            */
 
             btn_ver_tratamiento.setOnClickListener {
                 postEvent(InsumosEvent.ITEM_EVENT, data)

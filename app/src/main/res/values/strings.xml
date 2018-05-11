@@ -170,12 +170,12 @@
     <string name="ver_tratamiento">Ver Tratamiento</string>
 
     <!-- Tratamientos-->
-    <string name="nombre_comercial">Nombre Comercial : %s</string>
-    <string name="ingrediente_activo">Ingrediente Activo : %s</string>
-    <string name="formulacion">Formulación : %s</string>
-    <string name="aplicacion">Aplicación : %s</string>
-    <string name="modo_accion">Modo de Acción : %s</string>
-    <string name="precio_aproximado">Precio Aproximado : %f</string>
+    <string name="nombre_comercial">Nombre Comercial :</string>
+    <string name="ingrediente_activo">Ingrediente Activo :</string>
+    <string name="formulacion">Formulación :</string>
+    <string name="aplicacion">Aplicación :</string>
+    <string name="modo_accion">Modo de Acción :</string>
+    <string name="precio_aproximado">Precio Aproximado :</string>
     <string name="btn_control_plaga">Registrar Control Plaga</string>
     <string name="tittle_select_cultivo_tratamiento">Seleccione el cultivo para agregar el control de plaga</string>
     <string name="title_add_control_plaga">Registrar Control de Plaga</string>
@@ -284,7 +284,7 @@
     <string name="total">Total $</string>
     <string name="cantidad_estimada">%1$,.0f / %2$s</string>
     <string name="selected">Seleccionar</string>
-
+    <string name="send">Enviar</string>
 
     <string name="agregar">Agregar</string>
     <string name="filtrar">Filtrar</string>
@@ -338,6 +338,17 @@
         <item>Ubicación GPS</item>
     </string-array>
 
+    <!--CALIFICACION TRATAMIENTO-->
+    <string name="calificacion_tratamiento">Calificacion : %.1f</string>
+
+    <string name="calificacion_selected">Calificacion seleccionada : %.1f</string>
+    <string name="title_calificacion">Enviar Calificacion</string>
+
+
+    <string name="tittle_is_calificate_tratamiento">Ya haz calificado este tratamiento con %.1f</string>
+    <string name="tittle_not_calificate_tratamiento">Calificar tratamiento</string>
+    <string name="request_calificate_exist_ok">Ya haz realizado la califficacion para este tratamiento, hemos actualizado tu calificacion</string>
+    <string name="request_calificate_ok">Haz calificado el tratamiento, Gracias</string>
 
     <!--CHAT SMS-->
     <string name="tittle_sms_messajes">My bandeja de entrada de mensajes</string>

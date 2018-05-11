@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.productor.models.tratamiento
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.productor.models.insumos.Insumo
+import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.Calificacion_Tratamiento
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
@@ -49,9 +50,20 @@ data class Tratamiento(@PrimaryKey
                        @Column(name = "proveedor")
                        var proveedor: String? = null,
 
+
+                       @Column(name = "Descripcion_Insumo")
+                       var Descripcion_Insumo: String? = null,
+
+                       @Column(name = "Nombre_Insumo")
+                       var Nombre_Insumo: String? = null,
+
                        @SerializedName("EnfermedadesId")
                        @Column(name = "EnfermedadesId")
                        var EnfermedadesId: Long? = 0,
+
+
+                       @Column(name = "CalificacionPromedio")
+                       var CalificacionPromedio: Double? = 0.0,
 
 
                        @SerializedName("Insumo")

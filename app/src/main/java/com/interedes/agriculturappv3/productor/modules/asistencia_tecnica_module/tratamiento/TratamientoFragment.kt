@@ -1,20 +1,24 @@
 package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.tratamiento
 
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.BackgroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.widget.*
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
@@ -28,11 +32,13 @@ import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_P
 import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.productor.models.insumos.Insumo
 import com.interedes.agriculturappv3.productor.models.insumos.Insumo_Table
+import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.Calificacion_Tratamiento
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.control_plagas.ControlPlagasFragment
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.robertlevonyan.views.expandable.ExpandingListener
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.dialog_form_control_plaga.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
@@ -41,6 +47,7 @@ import java.util.*
 
 
 class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener {
+
 
 
     //Variables globales
@@ -65,6 +72,12 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
 
     //Presenter
     var presenter: ITratamiento.Presenter? = null
+
+    var _dialogSendCalificacion: MaterialDialog? = null
+
+    //Models
+    var calificacionTratamiento:Calificacion_Tratamiento?=null
+    var tratamientoGlobal:Tratamiento?=null
 
 
     //Progress
@@ -104,6 +117,34 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         setupInjection()
         ivBackButton?.setOnClickListener(this)
         btnControlPlaga?.setOnClickListener(this)
+
+
+        expandableDescripcionInsumo.setExpandingListener(object : ExpandingListener {
+            override fun onExpanded() {
+                txtDescripcionInsumo.visibility = View.VISIBLE
+            }
+            override fun onCollapsed() {
+                txtDescripcionInsumo.visibility = View.GONE
+            }
+        })
+
+        expandableTratamiento.setExpandingListener(object : ExpandingListener {
+            override fun onExpanded() {
+                contentTratamiento.visibility = View.VISIBLE
+            }
+            override fun onCollapsed() {
+                contentTratamiento.visibility = View.GONE
+            }
+        })
+
+        ratingBar.setOnRatingBarChangeListener(RatingBar.OnRatingBarChangeListener(
+            { ratingBar, float, boolean ->
+                ratingBar.rating=float
+
+                Toast.makeText(activity,ratingBar.rating.toString(), Toast.LENGTH_SHORT).show()
+                showAlertSendCalificacion()
+            }
+        ))
     }
 
     private fun setupInjection() {
@@ -111,6 +152,33 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
     }
 
     //region Métodos Interfaz
+    override fun showAlertSendCalificacion() {
+        var calificacion= ratingBar.rating
+
+        var dialog =MaterialDialog.Builder(context!!)
+                .iconRes(R.drawable.ic_calification)
+                .limitIconToDefaultSize() // limits the displayed icon size to 48dp
+                .title(R.string.title_calificacion)
+                .content(String.format(getString(R.string.calificacion_selected),calificacion))
+                .positiveText(R.string.send)
+                .negativeText(R.string.cancel)
+                .autoDismiss(false)
+                .onPositive(
+                        { dialog1, which ->
+                            val f = calificacion
+                            val calificacion = f.toDouble()
+                            presenter?.sendCalificationTratamietno(tratamientoGlobal,calificacion = calificacion)
+
+                        })
+                .onNegative({ dialog1, which ->
+
+                    dialog1.dismiss()
+                })
+                .show()
+        _dialogSendCalificacion=dialog
+    }
+
+
 
     override fun showProgress() {
         showProgressHud()
@@ -146,6 +214,59 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         _dialogRegisterControlPlaga?.dismiss()
     }
 
+    override fun requestResponseOk() {
+        if (_dialogSendCalificacion != null) {
+            _dialogSendCalificacion?.dismiss()
+        }
+        onMessageOk(R.color.colorPrimary, getString(R.string.request_ok));
+        onMessageOk(R.color.colorPrimary, getString(R.string.request_calificate_ok));
+    }
+
+    override fun requestResponseExistCalicated() {
+        onMessageOk(R.color.colorPrimary, getString(R.string.request_calificate_exist_ok));
+    }
+
+
+
+    override fun requestResponseError(error: String?) {
+        if (_dialogSendCalificacion != null) {
+            _dialogSendCalificacion?.dismiss()
+        }
+        onMessageError(R.color.grey_luiyi, error)
+    }
+
+
+    override fun onMessageOk(colorPrimary: Int, message: String?) {
+        val color = Color.WHITE
+        val snackbar = Snackbar
+                .make((activity as MenuMainActivity).container, message!!, Snackbar.LENGTH_LONG)
+        val sbView = snackbar.view
+        sbView.setBackgroundColor(ContextCompat.getColor(activity!!.applicationContext, colorPrimary))
+        val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.quantum_ic_cast_connected_white_24, 0, 0, 0)
+        // textView.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.activity_horizontal_margin));
+        textView.setTextColor(color)
+        snackbar.show()
+    }
+
+    override fun onMessageError(colorPrimary: Int, message: String?) {
+        onMessageOk(colorPrimary, message)
+    }
+
+    override fun verificateConnection(): AlertDialog? {
+        var builder = AlertDialog.Builder(context!!)
+        builder.setTitle(getString(R.string.alert));
+        builder.setMessage(getString(R.string.verificate_conexion));
+        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            dialog.dismiss()
+            if (_dialogSendCalificacion != null) {
+                _dialogSendCalificacion?.dismiss()
+            }
+        })
+        builder.setIcon(R.drawable.ic_lote);
+        return builder.show();
+    }
+
     override fun loadControlPlagas(listControlPlaga: List<ControlPlaga>) {
         hideProgressHud()
         //Toast.makeText(activity, "Se ha registrado el control de plaga", Toast.LENGTH_SHORT).show()
@@ -155,22 +276,33 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         controlPlagasFragment = ControlPlagasFragment()
         controlPlagasFragment.arguments = bundle
         (activity as MenuMainActivity).replaceFragment(controlPlagasFragment)
+
     }
 
     override fun setTratamiento(tratamiento: Tratamiento?) {
+        tratamientoGlobal=tratamiento
         tratamientoId = tratamiento?.Id
-        (activity as MenuMainActivity).toolbar.title = "Tratamiento-" + tratamiento?.Nombre_Comercial
-        txtNombreComercial?.setText(getString(R.string.nombre_comercial, tratamiento?.Nombre_Comercial))
-        txtIngredienteActivo?.setText(getString(R.string.ingrediente_activo, tratamiento?.IngredienteActivo))
-        txtFormulacion?.setText(getString(R.string.formulacion, tratamiento?.Desc_Formulacion))
-        txtAplicacion?.setText(getString(R.string.aplicacion, tratamiento?.Desc_Aplicacion))
-        txtModoAccion?.setText(getString(R.string.modo_accion, tratamiento?.Modo_Accion))
+        txtTitle.setText("Tratamiento- ${tratamiento?.Nombre_Insumo}")
 
-        var firtsInsumo= SQLite.select().from(Insumo::class.java).where(Insumo_Table.Id.eq(tratamiento?.InsumoId)).querySingle()
-        if(firtsInsumo!=null){
-            if(firtsInsumo.blobImagen!=null){
+        //(activity as MenuMainActivity).toolbar.title = "Tratamiento-" + tratamiento?.Nombre_Comercial
+        txtNombreComercial?.setText(tratamiento?.Nombre_Comercial)
+        txtIngredienteActivo?.setText(tratamiento?.IngredienteActivo)
+        txtFormulacion?.setText( tratamiento?.Desc_Formulacion)
+        txtAplicacion?.setText(tratamiento?.Desc_Aplicacion)
+        txtModoAccion?.setText(tratamiento?.Modo_Accion)
+        txtDescripcionInsumo.setText(tratamiento?.Descripcion_Insumo)
+
+        txtPrecioAprox.setText(getString(R.string.price,tratamiento?.precioAproximado))
+      //  txtPrecioAprox?.setText(String.format(getString(R.string.precio_aproximado, tratamiento?.precioAproximado)))
+    }
+
+
+
+    override fun setInsumo(insumo: Insumo?) {
+        if(insumo!=null){
+            if(insumo.blobImagen!=null){
                 try {
-                    val foto = firtsInsumo.blobImagen?.blob
+                    val foto = insumo.blobImagen?.blob
                     //data.blobImagenEnfermedad= Blob(firtsFoto.blobImagen?.blob)
                     val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                     imageViewInsumo.setImageBitmap(bitmapBlob)
@@ -180,9 +312,38 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
                 }
             }
         }
-      //  txtPrecioAprox?.setText(String.format(getString(R.string.precio_aproximado, tratamiento?.precioAproximado)))
+    }
+
+
+
+    override fun setDisabledCalificacion(calificacionTra: Calificacion_Tratamiento?) {
+
+        var calificacionTratamiento:Float?= calificacionTra?.Valor_Promedio?.toFloat()
+        ratingBar.rating=calificacionTratamiento!!
+
+
+        txtRatingTratamiento.setText(String.format(getString(R.string.calificacion_tratamiento),calificacionTra?.Valor_Promedio))
+        txtStatusCalificacion.setText(String.format(getString(R.string.tittle_is_calificate_tratamiento),calificacionTra?.Valor))
+
+
+        ratingBar.setIsIndicator(true)
+        ratingBar.isClickable = false
 
     }
+
+    override fun setEnabledCalificacion(calificacionTra: Calificacion_Tratamiento?) {
+
+        var calificacionTratamiento:Float?= calificacionTra?.Valor_Promedio?.toFloat()
+
+        txtRatingTratamiento.setText(String.format(getString(R.string.calificacion_tratamiento),calificacionTra?.Valor_Promedio))
+        txtStatusCalificacion.setText(getString(R.string.tittle_not_calificate_tratamiento))
+
+        ratingBar.rating=calificacionTratamiento!!
+        ratingBar.setIsIndicator(false)
+        ratingBar.isClickable = true
+
+    }
+
 
     override fun validarListasAddControlPlaga(): Boolean {
         var cancel = false

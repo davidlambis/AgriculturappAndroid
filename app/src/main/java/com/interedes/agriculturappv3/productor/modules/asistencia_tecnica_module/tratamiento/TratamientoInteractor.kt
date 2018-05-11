@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.tratamiento
 
 import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
+import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento
 
 
 class TratamientoInteractor : ITratamiento.Interactor {
@@ -23,6 +24,10 @@ class TratamientoInteractor : ITratamiento.Interactor {
     override fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?) {
         repository?.registerControlPlaga(controlPlaga, cultivo_id)
     }
-    //endregion
 
+    override fun sendCalificationTratamietno(tratamiento: Tratamiento?, calificacion: Double?) {
+        repository?.sendCalificationTratamietno(tratamiento,calificacion)
+    }
+
+    //endregion
 }

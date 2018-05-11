@@ -12,6 +12,8 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.tratamiento.events.TratamientoEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.insumos.Insumo
+import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.Calificacion_Tratamiento
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
@@ -33,6 +35,9 @@ class TratamientoPresenter(var view: ITratamiento.View?) : ITratamiento.Presente
         eventBus = GreenRobotEventBus()
         interactor = TratamientoInteractor()
     }
+
+
+
 
     //region Métodos Interfaz
     override fun onCreate() {
@@ -121,6 +126,21 @@ class TratamientoPresenter(var view: ITratamiento.View?) : ITratamiento.Presente
                 val tratamiento = tratamientoEvent.objectMutable as Tratamiento
                 view?.setTratamiento(tratamiento)
             }
+
+            TratamientoEvent.EVENT_CALIFICACION_TRATAMIENTO -> {
+                val calificacion = tratamientoEvent.objectMutable as Calificacion_Tratamiento
+                if(calificacion.User_Id!=null){
+                    view?.setDisabledCalificacion(calificacion)
+                }else{
+                    view?.setEnabledCalificacion(calificacion)
+                }
+            }
+
+            TratamientoEvent.EVENT_INSUMO -> {
+                val insumo = tratamientoEvent.objectMutable as Insumo
+                view?.setInsumo(insumo)
+            }
+
             TratamientoEvent.SAVE_CONTROL_PLAGA_EVENT -> {
                 val lista_control_plagas = tratamientoEvent.mutableList as List<ControlPlaga>
                 view?.loadControlPlagas(lista_control_plagas)
@@ -142,7 +162,57 @@ class TratamientoPresenter(var view: ITratamiento.View?) : ITratamiento.Presente
                 listUnidadMedidaGlobal = tratamientoEvent.mutableList as List<Unidad_Medida>
             }
 
+            TratamientoEvent.ERROR_EVENT -> {
+                onMessageError(tratamientoEvent.mensajeError)
+            }
+            TratamientoEvent.CALIFICATE_EVENT_EXIST -> {
+                onMessageCalificateExistOk()
+            }
+
+            TratamientoEvent.REQUEST_CALIFICATE_EVENT_TRATAMIENTO_OK -> {
+                onMessageOk()
+            }
+
         }
+    }
+
+    override fun sendCalificationTratamietno(tratamiento: Tratamiento?, calificacion: Double?) {
+        view?.showProgress()
+        if(checkConnection()){
+            interactor?.sendCalificationTratamietno(tratamiento,calificacion)
+        }else{
+
+            onMessageConectionError()
+        }
+    }
+
+    //endregion
+
+    //region METHODS RESPONSE
+
+    private fun onMessageOk() {
+        view?.hideProgress()
+        view?.hideProgressHud()
+        view?.requestResponseOk()
+    }
+
+    private fun onMessageCalificateExistOk() {
+        view?.hideProgress()
+        view?.hideProgressHud()
+        view?.requestResponseExistCalicated()
+    }
+
+    private fun onMessageError(error: String?) {
+        view?.enableInputs()
+        view?.hideProgress()
+        view?.hideProgressHud()
+        view?.requestResponseError(error)
+    }
+
+    private fun onMessageConectionError() {
+        view?.hideProgress()
+        view?.hideProgressHud()
+        view?.verificateConnection()
     }
     //endregion
 }

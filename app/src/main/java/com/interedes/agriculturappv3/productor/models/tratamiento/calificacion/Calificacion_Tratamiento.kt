@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.productor.models.tratamiento
+package com.interedes.agriculturappv3.productor.models.tratamiento.calificacion
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
@@ -25,9 +25,11 @@ data class Calificacion_Tratamiento(@PrimaryKey
                                     @Column(name = "Valor")
                                     var Valor: Double? = 0.0,
 
-                                    @SerializedName("User_Id")
+                                    var Valor_Promedio: Double? = 0.0,
+
+                                    @SerializedName("userId")
                                     @Column(name = "User_Id")
-                                    var User_Id: Long? = 0
+                                    var User_Id: String? = null
 
 
 ) {

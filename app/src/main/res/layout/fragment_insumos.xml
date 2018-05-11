@@ -21,6 +21,19 @@
                 android:contentDescription="@null"
                 android:src="@drawable/ic_back_button" />
 
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="11dp"
+                android:layout_toEndOf="@+id/ivClosetDialogProduccion"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@color/green"
+                android:textSize="@dimen/text_size_15"
+                android:textStyle="bold" />
+
 
         </LinearLayout>
     </LinearLayout>

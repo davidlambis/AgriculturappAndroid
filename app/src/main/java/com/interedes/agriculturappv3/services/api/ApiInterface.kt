@@ -34,6 +34,9 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.interedes.agriculturappv3.productor.models.plagas.EnfermedadResponseApi
 import com.interedes.agriculturappv3.productor.models.tratamiento.TratamientoResponse
+import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.Calificacion_Tratamiento
+import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.PostCalificacion
+import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.ResponseCalificacion
 
 
 interface ApiInterface {
@@ -211,6 +214,20 @@ interface ApiInterface {
    @GET("odata/Agp2/Tratamientos?\$expand=Insumo(\$expand=Laboratorio,TipoInsumo),Calificacions")
     fun getTratamientos(): Call<TratamientoResponse>
 
+    //endregion
+
+
+    //region Calificacion
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @POST("odata/Agp2/Calificacions")
+    fun postCalificacionTratamiento(@Body body: PostCalificacion): Call<Calificacion_Tratamiento>
+    //fun postCalificacionTratamiento( @Query("\$filter") filter: String): Call<GetUserResponse>
+
+   // @GET("odata/Agp2/Calificacions?&\$top=1")
+    @GET("odata/Agp2/Calificacions")
+    fun getVerificateCalificationUser( @Query("\$filter") filter: String): Call<ResponseCalificacion>
+    
     //endregion
 
     //endregion

@@ -21,8 +21,7 @@ import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
-import kotlinx.android.synthetic.main.fragment_plaga.*
-
+import kotlinx.android.synthetic.main.fragment_insumos.*
 class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 
 
@@ -74,7 +73,10 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
         }
         initAdapter()
         setupInjection()
-        (activity as MenuMainActivity).toolbar.title = "Insumos-" + nombreTipoEnfermedad + "(" + nombreTipoProducto + ")"
+
+        txtTitle.text= "Insumos- $nombreTipoEnfermedad( $nombreTipoProducto )"
+
+        //(activity as MenuMainActivity).toolbar.title = "Insumos-" + nombreTipoEnfermedad + "(" + nombreTipoProducto + ")"
         swipeRefreshLayout?.setOnRefreshListener(this)
         ivBackButton?.setOnClickListener(this)
     }

@@ -66,7 +66,7 @@
                             android:scaleType="centerInside"
                             android:src="@drawable/aguacate" />
 
-                        <com.robertlevonyan.views.expandable.Expandable
+                      <!--  <com.robertlevonyan.views.expandable.Expandable
                             android:id="@+id/expandable"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -92,19 +92,19 @@
                                 android:visibility="gone" />
 
 
-                        </com.robertlevonyan.views.expandable.Expandable>
+                        </com.robertlevonyan.views.expandable.Expandable>-->
 
                         <TextView
                             android:padding="@dimen/margin_5"
                             android:id="@+id/txtIngredienteActivo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/expandable"
+                            android:layout_below="@+id/imageViewInsumo"
                             android:text=""
                             android:textAlignment="center"
                             android:textColor="@color/purple"
                             android:textSize="@dimen/text_size_12"
-                            android:visibility="gone" />
+                            android:visibility="visible" />
 
                         <LinearLayout
                             android:id="@+id/linearLayoutRatingBar"
@@ -140,7 +140,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/linearLayoutRatingBar"
-                            android:text="Calificación : 4.5"
+                            android:text=""
                             android:textAlignment="center"
                             android:textColor="@color/purple"
                             android:textSize="@dimen/text_size_16"

@@ -32,6 +32,12 @@ import com.google.gson.JsonParser
 import com.google.gson.Gson
 import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento
 import com.interedes.agriculturappv3.productor.models.tratamiento.TratamientoResponse
+import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.Calificacion_Tratamiento
+import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.Calificacion_Tratamiento_Table
+import com.interedes.agriculturappv3.productor.models.ventas.Estado
+import com.raizlabs.android.dbflow.sql.language.Delete
+
+
 
 
 class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
@@ -139,8 +145,16 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                 if (tratamientoResponse != null && tratamientoResponse.code() == 200) {
                     val tratamientos = tratamientoResponse.body()?.value as MutableList<Tratamiento>
                     for (item in tratamientos){
-                        item.save()
+
+                        var sumacalificacion:Double?=0.0
+                        var promedioCalificacion:Double?=0.0
+
                         if(item.Insumo!=null){
+
+
+                            item.Descripcion_Insumo=item.Insumo?.Descripcion
+                            item.Nombre_Insumo=item.Insumo?.Nombre
+
                             if(item?.Insumo?.Imagen!=null || item?.Insumo?.Imagen!=""){
                                 try {
                                     val base64String = item?.Insumo?.Imagen
@@ -166,11 +180,32 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                             item.Insumo?.save()
                         }
 
-                        if(item.Calificacions!=null){
+
+                        if(item?.Calificacions!!.size==0){
+                            SQLite.delete<Calificacion_Tratamiento>(Calificacion_Tratamiento::class.java)
+                                    .where(Calificacion_Tratamiento_Table.TratamientoId.eq(item.Id))
+                                    .async()
+                                    .execute()
+                        }else{
+                            SQLite.delete<Calificacion_Tratamiento>(Calificacion_Tratamiento::class.java)
+                                    .where(Calificacion_Tratamiento_Table.TratamientoId.eq(item.Id))
+                                    .async()
+                                    .execute()
+
                             for (calification in item?.Calificacions!!){
                                 calification.save()
+                                sumacalificacion=sumacalificacion!!+ calification.Valor!!
                             }
+
+                            promedioCalificacion= sumacalificacion!! /item?.Calificacions!!.size
+
+
+
                         }
+
+
+                        item.CalificacionPromedio=promedioCalificacion
+                        item.save()
                     }
                 } else {
                     postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")

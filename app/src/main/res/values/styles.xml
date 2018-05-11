@@ -97,6 +97,8 @@
         <item name="colorControlActivated">@color/grey_luiyi</item>
     </style>
 
+
+
 <!--
     <style name="foodRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/ratingstars</item>
