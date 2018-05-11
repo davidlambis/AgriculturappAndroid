@@ -93,22 +93,38 @@ class ControlPlagasPresenter(var view: IControlPlagas.View?) : IControlPlagas.Pr
     }
 
     override fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?) {
+
         view?.showProgress()
-        if (checkConnection()) {
+        if(controlPlaga.Estado_Sincronizacion==true){
+            if (checkConnection()) {
+                interactor?.deleteControlPlaga(controlPlaga, cultivo_id)
+            } else {
+                onMessageConectionError()
+            }
+        }else{
             interactor?.deleteControlPlaga(controlPlaga, cultivo_id)
-        } else {
-            onMessageConectionError()
         }
     }
 
     override fun updateControlPlaga(controlPlaga: ControlPlaga?) {
-        interactor?.updateControlPlaga(controlPlaga)
+        view?.showProgressHud()
+        if (checkConnection()) {
+            interactor?.updateControlPlagaOnline(controlPlaga)
+        } else {
+            interactor?.updateControlPlaga(controlPlaga)
+        }
     }
 
     @Subscribe
     override fun onEventMainThread(event: ControlPlagasEvent?) {
         when (event?.eventType) {
             ControlPlagasEvent.READ_EVENT -> {
+                val list = event.mutableList as List<ControlPlaga>
+                view?.setListControlPlagas(list)
+            }
+
+            ControlPlagasEvent.UPDATE_EVENT_OK -> {
+
                 val list = event.mutableList as List<ControlPlaga>
                 view?.setListControlPlagas(list)
             }

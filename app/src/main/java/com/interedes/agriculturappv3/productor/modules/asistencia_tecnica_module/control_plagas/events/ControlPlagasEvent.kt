@@ -18,5 +18,7 @@ data class ControlPlagasEvent(var eventType: Int,
         val ITEM_DELETE_EVENT: Int = 6
         val DELETE_EVENT: Int = 7
         val ITEM_ERRADICAR_EVENT: Int = 8
+        val ERROR_EVENT: Int = 9
+        val UPDATE_EVENT_OK: Int = 9
     }
 }

@@ -91,9 +91,14 @@ class TratamientoPresenter(var view: ITratamiento.View?) : ITratamiento.Presente
     }
 
     override fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?) {
+
         view?.showProgress()
         view?.disableInputs()
-        interactor?.registerControlPlaga(controlPlaga, cultivo_id)
+        if(checkConnection()){
+            interactor?.registerControlPlagaOnline(controlPlaga,cultivo_id)
+        }else{
+            interactor?.registerControlPlaga(controlPlaga, cultivo_id)
+        }
     }
 
     //region Conectividad

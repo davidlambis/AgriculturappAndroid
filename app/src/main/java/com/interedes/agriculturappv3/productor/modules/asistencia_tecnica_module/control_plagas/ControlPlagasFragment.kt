@@ -33,6 +33,7 @@ import com.interedes.agriculturappv3.productor.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.control_plagas.adapters.ControlPlagasAdapter
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.plagas.PlagaFragment
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
+import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
@@ -56,6 +57,8 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
     var cultivoGlobal: Cultivo? = null
     var unidadProductivaGlobal: Unidad_Productiva? = null
     var loteGlobal: Lote? = null
+
+    private var hud: KProgressHUD? = null
 
 
     companion object {
@@ -157,6 +160,21 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         swipeRefreshLayout.setRefreshing(true)
     }
 
+    override fun showProgressHud() {
+        hud = KProgressHUD.create(activity)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setWindowColor(getResources().getColor(R.color.colorPrimary))
+                .setLabel("Cargando...", resources.getColor(R.color.white));
+        hud?.show()
+    }
+
+
+
+    override fun hideProgressHud() {
+        hud?.dismiss()
+    }
+
+
     override fun hideProgress() {
         swipeRefreshLayout.setRefreshing(false)
     }
@@ -166,6 +184,7 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         adapter?.clear()
         controlPlagaList?.clear()
         adapter?.setItems(listControlPlagas)
+        hideProgressHud()
         hideProgress()
         setResults(listControlPlagas.size)
     }
@@ -198,7 +217,7 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
             val formatted = format1.format(Calendar.getInstance().time)*/
             controlPlaga?.Fecha_Erradicacion = Calendar.getInstance().time
             presenter?.updateControlPlaga(controlPlaga)
-            presenter?.getListControlPlaga(Cultivo_Id)
+            //presenter?.getListControlPlaga(Cultivo_Id)
         })
         builder.setIcon(R.drawable.ic_plagas)
         dialogo = builder.show()

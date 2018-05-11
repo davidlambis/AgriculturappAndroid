@@ -40,6 +40,7 @@ import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.robertlevonyan.views.expandable.ExpandingListener
 import kotlinx.android.synthetic.main.activity_menu_main.*
+import kotlinx.android.synthetic.main.dialog_calificacion_tratamiento.view.*
 import kotlinx.android.synthetic.main.dialog_form_control_plaga.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_tratamiento.*
@@ -117,6 +118,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         setupInjection()
         ivBackButton?.setOnClickListener(this)
         btnControlPlaga?.setOnClickListener(this)
+        btnCalificarTratamiento.setOnClickListener(this)
 
 
         expandableDescripcionInsumo.setExpandingListener(object : ExpandingListener {
@@ -137,14 +139,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             }
         })
 
-        ratingBar.setOnRatingBarChangeListener(RatingBar.OnRatingBarChangeListener(
-            { ratingBar, float, boolean ->
-                ratingBar.rating=float
 
-                Toast.makeText(activity,ratingBar.rating.toString(), Toast.LENGTH_SHORT).show()
-                showAlertSendCalificacion()
-            }
-        ))
     }
 
     private fun setupInjection() {
@@ -153,25 +148,45 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
 
     //region Métodos Interfaz
     override fun showAlertSendCalificacion() {
-        var calificacion= ratingBar.rating
+
+
+        val inflater = this.layoutInflater
+        var viewDialogCalificate = inflater.inflate(R.layout.dialog_calificacion_tratamiento, null)
+
+        viewDialogCalificate.ratingBarCalificate.setOnRatingBarChangeListener(RatingBar.OnRatingBarChangeListener(
+                { ratingBarThis, float, boolean ->
+                    viewDialogCalificate.ratingBarCalificate.rating=float
+                    val calificacionThis = float.toDouble()
+                    viewDialogCalificate.txtRatingTratamientoCalificate.setText(String.format(getString(R.string.calificacion_tratamiento),calificacionThis))
+                    Toast.makeText(activity,viewDialogCalificate.ratingBarCalificate.rating.toString(), Toast.LENGTH_SHORT).show()
+                }
+        ))
+
+
 
         var dialog =MaterialDialog.Builder(context!!)
                 .iconRes(R.drawable.ic_calification)
+                .customView(viewDialogCalificate!!, true)
+                .dividerColorRes(R.color.colorPrimary)
                 .limitIconToDefaultSize() // limits the displayed icon size to 48dp
                 .title(R.string.title_calificacion)
-                .content(String.format(getString(R.string.calificacion_selected),calificacion))
+                .titleGravity(GravityEnum.CENTER)
                 .positiveText(R.string.send)
                 .negativeText(R.string.cancel)
                 .autoDismiss(false)
                 .onPositive(
                         { dialog1, which ->
-                            val f = calificacion
-                            val calificacion = f.toDouble()
-                            presenter?.sendCalificationTratamietno(tratamientoGlobal,calificacion = calificacion)
 
+                            var calificacionRating=viewDialogCalificate.ratingBarCalificate.rating
+                            val calificacion = calificacionRating.toDouble()
+                            if(calificacion>0){
+                                presenter?.sendCalificationTratamietno(tratamientoGlobal,calificacion = calificacion)
+
+                            }else{
+                                Toast.makeText(activity,getString(R.string.required_calificacion_tratamiento), Toast.LENGTH_SHORT).show()
+                            }
                         })
                 .onNegative({ dialog1, which ->
-
                     dialog1.dismiss()
                 })
                 .show()
@@ -223,15 +238,21 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
     }
 
     override fun requestResponseExistCalicated() {
+        if (_dialogSendCalificacion != null) {
+            _dialogSendCalificacion?.dismiss()
+        }
         onMessageOk(R.color.colorPrimary, getString(R.string.request_calificate_exist_ok));
     }
-
 
 
     override fun requestResponseError(error: String?) {
         if (_dialogSendCalificacion != null) {
             _dialogSendCalificacion?.dismiss()
         }
+        if (_dialogRegisterControlPlaga != null) {
+            _dialogRegisterControlPlaga?.dismiss()
+        }
+
         onMessageError(R.color.grey_luiyi, error)
     }
 
@@ -321,13 +342,13 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         var calificacionTratamiento:Float?= calificacionTra?.Valor_Promedio?.toFloat()
         ratingBar.rating=calificacionTratamiento!!
 
-
         txtRatingTratamiento.setText(String.format(getString(R.string.calificacion_tratamiento),calificacionTra?.Valor_Promedio))
         txtStatusCalificacion.setText(String.format(getString(R.string.tittle_is_calificate_tratamiento),calificacionTra?.Valor))
 
+        btnCalificarTratamiento.visibility=View.GONE
 
-        ratingBar.setIsIndicator(true)
-        ratingBar.isClickable = false
+      //  ratingBar.setIsIndicator(true)
+      //  ratingBar.isClickable = false
 
     }
 
@@ -339,8 +360,10 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         txtStatusCalificacion.setText(getString(R.string.tittle_not_calificate_tratamiento))
 
         ratingBar.rating=calificacionTratamiento!!
-        ratingBar.setIsIndicator(false)
-        ratingBar.isClickable = true
+        btnCalificarTratamiento.visibility=View.VISIBLE
+
+        //ratingBar.setIsIndicator(false)
+        //ratingBar.isClickable = true
 
     }
 
@@ -455,7 +478,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         if (presenter?.validarCampos() == true) {
             val controlPlaga = ControlPlaga()
             controlPlaga.CultivoId = cultivoGlobal?.Id
-            controlPlaga.Dosis = viewDialog?.txtDosis?.text.toString()
+            controlPlaga.Dosis = viewDialog?.txtDosis?.text.toString().toDoubleOrNull()
             controlPlaga.UnidadMedidaId = unidadMedidaGlobal?.Id
             controlPlaga.Fecha_aplicacion = Calendar.getInstance().time
             controlPlaga.TratamientoId = tratamientoId
@@ -577,6 +600,9 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             }
             R.id.btnSaveControlPlaga -> {
                 registerControlPlaga()
+            }
+            R.id.btnCalificarTratamiento -> {
+                showAlertSendCalificacion()
             }
         /*R.id.txtFechaAplicacion -> {
             updateDate()

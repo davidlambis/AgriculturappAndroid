@@ -97,7 +97,7 @@ class ControlPlagasAdapter(var lista: ArrayList<ControlPlaga>) : RecyclerView.Ad
             }
             txtNombrePlaga.text = data.NombrePlaga
             txtFechaAplicacion.text = data.getFechaAplicacionFormat()
-            txtDosis.text = data.Dosis
+            txtDosis.text = data.Dosis.toString()
             //txtInsumo.text = data.No
 
             btnDeleteControlPlaga.setOnClickListener {

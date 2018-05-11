@@ -167,6 +167,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     override fun verInsumos(enfermedad: Enfermedad) {
         val bundle = Bundle()
         Tipo_Enfermedad_id = enfermedad.Id
+        Enfermedad_Id = enfermedad.Id
         bundle.putLong("tipoEnfermedadId", Tipo_Enfermedad_id!!)
         bundle.putString("nombreTipoEnfermedad", enfermedad.NombreTipoEnfermedad)
         bundle.putString("nombreTipoProducto", enfermedad.NombreTipoProducto)

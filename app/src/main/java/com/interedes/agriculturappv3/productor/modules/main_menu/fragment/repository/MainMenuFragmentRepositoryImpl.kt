@@ -203,7 +203,6 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
 
                         }
 
-
                         item.CalificacionPromedio=promedioCalificacion
                         item.save()
                     }

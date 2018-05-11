@@ -37,7 +37,6 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
     var dialogInsumo: MaterialDialog? = null
 
     //Variables Globales
-    var tipoEnfermedadId: Long? = 0
     var nombreTipoEnfermedad: String? = null
     var nombreTipoProducto: String? = null
     var tipoProductoId: Long? = 0
@@ -65,7 +64,6 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
         super.onViewCreated(view, savedInstanceState)
         val b = this.arguments
         if (b != null) {
-            tipoEnfermedadId = b.getLong("tipoEnfermedadId")
             nombreTipoEnfermedad = b.getString("nombreTipoEnfermedad")
             nombreTipoProducto = b.getString("nombreTipoProducto")
             tipoProductoId = b.getLong("tipoProductoId")
@@ -89,7 +87,7 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
 
 
     private fun setupInjection() {
-        getInsumosByPlaga(tipoEnfermedadId)
+        getInsumosByPlaga(enfermedadId)
     }
 
     //region Métodos Interfaz
@@ -187,7 +185,7 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
     //region Métodos
     override fun onRefresh() {
         showRefresh()
-        getInsumosByPlaga(tipoEnfermedadId)
+        getInsumosByPlaga(enfermedadId)
     }
     //endregion
 

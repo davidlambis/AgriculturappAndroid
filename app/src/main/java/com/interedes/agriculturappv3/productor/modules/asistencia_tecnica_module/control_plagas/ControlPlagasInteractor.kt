@@ -31,6 +31,13 @@ class ControlPlagasInteractor : IControlPlagas.Interactor {
     override fun updateControlPlaga(controlPlaga: ControlPlaga?) {
         repository?.updateControlPlaga(controlPlaga)
     }
+
+    override fun updateControlPlagaOnline(controlPlaga: ControlPlaga?) {
+        repository?.updateControlPlagaOnline(controlPlaga)
+    }
+
+
+
     //endregion
 
 }

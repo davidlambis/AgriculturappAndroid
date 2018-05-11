@@ -45,10 +45,10 @@ data class Enfermedad(@PrimaryKey
 
 
                       @SerializedName("TipoEnfermedad")
-                      var TipoEnfermedad: TipoEnfermedad?= TipoEnfermedad(),
+                      var TipoEnfermedad: TipoEnfermedad?= null,
 
                       @SerializedName("TipoProducto")
-                      var TipoProducto: TipoProducto?= TipoProducto(),
+                      var TipoProducto: TipoProducto?= null,
 
                       @SerializedName("Fotos")
                       var Fotos: ArrayList<FotoEnfermedad> ?= ArrayList<FotoEnfermedad>()

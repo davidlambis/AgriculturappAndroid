@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <!--
+    <RatingBar
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_5"
+        android:id="@+id/ratingBarCalificate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:max="5"
+        android:rating="4"
+        android:scaleX=".5"
+        android:scaleY=".5"
+        android:transformPivotX="0dp"
+        android:transformPivotY="0dp"
+
+        android:progressBackgroundTint="@color/colorPrimary"
+        android:progressTint="@color/dark_green"
+        android:secondaryProgressTint="@color/colorPrimary"
+        android:stepSize=".5" />-->
+
+    <RatingBar
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/ratingBarStyle"
+        android:scaleX=".9"
+        android:rating="0"
+        android:scaleY=".9"
+        android:transformPivotX="8dp"
+        android:transformPivotY="0dp"
+        android:id="@+id/ratingBarCalificate"
+        android:progressBackgroundTint="@color/colorPrimary"
+        android:progressTint="@color/dark_green"
+        android:secondaryProgressTint="@color/colorPrimary"
+        android:max="5"/>
+
+
+    <TextView
+        android:id="@+id/txtRatingTratamientoCalificate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ratingBar"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="@color/purple"
+        android:textSize="@dimen/text_size_18"
+        android:textStyle="bold"/>
+
+</LinearLayout>

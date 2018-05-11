@@ -25,6 +25,11 @@ class TratamientoInteractor : ITratamiento.Interactor {
         repository?.registerControlPlaga(controlPlaga, cultivo_id)
     }
 
+    override fun registerControlPlagaOnline(controlPlaga: ControlPlaga, cultivo_id: Long?) {
+        repository?.registerControlPlagaOnline(controlPlaga, cultivo_id)
+    }
+
+
     override fun sendCalificationTratamietno(tratamiento: Tratamiento?, calificacion: Double?) {
         repository?.sendCalificationTratamietno(tratamiento,calificacion)
     }

@@ -349,6 +349,9 @@
     <string name="tittle_not_calificate_tratamiento">Calificar tratamiento</string>
     <string name="request_calificate_exist_ok">Ya haz realizado la califficacion para este tratamiento, hemos actualizado tu calificacion</string>
     <string name="request_calificate_ok">Haz calificado el tratamiento, Gracias</string>
+    <string name="required_calificacion_tratamiento">Debes seleccionar tu calificacion</string>
+
+    <string name="calificar_tratamiento">Calificar Tratamiento</string>
 
     <!--CHAT SMS-->
     <string name="tittle_sms_messajes">My bandeja de entrada de mensajes</string>

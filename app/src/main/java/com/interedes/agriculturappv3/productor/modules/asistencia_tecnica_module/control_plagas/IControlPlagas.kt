@@ -30,6 +30,9 @@ interface IControlPlagas {
         fun showProgress()
         fun hideProgress()
 
+        fun showProgressHud()
+        fun hideProgressHud()
+
         fun validarListasFilter(): Boolean
         fun setCultivo(cultivo: Cultivo?)
         fun confirmDelete(controlPlaga: ControlPlaga): AlertDialog?
@@ -69,6 +72,7 @@ interface IControlPlagas {
 
         fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id:Long?)
         fun updateControlPlaga(controlPlaga: ControlPlaga?)
+
     }
 
     interface Interactor {
@@ -77,6 +81,7 @@ interface IControlPlagas {
         fun getCultivo(cultivo_id: Long?)
         fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id:Long?)
         fun updateControlPlaga(controlPlaga: ControlPlaga?)
+        fun updateControlPlagaOnline(controlPlaga: ControlPlaga?)
     }
 
     interface Repository {
@@ -86,5 +91,6 @@ interface IControlPlagas {
         fun getCultivo(cultivo_id: Long?)
         fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id:Long?)
         fun updateControlPlaga(controlPlaga: ControlPlaga?)
+        fun updateControlPlagaOnline(controlPlaga: ControlPlaga?)
     }
 }

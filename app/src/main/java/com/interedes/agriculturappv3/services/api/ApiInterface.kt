@@ -32,7 +32,9 @@ import java.util.concurrent.TimeUnit
 import retrofit2.http.GET
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.interedes.agriculturappv3.productor.models.control_plaga.PostControlPlaga
 import com.interedes.agriculturappv3.productor.models.plagas.EnfermedadResponseApi
+import com.interedes.agriculturappv3.productor.models.rol.RolUserLogued
 import com.interedes.agriculturappv3.productor.models.tratamiento.TratamientoResponse
 import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.Calificacion_Tratamiento
 import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.PostCalificacion
@@ -85,6 +87,11 @@ interface ApiInterface {
     //Get Usuario por Correo
     @GET("odata/Agp2/Usuarios")
     fun getUsuarioByCorreo(@Query("\$filter") filter: String): Call<UsuarioResponse>
+
+    @GET("odata/Agp2/Rols('{Id}')")
+    fun getRolUsuarioLogued( @Path("Id")  filter: String): Call<RolUserLogued>
+
+
 
     @GET("auth/ApplicationUsers")
     fun getAuthUserByCorreo(@Header("Authorization") token: String, @Query("\$filter") filter: String): Call<GetUserResponse>
@@ -211,8 +218,28 @@ interface ApiInterface {
 
 
    // @GET("odata/Agp2/Tratamientos?\$expand=Insumo(\$expand=Laboratorio,TipoInsumo),Calificacions")
-   @GET("odata/Agp2/Tratamientos?\$expand=Insumo(\$expand=Laboratorio,TipoInsumo),Calificacions")
+    @GET("odata/Agp2/Tratamientos?\$expand=Insumo(\$expand=Laboratorio,TipoInsumo),Calificacions")
     fun getTratamientos(): Call<TratamientoResponse>
+
+    //endregion
+
+
+    //region Control Plagas
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @POST("odata/Agp2/ControlPlagas")
+    fun postControlPlaga(@Body body: PostControlPlaga): Call<PostControlPlaga>
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @PATCH("odata/Agp2/ControlPlagas({Id})")
+    fun updateControlPlaga(@Body body: PostControlPlaga, @Path("Id") Id: Long): Call<PostControlPlaga>
+
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @DELETE("odata/Agp2/ControlPlagas({Id})")
+    fun deleteControlPlaga(@Path("Id") Id: Long): Call<PostControlPlaga>
 
     //endregion
 
@@ -224,10 +251,14 @@ interface ApiInterface {
     fun postCalificacionTratamiento(@Body body: PostCalificacion): Call<Calificacion_Tratamiento>
     //fun postCalificacionTratamiento( @Query("\$filter") filter: String): Call<GetUserResponse>
 
+
    // @GET("odata/Agp2/Calificacions?&\$top=1")
     @GET("odata/Agp2/Calificacions")
     fun getVerificateCalificationUser( @Query("\$filter") filter: String): Call<ResponseCalificacion>
-    
+
+    //http://18.233.87.16/odata/Agp2/Calificacions?$filter=TratamientoId eq 3 and userId eq '0bdb5fcd-79cd-458d-bc24-59074f7b7aab'
+
+
     //endregion
 
     //endregion

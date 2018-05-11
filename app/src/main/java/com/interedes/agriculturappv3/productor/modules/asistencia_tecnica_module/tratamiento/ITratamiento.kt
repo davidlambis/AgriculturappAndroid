@@ -88,14 +88,16 @@ interface ITratamiento {
         fun getTratamiento(tratamientoId: Long?)
         fun getListas()
         fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?)
+        fun registerControlPlagaOnline(controlPlaga: ControlPlaga, cultivo_id: Long?)
         fun sendCalificationTratamietno(tratamiento: Tratamiento?,calificacion: Double?)
     }
 
     interface Repository {
         fun getTratamiento(tratamientoId: Long?)
         fun getListas()
+        fun getLastControlPlaga():ControlPlaga?
         fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?)
-
+        fun registerControlPlagaOnline(controlPlaga: ControlPlaga, cultivo_id: Long?)
         fun sendCalificationTratamietno(tratamiento: Tratamiento?,calificacion:Double?)
     }
 }

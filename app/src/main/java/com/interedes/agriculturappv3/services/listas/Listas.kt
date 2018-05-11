@@ -340,5 +340,10 @@ class Listas {
             val queryFilter = "$criterio eq '$valor'"
             return queryFilter
         }
+
+        fun queryGeneralMultipleLongAndString(criterio1: String, valor1: Long?,criterio2: String, valor2: String): String {
+            val queryFilter = "$criterio1 eq $valor1 and $criterio2 eq '$valor2'"
+            return queryFilter
+        }
     }
 }

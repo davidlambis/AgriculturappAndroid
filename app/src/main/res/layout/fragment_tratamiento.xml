@@ -329,11 +329,12 @@
                                     android:numStars="5"
                                     android:layout_below="@+id/contentTratamiento"
                                     android:rating="0"
+                                    android:isIndicator="true"
                                     android:layout_centerHorizontal="true"
                                     android:progressBackgroundTint="@color/colorPrimary"
                                     android:progressTint="@color/dark_green"
                                     android:secondaryProgressTint="@color/colorPrimary"
-                                    android:stepSize=".5" />
+                                    android:stepSize=".1" />
 
                                 <TextView
                                     android:id="@+id/txtRatingTratamiento"
@@ -359,13 +360,24 @@
                                     android:textSize="@dimen/text_size_18"
                                     />
 
+                                <Button
+                                    android:padding="@dimen/margin_5"
+                                    android:textColor="@color/white_solid"
+                                    android:background="@color/orange"
+                                    android:text="@string/calificar_tratamiento"
+                                    android:layout_centerInParent="true"
+                                    android:id="@+id/btnCalificarTratamiento"
+                                    android:layout_below="@+id/txtStatusCalificacion"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
 
                                 <Button
                                     android:id="@+id/btnControlPlaga"
                                     style="@style/button"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/txtStatusCalificacion"
+                                    android:layout_below="@+id/btnCalificarTratamiento"
                                     android:layout_margin="@dimen/margin_global"
                                     android:background="@drawable/custom_button"
                                     android:text="@string/btn_control_plaga" />

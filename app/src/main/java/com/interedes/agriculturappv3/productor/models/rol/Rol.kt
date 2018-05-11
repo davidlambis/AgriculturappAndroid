@@ -16,5 +16,10 @@ data class Rol(@PrimaryKey
                @SerializedName("Nombre")
                @Column(name = "Nombre")
                var Nombre: String? = null,
+
                @Column(name = "Imagen")
-               var Imagen: Int? = 0)
+               var Imagen: Int? = 0,
+
+               @SerializedName("Icono")
+               var Icono: String? = null
+               )

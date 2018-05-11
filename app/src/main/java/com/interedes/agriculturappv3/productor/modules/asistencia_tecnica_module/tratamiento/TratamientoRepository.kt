@@ -10,6 +10,8 @@ import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medid
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.tratamiento.events.TratamientoEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.productor.models.control_plaga.PostControlPlaga
+import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.productor.models.insumos.Insumo
 import com.interedes.agriculturappv3.productor.models.insumos.Insumo_Table
 import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento_Table
@@ -43,17 +45,67 @@ class TratamientoRepository : ITratamiento.Repository {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
     }
-
+    //Controlde plagas
     override fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?) {
+
+        val lastControl = getLastControlPlaga()
+        if (lastControl == null) {
+            controlPlaga.Id = 1
+        } else {
+            controlPlaga.Id = lastControl.Id!! + 1
+        }
         controlPlaga.save()
         val list_control_plagas = getControlPlagasByCultivo(cultivo_id)
         postEventControlPlaga(TratamientoEvent.SAVE_CONTROL_PLAGA_EVENT, list_control_plagas)
     }
 
+    override fun getLastControlPlaga(): ControlPlaga? {
+        val lastControlPlaga = SQLite.select().from(ControlPlaga::class.java).where().orderBy(ControlPlaga_Table.Id, false).querySingle()
+        return lastControlPlaga
+    }
+
+    override fun registerControlPlagaOnline(controlPlaga: ControlPlaga, cultivo_id: Long?) {
+        val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+        if (cultivo?.EstadoSincronizacion == true) {
+            val postControlPlaga = PostControlPlaga(
+                    0,
+                    controlPlaga.CultivoId,
+                    controlPlaga.Dosis,
+                    controlPlaga.EnfermedadesId,
+                    controlPlaga.getFechaAplicacionFormatApi(),
+                    controlPlaga.TratamientoId,
+                    controlPlaga.UnidadMedidaId,
+                    controlPlaga.getFechaErradicacionFormatApi(),
+                    controlPlaga.EstadoErradicacion
+                    )
+            val call = apiService?.postControlPlaga(postControlPlaga)
+            call?.enqueue(object : Callback<PostControlPlaga> {
+                override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
+                    if (response != null && response.code() == 201 || response?.code() == 200) {
+
+                        var controlPlagaResponse= response.body()
+                        controlPlaga.Id = controlPlagaResponse?.Id!!
+                        controlPlaga.Estado_Sincronizacion = true
+                        controlPlaga.save()
+                        postEventControlPlaga(TratamientoEvent.SAVE_CONTROL_PLAGA_EVENT, getControlPlagasByCultivo(cultivo_id))
+                    } else {
+                        postEventError(TratamientoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                }
+                override fun onFailure(call: Call<PostControlPlaga>?, t: Throwable?) {
+                    postEventError(TratamientoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                }
+            })
+            //}
+        } else {
+            registerControlPlaga(controlPlaga,cultivo_id)
+        }
+    }
+
+
     override fun getTratamiento(tratamientoId: Long?) {
         val firstTratamientoInsumo = SQLite.select().from(Tratamiento::class.java).where(Tratamiento_Table.Id.eq(tratamientoId)).querySingle()
         var firtsInsumo= SQLite.select().from(Insumo::class.java).where(Insumo_Table.Id.eq(firstTratamientoInsumo?.InsumoId)).querySingle()
-
 
         var calificaciones= SQLite.select()
                 .from(Calificacion_Tratamiento::class.java)
@@ -93,7 +145,6 @@ class TratamientoRepository : ITratamiento.Repository {
             firstTratamientoInsumo.update()
         }
 
-
         postEventOk(TratamientoEvent.SET_EVENT, firstTratamientoInsumo)
         postEventInsumo(TratamientoEvent.EVENT_INSUMO, firtsInsumo)
         postEventCalificacion(TratamientoEvent.EVENT_CALIFICACION_TRATAMIENTO, calificacion)
@@ -103,9 +154,9 @@ class TratamientoRepository : ITratamiento.Repository {
 
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered?.eq(true)).querySingle()
 
-        val query = Listas.queryGeneral("userId", usuarioLogued?.Id.toString())
+        val query = Listas.queryGeneralMultipleLongAndString("TratamientoId",tratamiento?.Id,"userId", usuarioLogued?.Id.toString())
 
-        val call_usuario = apiService?.getVerificateCalificationUser( query)
+        val call_usuario = apiService?.getVerificateCalificationUser(query)
 
         call_usuario?.enqueue(object : Callback<ResponseCalificacion> {
             override fun onResponse(call: Call<ResponseCalificacion>?, response: Response<ResponseCalificacion>?) {
@@ -115,11 +166,11 @@ class TratamientoRepository : ITratamiento.Repository {
                     val valificacionCalificacion: MutableList<Calificacion_Tratamiento>? = response.body()?.value!!
 
                     //se verifica si el tratamiento a calificar ya esta calificado
-                    var verificateIsCalifcated= valificacionCalificacion?.filter { calificacion: Calificacion_Tratamiento -> calificacion.TratamientoId==tratamiento?.Id }
+                    //var verificateIsCalifcated= valificacionCalificacion?.filter { calificacion: Calificacion_Tratamiento -> calificacion.TratamientoId==tratamiento?.Id }
 
-                    if(verificateIsCalifcated?.size!!>0){
+                    if(valificacionCalificacion?.size!!>0){
                         var calificacionTratamiento:Calificacion_Tratamiento?=null
-                        for (item in verificateIsCalifcated){
+                        for (item in valificacionCalificacion){
                             item.save()
                             calificacionTratamiento=item
                         }

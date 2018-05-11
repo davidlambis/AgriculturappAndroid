@@ -14,6 +14,7 @@ import com.interedes.agriculturappv3.productor.models.ResetPassword
 import com.interedes.agriculturappv3.productor.models.login.LoginResponse
 import com.interedes.agriculturappv3.productor.models.producto.Producto
 import com.interedes.agriculturappv3.productor.models.rol.Rol
+import com.interedes.agriculturappv3.productor.models.rol.RolUserLogued
 import com.interedes.agriculturappv3.productor.models.rol.Rol_Table
 import com.interedes.agriculturappv3.productor.modules.comercial_module.productos.events.ProductosEvent
 import com.interedes.agriculturappv3.services.api.ApiInterface
@@ -53,6 +54,7 @@ class LoginRepositoryImpl : LoginRepository {
                     call_usuario?.enqueue(object : Callback<GetUserResponse> {
                         override fun onResponse(call: Call<GetUserResponse>?, response: Response<GetUserResponse>?) {
                             if (response != null && response.code() == 200) {
+
                                 val user_login: MutableList<UserLoginResponse>? = response.body()?.value!!
                                 val usuario = Usuario()
                                 for (item in user_login!!) {
@@ -85,20 +87,50 @@ class LoginRepositoryImpl : LoginRepository {
                                     usuario.SessionId = session_id
                                     usuario.save()
                                 }
-                                mAuth = FirebaseAuth.getInstance()
-                                mAuth?.signInWithEmailAndPassword(login.username!!, login.password!!)?.addOnCompleteListener({ task ->
-                                    if (task.isSuccessful) {
-                                        postEventUsuarioOk(LoginEvent.SAVE_EVENT, usuario)
-                                    } else {
-                                        try {
-                                            throw task.exception!!
-                                        } catch (firebaseException: FirebaseException) {
-                                            postEventError(LoginEvent.ERROR_EVENT, firebaseException.toString())
-                                            Log.e("Error Post", firebaseException.toString())
+
+
+                                //Verificate Rol User
+                                val call_usuario = apiService?.getRolUsuarioLogued(usuario?.RolId.toString())
+                                call_usuario?.enqueue(object : Callback<RolUserLogued> {
+                                    override fun onResponse(call: Call<RolUserLogued>?, response: Response<RolUserLogued>?) {
+                                        if (response != null && response.code() == 200) {
+                                            val roluser: RolUserLogued? = response.body()
+                                            val rol = Rol()
+                                            rol.Id=roluser?.Id
+                                            rol.Nombre=roluser?.Nombre
+                                            rol.Icono=roluser?.Icono
+                                            rol.save()
+
+
+                                            usuario.RolNombre = roluser?.Nombre
+                                            usuario.update()
+
+
+                                            mAuth = FirebaseAuth.getInstance()
+                                            mAuth?.signInWithEmailAndPassword(login.username!!, login.password!!)?.addOnCompleteListener({ task ->
+                                                if (task.isSuccessful) {
+                                                    postEventUsuarioOk(LoginEvent.SAVE_EVENT, usuario)
+                                                } else {
+                                                    try {
+                                                        throw task.exception!!
+                                                    } catch (firebaseException: FirebaseException) {
+                                                        postEventError(LoginEvent.ERROR_EVENT, firebaseException.toString())
+                                                        Log.e("Error Post", firebaseException.toString())
+                                                    }
+                                                }
+                                            })
+
+                                        } else {
+                                            postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
+                                            Log.e("Get Login User Response", response?.body().toString())
                                         }
                                     }
-                                })
+                                    override fun onFailure(call: Call<RolUserLogued>?, t: Throwable?) {
+                                        postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
+                                        Log.e("Failure Get Login User", t?.message.toString())
+                                    }
 
+                                })
                             } else {
                                 postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                                 Log.e("Get Login User Response", response?.body().toString())
@@ -111,7 +143,12 @@ class LoginRepositoryImpl : LoginRepository {
 
                     })
 
-                } else {
+                } else if( response?.code() == 503){
+                    postEventError(LoginEvent.ERROR_EVENT, "Estamos experiemntando inconvenientes para ingresar, disculpa las molestias")
+                    Log.e("Failure Login", response?.message().toString())
+                }
+
+                else {
                     postEventError(LoginEvent.ERROR_EVENT, "Usuario o Contraseña Incorrectos")
                     Log.e("Failure Login", response?.message().toString())
                 }
