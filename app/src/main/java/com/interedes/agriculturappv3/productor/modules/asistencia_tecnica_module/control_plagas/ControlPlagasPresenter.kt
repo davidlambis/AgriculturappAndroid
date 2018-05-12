@@ -107,6 +107,7 @@ class ControlPlagasPresenter(var view: IControlPlagas.View?) : IControlPlagas.Pr
     }
 
     override fun updateControlPlaga(controlPlaga: ControlPlaga?) {
+        view?.showProgress()
         view?.showProgressHud()
         if (checkConnection()) {
             interactor?.updateControlPlagaOnline(controlPlaga)

@@ -119,6 +119,18 @@
                     android:textColor="@color/grey_luiyi"
                     android:visibility="gone" />
 
+                <TextView
+                    android:textAlignment="textEnd"
+                    android:id="@+id/txtSincronizacion"
+                    android:layout_width="wrap_content"
+                    android:textSize="@dimen/text_size_18"
+                    android:textStyle="bold"
+                    android:paddingEnd="@dimen/margin_5"
+                    android:gravity="end"
+                    android:layout_gravity="end"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/green" />
+
             </LinearLayout>
 
         </LinearLayout>

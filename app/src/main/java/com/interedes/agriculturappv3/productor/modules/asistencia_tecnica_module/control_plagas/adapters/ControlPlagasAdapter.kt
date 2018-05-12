@@ -72,6 +72,16 @@ class ControlPlagasAdapter(var lista: ArrayList<ControlPlaga>) : RecyclerView.Ad
             val txtFechaErradicacion: TextView = itemView.findViewById(R.id.txtFechaErradicacion)
             val ivControlPlaga: ImageView = itemView.findViewById(R.id.ivControlPlaga)
 
+            val txtSincronizacion: TextView = itemView.findViewById(R.id.txtSincronizacion)
+
+            if (data.Estado_Sincronizacion == true) {
+                txtSincronizacion.setTextColor(resources.getColor(R.color.green))
+                txtSincronizacion.text = context.getString(R.string.Sincronizado)
+            } else {
+                txtSincronizacion.setTextColor(resources.getColor(R.color.red_900))
+                txtSincronizacion.text = context.getString(R.string.noSincronizado)
+            }
+
             if (data.EstadoErradicacion == false) {
                 cardControlPlaga.background = ContextCompat.getDrawable(context, R.drawable.custom_drawable_card_view_red)
                 txtEstadoErradicacion.visibility = View.VISIBLE
