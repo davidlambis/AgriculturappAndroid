@@ -459,14 +459,14 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
 
 
         //radioGroup
-        var list:List<Estado_Transaccion>?=ArrayList<Estado_Transaccion>()
+       var list:List<Estado_Transaccion>?=ArrayList<Estado_Transaccion>()
         if(CategoriaPukResources.INGRESO== typeTransaccion){
              list= SQLite.select().from(Estado_Transaccion::class.java).where(Estado_Transaccion_Table.Nombre.notEq("Por Pagar")).queryList()
         }else{
              list= SQLite.select().from(Estado_Transaccion::class.java).where(Estado_Transaccion_Table.Nombre.notEq("Por Cobrar")).queryList()
         }
 
-        //var list= SQLite.select().from(Estado_Transaccion::class.java).where(Esta).queryList()
+      //  var list= SQLite.select().from(Estado_Transaccion::class.java).queryList()
 
         for( item in list){
             var id =item.Id

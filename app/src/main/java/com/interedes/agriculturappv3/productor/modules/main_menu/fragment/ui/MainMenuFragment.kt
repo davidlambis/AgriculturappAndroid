@@ -170,16 +170,26 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
     }
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
-        val color = Color.WHITE
-        val snackbar = Snackbar
-                .make(container, message!!, Snackbar.LENGTH_LONG)
-        val sbView = snackbar.view
-        sbView.setBackgroundColor(ContextCompat.getColor(context!!, colorPrimary))
-        val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
-        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.quantum_ic_cast_connected_white_24, 0, 0, 0)
-        // textView.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.activity_horizontal_margin));
-        textView.setTextColor(color)
-        snackbar.show()
+
+        try {
+            if(container!=null){
+                val color = Color.WHITE
+                val snackbar = Snackbar
+                        .make(container, message!!, Snackbar.LENGTH_LONG)
+                val sbView = snackbar.view
+                sbView.setBackgroundColor(ContextCompat.getColor(context!!, colorPrimary))
+                val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
+                textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.quantum_ic_cast_connected_white_24, 0, 0, 0)
+                // textView.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.activity_horizontal_margin));
+                textView.setTextColor(color)
+                snackbar.show()
+
+            }
+        }catch (ex:Exception){
+            Log.e("ERROR: ", ex.toString())
+        }
+
+
     }
 
     override fun onMessageError(colorPrimary: Int, message: String?) {
