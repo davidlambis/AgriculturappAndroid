@@ -9,6 +9,7 @@ import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.productor.models.ventas.Puk
+import com.interedes.agriculturappv3.productor.models.ventas.Tercero
 import com.interedes.agriculturappv3.productor.models.ventas.Transaccion
 import com.interedes.agriculturappv3.productor.modules.accounting_module.transacciones.events.RequestEventTransaccion
 
@@ -45,7 +46,6 @@ interface IMainViewTransacciones {
         fun requestResponseItemOK(string1:String?, string2:String?)
 
         //Set sppiners
-        fun setListUnidadMedida(listUnidadMedida:List<Unidad_Medida>?)
         fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
         fun setListLotes(listLotes:List<Lote>?)
         fun setListCultivos(listCultivos:List<Cultivo>?)
@@ -90,7 +90,6 @@ interface IMainViewTransacciones {
 
         //Methods View
         fun setListSpinnerUnidadProductiva()
-        fun setListSpinnerUnidadMedida()
         fun setListSpinnerLote(unidad_productiva_id:Long?)
         fun setListSpinnerCultivo(lote_id:Long?)
 
@@ -107,6 +106,7 @@ interface IMainViewTransacciones {
         fun execute(cultivo_id:Long?,typeTransaccion:Long?)
         fun getListas()
         fun getCultivo(cultivo_id:Long?)
+        fun registerTransaccionOnline(transaccion: Transaccion, cultivo_id: Long?)
     }
 
     interface Repository {
@@ -114,8 +114,11 @@ interface IMainViewTransacciones {
         fun getListTransacciones(cultivo_id:Long?,typeTransaccion:Long?)
         fun getTransaccion(cultivo_id:Long?,typeTransaccion:Long?): List<Transaccion>
         fun saveTransaccion(transaccion: Transaccion, cultivo_id:Long?)
+        fun saveTransaccionOnline(transaccion: Transaccion, cultivo_id:Long?)
         fun updateTransaccion(transaccion: Transaccion, cultivo_id:Long?)
         fun deleteTransaccion(transaccion: Transaccion, cultivo_id:Long?)
         fun getCultivo(cultivo_id:Long?)
+        fun getLastTransaccion(): Transaccion?
+        fun getLastTercero(): Tercero?
     }
 }

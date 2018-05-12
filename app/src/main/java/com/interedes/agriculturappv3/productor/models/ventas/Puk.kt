@@ -8,7 +8,7 @@ import com.raizlabs.android.dbflow.annotation.Table
 
 
 @Table(database = DataSource::class)
-data class Puk(@PrimaryKey(autoincrement = true)
+data class Puk(@PrimaryKey
                       @SerializedName("Id")
                       @Column(name = "Id")
                       var Id: Long? = 0,

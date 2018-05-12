@@ -29,9 +29,11 @@ import com.interedes.agriculturappv3.productor.models.lote.Lote
 import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.productor.models.produccion.Produccion
 import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.productor.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Produccion.adapter.ProduccionAdapter
 import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_produccion.view.*
@@ -353,7 +355,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             viewDialog?.txtCultivoSelected?.setText(produccion.NombreCultivo)
 
             Cultivo_Id=produccion.CultivoId
-            unidadMedidaGlobal = Unidad_Medida(produccion.UnidadMedidaId, produccion.NombreUnidadMedida, null)
+            unidadMedidaGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(produccion.UnidadMedidaId)).querySingle()
             viewDialog?.txtFechaInicio?.setText(produccion.getFechaInicioFormat())
             viewDialog?.txtFechaFin?.setText(produccion.getFechafinFormat())
             viewDialog?.txtCantidadProduccionReal?.setText(produccion.ProduccionReal.toString())

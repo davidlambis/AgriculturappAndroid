@@ -1,6 +1,5 @@
 package com.interedes.agriculturappv3.productor.modules.main_menu.fragment.repository
 
-import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
@@ -34,10 +33,10 @@ import com.interedes.agriculturappv3.productor.models.tratamiento.Tratamiento
 import com.interedes.agriculturappv3.productor.models.tratamiento.TratamientoResponse
 import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.Calificacion_Tratamiento
 import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.Calificacion_Tratamiento_Table
-import com.interedes.agriculturappv3.productor.models.ventas.Estado
-import com.raizlabs.android.dbflow.sql.language.Delete
-
-
+import com.interedes.agriculturappv3.productor.models.ventas.RequestApi.CategoriaPucResponse
+import com.interedes.agriculturappv3.productor.models.ventas.CategoriaPuk
+import com.interedes.agriculturappv3.productor.models.ventas.RequestApi.EstadoTransaccionResponse
+import com.interedes.agriculturappv3.productor.models.ventas.Estado_Transaccion
 
 
 class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
@@ -196,11 +195,7 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                                 calification.save()
                                 sumacalificacion=sumacalificacion!!+ calification.Valor!!
                             }
-
                             promedioCalificacion= sumacalificacion!! /item?.Calificacions!!.size
-
-
-
                         }
 
                         item.CalificacionPromedio=promedioCalificacion
@@ -240,6 +235,46 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                 }
             })
         }
+
+        //Categorias Puk
+        val categoriaspuk = apiService?.getCategoriasPuc()
+        categoriaspuk?.enqueue(object : Callback<CategoriaPucResponse> {
+            override fun onResponse(call: Call<CategoriaPucResponse>?, response: Response<CategoriaPucResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val categorias: MutableList<CategoriaPuk> = response.body()?.value!!
+                    for (item in categorias) {
+                        item.save()
+                        for (puk in item.Pucs!!) {
+                            puk.save()
+                        }
+                    }
+                } else {
+                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<CategoriaPucResponse>?, t: Throwable?) {
+                postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+
+        //Estados de  transaccion
+        val estadosTransaccion = apiService?.getEstadosTransaccion()
+        estadosTransaccion?.enqueue(object : Callback<EstadoTransaccionResponse> {
+            override fun onResponse(call: Call<EstadoTransaccionResponse>?, response: Response<EstadoTransaccionResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val estadostransaccion: MutableList<Estado_Transaccion> = response.body()?.value!!
+                    for (item in estadostransaccion) {
+                        item.save()
+                    }
+                } else {
+                    postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<EstadoTransaccionResponse>?, t: Throwable?) {
+                postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+
 
         //Categorías Medida
         val callCategoriaMedida = apiService?.getCategoriasMedida()

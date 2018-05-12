@@ -10,7 +10,7 @@ import com.raizlabs.android.dbflow.annotation.Table
 
 
 @Table(database = DataSource::class)
-data class Estado_Transaccion(@PrimaryKey(autoincrement = true)
+data class Estado_Transaccion(@PrimaryKey
                       @SerializedName("Id")
                       @Column(name = "Id")
                       var Id: Long? = 0,

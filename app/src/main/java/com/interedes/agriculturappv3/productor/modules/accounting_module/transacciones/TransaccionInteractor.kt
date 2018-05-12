@@ -14,6 +14,10 @@ class TransaccionInteractor: IMainViewTransacciones.Interactor {
         repository?.saveTransaccion(transaccion,cultivo_id)
     }
 
+    override fun registerTransaccionOnline(transaccion: Transaccion, cultivo_id: Long?) {
+        repository?.saveTransaccionOnline(transaccion,cultivo_id)
+    }
+
     override fun updateTransaccion(transaccion: Transaccion, cultivo_id: Long?) {
         repository?.updateTransaccion(transaccion,cultivo_id)
     }

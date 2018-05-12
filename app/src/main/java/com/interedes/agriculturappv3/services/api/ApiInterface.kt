@@ -39,6 +39,10 @@ import com.interedes.agriculturappv3.productor.models.tratamiento.TratamientoRes
 import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.Calificacion_Tratamiento
 import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.PostCalificacion
 import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.ResponseCalificacion
+import com.interedes.agriculturappv3.productor.models.ventas.RequestApi.CategoriaPucResponse
+import com.interedes.agriculturappv3.productor.models.ventas.RequestApi.EstadoTransaccionResponse
+import com.interedes.agriculturappv3.productor.models.ventas.RequestApi.PostTercero
+import com.interedes.agriculturappv3.productor.models.ventas.RequestApi.PostTransaccion
 
 
 interface ApiInterface {
@@ -223,7 +227,6 @@ interface ApiInterface {
 
     //endregion
 
-
     //region Control Plagas
     //TODO Requiere Token
     @Headers("Content-Type: application/json")
@@ -240,6 +243,48 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @DELETE("odata/Agp2/ControlPlagas({Id})")
     fun deleteControlPlaga(@Path("Id") Id: Long): Call<PostControlPlaga>
+
+
+
+    //endregion
+
+
+
+    //region Contabilidad
+    @GET("odata/Agp2/CategoriaPucs?\$expand=Pucs")
+    fun getCategoriasPuc(): Call<CategoriaPucResponse>
+
+
+    @GET("odata/Agp2/Estados")
+    fun getEstadosTransaccion(): Call<EstadoTransaccionResponse>
+
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @POST("odata/Agp2/Transaccions")
+    fun postTransaccion(@Body body: PostTransaccion): Call<PostTransaccion>
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @POST("odata/Agp2/Terceros")
+    fun postTercero(@Body body: PostTercero): Call<PostTercero>
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @PATCH("odata/Agp2/Terceros({Id})")
+    fun updateTercero(@Body body: PostTercero, @Path("Id") Id: Long): Call<PostTercero>
+
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @PATCH("odata/Agp2/Transaccions({Id})")
+    fun updateTransaccion(@Body body: PostTransaccion, @Path("Id") Id: Long): Call<PostTransaccion>
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @DELETE("odata/Agp2/Transaccions({Id})")
+    fun deletetransaccion(@Path("Id") Id: Long): Call<PostTransaccion>
+
 
     //endregion
 

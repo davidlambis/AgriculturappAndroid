@@ -10,7 +10,7 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
 
 @Table(database = DataSource::class)
-data class CategoriaPuk(@PrimaryKey(autoincrement = true)
+data class CategoriaPuk(@PrimaryKey
                    @SerializedName("Id")
                    @Column(name = "Id")
                    var Id: Long? = 0,
@@ -25,6 +25,9 @@ data class CategoriaPuk(@PrimaryKey(autoincrement = true)
 
 
                         var Valor_Total: Double?=null,
+
+                        @SerializedName("Pucs")
+                        var Pucs: ArrayList<Puk> ?= null,
                        // var transaccions: List<Transaccion>? = null
                         var transaccions: ArrayList<Transaccion> ?= ArrayList<Transaccion>()
 

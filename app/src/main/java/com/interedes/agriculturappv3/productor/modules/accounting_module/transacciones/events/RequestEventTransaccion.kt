@@ -24,7 +24,7 @@ data class RequestEventTransaccion (var eventType: Int,
 
         //Event Personality
         val LIST_EVENT_UP: Int = 9
-        val LIST_EVENT_UNIDAD_MEDIDA: Int = 10
+      //  val LIST_EVENT_UNIDAD_MEDIDA: Int = 10
         val LIST_EVENT_LOTE: Int = 11
         val LIST_EVENT_CULTIVO: Int = 12
         val LIST_EVENT_TRANSACCIONES: Int = 13

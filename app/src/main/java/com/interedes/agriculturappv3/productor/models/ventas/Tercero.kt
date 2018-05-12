@@ -11,7 +11,7 @@ import com.raizlabs.android.dbflow.annotation.Table
 
 
 @Table(database = DataSource::class)
-data class Tercero(@PrimaryKey(autoincrement = true)
+data class Tercero(@PrimaryKey
                @SerializedName("Id")
                @Column(name = "Id")
                var Id: Long? = 0,
@@ -26,7 +26,10 @@ data class Tercero(@PrimaryKey(autoincrement = true)
 
                @SerializedName("NITRut")
                @Column(name = "NitRut")
-               var NitRut: String? = null
+               var NitRut: String? = null,
+
+                   @Column(getterName = "getEstado_Sincronizacion")
+                   var Estado_Sincronizacion: Boolean? = false
 
 
 ) {

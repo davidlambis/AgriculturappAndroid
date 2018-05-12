@@ -15,7 +15,7 @@ import java.util.*
 
 
 @Table(database = DataSource::class)
-data class Transaccion(@PrimaryKey(autoincrement = true)
+data class Transaccion(@PrimaryKey
                        @SerializedName("Id")
                        @Column(name = "Id")
                        var Id: Long? = 0,
@@ -68,7 +68,7 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
 
                        @SerializedName("Cantidad")
                        @Column(name = "Cantidad")
-                       var Cantidad: Long? = 0,
+                       var Cantidad: Double? = 0.0,
 
 
                        @SerializedName("Cultivo_Id")
@@ -109,6 +109,15 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
     }
 
 
+    fun getFechaTransacccionFormatApi(): String? {
+        if(Fecha_Transaccion!=null){
+            val format1 = SimpleDateFormat("yyyy-MM-dd")
+            return format1.format(Fecha_Transaccion)
+        }
+        return null
+    }
+
+
 
 
     private constructor(p: Parcel) : this(
@@ -122,7 +131,7 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
             Identificacion_Tercero = p.readString(),
             Valor_Total = p.readDouble(),
             Valor_Unitario = p.readDouble(),
-            Cantidad = p.readLong(),
+            Cantidad = p.readDouble(),
             Cultivo_Id = p.readLong(),
             Nombre_Cultivo = p.readString(),
             CategoriaPuk_Id = p.readLong(),
@@ -142,7 +151,7 @@ data class Transaccion(@PrimaryKey(autoincrement = true)
         dest.writeString(Identificacion_Tercero)
         dest.writeDouble(Valor_Total!!)
         dest.writeDouble(Valor_Unitario!!)
-        dest.writeLong(Cantidad!!)
+        dest.writeDouble(Cantidad!!)
 
         dest.writeLong(Cultivo_Id!!)
         dest.writeString(Nombre_Cultivo)

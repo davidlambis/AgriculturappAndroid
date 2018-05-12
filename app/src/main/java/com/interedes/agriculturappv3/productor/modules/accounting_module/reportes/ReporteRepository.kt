@@ -47,7 +47,7 @@ class ReporteRepository: IMainViewReportes.Repository {
                     listTransaciones.add(item)
                     valor_total= valor_total!!+item.Valor_Total!!
                 }
-                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,listTransaciones)
+                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
 
@@ -76,7 +76,7 @@ class ReporteRepository: IMainViewReportes.Repository {
                     listTransaciones.add(item)
                     valor_total= valor_total!!+item.Valor_Total!!
                 }
-                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,listTransaciones)
+                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
 
@@ -118,7 +118,7 @@ class ReporteRepository: IMainViewReportes.Repository {
                     listTransaciones.add(item)
                     valor_total= valor_total!!+item.Valor_Total!!
                 }
-                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,listTransaciones)
+                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
 
@@ -158,7 +158,7 @@ class ReporteRepository: IMainViewReportes.Repository {
                     listTransaciones.add(item)
                     valor_total= valor_total!!+item.Valor_Total!!
                 }
-                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,listTransaciones)
+                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
 

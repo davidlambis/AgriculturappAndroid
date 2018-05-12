@@ -127,9 +127,6 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
             }
 
         //LIST EVENTS
-            RequestEventTransaccion.LIST_EVENT_UNIDAD_MEDIDA -> {
-                listUnidadMedidaGlobal= event.mutableList as List<Unidad_Medida>
-            }
 
             RequestEventTransaccion.LIST_EVENT_UP -> {
                 listUnidadProductivaGlobal= event.mutableList as List<Unidad_Productiva>
@@ -185,9 +182,13 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
 
     override fun registerTransaccion(transaccion: Transaccion, cultivo_Id: Long?) {
         mainView?.showProgress()
-        //if(checkConnection()){
         mainView?.disableInputs()
-        interactor?.registerTransaccion(transaccion, cultivo_Id)
+        if(checkConnection()){
+            //if(checkConnection()){
+            interactor?.registerTransaccionOnline(transaccion, cultivo_Id)
+        }else{
+            interactor?.registerTransaccion(transaccion, cultivo_Id)
+        }
     }
 
     override fun updateTransaccion(produccion: Transaccion, cultivo_id: Long?) {
@@ -238,10 +239,6 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
 
     override fun setListSpinnerUnidadProductiva() {
         mainView?.setListUnidadProductiva(listUnidadProductivaGlobal)
-    }
-
-    override fun setListSpinnerUnidadMedida() {
-        mainView?.setListUnidadMedida(listUnidadMedidaGlobal)
     }
 
 
