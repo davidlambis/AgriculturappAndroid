@@ -68,6 +68,7 @@ class TrannsaccionAdapter(var lista: ArrayList<Transaccion>)    : RecyclerView.A
             var txtFechas: TextView = itemView.findViewById(R.id.txtDate)
             var txtCantidad: TextView = itemView.findViewById(R.id.txtQuantity)
             var txtAdicional: TextView = itemView.findViewById(R.id.txtDescripcionAdditional)
+            var txtStatisSincronized: TextView = itemView.findViewById(R.id.txtStatisSincronized)
             var icon: ImageView = itemView.findViewById(R.id.contentIcon)
 
             var btnDelete: ImageButton = itemView.findViewById(R.id.btnAction3)
@@ -86,15 +87,21 @@ class TrannsaccionAdapter(var lista: ArrayList<Transaccion>)    : RecyclerView.A
             btnDelete.setColorFilter(getContext().getResources().getColor(R.color.red_900))
 
 
-
-
+            txtStatisSincronized.visibility=View.VISIBLE
+            if (data.Estado_Sincronizacion == true) {
+                txtStatisSincronized.setTextColor(resources.getColor(R.color.green))
+                txtStatisSincronized.text = context.getString(R.string.Sincronizado)
+            } else {
+                txtStatisSincronized.setTextColor(resources.getColor(R.color.red_900))
+                txtStatisSincronized.text = context.getString(R.string.noSincronizado)
+            }
 
             //image.setImageBitmap(data.Imagen)
             // image.setImageResource(data.Imagen)
 
 
-            txtTitle.text=data.Descripcion_Puk
-            txtDescription.text=data.Concepto
+            txtTitle.text=data.Descripcion_Puk+"( ${data.Nombre_Detalle_Producto_Cultivo} )"
+            txtDescription.text=data.Descripcion_Puk+": ${data.Concepto}"
             txtFechas.text=data.getFechaUpdateAt()
             txtCantidad.text= String.format(context?.getString(R.string.price)!!,data.Valor_Total)
             txtAdicional.text= data.Nombre_Cultivo

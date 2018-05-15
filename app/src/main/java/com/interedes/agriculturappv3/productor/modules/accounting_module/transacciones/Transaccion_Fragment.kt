@@ -299,17 +299,14 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         }
     }
 
-    override fun updateTransaccion(transaccionEdit: Transaccion) {
+    override fun updateTransaccion(transaccion: Transaccion) {
         if (presenter?.validarCampos() == true) {
 
-            val transaccion = Transaccion()
-            transaccion.Id=transaccionEdit.Id
-            transaccion.TerceroId=transaccionEdit.TerceroId
+            //val transaccion = Transaccion()
+
             transaccion.Nombre_Cultivo=cultivoGlobal?.Nombre
             transaccion.Concepto=viewDialog?.txtConceptoVenta?.text.toString()
             transaccion.EstadoId=estadoTransaccionGlobal?.Id
-            transaccion.Fecha_Transaccion= transaccionEdit.Fecha_Transaccion
-            transaccion.FechaString= transaccionEdit.FechaString
             transaccion.NaturalezaId=NaturalezaTransaccionResources.CREDITO
             transaccion.PucId=pukGlobal?.Id
             transaccion.Descripcion_Puk=pukGlobal?.Descripcion
@@ -454,8 +451,11 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         viewDialog?.changeCultivo?.setOnClickListener(this)
         viewDialog?.fabAddVenta?.setOnClickListener(this)
 
+
+
         //Venta
         viewDialog?.changeCultivo?.setOnClickListener(this)
+        viewDialog?.fabCancelVenta?.setOnClickListener(this)
 
 
         //radioGroup
@@ -494,73 +494,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         */
 
        // viewDialog?.txtCantidadTransaccion?.addTextChangedListener(wac:TextWatcher)
-        viewDialog?.txtCantidadTransaccion?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
 
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                var cantidad=  viewDialog?.txtCantidadTransaccion?.text.toString()?.toLongOrNull()
-                var precioVenta=  viewDialog?.txtPrecioTransaccion?.text.toString()?.toDoubleOrNull()
-
-                if(!viewDialog?.txtCantidadTransaccion?.text.toString().isEmpty()
-                    && !viewDialog?.txtPrecioTransaccion?.text.toString().isEmpty()){
-
-                    var subtotal=cantidad!!*precioVenta!!
-                    var costo_total_item = String.format(context!!.getString(R.string.price),
-                            subtotal)
-
-                    var costo_total_ = String.format(context!!.getString(R.string.price),
-                            subtotal)
-                     valorTotalGlobal=subtotal
-                    viewDialog?.txtValorSubtotal?.text=costo_total_item
-                    viewDialog?.txtTotalTransaccion?.setText(costo_total_.replace(",", "."))
-
-                }else{
-                    viewDialog?.txtValorSubtotal?.text=""
-                    viewDialog?.txtTotalTransaccion?.setText("")
-                }
-            }
-        })
-
-        viewDialog?.txtPrecioTransaccion?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                var cantidad=  viewDialog?.txtCantidadTransaccion?.text.toString()?.toLongOrNull()
-                var precioVenta=  viewDialog?.txtPrecioTransaccion?.text.toString()?.toDoubleOrNull()
-
-
-                if(!viewDialog?.txtCantidadTransaccion?.text.toString().isEmpty()
-                        && !viewDialog?.txtPrecioTransaccion?.text.toString().isEmpty()){
-
-
-                    var subtotal=cantidad!!*precioVenta!!
-                    var costo_total_item = String.format(context!!.getString(R.string.price),
-                            subtotal)
-
-                    var costo_total_ = String.format(context!!.getString(R.string.price),
-                            subtotal)
-
-                     valorTotalGlobal=subtotal
-
-                    viewDialog?.txtValorSubtotal?.text=costo_total_item
-                    viewDialog?.txtTotalTransaccion?.setText(costo_total_.replace(",", "."))
-                }else{
-                    viewDialog?.txtValorSubtotal?.text=""
-                    viewDialog?.txtTotalTransaccion?.setText("")
-                }
-            }
-        })
 
         viewDialog?.changeCultivo?.setText(cultivoGlobal?.getNombreCultio())
         transaccionGlobal=transaccion
@@ -590,7 +524,10 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
                 titleDialog=getString(R.string.title_edit_gasto)
             }
             viewDialog?.txtTitle?.setText(titleDialog)
-            viewDialog?.txtCantidadTransaccion?.setText(transaccion.Cantidad.toString())
+
+            var cantidad=transaccion.Cantidad?.toLong()
+
+            viewDialog?.txtCantidadTransaccion?.setText(cantidad.toString())
             viewDialog?.txtPrecioTransaccion?.setText(String.format(context!!.getString(R.string.price_empty_signe),
                     transaccion.Valor_Unitario))
             viewDialog?.txtValorSubtotal?.setText(String.format(context!!.getString(R.string.price),
@@ -602,11 +539,80 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
             viewDialog?.txtTotalTransaccion?.setText( String.format(context!!.getString(R.string.price),
                     transaccion.Valor_Total))
             viewDialog?.txtNombreCliente?.setText(transaccion.Nombre_Tercero)
+            viewDialog?.txtIdentificacionCliente?.setText(transaccion.Identificacion_Tercero)
             viewDialog?.txtConceptoVenta?.setText(transaccion.Concepto)
             viewDialog?.spinnerPuk?.setText(transaccion.Descripcion_Puk)
             valorTotalGlobal= transaccion.Valor_Total
 
         }
+
+        viewDialog?.txtCantidadTransaccion?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                var cantidad=  viewDialog?.txtCantidadTransaccion?.text.toString()?.toLongOrNull()
+                var precioVenta=  viewDialog?.txtPrecioTransaccion?.text.toString()?.toDoubleOrNull()
+
+                if(!viewDialog?.txtCantidadTransaccion?.text.toString().isEmpty()
+                        && !viewDialog?.txtPrecioTransaccion?.text.toString().isEmpty()){
+
+                    var subtotal=cantidad!!*precioVenta!!
+                    var costo_total_item = String.format(context!!.getString(R.string.price),
+                            subtotal)
+
+                    var costo_total_ = String.format(context!!.getString(R.string.price),
+                            subtotal)
+                    valorTotalGlobal=subtotal
+                    viewDialog?.txtValorSubtotal?.text=costo_total_item
+                    viewDialog?.txtTotalTransaccion?.setText(costo_total_.replace(",", "."))
+
+                }else{
+                    viewDialog?.txtValorSubtotal?.text=""
+                    viewDialog?.txtTotalTransaccion?.setText("")
+                }
+            }
+        })
+
+        viewDialog?.txtPrecioTransaccion?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                var cantidad=  viewDialog?.txtCantidadTransaccion?.text.toString()?.toDoubleOrNull()
+                var precioVenta=  viewDialog?.txtPrecioTransaccion?.text.toString()?.toDoubleOrNull()
+
+
+                if(!viewDialog?.txtCantidadTransaccion?.text.toString().isEmpty()
+                        && !viewDialog?.txtPrecioTransaccion?.text.toString().isEmpty()){
+
+
+                    var subtotal=cantidad!!*precioVenta!!
+                    var costo_total_item = String.format(context!!.getString(R.string.price),
+                            subtotal)
+
+                    var costo_total_ = String.format(context!!.getString(R.string.price),
+                            subtotal)
+
+                    valorTotalGlobal=subtotal
+
+                    viewDialog?.txtValorSubtotal?.text=costo_total_item
+                    viewDialog?.txtTotalTransaccion?.setText(costo_total_.replace(",", "."))
+                }else{
+                    viewDialog?.txtValorSubtotal?.text=""
+                    viewDialog?.txtTotalTransaccion?.setText("")
+                }
+            }
+        })
 
         val dialog = AlertDialog.Builder(context!!,android.R.style.Theme_Light_NoTitleBar)
                 .setView(viewDialog)
@@ -749,7 +755,6 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
             R.id.fabCancelVenta->_dialogRegisterUpdate?.dismiss()
 
             R.id.ivClosetDialogVentas->_dialogRegisterUpdate?.dismiss()
-            R.id.fabCancelVenta->_dialogRegisterUpdate?.dismiss()
 
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))

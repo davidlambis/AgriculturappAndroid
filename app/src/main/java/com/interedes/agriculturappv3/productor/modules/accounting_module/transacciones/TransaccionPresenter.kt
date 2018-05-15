@@ -202,12 +202,17 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
     }
 
 
-    override fun deleteTransaccion(producccion: Transaccion, cultivo_id: Long?) {
-        mainView?.showProgress()
-        if (checkConnection()) {
-            interactor?.deleteProducccionTransaccion(producccion, cultivo_id)
-        } else {
-            onMessageConectionError()
+    override fun deleteTransaccion(transaccion: Transaccion, cultivo_id: Long?) {
+
+
+        if(transaccion?.Estado_Sincronizacion==true){
+            if (checkConnection()) {
+                interactor?.deleteProducccionTransaccion(transaccion, cultivo_id)
+            } else {
+                onMessageConectionError()
+            }
+        }else{
+            interactor?.deleteProducccionTransaccion(transaccion, cultivo_id)
         }
     }
 

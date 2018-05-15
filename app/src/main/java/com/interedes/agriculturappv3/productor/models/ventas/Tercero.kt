@@ -28,6 +28,13 @@ data class Tercero(@PrimaryKey
                @Column(name = "NitRut")
                var NitRut: String? = null,
 
+                   @SerializedName("Direccion")
+                   @Column(name = "Direccion")
+                   var Direccion: String? = null,
+
+
+
+
                    @Column(getterName = "getEstado_Sincronizacion")
                    var Estado_Sincronizacion: Boolean? = false
 

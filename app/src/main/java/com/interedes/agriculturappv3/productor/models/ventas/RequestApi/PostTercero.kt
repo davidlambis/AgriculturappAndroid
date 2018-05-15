@@ -12,6 +12,15 @@ data class PostTercero(
                        @SerializedName("Apellido")
                        var Apellido: String? = null,
 
-                       @SerializedName("NITRut")
-                       var NitRut: String? = null) {
+                       @SerializedName("Nit_RUC")
+                       var Nit_RUC: String? = null,
+
+                       @SerializedName("Direccion")
+                       var Direccion: String? = null
+
+
+
+
+
+) {
 }

@@ -90,8 +90,29 @@
                         android:maxLines="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/text_size_25"
                         android:text=""/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/txtStatisSincronized"
+                        android:textStyle="bold"
+                        android:ellipsize="end"
+                        android:textSize="@dimen/text_size_18"
+                        android:maxLines="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""/>
+
+
                 </LinearLayout>
 
 
