@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.rol.Rol
+import com.interedes.agriculturappv3.modules.models.rol.Rol
 
 
 //Recibe directamente la lista y el listener del click

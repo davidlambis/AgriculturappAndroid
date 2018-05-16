@@ -11,7 +11,7 @@ import com.interedes.agriculturappv3.activities.chat.chat_sms.Sms
 import com.interedes.agriculturappv3.activities.chat.online.ChatMessageActivity
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.productor.models.chat.ChatMessage
+import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView

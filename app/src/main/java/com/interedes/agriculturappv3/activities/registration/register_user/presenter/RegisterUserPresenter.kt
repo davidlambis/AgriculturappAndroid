@@ -1,7 +1,7 @@
 package com.interedes.agriculturappv3.activities.registration.register_user.presenter
 
 import com.interedes.agriculturappv3.activities.registration.register_user.events.RegisterEvent
-import com.interedes.agriculturappv3.productor.models.usuario.User
+import com.interedes.agriculturappv3.modules.models.usuario.User
 
 interface RegisterUserPresenter {
 

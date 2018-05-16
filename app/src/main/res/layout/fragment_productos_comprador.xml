@@ -1,41 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container_fragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+    android:layout_height="match_parent"
+    android:id="@+id/container_fragment"
+    tools:context=".modules.comprador.productos.ProductosCompradorFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <LinearLayout
+            <View
                 android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="@dimen/margin_5"
+                android:background="@color/grey_luiyi" />
+            <TextView
+                android:padding="@dimen/margin_5"
+                android:id="@+id/txtTitle"
+                android:textSize="@dimen/text_size_15"
+                android:gravity="start"
+                android:textColor="@color/grey_luiyi"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/margin_5">
-
-                <ImageView
-                    android:id="@+id/ivBackButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_back_button"
-                    android:tint="@color/grey_luiyi" />
-            </LinearLayout>
+                android:text="@string/tittle_productos_interes"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="@dimen/margin_5"
+                android:background="@color/grey_luiyi" />
 
             <include layout="@layout/content_recyclerview" />
         </LinearLayout>
-
-
-    </android.support.design.widget.CoordinatorLayout>
 
 </FrameLayout>

@@ -1,6 +1,6 @@
 package com.interedes.agriculturappv3.services.api
 
-import com.interedes.agriculturappv3.productor.models.departments.DeparmentsResponse
+import com.interedes.agriculturappv3.modules.models.departments.DeparmentsResponse
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit

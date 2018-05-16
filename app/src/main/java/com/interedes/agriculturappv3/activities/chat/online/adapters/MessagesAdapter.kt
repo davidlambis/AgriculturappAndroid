@@ -14,8 +14,8 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.online.ChatMessageActivity
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.productor.models.chat.ChatMessage
-import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
+import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.ParseException

@@ -1,6 +1,6 @@
 package com.interedes.agriculturappv3.activities.login.interactor
 
-import com.interedes.agriculturappv3.productor.models.login.Login
+import com.interedes.agriculturappv3.modules.models.login.Login
 
 interface LoginInteractor {
 

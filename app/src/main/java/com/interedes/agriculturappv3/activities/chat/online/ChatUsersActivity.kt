@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.online.adapters.UsersAdapter
-import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import kotlinx.android.synthetic.main.activity_chat_users.*
 import java.util.ArrayList
 

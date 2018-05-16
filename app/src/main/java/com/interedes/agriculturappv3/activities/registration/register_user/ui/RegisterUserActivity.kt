@@ -20,8 +20,8 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.activities.registration.register_user.presenter.RegisterUserPresenter
 import com.interedes.agriculturappv3.activities.registration.register_user.presenter.RegisterUserPresenterImpl
-import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPago
-import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPago
+import com.interedes.agriculturappv3.modules.models.detalle_metodo_pago.DetalleMetodoPago
+import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import kotlinx.android.synthetic.main.activity_register_user.*
 import android.text.TextUtils
@@ -33,7 +33,7 @@ import com.afollestad.materialdialogs.Theme
 import com.interedes.agriculturappv3.R.id.*
 import com.interedes.agriculturappv3.activities.registration.register_user.repository.RegisterUserRepository
 import com.interedes.agriculturappv3.activities.registration.register_user.repository.RegisterUserRepositoryImpl
-import com.interedes.agriculturappv3.productor.models.usuario.User
+import com.interedes.agriculturappv3.modules.models.usuario.User
 import java.util.*
 
 

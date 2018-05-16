@@ -42,6 +42,12 @@
                 android:icon="@drawable/ic_ic_pregunas_desplegable"
                 android:iconTint="@color/white"
                 android:title="Preguntas" />
+
+            <item
+                android:id="@+id/nav_singout_session"
+                android:icon="@drawable/ic_back_button"
+                android:iconTint="@color/white"
+                android:title="Cerrar Sesion" />
         </menu>
     </item>
 </menu>

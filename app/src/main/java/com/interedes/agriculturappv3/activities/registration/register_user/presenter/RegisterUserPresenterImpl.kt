@@ -5,9 +5,9 @@ import com.interedes.agriculturappv3.activities.registration.register_user.inter
 import com.interedes.agriculturappv3.activities.registration.register_user.ui.RegisterUserView
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.activities.registration.register_user.events.RegisterEvent
-import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPago
-import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPago
-import com.interedes.agriculturappv3.productor.models.usuario.User
+import com.interedes.agriculturappv3.modules.models.detalle_metodo_pago.DetalleMetodoPago
+import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPago
+import com.interedes.agriculturappv3.modules.models.usuario.User
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import org.greenrobot.eventbus.Subscribe

@@ -35,8 +35,8 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.interedes.agriculturappv3.R;
-import com.interedes.agriculturappv3.productor.models.Coords;
-import com.interedes.agriculturappv3.productor.services.coords.CoordsService;
+import com.interedes.agriculturappv3.modules.models.Coords;
+import com.interedes.agriculturappv3.modules.services.coords.CoordsService;
 import com.interedes.agriculturappv3.util.ConexionInternet;
 
 import java.util.ArrayList;

@@ -63,10 +63,10 @@
             android:name=".activities.registration.register_user.ui.RegisterUserActivity"
             android:configChanges="screenSize|orientation"
             android:parentActivityName=".activities.registration.register_rol.RegisterRolActivity"
-            android:theme="@style/LoginTheme"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".productor.modules.ui.main_menu.MenuMainActivity"
+            android:name=".modules.productor.ui.main_menu.MenuMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -74,11 +74,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.chat.online.ChatUsersActivity"
-            android:parentActivityName=".productor.modules.ui.main_menu.MenuMainActivity"
+            android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.chat.online.ChatMessageActivity"
-            android:parentActivityName=".productor.modules.ui.main_menu.MenuMainActivity"
+            android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.chat.chat_sms.Chat_Sms_Activity"
@@ -87,10 +87,10 @@
         <activity
             android:name=".activities.chat.chat_sms.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".productor.modules.ui.main_menu.MenuMainActivity" />
+            android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity" />
 
         <activity
-            android:parentActivityName=".productor.modules.ui.main_menu.MenuMainActivity"
+            android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:name=".activities.chat.chat_sms.UserSmsActivity"></activity>
 

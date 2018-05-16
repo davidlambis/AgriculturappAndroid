@@ -21,7 +21,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.productor.models.Coords
+import com.interedes.agriculturappv3.modules.models.Coords
 import com.interedes.agriculturappv3.services.Const
 
 /**

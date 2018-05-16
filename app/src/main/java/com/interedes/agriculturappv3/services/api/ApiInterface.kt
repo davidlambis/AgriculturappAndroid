@@ -1,28 +1,28 @@
 package com.interedes.agriculturappv3.services.api
 
-import com.interedes.agriculturappv3.productor.models.departments.DeparmentsResponse
-import com.interedes.agriculturappv3.productor.models.ResetPassword
-import com.interedes.agriculturappv3.productor.models.cultivo.Cultivo
-import com.interedes.agriculturappv3.productor.models.cultivo.PostCultivo
-import com.interedes.agriculturappv3.productor.models.lote.Lote
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.Unidad_Productiva
-import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPagoResponse
-import com.interedes.agriculturappv3.productor.models.detalletipoproducto.DetalleTipoProductoResponse
-import com.interedes.agriculturappv3.productor.models.login.Login
-import com.interedes.agriculturappv3.productor.models.login.LoginResponse
-import com.interedes.agriculturappv3.productor.models.lote.PostLote
-import com.interedes.agriculturappv3.productor.models.rol.RolResponse
-import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPagoResponse
-import com.interedes.agriculturappv3.productor.models.produccion.PostProduccion
-import com.interedes.agriculturappv3.productor.models.producto.CalidadProductoResponse
-import com.interedes.agriculturappv3.productor.models.producto.PostProducto
-import com.interedes.agriculturappv3.productor.models.producto.Producto
-import com.interedes.agriculturappv3.productor.models.rol.AspNetRolResponse
-import com.interedes.agriculturappv3.productor.models.tipoproducto.TipoProductoResponse
-import com.interedes.agriculturappv3.productor.models.unidad_medida.CategoriaMedidaResponse
-import com.interedes.agriculturappv3.productor.models.unidad_medida.UnidadMedidaResponse
-import com.interedes.agriculturappv3.productor.models.unidad_productiva.PostUnidadProductiva
-import com.interedes.agriculturappv3.productor.models.usuario.*
+import com.interedes.agriculturappv3.modules.models.departments.DeparmentsResponse
+import com.interedes.agriculturappv3.modules.models.ResetPassword
+import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.modules.models.cultivo.PostCultivo
+import com.interedes.agriculturappv3.modules.models.lote.Lote
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.detalle_metodo_pago.DetalleMetodoPagoResponse
+import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleTipoProductoResponse
+import com.interedes.agriculturappv3.modules.models.login.Login
+import com.interedes.agriculturappv3.modules.models.login.LoginResponse
+import com.interedes.agriculturappv3.modules.models.lote.PostLote
+import com.interedes.agriculturappv3.modules.models.rol.RolResponse
+import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPagoResponse
+import com.interedes.agriculturappv3.modules.models.produccion.PostProduccion
+import com.interedes.agriculturappv3.modules.models.producto.CalidadProductoResponse
+import com.interedes.agriculturappv3.modules.models.producto.PostProducto
+import com.interedes.agriculturappv3.modules.models.producto.Producto
+import com.interedes.agriculturappv3.modules.models.rol.AspNetRolResponse
+import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProductoResponse
+import com.interedes.agriculturappv3.modules.models.unidad_medida.CategoriaMedidaResponse
+import com.interedes.agriculturappv3.modules.models.unidad_medida.UnidadMedidaResponse
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.PostUnidadProductiva
+import com.interedes.agriculturappv3.modules.models.usuario.*
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -32,17 +32,19 @@ import java.util.concurrent.TimeUnit
 import retrofit2.http.GET
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.interedes.agriculturappv3.productor.models.control_plaga.PostControlPlaga
-import com.interedes.agriculturappv3.productor.models.plagas.EnfermedadResponseApi
-import com.interedes.agriculturappv3.productor.models.rol.RolUserLogued
-import com.interedes.agriculturappv3.productor.models.tratamiento.TratamientoResponse
-import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.Calificacion_Tratamiento
-import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.PostCalificacion
-import com.interedes.agriculturappv3.productor.models.tratamiento.calificacion.ResponseCalificacion
-import com.interedes.agriculturappv3.productor.models.ventas.RequestApi.CategoriaPucResponse
-import com.interedes.agriculturappv3.productor.models.ventas.RequestApi.EstadoTransaccionResponse
-import com.interedes.agriculturappv3.productor.models.ventas.RequestApi.PostTercero
-import com.interedes.agriculturappv3.productor.models.ventas.RequestApi.PostTransaccion
+import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPlaga
+import com.interedes.agriculturappv3.modules.models.plagas.EnfermedadResponseApi
+import com.interedes.agriculturappv3.modules.models.rol.RolUserLogued
+import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSincronizacionResponse
+import com.interedes.agriculturappv3.modules.models.tratamiento.TratamientoResponse
+import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento
+import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.PostCalificacion
+import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.ResponseCalificacion
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.localizacion.PostLocalizacionUp
+import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.CategoriaPucResponse
+import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.EstadoTransaccionResponse
+import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.PostTercero
+import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.PostTransaccion
 
 
 interface ApiInterface {
@@ -122,6 +124,12 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST("odata/Agp2/UnidadProductivas")
     fun postUnidadProductiva(@Body body: PostUnidadProductiva): Call<Unidad_Productiva>
+
+
+    @Headers("Content-Type: application/json")
+    @POST("odata/Agp2/LocalizacionUps")
+    fun postLocalizacionUnidadProductiva(@Body body: PostLocalizacionUp): Call<PostLocalizacionUp>
+
 
     //Patch Unidad Productiva
     //TODO Requiere Token
@@ -244,8 +252,6 @@ interface ApiInterface {
     @DELETE("odata/Agp2/ControlPlagas({Id})")
     fun deleteControlPlaga(@Path("Id") Id: Long): Call<PostControlPlaga>
 
-
-
     //endregion
 
 
@@ -303,6 +309,15 @@ interface ApiInterface {
 
     //http://18.233.87.16/odata/Agp2/Calificacions?$filter=TratamientoId eq 3 and userId eq '0bdb5fcd-79cd-458d-bc24-59074f7b7aab'
 
+
+    //endregion
+
+
+
+    //region SINCRONIZE INFORMACION USUARIO LOGUED
+    @GET("odata/Agp2/UnidadProductivas?\$expand=UnidadMedida,Ciudad(\$expand=Departamento),Lotes(\$expand=UnidadMedida,Cultivos)")
+    fun getSyncInformacionUsuario( @Query("\$filter") filter: String): Call<GetSincronizacionResponse>
+   // http://18.233.87.16/odata/Agp2/UnidadProductivas?$expand=Lotes($expand=Cultivos)&$filter=UsuarioId eq '0bdb5fcd-79cd-458d-bc24-59074f7b7aab'
 
     //endregion
 

@@ -21,9 +21,9 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.home.HomeActivity
 import com.interedes.agriculturappv3.activities.registration.register_rol.adapters.RegisterRolAdapter
 import com.interedes.agriculturappv3.activities.registration.register_user.ui.RegisterUserActivity
-import com.interedes.agriculturappv3.productor.models.rol.RolResponse
-import com.interedes.agriculturappv3.productor.models.rol.Rol
-import com.interedes.agriculturappv3.productor.models.rol.Rol_Table
+import com.interedes.agriculturappv3.modules.models.rol.RolResponse
+import com.interedes.agriculturappv3.modules.models.rol.Rol
+import com.interedes.agriculturappv3.modules.models.rol.Rol_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.services.resources.RolResources
@@ -56,8 +56,6 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
 
     //region Métodos Interfaz
     override fun loadRoles() {
-        val lista_roles = SQLite.select().from(Rol::class.java).queryList()
-        if (lista_roles.size <= 0) {
             //Si hay conectividad a Internet
             if (checkConnection()) {
                 val apiService = ApiInterface.create()
@@ -78,63 +76,25 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
                                 }
                                 //lista = Select().from(Rol::class.java).queryList()
                                 lista = Select().from(Rol::class.java).where(Rol_Table.Nombre.eq("Comprador")).or(Rol_Table.Nombre.eq("Productor")).queryList()
+
                             }
 
                             loadRecyclerView()
                         }
                     }
-
                     override fun onFailure(call: Call<RolResponse>?, t: Throwable?) {
                         onMessageOk(R.color.grey_luiyi, getString(R.string.error_request))
                         Log.e("Error", t?.message.toString())
                     }
-
                 })
-
                 //Si no hay conectividad a Internet
             } else {
+                lista = Select().from(Rol::class.java).where(Rol_Table.Nombre.eq("Comprador")).or(Rol_Table.Nombre.eq("Productor")).queryList()
+                loadRecyclerView()
+
                 onMessageOk(R.color.grey_luiyi, getString(R.string.not_internet_connected))
             }
-        } else {
-            if (checkConnection()) {
-                val apiService = ApiInterface.create()
-                val call = apiService.getRoles()
-                call.enqueue(object : Callback<RolResponse> {
-                    override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
-                        if (response != null && response.code() == 200) {
-                            lista = response.body()?.value
-                            if (lista != null) {
-                                Delete.table<Rol>(Rol::class.java)
-                                for (item: Rol in lista!!) {
-                                    if (item.Nombre.equals(RolResources.COMPRADOR)) {
-                                        item.Imagen = R.drawable.ic_comprador_big
-                                        item.save()
-                                    } else if (item.Nombre.equals(RolResources.PRODUCTOR)) {
-                                        item.Imagen = R.drawable.ic_productor_big
-                                        item.save()
-                                    }
-                                }
-                                lista = Select().from(Rol::class.java).queryList()
-                                loadRecyclerView()
-                            }
-                        }
-                    }
 
-                    override fun onFailure(call: Call<RolResponse>?, t: Throwable?) {
-                        onMessageOk(R.color.grey_luiyi, getString(R.string.error_request))
-                        Log.e("Error", t?.message.toString())
-                    }
-
-                })
-            } else {
-                if (lista_roles.size > 0) {
-                    lista = Select().from(Rol::class.java).where(Rol_Table.Nombre.eq("Comprador")).or(Rol_Table.Nombre.eq("Productor")).queryList()
-                    loadRecyclerView()
-                } else {
-                    onNetworkConnectionChanged(false)
-                }
-            }
-        }
 
     }
 

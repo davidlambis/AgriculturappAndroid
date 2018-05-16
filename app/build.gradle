@@ -98,7 +98,6 @@ dependencies {
     compile "com.google.android.gms:play-services-maps:$rootProject.ext.firebaseVersion"
     compile 'com.google.maps.android:android-maps-utils:0.4+'
 
-
     ///Show Progress
     compile "com.kaopiz:kprogresshud:$kprogresshudVersion"
 

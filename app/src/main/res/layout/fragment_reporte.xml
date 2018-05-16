@@ -5,7 +5,7 @@
     android:id="@+id/container_fragment"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".productor.modules.accounting_module.reportes.ReporteFragment">
+    tools:context=".modules.productor.accounting_module.reportes.ReporteFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

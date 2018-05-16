@@ -2,7 +2,7 @@ package com.interedes.agriculturappv3.activities.registration.register_user.inte
 
 import com.interedes.agriculturappv3.activities.registration.register_user.repository.RegisterUserRepository
 import com.interedes.agriculturappv3.activities.registration.register_user.repository.RegisterUserRepositoryImpl
-import com.interedes.agriculturappv3.productor.models.usuario.User
+import com.interedes.agriculturappv3.modules.models.usuario.User
 
 class RegisterUserInteractorImpl : RegisterUserInteractor {
 

@@ -4,7 +4,7 @@
     android:id="@+id/container_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Produccion.ProduccionFragment">
+    tools:context="com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Produccion.ProduccionFragment">
 
 
     <android.support.design.widget.CoordinatorLayout

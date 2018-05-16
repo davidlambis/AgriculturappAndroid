@@ -8,15 +8,15 @@ import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.interedes.agriculturappv3.activities.registration.register_user.events.RegisterEvent
-import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPago
-import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPagoResponse
-import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPago_Table
-import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPago
-import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPagoResponse
-import com.interedes.agriculturappv3.productor.models.rol.Rol
-import com.interedes.agriculturappv3.productor.models.rol.Rol_Table
-import com.interedes.agriculturappv3.productor.models.usuario.User
-import com.interedes.agriculturappv3.productor.models.usuario.UserResponse
+import com.interedes.agriculturappv3.modules.models.detalle_metodo_pago.DetalleMetodoPago
+import com.interedes.agriculturappv3.modules.models.detalle_metodo_pago.DetalleMetodoPagoResponse
+import com.interedes.agriculturappv3.modules.models.detalle_metodo_pago.DetalleMetodoPago_Table
+import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPago
+import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPagoResponse
+import com.interedes.agriculturappv3.modules.models.rol.Rol
+import com.interedes.agriculturappv3.modules.models.rol.Rol_Table
+import com.interedes.agriculturappv3.modules.models.usuario.User
+import com.interedes.agriculturappv3.modules.models.usuario.UserResponse
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.api.ApiInterface
@@ -27,7 +27,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.ServerValue
-import com.interedes.agriculturappv3.productor.models.chat.UserFirebase
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 
 

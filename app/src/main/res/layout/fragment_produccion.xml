@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/container_fragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.interedes.agriculturappv3.productor.modules.asistencia_tecnica_module.Produccion.ProduccionFragment">
+    tools:context="com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Produccion.ProduccionFragment">
 
 
 

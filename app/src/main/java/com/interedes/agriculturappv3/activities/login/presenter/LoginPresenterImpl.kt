@@ -6,7 +6,7 @@ import com.interedes.agriculturappv3.activities.login.events.LoginEvent
 import com.interedes.agriculturappv3.activities.login.interactor.LoginInteractor
 import com.interedes.agriculturappv3.activities.login.interactor.LoginInteractorImpl
 import com.interedes.agriculturappv3.activities.login.ui.LoginView
-import com.interedes.agriculturappv3.productor.models.login.Login
+import com.interedes.agriculturappv3.modules.models.login.Login
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus

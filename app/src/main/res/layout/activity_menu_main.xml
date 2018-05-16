@@ -14,7 +14,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.interedes.agriculturappv3.productor.modules.main_menu.ui.MenuMainActivity">
+        tools:context=".modules.main_menu.ui.MenuMainActivity">
 
 
         <android.support.design.widget.AppBarLayout

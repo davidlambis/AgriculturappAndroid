@@ -16,16 +16,15 @@ import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.activities.registration.register_rol.RegisterRolActivity
-import com.interedes.agriculturappv3.productor.models.GenericResponse
-import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPago
-import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPagoResponse
-import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPago
-import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPagoResponse
-import com.interedes.agriculturappv3.productor.models.rol.Rol
-import com.interedes.agriculturappv3.productor.models.rol.RolResponse
-import com.interedes.agriculturappv3.productor.models.usuario.Usuario
-import com.interedes.agriculturappv3.productor.models.usuario.Usuario_Table
-import com.interedes.agriculturappv3.productor.modules.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.modules.models.detalle_metodo_pago.DetalleMetodoPago
+import com.interedes.agriculturappv3.modules.models.detalle_metodo_pago.DetalleMetodoPagoResponse
+import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPago
+import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPagoResponse
+import com.interedes.agriculturappv3.modules.models.rol.Rol
+import com.interedes.agriculturappv3.modules.models.rol.RolResponse
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.services.resources.RolResources
@@ -90,9 +89,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
     }
 
     private fun loadRoles() {
-        val lista_roles = SQLite.select().from(Rol::class.java).queryList()
-        if (lista_roles.size <= 0) {
-            if (checkConnection()) {
+        if (checkConnection()) {
                 val apiService = ApiInterface.create()
                 val call = apiService.getRoles()
                 call.enqueue(object : Callback<RolResponse> {
@@ -109,52 +106,17 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
                                         item.save()
                                     }
                                 }
-                                //lista = Select().from(Rol::class.java).queryList()
                             }
                         }
                     }
-
                     override fun onFailure(call: Call<RolResponse>?, t: Throwable?) {
                         onMessageOk(R.color.grey_luiyi, getString(R.string.error_request))
                         Log.e("Error", t?.message.toString())
                     }
-
                 })
             } else {
                 onMessageOk(R.color.grey_luiyi, getString(R.string.not_internet_connected))
             }
-        } else {
-            if (checkConnection()) {
-                val apiService = ApiInterface.create()
-                val call = apiService.getRoles()
-                call.enqueue(object : Callback<RolResponse> {
-                    override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
-                        if (response != null && response.code() == 200) {
-                            lista = response.body()?.value
-                            if (lista != null) {
-                                Delete.table<Rol>(Rol::class.java)
-                                for (item: Rol in lista!!) {
-                                    if (item.Nombre.equals(RolResources.COMPRADOR)) {
-                                        item.Imagen = R.drawable.ic_comprador_big
-                                        item.save()
-                                    } else if (item.Nombre.equals(RolResources.PRODUCTOR)) {
-                                        item.Imagen = R.drawable.ic_productor_big
-                                        item.save()
-                                    }
-                                }
-                                //lista = Select().from(Rol::class.java).queryList()
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<RolResponse>?, t: Throwable?) {
-                        onMessageOk(R.color.grey_luiyi, getString(R.string.error_request))
-                        Log.e("Error", t?.message.toString())
-                    }
-
-                })
-            }
-        }
     }
 
 
@@ -170,12 +132,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
                         }
                     }
                 }
-
                 override fun onFailure(call: Call<MetodoPagoResponse>?, t: Throwable?) {
-
                 }
             })
-
             val call_2 = apiService?.getDetalleMetodoPagos()
             call_2?.enqueue(object : Callback<DetalleMetodoPagoResponse> {
                 override fun onResponse(call: Call<DetalleMetodoPagoResponse>?, response: Response<DetalleMetodoPagoResponse>?) {
@@ -186,9 +145,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
                         }
                     }
                 }
-
                 override fun onFailure(call: Call<DetalleMetodoPagoResponse>?, t: Throwable?) {
-
                 }
             })
         }

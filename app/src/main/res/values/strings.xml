@@ -361,6 +361,10 @@
     <string name="offline">Desconectado</string>
 
 
+    <!--COMPRADOR MODULE-->
+    <string name="tittle_productos">Productos</string>
+    <string name="tittle_productos_interes">Estos son los productos de tu interes !Selecciona uno!</string>
+
     <!--CONFIGURATION-->
 
     <!--Notification Messages-->

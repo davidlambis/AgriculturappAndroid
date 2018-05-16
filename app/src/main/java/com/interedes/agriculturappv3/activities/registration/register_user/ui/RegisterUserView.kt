@@ -1,7 +1,7 @@
 package com.interedes.agriculturappv3.activities.registration.register_user.ui
 
-import com.interedes.agriculturappv3.productor.models.detalle_metodo_pago.DetalleMetodoPago
-import com.interedes.agriculturappv3.productor.models.metodopago.MetodoPago
+import com.interedes.agriculturappv3.modules.models.detalle_metodo_pago.DetalleMetodoPago
+import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPago
 
 interface RegisterUserView {
     fun disableInputs()
