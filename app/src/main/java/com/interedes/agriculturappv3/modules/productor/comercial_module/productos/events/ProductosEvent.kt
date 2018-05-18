@@ -8,7 +8,8 @@ data class ProductosEvent(var eventType: Int,
     companion object {
         //Event Personality
         val LIST_EVENT_UP: Int = 1
-        val LIST_EVENT_UNIDAD_MEDIDA: Int = 2
+        val LIST_EVENT_UNIDAD_MEDIDA_CANTIDAD: Int = 2
+
         val LIST_EVENT_LOTE: Int = 3
         val LIST_EVENT_CULTIVO: Int = 4
         val LIST_EVENT_CALIDADES: Int = 5
@@ -22,6 +23,9 @@ data class ProductosEvent(var eventType: Int,
         val ITEM_DELETE_EVENT: Int = 11
 
         val ERROR_EVENT : Int = 12
+        val LIST_EVENT_UNIDAD_MEDIDA_PRICE: Int = 13
+        //Error Connection
+        val ERROR_VERIFICATE_CONECTION: Int = 14
     }
 
 }

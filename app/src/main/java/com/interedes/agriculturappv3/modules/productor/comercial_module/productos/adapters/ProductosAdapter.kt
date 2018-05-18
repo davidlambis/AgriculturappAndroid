@@ -13,7 +13,10 @@ import com.interedes.agriculturappv3.modules.productor.comercial_module.producto
 import java.util.ArrayList
 import android.graphics.BitmapFactory
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
+import com.robertlevonyan.views.expandable.Expandable
+import com.robertlevonyan.views.expandable.ExpandingListener
 
 
 class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<ProductosAdapter.ViewHolder>() {
@@ -62,23 +65,56 @@ class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: Producto, pos: Int) = with(itemView) {
             val image: ImageView = itemView.findViewById(R.id.imageViewProducto)
-            val txtNombreCultivo: TextView = itemView.findViewById(R.id.txtNombreCultivo)
+           // val txtNombreCultivo: TextView = itemView.findViewById(R.id.txtNombreCultivo)
             val txtNombreDetalleProducto: TextView = itemView.findViewById(R.id.txtNombreDetalleProducto)
+            val txtEstaodSincronizacion: TextView = itemView.findViewById(R.id.txtEstaodSincronizacion)
             val txtDescripcionProducto: TextView = itemView.findViewById(R.id.txtDescripcionProducto)
             val txtFechaDisponibilidad: TextView = itemView.findViewById(R.id.txtFechaDisponibilidad)
             val txtPrecioProducto: TextView = itemView.findViewById(R.id.txtPrecioProducto)
             val btnEdit: ImageButton = itemView.findViewById(R.id.btnAction2)
             val btnDelete: ImageButton = itemView.findViewById(R.id.btnAction3)
 
+
+            val content: LinearLayout = itemView.findViewById(R.id.contentPrice)
+
+            val expandable : Expandable = itemView.findViewById(R.id.expandable)
+
             val byte = data.blobImagen?.getBlob()
             val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
             image.setImageBitmap(bitmap)
 
-            txtNombreCultivo.text = String.format(context.getString(R.string.title_adapter_cultivo), data.NombreCultivo)
+          /*  txtNombreCultivo.text = String.format(context.getString(R.string.title_adapter_cultivo), data.NombreCultivo)
             txtNombreDetalleProducto.text = String.format(context.getString(R.string.title_adapter_detalle_producto), data.NombreDetalleTipoProducto)
             txtDescripcionProducto.text = String.format(context.getString(R.string.title_adapter_descripcion_producto), data.Descripcion)
             txtFechaDisponibilidad.text = String.format(context.getString(R.string.title_adapter_fecha_disponibilidad), data.FechaLimiteDisponibilidad)
+            txtPrecioProducto.text = String.format(context.getString(R.string.title_adapter_precio_producto), data.Precio)*/
+
+            txtNombreDetalleProducto.text = data.NombreDetalleTipoProducto+" ${data.NombreCultivo}"
+            txtDescripcionProducto.text =  data.Descripcion
+            txtFechaDisponibilidad.text =data.FechaLimiteDisponibilidad
             txtPrecioProducto.text = String.format(context.getString(R.string.title_adapter_precio_producto), data.Precio)
+
+
+
+
+            if (data.EstadoSincronizacion == true) {
+                txtEstaodSincronizacion.setTextColor(resources.getColor(R.color.green))
+                txtEstaodSincronizacion.text = context.getString(R.string.Sincronizado)
+            } else {
+                txtEstaodSincronizacion.setTextColor(resources.getColor(R.color.red_900))
+                txtEstaodSincronizacion.text = context.getString(R.string.noSincronizado)
+            }
+
+
+            expandable.setExpandingListener(object : ExpandingListener {
+                override fun onExpanded() {
+                    content.visibility = View.VISIBLE
+                }
+
+                override fun onCollapsed() {
+                    content.visibility = View.GONE
+                }
+            })
 
             btnEdit.setOnClickListener {
                 postEvent(ProductosEvent.ITEM_EDIT_EVENT, data)

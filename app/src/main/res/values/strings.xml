@@ -203,13 +203,17 @@
     <string name="descripcion_producto">Descripción(Opcional)</string>
     <string name="spinner_calidad_producto">Calidad del Producto</string>
     <string name="edit_text_fecha_limite">Límite de Disponibilidad</string>
+    <string name="edit_cantidad_producto_disponible">Cantidad a ofertar</string>
     <string name="edit_text_precio">Precio</string>
     <string name="spinner_moneda">Moneda</string>
     <string name="title_adapter_cultivo">Cultivo : %s</string>
-    <string name="title_adapter_detalle_producto">Tipo Producto : %s</string>
-    <string name="title_adapter_descripcion_producto">Descripción : %s</string>
-    <string name="title_adapter_fecha_disponibilidad">Fecha Límite : %s</string>
-    <string name="title_adapter_precio_producto">Precio : $%f</string>
+    <string name="title_adapter_detalle_producto">Tipo Producto: %s</string>
+    <string name="title_adapter_descripcion_producto">Descripción: %s</string>
+    <string name="title_adapter_fecha_disponibilidad">Fecha Límite: %s</string>
+    <string name="title_adapter_precio_producto">%1$,.0f</string>
+
+
+
     <string name="title_alert_delete_producto">¿Está seguro de eliminar este producto?</string>
     <string name="spinner_producto">Producto</string>
     <string name="select_product_ofertas">Selecciona el producto para consultar sus ofertas</string>
@@ -299,6 +303,8 @@
     <string name="price_total_3decimas">% ,.3f</string>
 
     <string name="price">$ %1$,.0f</string>
+
+
     <string name="price_empty_signe">%.0f</string>
     <string name="search_cultivo">Buscar Cultivo</string>
     <string name="configuration">Configuracion</string>
@@ -368,7 +374,7 @@
     <!--CONFIGURATION-->
 
     <!--Notification Messages-->
-    <string name="pref_notifications">Notifications On</string>
+    <string name="pref_notifications">Notificacion</string>
 
     <!-- Strings related to Settings -->
 

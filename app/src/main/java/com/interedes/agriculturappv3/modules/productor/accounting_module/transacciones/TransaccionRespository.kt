@@ -260,6 +260,7 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
         }
         //TODO sin conexion a internet, actualizacion local
         else{
+
             terceroLocal.Estado_SincronizacionUpdate = false
             terceroLocal.update()
 

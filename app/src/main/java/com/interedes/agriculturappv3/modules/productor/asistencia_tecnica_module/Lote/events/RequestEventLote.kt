@@ -27,5 +27,6 @@ data class RequestEventLote (var eventType: Int,
         val ITEM_DELETE_EVENT: Int = 10
         //Error Connection
         val ERROR_VERIFICATE_CONECTION: Int = 11
+
     }
 }

@@ -98,8 +98,8 @@ class ControlPlagasAdapter(var lista: ArrayList<ControlPlaga>) : RecyclerView.Ad
                 txtFechaErradicacion.visibility = View.VISIBLE
                 val format1 = SimpleDateFormat("dd/MM/yyyy")
                 var formatted: String? = null
-                if (data.Fecha_Erradicacion != null) {
-                    formatted = format1.format(data.Fecha_Erradicacion)
+                if (data.Fecha_Erradicacion_Local != null) {
+                    formatted = format1.format(data.Fecha_Erradicacion_Local)
                 }
                 txtFechaErradicacion.text = formatted
                 ivControlPlaga.visibility = View.VISIBLE

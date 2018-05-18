@@ -54,7 +54,17 @@ data class PostProducto(@SerializedName("Id")
 
                         @SerializedName("nombre")
                         @Column(name = "nombre")
-                        var nombre: String? = null) {
+                        var nombre: String? = null,
+
+                        @SerializedName("UnidadMedidaId")
+                        @Column(name = "Unidad_Medida_Id")
+                        var Unidad_Medida_Id: Long? = null,
+
+                        @SerializedName("PrecioUnidadMedida")
+                        @Column(name = "PrecioUnidadMedida")
+                        var PrecioUnidadMedida: String? = null
+
+                        ) {
 
 
 }

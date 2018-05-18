@@ -21,6 +21,9 @@ import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.robertlevonyan.views.expandable.Expandable
 import com.robertlevonyan.views.expandable.ExpandingListener
+import kotlinx.android.synthetic.main.content_list_plagas.view.*
+import android.graphics.Bitmap
+import java.io.ByteArrayOutputStream
 
 
 class PlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapter<PlagasAdapter.ViewHolder>() {
@@ -78,6 +81,7 @@ class PlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapter<Pla
 
             txt_nombre_enfermedad.text = data.NombreTipoEnfermedad
             txt_nombre_cientifico.text = data.NombreCientificoTipoEnfermedad
+            txtDescripcionEnfermedad.text = data.Descripcion
 
             //txt_descripcion_enfermedad.text=data.DescripcionTipoEnfermedad
 
@@ -91,15 +95,29 @@ class PlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapter<Pla
                         data.blobImagenEnfermedad= Blob(firtsFoto.blobImagen?.blob)
                         val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                         image_enfermedad.setImageBitmap(bitmapBlob)
-                        txt_descripcion_enfermedad.text=firtsFoto.Descripcion
+                        data.DescripcionTipoEnfermedad=firtsFoto.Descripcion
+                        //txt_descripcion_enfermedad.text=firtsFoto.Descripcion
                     }catch (ex:Exception){
                         var ss= ex.toString()
                         Log.d("Convert Image", "defaultValue = " + ss);
                     }
                 }
+            }else{
+                val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.emtpy_img_plaga)
+                val bos = ByteArrayOutputStream()
+                largeIcon.compress(Bitmap.CompressFormat.PNG, 100, bos)
+                data.blobImagenEnfermedad=Blob(bos.toByteArray())
+                image_enfermedad.setImageBitmap(largeIcon)
             }
            // image_enfermedad.setImageResource(data.Imagen!!)
            // txt_descripcion_enfermedad.text = data.Descripcion
+
+
+
+            image_enfermedad.setOnClickListener {
+                postEvent(PlagasEvent.ITEM_EVENT_PLAGA, data)
+            }
+
             btn_ver_insumos.setOnClickListener {
                 postEvent(PlagasEvent.ITEM_OPEN_EVENT, data)
             }

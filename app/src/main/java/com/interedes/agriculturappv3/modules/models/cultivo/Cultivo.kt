@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.modules.models.cultivo
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table.FechaIncio
 import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.modules.models.produccion.Produccion
@@ -91,6 +92,9 @@ data class Cultivo(@PrimaryKey
 
                    @SerializedName("Produccions")
                    var produccions:  ArrayList<Produccion>?= null,
+
+                   @SerializedName("ControlPlagas")
+                   var controlPlagas:  ArrayList<ControlPlaga>?= null,
 
                    @SerializedName("DetalleTipoProducto")
                    var detalleTipoProducto: DetalleTipoProducto?= null

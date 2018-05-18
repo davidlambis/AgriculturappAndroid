@@ -19,6 +19,8 @@ interface IPlaga {
         fun verInsumos(tipoEnfermedad: Enfermedad)
         fun setDialogListPlagas(list_plagas: ArrayList<Enfermedad>)
         fun loadListTipoProducto(listTipoProducto: ArrayList<TipoProducto>)
+
+        fun setViewDialogDescriptionFoto(enfermedad:Enfermedad)
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
     }

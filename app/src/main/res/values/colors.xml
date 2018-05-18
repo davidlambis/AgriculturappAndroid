@@ -7,6 +7,8 @@
 
     <color name="white_solid">#FFFFFF</color>
 
+    <color name="white_transaparent">#ebffffff</color>
+
     <color name="white">#b4ffffff</color>
     <color name="gray_light">#dedcdc</color>
     <color name="black_alpha_40">#66000000</color>

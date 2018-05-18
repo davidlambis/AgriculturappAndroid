@@ -27,7 +27,8 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
     var listUnidadProductivaGlobal: List<Unidad_Productiva>? = ArrayList<Unidad_Productiva>()
     var listLoteGlobal: List<Lote>? = ArrayList<Lote>()
     var listCultivosGlobal: List<Cultivo>? = ArrayList<Cultivo>()
-    var listUnidadMedidaGlobal: List<Unidad_Medida>? = ArrayList<Unidad_Medida>()
+    var listUnidadMedidaGlobalCantidades: List<Unidad_Medida>? = ArrayList<Unidad_Medida>()
+    var listUnidadMedidaGlobalPrecios: List<Unidad_Medida>? = ArrayList<Unidad_Medida>()
     var listCalidadesGlobal: List<CalidadProducto>? = ArrayList<CalidadProducto>()
 
 
@@ -87,12 +88,16 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
             }
 
             ProductosEvent.ERROR_EVENT -> {
-                view?.hideDialogProgress()
+                view?.hideProgressHud()
                 view?.requestResponseError(event.mensajeError)
             }
         //LIST EVENTS
-            ProductosEvent.LIST_EVENT_UNIDAD_MEDIDA -> {
-                listUnidadMedidaGlobal = event.mutableList as List<Unidad_Medida>
+            ProductosEvent.LIST_EVENT_UNIDAD_MEDIDA_PRICE -> {
+                listUnidadMedidaGlobalPrecios = event.mutableList as List<Unidad_Medida>
+            }
+
+            ProductosEvent.LIST_EVENT_UNIDAD_MEDIDA_CANTIDAD -> {
+                listUnidadMedidaGlobalCantidades = event.mutableList as List<Unidad_Medida>
             }
 
             ProductosEvent.LIST_EVENT_UP -> {
@@ -137,6 +142,13 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
                 val producto = event.objectMutable as Producto
                 view?.confirmDelete(producto)
             }
+
+
+        //Error Conection
+            ProductosEvent.ERROR_VERIFICATE_CONECTION -> {
+                onMessageConnectionError()
+            }
+
         }
     }
 
@@ -157,30 +169,21 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
 
     override fun registerProducto(producto: Producto, cultivo_id: Long) {
         view?.disableInputs()
-        view?.showDialogProgress()
-        if (checkConnection()) {
-            interactor?.registerOnlineProducto(producto, cultivo_id)
-        } else {
-            interactor?.registerProducto(producto, cultivo_id)
-        }
+        view?.showProgressHud()
+        interactor?.registerProducto(producto, cultivo_id,checkConnection())
     }
 
     override fun updateProducto(mProducto: Producto, cultivo_id: Long) {
-        view?.showDialogProgress()
-        if (checkConnection()) {
-            view?.disableInputs()
-            interactor?.updateProducto(mProducto, cultivo_id)
-        } else {
-            onMessageConnectionError()
-        }
+        view?.disableInputs()
+        view?.showProgressHud()
+        interactor?.updateProducto(mProducto, cultivo_id,checkConnection())
+
     }
 
     override fun deleteProducto(producto: Producto, cultivo_id: Long?) {
-        if (checkConnection()) {
-            interactor?.deleteProducto(producto, cultivo_id)
-        } else {
-            onMessageConnectionError()
-        }
+        view?.showProgressHud()
+        interactor?.deleteProducto(producto, cultivo_id,checkConnection())
+
     }
 
     override fun getListProductos(cultivo_id: Long?) {
@@ -209,7 +212,11 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
     }
 
     override fun setListSpinnerMoneda() {
-        view?.setListMoneda(listUnidadMedidaGlobal)
+        view?.setListMoneda(listUnidadMedidaGlobalPrecios)
+    }
+
+    override fun setListSpinnerCantidades() {
+        view?.setListUnidadCantidades(listUnidadMedidaGlobalCantidades)
     }
 
     override fun setListSpinnerCalidadProducto() {
@@ -219,13 +226,13 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
     //Métodos
     private fun onSaveOk() {
         view?.enableInputs()
-        view?.hideDialogProgress()
+        view?.hideProgressHud()
         view?.limpiarCampos()
         view?.requestResponseOK()
     }
 
     private fun onMessageConnectionError() {
-        view?.hideDialogProgress()
+        view?.hideProgressHud()
         view?.verificateConnection()
     }
     //endregion

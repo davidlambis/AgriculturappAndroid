@@ -582,8 +582,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         }
         txtNombreCultivo.setText(cultivo?.Nombre_Detalle_Tipo_Producto)
         txtNombreLote.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
-        txtPrecio.setText(cultivo?.FechaIncio)
-        txtArea.setText(cultivo?.FechaFin)
+        txtPrecio.setText(cultivo?.getFechaDate(cultivo.FechaIncio).toString())
+        txtArea.setText(cultivo?.getFechaDate(cultivo.FechaIncio).toString())
     }
 
     override fun verificateConnection(): AlertDialog? {

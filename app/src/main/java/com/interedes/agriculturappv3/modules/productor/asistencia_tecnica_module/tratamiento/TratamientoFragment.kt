@@ -475,7 +475,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             controlPlaga.CultivoId = cultivoGlobal?.Id
             controlPlaga.Dosis = viewDialog?.txtDosis?.text.toString().toDoubleOrNull()
             controlPlaga.UnidadMedidaId = unidadMedidaGlobal?.Id
-            controlPlaga.Fecha_aplicacion = Calendar.getInstance().time
+            controlPlaga.Fecha_aplicacion_local = Calendar.getInstance().time
             controlPlaga.TratamientoId = tratamientoId
             controlPlaga.EnfermedadesId = enfermedadId
             controlPlaga.NombrePlaga = nombreTipoEnfermedad

@@ -10,20 +10,17 @@ class ProductosInteractor : IProductos.Interactor {
         this.repository = ProductosRepository()
     }
 
-    override fun registerProducto(producto: Producto, cultivo_id: Long) {
-        repository?.registerProducto(producto, cultivo_id)
+    override fun registerProducto(producto: Producto, cultivo_id: Long,checkConection:Boolean) {
+        repository?.registerProducto(producto, cultivo_id,checkConection)
     }
 
-    override fun registerOnlineProducto(producto: Producto, cultivo_id: Long) {
-        repository?.registerOnlineProducto(producto, cultivo_id)
+
+    override fun updateProducto(mProducto: Producto, cultivo_id: Long,checkConection:Boolean) {
+        repository?.updateProducto(mProducto, cultivo_id,checkConection)
     }
 
-    override fun updateProducto(mProducto: Producto, cultivo_id: Long) {
-        repository?.updateProducto(mProducto, cultivo_id)
-    }
-
-    override fun deleteProducto(producto: Producto, cultivo_id: Long?) {
-        repository?.deleteProducto(producto, cultivo_id)
+    override fun deleteProducto(producto: Producto, cultivo_id: Long?,checkConection:Boolean) {
+        repository?.deleteProducto(producto, cultivo_id,checkConection)
     }
 
     override fun getListProductos(cultivo_id: Long?) {

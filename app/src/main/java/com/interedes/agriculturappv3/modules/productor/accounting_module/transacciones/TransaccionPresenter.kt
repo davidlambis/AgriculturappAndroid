@@ -194,8 +194,7 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
     override fun updateTransaccion(produccion: Transaccion, cultivo_id: Long?) {
         mainView?.showProgress()
         mainView?.disableInputs()
-        interactor?.registerTransaccion(produccion, cultivo_id,checkConnection())
-        onMessageConectionError()
+        interactor?.updateTransaccion(produccion, cultivo_id,checkConnection())
 
     }
 

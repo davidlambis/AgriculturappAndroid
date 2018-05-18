@@ -215,7 +215,7 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
             controlPlaga?.EstadoErradicacion = true
             /*val format1 = SimpleDateFormat("MM/dd/yyyy")
             val formatted = format1.format(Calendar.getInstance().time)*/
-            controlPlaga?.Fecha_Erradicacion = Calendar.getInstance().time
+            controlPlaga?.Fecha_Erradicacion_Local = Calendar.getInstance().time
             presenter?.updateControlPlaga(controlPlaga)
             //presenter?.getListControlPlaga(Cultivo_Id)
         })

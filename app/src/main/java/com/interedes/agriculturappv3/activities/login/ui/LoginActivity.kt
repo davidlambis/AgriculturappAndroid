@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.activities.login.ui
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
+import android.graphics.drawable.AnimationDrawable
 import android.net.ConnectivityManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
@@ -86,7 +88,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
 
     private fun getLastUser(): Usuario? {
         if (SQLite.select().from(Usuario::class.java).queryList().size > 0) {
-            val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).orderBy(Usuario_Table.SessionId, false).querySingle()
+            val usuarioLogued = SQLite.select().from(Usuario::class.java).orderBy(Usuario_Table.SessionId, false).querySingle()
             return usuarioLogued
         }
         return null
@@ -198,11 +200,17 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     }
 
     override fun showProgress() {
+
+
+        var imageView = ImageView(this);
+        imageView.setBackgroundResource(R.drawable.spin_animation_login);
+        var drawable = imageView.getBackground() as AnimationDrawable;
+        drawable.start();
         hud = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCustomView(imageView)
                 .setWindowColor(getResources().getColor(R.color.colorPrimary))
-                .setLabel("Cargando...",resources.getColor(R.color.white))
-                .setDetailsLabel("Validando Informacion");
+                .setLabel("Cargando...", resources.getColor(R.color.white_solid))
+                .setDetailsLabel("Validando Informacion")
         hud?.show()
     }
 

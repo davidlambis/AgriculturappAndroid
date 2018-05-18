@@ -323,7 +323,7 @@ interface ApiInterface {
 
 
     //region SINCRONIZE INFORMACION USUARIO LOGUED
-    @GET("odata/Agp2/UnidadProductivas?\$expand=LocalizacionUps,UnidadMedida,Ciudad(\$expand=Departamento),Lotes(\$expand=UnidadMedida,Cultivos(\$expand=UnidadMedida,Produccions(\$expand=UnidadMedida),DetalleTipoProducto(\$expand=TipoProducto(\$select=Nombre))))")
+    @GET("odata/Agp2/UnidadProductivas?\$expand=LocalizacionUps,UnidadMedida,Ciudad(\$expand=Departamento),Lotes(\$expand=UnidadMedida,Cultivos(\$expand=UnidadMedida,ControlPlagas,Produccions(\$expand=UnidadMedida),DetalleTipoProducto(\$expand=TipoProducto(\$select=Nombre))))")
     fun getSyncInformacionUsuario( @Query("\$filter") filter: String): Call<GetSincronizacionResponse>
 
 

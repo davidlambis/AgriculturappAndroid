@@ -54,15 +54,30 @@ data class Producto(@PrimaryKey
                     @Column(name = "Stock")
                     var Stock: Double? = 0.0,
 
+                    @SerializedName("PrecioUnidadMedida")
+                    @Column(name = "PrecioUnidadMedida")
+                    var PrecioUnidadMedida: String? = null,
+
                     @SerializedName("cultivoId")
                     @Column(name = "cultivoId")
                     var cultivoId: Long? = null,
 
+                    @SerializedName("UnidadMedidaId")
+                    @Column(name = "Unidad_Medida_Id")
+                    var Unidad_Medida_Id: Long? = null,
+
+                    @SerializedName("nombre")
+                    @Column(name = "Nombre")
+                    var Nombre: String? = null,
+
                     @Column(name = "blobImagen")
                     var blobImagen: Blob? = null,
 
-                    @Column(name = "NombreUnidadMedida")
-                    var NombreUnidadMedida: String? = null,
+                    @Column(name = "NombreUnidadMedidaCantidad")
+                    var NombreUnidadMedidaCantidad: String? = null,
+
+                    @Column(name = "NombreUnidadMedidaPrecio")
+                    var NombreUnidadMedidaPrecio: String? = null,
 
                     @Column(name = "NombreUnidadProductiva")
                     var NombreUnidadProductiva: String? = null,
@@ -80,7 +95,12 @@ data class Producto(@PrimaryKey
                     var NombreCalidad: String? = null,
 
                     @Column(getterName = "getEstadoSincronizacion")
-                    var EstadoSincronizacion: Boolean? = false) {
+                    var EstadoSincronizacion: Boolean? = false,
+
+                    @Column(getterName = "getEstado_SincronizacionUpdate")
+                    var Estado_SincronizacionUpdate: Boolean? = false
+
+                    ) {
 
     /*override fun toString(): String {
         return Nombre!!

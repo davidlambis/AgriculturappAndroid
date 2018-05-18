@@ -102,7 +102,7 @@ class TrannsaccionAdapter(var lista: ArrayList<Transaccion>)    : RecyclerView.A
 
             txtTitle.text=data.Descripcion_Puk+"( ${data.Nombre_Detalle_Producto_Cultivo} )"
             txtDescription.text=data.Descripcion_Puk+": ${data.Concepto}"
-            txtFechas.text=data.getFechaUpdateAt()
+            txtFechas.text=data.getFechaTransacccion()
             txtCantidad.text= String.format(context?.getString(R.string.price)!!,data.Valor_Total)
             txtAdicional.text= data.Nombre_Cultivo
             txtAdicional.text= data.Nombre_Tercero

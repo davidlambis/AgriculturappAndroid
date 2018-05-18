@@ -19,11 +19,12 @@ interface IProductos {
         fun validarListasAddProducto(): Boolean
         fun showProgress()
         fun hideProgress()
+        fun showProgressHud()
+        fun hideProgressHud()
+
         fun disableInputs()
         fun enableInputs()
         fun limpiarCampos()
-        fun showDialogProgress()
-        fun hideDialogProgress()
         //Fun Productos CRUD
         fun registerProducto()
 
@@ -39,12 +40,15 @@ interface IProductos {
         fun onMessageError(colorPrimary: Int, msg: String?)
         //Set sppiners
         fun setListMoneda(listMoneda: List<Unidad_Medida>?)
+        fun setListUnidadCantidades(listMoneda: List<Unidad_Medida>?)
 
         fun setListCalidad(listCalidadProducto: List<CalidadProducto>?)
 
         fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
         fun setListLotes(listLotes: List<Lote>?)
         fun setListCultivos(listCultivos: List<Cultivo>?)
+
+
 
 
         //Dialog
@@ -91,6 +95,7 @@ interface IProductos {
         fun setListSpinnerUnidadProductiva()
 
         fun setListSpinnerMoneda()
+        fun setListSpinnerCantidades()
         fun setListSpinnerLote(unidad_productiva_id: Long?)
         fun setListSpinnerCultivo(lote_id: Long?)
 
@@ -101,10 +106,9 @@ interface IProductos {
     }
 
     interface Interactor {
-        fun registerProducto(producto: Producto, cultivo_id: Long)
-        fun registerOnlineProducto(producto: Producto, cultivo_id: Long)
-        fun updateProducto(mProducto: Producto, cultivo_id: Long)
-        fun deleteProducto(producto: Producto, cultivo_id: Long?)
+        fun registerProducto(producto: Producto, cultivo_id: Long,checkConection:Boolean)
+        fun updateProducto(mProducto: Producto, cultivo_id: Long,checkConection:Boolean)
+        fun deleteProducto(producto: Producto, cultivo_id: Long?,checkConection:Boolean)
         fun getListProductos(cultivo_id: Long?)
         fun getListas()
         fun getCultivo(cultivo_id: Long?)
@@ -115,10 +119,11 @@ interface IProductos {
         fun getListas()
         fun getListProducto(cultivo_id: Long?)
         fun getProductos(cultivo_id: Long?): List<Producto>
-        fun registerProducto(mProducto: Producto, cultivo_id: Long)
-        fun registerOnlineProducto(mProducto: Producto, cultivo_id: Long)
-        fun updateProducto(mProducto: Producto, cultivo_id: Long)
-        fun deleteProducto(mProducto: Producto, cultivo_id: Long?)
+
+        fun registerProductoLocal(mProducto: Producto, cultivo_id: Long)
+        fun registerProducto(mProducto: Producto, cultivo_id: Long,checkConection:Boolean)
+        fun updateProducto(mProducto: Producto, cultivo_id: Long,checkConection:Boolean)
+        fun deleteProducto(mProducto: Producto, cultivo_id: Long?,checkConection:Boolean)
         fun getCultivo(cultivo_id: Long?)
         fun getLastProducto(): Producto?
     }

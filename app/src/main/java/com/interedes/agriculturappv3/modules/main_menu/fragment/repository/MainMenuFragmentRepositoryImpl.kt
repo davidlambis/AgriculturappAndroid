@@ -29,6 +29,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import com.google.gson.JsonParser
 import com.google.gson.Gson
+import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
+import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.lote.Lote
@@ -112,6 +114,11 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                             .async()
                             .execute()
 
+                    SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
+                            .where(ControlPlaga_Table.Estado_Sincronizacion.eq(true))
+                            .async()
+                            .execute()
+
 
 
                     //TODO Add information new remote
@@ -182,12 +189,26 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                                                 produccion.FechaFinProduccion=produccion.getFechaDate(produccion.StringFechaFin)
                                                 produccion.NombreUnidadMedida= if (produccion.unidadMedida!=null) produccion.unidadMedida?.Descripcion else null
                                                 produccion.save()
+
+
+                                                if(cultivo.controlPlagas?.size!!>0){
+                                                    for(controlplaga in cultivo.controlPlagas!!){
+                                                        controlplaga.Estado_Sincronizacion=true
+                                                        controlplaga.Estado_SincronizacionUpdate=true
+                                                        controlplaga.Fecha_aplicacion_local=controlplaga.getFechaDate(controlplaga.Fecha_aplicacion)
+                                                        controlplaga.Fecha_Erradicacion_Local=if(controlplaga.FechaErradicacion!=null)controlplaga.getFechaDate(controlplaga.FechaErradicacion)else null
+
+                                                        controlplaga.save()
+
+                                                    }
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
                         }
+
                         item.save()
                     }
 

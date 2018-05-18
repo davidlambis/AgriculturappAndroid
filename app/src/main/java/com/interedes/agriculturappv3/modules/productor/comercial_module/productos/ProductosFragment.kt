@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.AnimationDrawable
 import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.Environment
@@ -20,16 +21,16 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
@@ -44,11 +45,15 @@ import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Pro
 import com.interedes.agriculturappv3.modules.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.adapters.ProductosAdapter
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.data.Blob
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
+import kotlinx.android.synthetic.main.dialog_form_producto.*
 import kotlinx.android.synthetic.main.dialog_form_producto.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_productos.*
@@ -76,13 +81,16 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     var productosList: ArrayList<Producto>? = ArrayList<Producto>()
     var viewDialog: View? = null
 
-    var monedaGlobal: Unidad_Medida? = null
+
     var calidadProductoGlobal: CalidadProducto? = null
     var productoGlobal: Producto? = null
     var _dialogRegisterUpdate: AlertDialog? = null
     var dateTime = Calendar.getInstance()
     var fechaLimiteDisponibilidad: Date? = null
     var dialogo: AlertDialog? = null
+
+    var unidadMedidaCantidadGlobal: Unidad_Medida? = null
+    var unidadMedidaPrecioGlobal: Unidad_Medida? = null
 
     //CÁMARA
     val IMAGE_DIRECTORY = "/Productos"
@@ -95,6 +103,10 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     // var imageGlobalRutaFoto: String? = null
 
     var isFoto: Boolean? = false
+
+    //Progress
+    /** These can be lateinit as they are set in onCreate */
+    private var hud: KProgressHUD? = null
 
     companion object {
         var instance: ProductosFragment? = null
@@ -130,7 +142,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
     //region ADAPTER
     private fun initAdapter() {
-        recyclerView?.layoutManager = LinearLayoutManager(activity)
+        recyclerView?.layoutManager = GridLayoutManager(activity,2)
         adapter = ProductosAdapter(productosList!!)
         recyclerView?.adapter = adapter
     }
@@ -281,6 +293,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_form_producto, null)
         presenter?.setListSpinnerMoneda()
+        presenter?.setListSpinnerCantidades()
         presenter?.setListSpinnerCalidadProducto()
         viewDialog?.product_image?.setOnClickListener(this)
         viewDialog?.product_camera?.setOnClickListener(this)
@@ -313,11 +326,47 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.txtDetalleTipoProductoSelected?.setText(producto.NombreDetalleTipoProducto)
             viewDialog?.txtDescripcionProducto?.setText(producto.Descripcion)
             viewDialog?.spinnerCalidadProducto?.setText(producto.NombreCalidad)
-            viewDialog?.spinnerMonedaPrecio?.setText(producto.NombreUnidadMedida)
+            viewDialog?.spinnerMonedaPrecio?.setText(producto.NombreUnidadMedidaPrecio)
+            viewDialog?.spinnerUnidadMedidaCosecha?.setText(producto.NombreUnidadMedidaCantidad)
             viewDialog?.txtFechaLimiteDisponibilidad?.setText(producto.FechaLimiteDisponibilidad)
-            viewDialog?.txtPrecio?.setText(producto.Precio.toString())
+            viewDialog?.txtCantidadProductoDisponible?.setText(
+                    producto.Stock.toString())
+            viewDialog?.txtPrecioProducto?.setText(String.format(context!!.getString(R.string.price_empty_signe),
+                    producto.Precio))
+
+            viewDialog?.txtPrecioFormat?.setText(String.format(context!!.getString(R.string.price),
+                    producto.Precio))
+
+
+            unidadMedidaPrecioGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(producto.Unidad_Medida_Id)).querySingle()
+
 
         }
+
+
+        viewDialog?.txtPrecioProducto?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+
+                var precioVenta=  viewDialog?.txtPrecioProducto?.text.toString()?.toDoubleOrNull()
+
+                if(!viewDialog?.txtPrecioProducto?.text.toString().isEmpty()){
+
+                    viewDialog?.txtPrecioFormat?.setText(String.format(context!!.getString(R.string.price),
+                            precioVenta))
+
+                }else{
+                    viewDialog?.txtPrecioFormat?.setText("")
+                }
+            }
+        })
 
         val dialog = AlertDialog.Builder(context!!, android.R.style.Theme_Light_NoTitleBar)
                 .setView(viewDialog)
@@ -386,10 +435,26 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             val monedaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listMoneda)
             viewDialog?.spinnerMonedaPrecio?.setAdapter(monedaArrayAdapter)
             viewDialog?.spinnerMonedaPrecio?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                monedaGlobal = listMoneda!![position]
+                unidadMedidaPrecioGlobal = listMoneda!![position]
             }
         }
     }
+
+
+    override fun setListUnidadCantidades(listMoneda: List<Unidad_Medida>?) {
+        if (viewDialog != null) {
+            viewDialog?.spinnerUnidadMedidaCosecha?.setAdapter(null)
+            val monedaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listMoneda)
+            viewDialog?.spinnerUnidadMedidaCosecha?.setAdapter(monedaArrayAdapter)
+            viewDialog?.spinnerUnidadMedidaCosecha?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+                unidadMedidaCantidadGlobal = listMoneda!![position]
+            }
+        }
+    }
+
+
+
+
 
     override fun setListCalidad(listCalidadProducto: List<CalidadProducto>?) {
         if (viewDialog != null) {
@@ -442,15 +507,26 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.txtFechaLimiteDisponibilidad?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.txtFechaLimiteDisponibilidad
             cancel = true
-        } else if (viewDialog?.txtPrecio?.text.toString().isEmpty()) {
-            viewDialog?.txtPrecio?.setError(getString(R.string.error_field_required))
-            focusView = viewDialog?.txtPrecio
+        } else if (viewDialog?.txtPrecioProducto?.text.toString().isEmpty()) {
+            viewDialog?.txtPrecioProducto?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.txtPrecioProducto
             cancel = true
         } else if (viewDialog?.spinnerMonedaPrecio?.text.toString().isEmpty()) {
             viewDialog?.spinnerMonedaPrecio?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerMonedaPrecio
             cancel = true
-        } else if (isFoto == false) {
+        }
+        else if (viewDialog?.txtCantidadProductoDisponible?.text.toString().isEmpty()) {
+            viewDialog?.txtCantidadProductoDisponible?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.txtCantidadProductoDisponible
+            cancel = true
+        }
+        else if (viewDialog?.spinnerUnidadMedidaCosecha?.text.toString().isEmpty()) {
+            viewDialog?.spinnerUnidadMedidaCosecha?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.spinnerUnidadMedidaCosecha
+            cancel = true
+        }
+        else if (isFoto == false) {
             onMessageError(R.color.grey_luiyi, getString(R.string.error_image_selected))
             focusView = viewDialog?.spinnerMonedaPrecio
             cancel = true
@@ -505,7 +581,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.txtDescripcionProducto?.isEnabled = b
             viewDialog?.spinnerCalidadProducto?.isEnabled = b
             viewDialog?.txtFechaLimiteDisponibilidad?.isEnabled = b
-            viewDialog?.txtPrecio?.isEnabled = b
+            viewDialog?.txtPrecioProducto?.isEnabled = b
             viewDialog?.spinnerMonedaPrecio?.isEnabled = b
         }
     }
@@ -516,22 +592,11 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.txtDescripcionProducto?.setText("")
             viewDialog?.spinnerCalidadProducto?.setText("")
             viewDialog?.txtFechaLimiteDisponibilidad?.setText("")
-            viewDialog?.txtPrecio?.setText("")
+            viewDialog?.txtPrecioProducto?.setText("")
             viewDialog?.spinnerMonedaPrecio?.setText("")
         }
     }
 
-    override fun showDialogProgress() {
-        if (viewDialog != null) {
-            viewDialog?.progressBarProducto?.visibility = View.VISIBLE
-        }
-    }
-
-    override fun hideDialogProgress() {
-        if (viewDialog != null) {
-            viewDialog?.progressBarProducto?.visibility = View.GONE
-        }
-    }
 
     override fun showProgress() {
         swipeRefreshLayout.isRefreshing = true
@@ -539,6 +604,22 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
     override fun hideProgress() {
         swipeRefreshLayout.isRefreshing = false
+    }
+
+
+    override fun showProgressHud() {
+        hud = KProgressHUD.create(activity)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setWindowColor(getResources().getColor(R.color.colorPrimary))
+                .setLabel("Cargando...", resources.getColor(R.color.white_solid))
+                .setDetailsLabel("Guardando Informacion")
+        hud?.show()
+    }
+
+
+
+    override fun hideProgressHud() {
+        hud?.dismiss()
     }
 
     override fun setResults(productos: Int) {
@@ -640,6 +721,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     override fun registerProducto() {
         if (presenter?.validarCampos() == true) {
             val producto = Producto()
+            producto.Id=0
             producto.CalidadId = calidadProductoGlobal?.Id
             producto.NombreCalidad = calidadProductoGlobal?.Nombre
             //producto.Nombre = viewDialog?.txtNombreProducto?.text.toString()
@@ -650,13 +732,19 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             stringBuilder.append("data:image/jpeg;base64,")
             stringBuilder.append(android.util.Base64.encodeToString(imageGlobal, android.util.Base64.DEFAULT))
             producto.Imagen = stringBuilder.toString()
-            producto.Precio = viewDialog?.txtPrecio?.text.toString().toDoubleOrNull()
+            producto.Nombre= cultivoGlobal?.Nombre_Detalle_Tipo_Producto
+            producto.Precio = viewDialog?.txtPrecioProducto?.text.toString().toDoubleOrNull()
             producto.cultivoId = Cultivo_Id
+            producto.Stock=viewDialog?.txtCantidadProductoDisponible?.text.toString().toDoubleOrNull()
             producto.NombreUnidadProductiva = unidadProductivaGlobal?.nombre
             producto.NombreLote = loteGlobal?.Nombre
             producto.NombreCultivo = cultivoGlobal?.Nombre
             producto.NombreDetalleTipoProducto = cultivoGlobal?.Nombre_Detalle_Tipo_Producto
-            producto.NombreUnidadMedida = viewDialog?.spinnerMonedaPrecio?.text.toString()
+            producto.NombreUnidadMedidaPrecio = viewDialog?.spinnerMonedaPrecio?.text.toString()
+            producto.PrecioUnidadMedida = viewDialog?.spinnerMonedaPrecio?.text.toString()
+            producto.NombreUnidadMedidaCantidad = viewDialog?.spinnerUnidadMedidaCosecha?.text.toString()
+            producto.Unidad_Medida_Id=unidadMedidaCantidadGlobal?.Id
+
             presenter?.registerProducto(producto, Cultivo_Id!!)
         }
     }
@@ -689,9 +777,16 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 stringBuilder.append(android.util.Base64.encodeToString(byte, android.util.Base64.DEFAULT))
                 mProducto.Imagen = stringBuilder.toString()
             }
-            mProducto.Precio = viewDialog?.txtPrecio?.text.toString().toDoubleOrNull()
-            mProducto.NombreUnidadMedida = viewDialog?.spinnerMonedaPrecio?.text.toString()
+            mProducto.Stock=txtCantidadProductoDisponible.text.toString().toDoubleOrNull()
+            mProducto.Precio = viewDialog?.txtPrecioProducto?.text.toString().toDoubleOrNull()
+            mProducto.NombreUnidadMedidaPrecio = viewDialog?.spinnerMonedaPrecio?.text.toString()
+            mProducto.NombreUnidadMedidaCantidad = viewDialog?.spinnerUnidadMedidaCosecha?.text.toString()
+            mProducto.PrecioUnidadMedida = viewDialog?.spinnerMonedaPrecio?.text.toString()
+            mProducto.Unidad_Medida_Id=unidadMedidaCantidadGlobal?.Id
             presenter?.updateProducto(mProducto, Cultivo_Id!!)
+
+
+
         }
     }
 
@@ -700,7 +795,8 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         if (_dialogRegisterUpdate != null) {
             _dialogRegisterUpdate?.dismiss()
         }
-        Snackbar.make(container_fragment, getString(R.string.request_ok), Snackbar.LENGTH_SHORT).show()
+        onMessageOk(R.color.colorPrimary, getString(R.string.request_ok));
+       /// Snackbar.make(container_fragment, getString(R.string.request_ok), Snackbar.LENGTH_SHORT).show()
     }
 
     override fun requestResponseError(error: String?) {

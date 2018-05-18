@@ -13,5 +13,7 @@ class PlagasEvent(var eventType: Int, var mutableList: MutableList<Object>? = nu
         val ITEM_SELECT_PLAGA_EVENT: Int = 5
         val ITEM_OPEN_EVENT: Int = 6
 
+        val ITEM_EVENT_PLAGA: Int = 7
+
     }
 }

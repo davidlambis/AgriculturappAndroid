@@ -68,6 +68,14 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
                 view?.setListPlagas(list_plagas)
             }
 
+            PlagasEvent.ITEM_EVENT_PLAGA -> {
+                val enfermedad = plagasEvent.objectMutable as Enfermedad
+                view?.setViewDialogDescriptionFoto(enfermedad)
+
+            }
+
+
+
 
 
             PlagasEvent.LOAD_LIST_TIPO_PRODUCTO -> {

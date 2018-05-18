@@ -78,7 +78,7 @@
                             android:layout_below="@+id/txtNombreDetalleProducto"
                             android:adjustViewBounds="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/aguacate" />
+                            android:src="@drawable/emtpy_img_plaga" />
 
                         <com.robertlevonyan.views.expandable.Expandable
                             android:id="@+id/expandable"
