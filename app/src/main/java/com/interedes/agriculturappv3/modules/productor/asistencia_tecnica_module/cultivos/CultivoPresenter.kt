@@ -128,6 +128,7 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
                 val list_cultivos = cultivoEvent.mutableList as List<Cultivo>
                 view?.setListCultivos(list_cultivos)
                 view?.requestResponseOk()
+                view?.hideProgressHud()
             }
 
         //EVENTS ON ITEM CLICK
@@ -145,6 +146,12 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
                 val cultivo = cultivoEvent.objectMutable as Cultivo
                 view?.deleteCultivo(cultivo)
             }
+
+        //Error Conection
+            CultivoEvent.ERROR_VERIFICATE_CONECTION -> {
+                onMessageConnectionError()
+            }
+
         }
     }
 
@@ -168,35 +175,19 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
     override fun registerCultivo(cultivo: Cultivo?, loteId: Long?) {
         view?.showProgressHud()
         view?.disableInputs()
-        if (checkConnection()) {
-            interactor?.registerOnlineCultivo(cultivo, loteId)
-        } else {
-            interactor?.registerCultivo(cultivo, loteId)
-        }
-
+        interactor?.registerCultivo(cultivo, loteId,checkConnection())
     }
 
     override fun updateCultivo(cultivo: Cultivo?, loteId: Long?) {
         view?.showProgressHud()
         view?.disableInputs()
-        if (checkConnection()) {
-            interactor?.updateCultivo(cultivo, loteId)
-        } else {
-            onMessageConnectionError()
-        }
+        interactor?.updateCultivo(cultivo, loteId,checkConnection())
     }
 
     override fun deleteCultivo(cultivo: Cultivo?, loteId: Long?) {
+        view?.showProgressHud()
+        interactor?.deleteCultivo(cultivo, loteId,checkConnection())
 
-        if(cultivo?.EstadoSincronizacion==true){
-            if (checkConnection()) {
-                interactor?.deleteCultivo(cultivo, loteId)
-            } else {
-                onMessageConnectionError()
-            }
-        }else{
-            interactor?.deleteCultivo(cultivo, loteId)
-        }
     }
 
 

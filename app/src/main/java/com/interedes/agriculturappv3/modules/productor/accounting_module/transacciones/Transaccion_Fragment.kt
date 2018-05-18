@@ -316,7 +316,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
             transaccion.Nombre_Detalle_Producto_Cultivo=cultivoGlobal?.Nombre_Detalle_Tipo_Producto
             transaccion.CategoriaPuk_Id= typeTransaccion
             transaccion.Nombre_Estado_Transaccion=estadoTransaccionGlobal?.Nombre
-            presenter?.registerTransaccion(transaccion,Cultivo_Id!! )
+            presenter?.updateTransaccion(transaccion,Cultivo_Id!! )
         }
     }
 

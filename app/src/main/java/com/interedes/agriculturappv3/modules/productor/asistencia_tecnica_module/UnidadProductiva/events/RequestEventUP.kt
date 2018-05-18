@@ -33,5 +33,9 @@ data class RequestEventUP(var eventType: Int, var mutableList: MutableList<Objec
         //Buttons
         val ADD_POLIGON_EVENT: Int = 10
         val ADD_LOCATION_EVENT: Int = 11
+
+
+        //Error Connection
+        val ERROR_VERIFICATE_CONECTION: Int = 12
     }
 }

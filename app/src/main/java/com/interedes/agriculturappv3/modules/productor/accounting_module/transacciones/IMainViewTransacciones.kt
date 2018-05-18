@@ -99,23 +99,22 @@ interface IMainViewTransacciones {
     }
 
     interface Interactor {
-        fun registerTransaccion(transaccion: Transaccion, cultivo_id:Long?)
-        fun updateTransaccion(transaccion: Transaccion, cultivo_id:Long?)
-        fun deleteProducccionTransaccion(transaccion: Transaccion, cultivo_id:Long?)
+        fun registerTransaccion(transaccion: Transaccion, cultivo_id:Long?,checkConection:Boolean)
+        fun updateTransaccion(transaccion: Transaccion, cultivo_id:Long?,checkConection:Boolean)
+        fun deleteProducccionTransaccion(transaccion: Transaccion, cultivo_id:Long?,checkConection:Boolean)
         fun execute(cultivo_id:Long?,typeTransaccion:Long?)
         fun getListas()
         fun getCultivo(cultivo_id:Long?)
-        fun registerTransaccionOnline(transaccion: Transaccion, cultivo_id: Long?)
     }
 
     interface Repository {
         fun getListas()
         fun getListTransacciones(cultivo_id:Long?,typeTransaccion:Long?)
+        fun saveTransaccionLocal(transaccion: Transaccion, cultivo_id:Long?,tercero: Tercero)
         fun getTransaccion(cultivo_id:Long?,typeTransaccion:Long?): List<Transaccion>
-        fun saveTransaccion(transaccion: Transaccion, cultivo_id:Long?)
-        fun saveTransaccionOnline(transaccion: Transaccion, cultivo_id:Long?)
-        fun updateTransaccion(transaccion: Transaccion, cultivo_id:Long?)
-        fun deleteTransaccion(transaccion: Transaccion, cultivo_id:Long?)
+        fun saveTransaccion(transaccion: Transaccion, cultivo_id:Long?,checkConection:Boolean)
+        fun updateTransaccion(transaccion: Transaccion, cultivo_id:Long?,checkConection:Boolean)
+        fun deleteTransaccion(transaccion: Transaccion, cultivo_id:Long?,checkConection:Boolean)
         fun getCultivo(cultivo_id:Long?)
         fun getLastTransaccion(): Transaccion?
         fun getLastTercero(): Tercero?

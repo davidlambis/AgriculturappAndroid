@@ -10,6 +10,7 @@ import com.interedes.agriculturappv3.modules.models.parcelable.writeDate
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,11 +29,12 @@ data class Transaccion(@PrimaryKey
                        @Column(name = "EstadoId")
                        var EstadoId: Long? = 0,
 
-                       @SerializedName("Fecha")
+                       @SerializedName("Fecha_Transaccion")
                        @Column(name = "Fecha_Transaccion")
                        var Fecha_Transaccion: Date? = null,
 
-                       @SerializedName("FechaString")
+
+                       @SerializedName("Fecha")
                        @Column(name = "FechaString")
                        var FechaString: String? = null,
 
@@ -43,7 +45,7 @@ data class Transaccion(@PrimaryKey
                        @Column(name = "NaturalezaId")
                        var NaturalezaId: Long? = 0,
 
-                       @SerializedName("PucId")
+                       @SerializedName("PUCId")
                        @Column(name = "PucId")
                        var PucId: Long? = 0,
 
@@ -71,7 +73,7 @@ data class Transaccion(@PrimaryKey
                        var Cantidad: Double? = 0.0,
 
 
-                       @SerializedName("Cultivo_Id")
+                       @SerializedName("CultivoId")
                        @Column(name = "Cultivo_Id")
                        var Cultivo_Id: Long? = 0,
 
@@ -91,7 +93,23 @@ data class Transaccion(@PrimaryKey
                        var Nombre_Estado_Transaccion: String? = null,
 
                        @Column(getterName = "getEstado_Sincronizacion")
-                       var Estado_Sincronizacion: Boolean? = false
+                       var Estado_Sincronizacion: Boolean? = false,
+
+                       @Column(getterName = "getEstado_SincronizacionUpdate")
+                       var Estado_SincronizacionUpdate: Boolean? = false,
+
+                       @SerializedName("userId")
+                       @Column(name = "UsuarioId")
+                       var UsuarioId: UUID? = null,
+
+                       @SerializedName("Estado")
+                       var EstadoTransaccion:Estado_Transaccion?=null,
+
+                       @SerializedName("Tercero")
+                        var Tercero:Tercero?=null,
+
+                       @SerializedName("Puc")
+                       var Puc:Puk?=null
 
 ): KParcelable {
 
@@ -102,6 +120,21 @@ data class Transaccion(@PrimaryKey
        // val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return format1.format(cal.getTime() )
     }
+
+
+    fun getFechaDate(stringDate:String?):Date?{
+        val dateString = stringDate
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var convertedDate = Date()
+        try {
+            convertedDate = dateFormat.parse(dateString)
+        } catch (e: ParseException) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        }
+        return convertedDate
+    }
+
 
     fun getFechaTransacccion(): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())

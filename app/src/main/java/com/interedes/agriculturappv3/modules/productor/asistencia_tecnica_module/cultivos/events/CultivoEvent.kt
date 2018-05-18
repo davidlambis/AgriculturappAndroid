@@ -25,5 +25,8 @@ class CultivoEvent(var eventType: Int, var mutableList: MutableList<Object>? = n
         val LIST_EVENT_DETALLE_TIPO_PRODUCTO: Int = 16
 
         val GET_EVENT_LOTE: Int = 17
+
+        //Error Connection
+        val ERROR_VERIFICATE_CONECTION: Int = 18
     }
 }

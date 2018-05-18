@@ -98,10 +98,9 @@ interface IMainProduccion {
     }
 
     interface Interactor {
-        fun saveProduccionOnline(produccion: Produccion,cultivo_id:Long)
-
-        fun saveProduccion(produccion: Produccion,cultivo_id:Long)
-        fun deleteProducccion(produccion: Produccion,cultivo_id:Long?)
+        fun saveProduccion(produccion: Produccion,cultivo_id:Long,checkConection:Boolean)
+        fun updateProduccion(produccion: Produccion,cultivo_id:Long,checkConection:Boolean)
+        fun deleteProducccion(produccion: Produccion,cultivo_id:Long?,checkConection:Boolean)
         fun execute(cultivo_id:Long?)
         fun getListas()
         fun getCultivo(cultivo_id:Long?)
@@ -111,9 +110,10 @@ interface IMainProduccion {
         fun getListas()
         fun getListProduccion(cultivo_id:Long?)
         fun getProductions(cultivo_id:Long?): List<Produccion>
-        fun saveProduccionOnline(produccion: Produccion,cultivo_id:Long)
-        fun saveProduccion(produccion: Produccion,cultivo_id:Long)
-        fun deleteProduccion(produccion: Produccion,cultivo_id:Long?)
+        fun saveProduccionLocal(produccion: Produccion,cultivo_id:Long)
+        fun updateProduccion(produccion: Produccion,cultivo_id:Long,checkConection:Boolean)
+        fun saveProduccion(produccion: Produccion,cultivo_id:Long,checkConection:Boolean)
+        fun deleteProduccion(produccion: Produccion,cultivo_id:Long?,checkConection:Boolean)
         fun getCultivo(cultivo_id:Long?)
     }
 }

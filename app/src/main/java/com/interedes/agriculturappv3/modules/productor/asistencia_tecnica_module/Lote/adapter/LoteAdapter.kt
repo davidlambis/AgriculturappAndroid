@@ -91,10 +91,16 @@ class LoteAdapter(val lista: ArrayList<Lote>) : RecyclerView.Adapter<LoteAdapter
             txt_description_lote.text = data.Descripcion
             txtAreaLote.text = String.format(context.getString(R.string.cantidad_estimada)!!, data.Area, data.Nombre_Unidad_Medida)
             if (data.EstadoSincronizacion == true) {
+                txtFechaLote.setTextColor(resources.getColor(R.color.green))
                 txtFechaLote.text = context.getString(R.string.Sincronizado)
             } else {
+                txtFechaLote.setTextColor(resources.getColor(R.color.red_900))
                 txtFechaLote.text = context.getString(R.string.noSincronizado)
             }
+
+
+
+
             // txtCoordenada.text = data.Coordenadas
 
             //El listener en base a la posición

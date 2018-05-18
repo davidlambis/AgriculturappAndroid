@@ -12,6 +12,8 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenter
@@ -26,6 +28,7 @@ import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActi
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.services.resources.RolResources
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.Delete
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -39,6 +42,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     var presenter: LoginPresenter? = null
     var connectivityReceiver: ConnectivityReceiver? = null
     var lista: MutableList<Rol>? = null
+    private var hud: KProgressHUD? = null
 
     companion object {
         //val em = BuildConfig.em
@@ -64,6 +68,10 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
         if (intent.extras != null && intent.extras["correo"].equals(getString(R.string.snackbar_verificacion_correo))) {
             onMessageOk(R.color.colorPrimary, getString(R.string.snackbar_verificacion_correo))
         }
+
+        YoYo.with(Techniques.Pulse)
+                .repeat(10)
+                .playOn(fabLogin)
         //Registra al receiver de Internet
         //registerInternetReceiver()
     }
@@ -190,12 +198,20 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     }
 
     override fun showProgress() {
-        progressBar?.visibility = View.VISIBLE
+        hud = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setWindowColor(getResources().getColor(R.color.colorPrimary))
+                .setLabel("Cargando...",resources.getColor(R.color.white))
+                .setDetailsLabel("Validando Informacion");
+        hud?.show()
     }
 
     override fun hideProgress() {
-        progressBar?.visibility = View.GONE
+        hud?.dismiss()
     }
+
+
+
 
     override fun enableInputs() {
         setInputs(true)

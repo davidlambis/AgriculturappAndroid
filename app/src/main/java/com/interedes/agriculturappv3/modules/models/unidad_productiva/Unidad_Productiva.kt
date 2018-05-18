@@ -6,6 +6,7 @@ import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.models.departments.Ciudad
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.localizacion.LocalizacionUp
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
@@ -78,8 +79,17 @@ data class Unidad_Productiva(@PrimaryKey
                              @Column(name = "Nombre_Unidad_Medida")
                             var Nombre_Unidad_Medida: String? = null,
 
+
+
                              @Column(getterName = "getEstado_Sincronizacion")
                             var Estado_Sincronizacion: Boolean? = false,
+
+                             @Column(getterName = "getEstado_SincronizacionUpdate")
+                             var Estado_SincronizacionUpdate: Boolean? = false,
+
+
+                             @Column(name = "LocalizacionUpId")
+                             var LocalizacionUpId: Long? = 0,
 
 
                             @SerializedName("UnidadMedida")
@@ -89,7 +99,14 @@ data class Unidad_Productiva(@PrimaryKey
                              var Ciudad: Ciudad?= null,
 
                              @SerializedName("Lotes")
-                             var Lotes: ArrayList<Lote>?= null
+                             var Lotes: ArrayList<Lote>?= null,
+
+
+                             @SerializedName("LocalizacionUps")
+                             var LocalizacionUps: ArrayList<LocalizacionUp>?= null
+
+
+
                              ) {
     override fun toString(): String {
         return nombre!!

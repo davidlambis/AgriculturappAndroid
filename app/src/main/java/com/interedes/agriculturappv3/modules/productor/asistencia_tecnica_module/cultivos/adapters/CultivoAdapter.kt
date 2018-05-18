@@ -88,7 +88,7 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
                 txtAdicional.setTextColor(resources.getColor(R.color.green))
                 txtAdicional.text = context.getString(R.string.Sincronizado)
             } else {
-                txtAdicional.setTextColor(resources.getColor(R.color.green))
+                txtAdicional.setTextColor(resources.getColor(R.color.red_900))
                 txtAdicional.text = context.getString(R.string.noSincronizado)
             }
 
@@ -99,8 +99,16 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
             txt_nombre_cultivo.text = data.Nombre_Detalle_Tipo_Producto +"( ${data.Nombre})"
             txt_descripcion_cultivo.text = data.Descripcion
 
+            var fechaDateInicio= data.getFechaDate(data.FechaIncio)
+            var fechaDateFin= data.getFechaDate(data.FechaFin)
+
+            var fechaInicioFormat= data.getFechaFormat(fechaDateInicio)
+            var fechaFinFormat= data.getFechaFormat(fechaDateFin)
+
+
+
             txt_cosecha_estimada.text = String.format(context.getString(R.string.cantidad_estimada)!!, data.EstimadoCosecha, data.Nombre_Unidad_Medida)
-            txt_fechas_cultivo.setText(String.format(context.getString(R.string.range_dates)!!, data.stringFechaInicio, data.stringFechaFin))
+            txt_fechas_cultivo.setText(String.format(context.getString(R.string.range_dates)!!, fechaInicioFormat, fechaFinFormat))
 
             itemView.setOnClickListener {
                 postEvent(CultivoEvent.ITEM_EVENT, data)

@@ -36,11 +36,12 @@ import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPla
 import com.interedes.agriculturappv3.modules.models.plagas.EnfermedadResponseApi
 import com.interedes.agriculturappv3.modules.models.rol.RolUserLogued
 import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSincronizacionResponse
+import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSincronizacionTransacciones
 import com.interedes.agriculturappv3.modules.models.tratamiento.TratamientoResponse
 import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento
 import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.PostCalificacion
 import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.ResponseCalificacion
-import com.interedes.agriculturappv3.modules.models.unidad_productiva.localizacion.PostLocalizacionUp
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.localizacion.LocalizacionUp
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.CategoriaPucResponse
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.EstadoTransaccionResponse
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.PostTercero
@@ -128,7 +129,7 @@ interface ApiInterface {
 
     @Headers("Content-Type: application/json")
     @POST("odata/Agp2/LocalizacionUps")
-    fun postLocalizacionUnidadProductiva(@Body body: PostLocalizacionUp): Call<PostLocalizacionUp>
+    fun postLocalizacionUnidadProductiva(@Body body: LocalizacionUp): Call<LocalizacionUp>
 
 
     //Patch Unidad Productiva
@@ -137,6 +138,9 @@ interface ApiInterface {
     @PATCH("odata/Agp2/UnidadProductivas({Id})")
     fun updateUnidadProductiva(@Body body: PostUnidadProductiva, @Path("Id") Id: Long): Call<Unidad_Productiva>
 
+    @Headers("Content-Type: application/json")
+    @PATCH("odata/Agp2/LocalizacionUps({Id})")
+    fun updateLocalizacionUnidadProductiva(@Body body: LocalizacionUp, @Path("Id") Id: Long): Call<LocalizacionUp>
 
     @GET("odata/Agp2/Departamentos?\$expand=Ciudads")
     fun getDepartamentos(): Call<DeparmentsResponse>
@@ -292,6 +296,10 @@ interface ApiInterface {
     fun deletetransaccion(@Path("Id") Id: Long): Call<PostTransaccion>
 
 
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @DELETE("odata/Agp2/Terceros({Id})")
+    fun deleteTercero(@Path("Id") Id: Long): Call<PostTercero>
     //endregion
 
 
@@ -315,9 +323,19 @@ interface ApiInterface {
 
 
     //region SINCRONIZE INFORMACION USUARIO LOGUED
-    @GET("odata/Agp2/UnidadProductivas?\$expand=UnidadMedida,Ciudad(\$expand=Departamento),Lotes(\$expand=UnidadMedida,Cultivos)")
+    @GET("odata/Agp2/UnidadProductivas?\$expand=LocalizacionUps,UnidadMedida,Ciudad(\$expand=Departamento),Lotes(\$expand=UnidadMedida,Cultivos(\$expand=UnidadMedida,Produccions(\$expand=UnidadMedida),DetalleTipoProducto(\$expand=TipoProducto(\$select=Nombre))))")
     fun getSyncInformacionUsuario( @Query("\$filter") filter: String): Call<GetSincronizacionResponse>
-   // http://18.233.87.16/odata/Agp2/UnidadProductivas?$expand=Lotes($expand=Cultivos)&$filter=UsuarioId eq '0bdb5fcd-79cd-458d-bc24-59074f7b7aab'
+
+
+    @GET("odata/Agp2/Transaccions?\$expand=Estado,Tercero,Puc(\$expand=CategoriaPuc)")
+    fun getSyncInformacionUsuarioTransacciones( @Query("\$filter") filter: String): Call<GetSincronizacionTransacciones>
+
+
+
+
+
+
+    // http://18.233.87.16/odata/Agp2/UnidadProductivas?$expand=Lotes($expand=Cultivos)&$filter=UsuarioId eq '0bdb5fcd-79cd-458d-bc24-59074f7b7aab'
 
     //endregion
 

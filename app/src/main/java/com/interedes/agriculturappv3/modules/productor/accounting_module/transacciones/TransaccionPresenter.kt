@@ -161,6 +161,10 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
 
                 mainView?.requestResponseItemOK(transaccion.Nombre,transaccion.Id.toString())
             }
+                //Error Conection
+            RequestEventTransaccion.ERROR_VERIFICATE_CONECTION -> {
+                onMessageConectionError()
+            }
         }
     }
     //endregion
@@ -183,37 +187,23 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
     override fun registerTransaccion(transaccion: Transaccion, cultivo_Id: Long?) {
         mainView?.showProgress()
         mainView?.disableInputs()
-        if(checkConnection()){
-            //if(checkConnection()){
-            interactor?.registerTransaccionOnline(transaccion, cultivo_Id)
-        }else{
-            interactor?.registerTransaccion(transaccion, cultivo_Id)
-        }
+        interactor?.registerTransaccion(transaccion, cultivo_Id,checkConnection())
+
     }
 
     override fun updateTransaccion(produccion: Transaccion, cultivo_id: Long?) {
         mainView?.showProgress()
-        if (checkConnection()) {
-            mainView?.disableInputs()
-            interactor?.registerTransaccion(produccion, cultivo_id)
-        } else {
-            onMessageConectionError()
-        }
+        mainView?.disableInputs()
+        interactor?.registerTransaccion(produccion, cultivo_id,checkConnection())
+        onMessageConectionError()
+
     }
 
 
     override fun deleteTransaccion(transaccion: Transaccion, cultivo_id: Long?) {
+        mainView?.showProgressHud()
+        interactor?.deleteProducccionTransaccion(transaccion, cultivo_id,checkConnection())
 
-
-        if(transaccion?.Estado_Sincronizacion==true){
-            if (checkConnection()) {
-                interactor?.deleteProducccionTransaccion(transaccion, cultivo_id)
-            } else {
-                onMessageConectionError()
-            }
-        }else{
-            interactor?.deleteProducccionTransaccion(transaccion, cultivo_id)
-        }
     }
 
     override fun getListTransaccion(cultivo_id:Long?,typeTransaccion:Long?) {

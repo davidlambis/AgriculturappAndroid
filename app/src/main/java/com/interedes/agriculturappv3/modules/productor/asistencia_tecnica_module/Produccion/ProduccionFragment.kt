@@ -250,8 +250,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         if (presenter?.validarCampos() == true) {
             val producccion =  Produccion()
             producccion.Id=0
-            producccion.FechaInicio=fechaInicio
-            producccion.FechaFin=fechaFin
+            producccion.FechaInicioProduccion=fechaInicio
+            producccion.FechaFinProduccion=fechaFin
             producccion.ProduccionReal=viewDialog?.txtCantidadProduccionReal?.text.toString().toDoubleOrNull()
             producccion.CultivoId=Cultivo_Id
             producccion.UnidadMedidaId=unidadMedidaGlobal?.Id
@@ -269,8 +269,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         if (presenter?.validarCampos() == true) {
             //val producccion =  Produccion()
             //producccion.Id=produccion.Id
-            producccion.FechaInicio=fechaInicio
-            producccion.FechaFin=fechaFin
+            producccion.FechaInicioProduccion=fechaInicio
+            producccion.FechaFinProduccion=fechaFin
             producccion.ProduccionReal=viewDialog?.txtCantidadProduccionReal?.text.toString().toDoubleOrNull()
             producccion.CultivoId=Cultivo_Id
             producccion.UnidadMedidaId=unidadMedidaGlobal?.Id
@@ -364,8 +364,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             viewDialog?.txtCantidadProduccionReal?.setText(produccion.ProduccionReal.toString())
             viewDialog?.spinnerUnidadMedidaProduccion?.setText(produccion.NombreUnidadMedida)
 
-            fechaInicio= produccion.FechaInicio
-            fechaFin=produccion.FechaFin
+            fechaInicio= produccion.FechaInicioProduccion
+            fechaFin=produccion.FechaFinProduccion
         }
         //Set Events
         /*

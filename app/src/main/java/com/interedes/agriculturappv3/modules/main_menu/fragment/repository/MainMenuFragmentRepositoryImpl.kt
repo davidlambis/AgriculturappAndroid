@@ -29,18 +29,29 @@ import retrofit2.Callback
 import retrofit2.Response
 import com.google.gson.JsonParser
 import com.google.gson.Gson
+import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
+import com.interedes.agriculturappv3.modules.models.lote.Lote
+import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
+import com.interedes.agriculturappv3.modules.models.produccion.Produccion
+import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
 import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSincronizacionResponse
+import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSincronizacionTransacciones
 import com.interedes.agriculturappv3.modules.models.tratamiento.Tratamiento
 import com.interedes.agriculturappv3.modules.models.tratamiento.TratamientoResponse
 import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento
 import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento_Table
+import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.PostUnidadProductiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.CategoriaPucResponse
 import com.interedes.agriculturappv3.modules.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.EstadoTransaccionResponse
 import com.interedes.agriculturappv3.modules.models.ventas.Estado_Transaccion
+import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
+import com.interedes.agriculturappv3.modules.models.ventas.Transaccion_Table
 import com.interedes.agriculturappv3.services.listas.Listas
 
 
@@ -69,8 +80,6 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
     override fun getListasIniciales() {
 
 
-
-
         var usuario= getLastUserLogued()
         val query = Listas.queryGeneral("UsuarioId",usuario?.Id.toString())
         val callInformacionSinronized = apiService?.getSyncInformacionUsuario(query)
@@ -78,25 +87,124 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
             override fun onResponse(call: Call<GetSincronizacionResponse>?, response: Response<GetSincronizacionResponse>?) {
                 if (response != null && response.code() == 200) {
                     val unidadesProductivas = response.body()?.value as MutableList<Unidad_Productiva>
+
+
+                    //TODO Delete information in local, add new remote
+                    SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
+                            .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true))
+                            .async()
+                            .execute()
+
+
+                    SQLite.delete<Lote>(Lote::class.java)
+                            .where(Lote_Table.EstadoSincronizacion.eq(true))
+                            .async()
+                            .execute()
+
+
+                    SQLite.delete<Cultivo>(Cultivo::class.java)
+                            .where(Cultivo_Table.EstadoSincronizacion.eq(true))
+                            .async()
+                            .execute()
+
+                    SQLite.delete<Produccion>(Produccion::class.java)
+                            .where(Produccion_Table.Estado_Sincronizacion.eq(true))
+                            .async()
+                            .execute()
+
+
+
+                    //TODO Add information new remote
                     for (item in unidadesProductivas) {
+
+                         item.UsuarioId=usuario?.Id
                          item.Nombre_Ciudad= if (item.Ciudad!=null) item.Ciudad?.Nombre else null
                          item.Nombre_Unidad_Medida= if (item.UnidadMedida!=null) item.UnidadMedida?.Descripcion else null
                          item.Nombre_Departamento= if (item.Ciudad!=null) item.Ciudad?.Departamento?.Nombre else null
                          item.Estado_Sincronizacion=true
-                         item.save()
+                        item.Estado_SincronizacionUpdate=true
+
+                        if(item.LocalizacionUps?.size!!>0){
+                            for (localizacion in item.LocalizacionUps!!){
+                                item.DireccionAproximadaGps=localizacion.DireccionAproximadaGps
+                                item.Latitud=localizacion.Latitud
+                                item.Longitud=localizacion.Longitud
+                                item.Coordenadas=localizacion.Coordenadas
+                                item.Direccion=localizacion.Direccion
+                                item.Configuration_Point=true
+                                item.Configuration_Poligon=false
+                                item.LocalizacionUpId=localizacion.Id
+                            }
+                        }
+
+                        if(item.Lotes?.size!!>0){
+                            for (lote in item.Lotes!!){
+                                val coordenadas =lote.Localizacion
+                                if(coordenadas!=null || coordenadas!=""){
+                                    val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
+                                    var latitud= separated!![0].toDoubleOrNull() // this will contain "Fruit"
+                                    var longitud=separated!![1].toDoubleOrNull() // this will contain " they taste good"
+                                    lote.Latitud=latitud
+                                    lote.Longitud=longitud
+                                    lote.Coordenadas=coordenadas
+                                }
+
+                                lote.Nombre_Unidad_Medida= if (item.UnidadMedida!=null) item.UnidadMedida?.Descripcion else null
+                                lote.Nombre_Unidad_Productiva= item.nombre
+                                lote.EstadoSincronizacion=true
+                                lote.Nombre= if (lote.Nombre==null) "" else lote.Nombre
+                                lote.Descripcion= if (lote.Descripcion==null) "" else lote.Descripcion
+                                lote.Estado_SincronizacionUpdate=true
+
+                                lote.save()
+
+                                if(lote.Cultivos?.size!!>0){
+                                    for(cultivo in lote.Cultivos!!){
+                                        cultivo.NombreUnidadProductiva= item.nombre
+                                        cultivo.NombreLote= lote.Nombre
+                                        cultivo.EstadoSincronizacion= true
+                                        cultivo.Estado_SincronizacionUpdate= true
+
+                                        cultivo.Nombre_Detalle_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.Descripcion else null
+                                        cultivo.Id_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.TipoProductoId else null
+                                        cultivo.Nombre_Unidad_Medida=if (cultivo.unidadMedida!=null) cultivo.unidadMedida?.Descripcion else null
+                                        cultivo.save()
 
 
-
+                                        if(cultivo.produccions?.size!!>0){
+                                            for(produccion in cultivo.produccions!!){
+                                                produccion.Estado_Sincronizacion=true
+                                                produccion.Estado_SincronizacionUpdate=true
+                                                produccion.NombreCultivo=cultivo.Nombre
+                                                produccion.NombreLote=lote.Nombre
+                                                produccion.NombreUnidadProductiva=item.nombre
+                                                produccion.FechaInicioProduccion=produccion.getFechaDate(produccion.StringFechaInicio)
+                                                produccion.FechaFinProduccion=produccion.getFechaDate(produccion.StringFechaFin)
+                                                produccion.NombreUnidadMedida= if (produccion.unidadMedida!=null) produccion.unidadMedida?.Descripcion else null
+                                                produccion.save()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        item.save()
                     }
+
+                    loadTransacciones(usuario)
+
                 } else {
                     postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
             }
-
             override fun onFailure(call: Call<GetSincronizacionResponse>?, t: Throwable?) {
                 postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
         })
+
+
+
+
 
         //Tipos de Producto
         //val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
@@ -179,6 +287,12 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
             override fun onResponse(call: Call<TratamientoResponse>?, tratamientoResponse: Response<TratamientoResponse>?) {
                 if (tratamientoResponse != null && tratamientoResponse.code() == 200) {
                     val tratamientos = tratamientoResponse.body()?.value as MutableList<Tratamiento>
+
+                    //Update Informacion
+
+
+
+
                     for (item in tratamientos){
 
                         var sumacalificacion:Double?=0.0
@@ -362,17 +476,62 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
 
 
         //
+    }
+
+     fun loadTransacciones(usuario: Usuario?) {
+         //Sinc transacciones
+         val queryTransacciones = Listas.queryGeneral("userId",usuario?.Id.toString())
+         val callInformacionTransaccionesSinronized = apiService?.getSyncInformacionUsuarioTransacciones(queryTransacciones)
+         callInformacionTransaccionesSinronized?.enqueue(object : Callback<GetSincronizacionTransacciones> {
+             override fun onResponse(call: Call<GetSincronizacionTransacciones>?, response: Response<GetSincronizacionTransacciones>?) {
+                 if (response != null && response.code() == 200) {
+                     val transacciones = response.body()?.value as MutableList<Transaccion>
+
+                     SQLite.delete<Transaccion>(Transaccion::class.java)
+                             .where(Transaccion_Table.Estado_Sincronizacion.eq(true))
+                             .async()
+                             .execute()
+
+
+                     for (item in transacciones) {
+
+                         item.UsuarioId=usuario?.Id
+                         item.Nombre_Tercero= if (item.Tercero!=null) item.Tercero?.Nombre else null
+                         item.Nombre_Estado_Transaccion= if (item.EstadoTransaccion!=null) item.EstadoTransaccion?.Nombre else null
+                         item.Estado_Sincronizacion=true
+                         item.Identificacion_Tercero= if (item.Tercero!=null) item.Tercero?.NitRut else null
+                         item.Descripcion_Puk=if (item.Puc!=null) item.Puc?.Descripcion else null
+                         item.CategoriaPuk_Id=if (item.Puc!=null) item.Puc?.CategoriaId else null
+                         item.Estado_Sincronizacion=true
+                         item.Estado_SincronizacionUpdate=true
+                         var fechaDate=item.getFechaDate(item.FechaString)
+                         item.Fecha_Transaccion=fechaDate
 
 
 
+                         item.Valor_Unitario=if (item.Valor_Total!=null && item.Cantidad!=null)  item.Valor_Total!! / item.Cantidad?.toLong()!! else null
 
+                         var cultivo =SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(item.Cultivo_Id)).querySingle()
+                         if(cultivo!=null){
+                             item.Nombre_Cultivo=cultivo.Nombre
+                             item.Nombre_Detalle_Producto_Cultivo=cultivo.Nombre_Detalle_Tipo_Producto
+                         }
 
-
-
+                         item.save()
+                     }
+                 } else {
+                     postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                 }
+             }
+             override fun onFailure(call: Call<GetSincronizacionTransacciones>?, t: Throwable?) {
+                 postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
+             }
+         })
 
 
 
     }
+
 
 
     fun getLastUserLogued(): Usuario? {

@@ -163,6 +163,12 @@ class ControlPlagasPresenter(var view: IControlPlagas.View?) : IControlPlagas.Pr
                 val controlPlaga = event.objectMutable as ControlPlaga
                 view?.updatePlaga(controlPlaga)
             }
+
+        //Error Conection
+            ControlPlagasEvent.ERROR_VERIFICATE_CONECTION -> {
+                onMessageConectionError()
+            }
+
         }
     }
 

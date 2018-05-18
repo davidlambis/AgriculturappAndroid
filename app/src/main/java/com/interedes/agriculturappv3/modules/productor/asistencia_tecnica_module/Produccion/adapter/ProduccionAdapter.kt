@@ -109,7 +109,7 @@ class ProduccionAdapter(var lista: ArrayList<Produccion>) : RecyclerView.Adapter
                 txtAdicional.setTextColor(resources.getColor(R.color.green))
                 txtAdicional.text = context.getString(R.string.Sincronizado)
             } else {
-                txtAdicional.setTextColor(resources.getColor(R.color.green))
+                txtAdicional.setTextColor(resources.getColor(R.color.red_900))
                 txtAdicional.text = context.getString(R.string.noSincronizado)
             }
 

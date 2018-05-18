@@ -91,7 +91,6 @@ interface ICultivo {
 
         //Methods Repository
         fun registerCultivo(cultivo: Cultivo?, loteId: Long?)
-
         fun updateCultivo(cultivo: Cultivo?, loteId: Long?)
         fun deleteCultivo(cultivo: Cultivo?, loteId: Long?)
         fun getListas()
@@ -112,23 +111,22 @@ interface ICultivo {
     }
 
     interface Interactor {
-        fun registerCultivo(cultivo: Cultivo?, loteId: Long?)
-        fun updateCultivo(cultivo: Cultivo?, loteId: Long?)
-        fun deleteCultivo(cultivo: Cultivo?, loteId: Long?)
+        fun registerCultivo(cultivo: Cultivo?, loteId: Long?,checkConection:Boolean)
+        fun updateCultivo(cultivo: Cultivo?, loteId: Long?,checkConection:Boolean)
+        fun deleteCultivo(cultivo: Cultivo?, loteId: Long?,checkConection:Boolean)
         fun getListas()
         fun execute(lote_id: Long?)
         fun getLote(loteId: Long?)
-        fun registerOnlineCultivo(cultivo: Cultivo?, loteId: Long?)
+
     }
 
     interface Repository {
         fun getListas()
         fun getListCultivos(lote_id: Long?)
-        fun saveCultivo(mCultivo: Cultivo, loteId: Long?)
-        fun registerOnlineCultivo(mCultivo: Cultivo?, loteId: Long?)
-        fun updateCultivo(mCultivo: Cultivo, loteId: Long?)
-        fun deleteCultivo(mCultivo: Cultivo, loteId: Long?)
-
+        fun saveCultivoLocal(mCultivo: Cultivo, loteId: Long?)
+        fun saveCultivo(mCultivo: Cultivo, loteId: Long?,checkConection:Boolean)
+        fun updateCultivo(mCultivo: Cultivo, loteId: Long?,checkConection:Boolean)
+        fun deleteCultivo(mCultivo: Cultivo, loteId: Long?,checkConection:Boolean)
         fun getCultivos(loteId: Long?): List<Cultivo>
         fun getLote(loteId: Long?)
         fun getLastCultivo(): Cultivo?

@@ -2,9 +2,11 @@ package com.interedes.agriculturappv3.modules.models.produccion
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -21,13 +23,13 @@ data class Produccion(@PrimaryKey
                       @Column(name = "CultivoId")
                       var CultivoId: Long? = null,
 
-                      @SerializedName("FechaInicio")
+
                       @Column(name = "FechaInicio")
-                      var FechaInicio: Date? = null,
+                      var FechaInicioProduccion: Date? = null,
                       
-                      @SerializedName("FechaFin")
+
                       @Column(name = "FechaFin")
-                      var FechaFin: Date? = null,
+                      var FechaFinProduccion: Date? = null,
 
                       @SerializedName("Descripcion")
                       @Column(name = "Descripcion")
@@ -53,20 +55,49 @@ data class Produccion(@PrimaryKey
                       @Column(name = "NombreCultivo")
                       var NombreCultivo: String? = null,
 
-                      @Column(getterName = "getEstado_Sincronizacion")
-                      var Estado_Sincronizacion: Boolean? = false
+                      @SerializedName("FechaInicio")
+                      var StringFechaInicio: String? = null,
 
+                      @SerializedName("FechaFin")
+                      var StringFechaFin: String? = null,
+
+
+                      @Column(getterName = "getEstado_Sincronizacion")
+                      var Estado_Sincronizacion: Boolean? = false,
+
+                      @Column(getterName = "getEstado_SincronizacionUpdate")
+                      var Estado_SincronizacionUpdate: Boolean? = false,
+
+                      @SerializedName("UnidadMedida")
+                      var unidadMedida: Unidad_Medida?= null
 ) {
 
     fun getFechaInicioFormat(): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        return sdf.format(FechaInicio)
+        return sdf.format(FechaInicioProduccion)
     }
 
     fun getFechafinFormat(): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        return sdf.format(FechaFin)
+        return sdf.format(FechaFinProduccion)
     }
+
+
+    fun getFechaDate(stringDate:String?):Date?{
+        val dateString = stringDate
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var convertedDate = Date()
+        try {
+            convertedDate = dateFormat.parse(dateString)
+        } catch (e: ParseException) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        }
+        return convertedDate
+    }
+
+
+
 
 
 }

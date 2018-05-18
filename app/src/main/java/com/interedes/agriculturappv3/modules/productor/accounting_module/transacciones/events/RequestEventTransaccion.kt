@@ -38,5 +38,8 @@ data class RequestEventTransaccion (var eventType: Int,
 
         //
         val ITEM_EVENT_RADIO_TYPE_TRANSACION: Int = 17
+
+
+        val ERROR_VERIFICATE_CONECTION=18
     }
 }

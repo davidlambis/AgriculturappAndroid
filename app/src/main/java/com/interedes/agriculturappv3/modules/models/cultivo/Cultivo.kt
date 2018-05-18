@@ -3,10 +3,14 @@ package com.interedes.agriculturappv3.modules.models.cultivo
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table.FechaIncio
+import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleTipoProducto
+import com.interedes.agriculturappv3.modules.models.produccion.Produccion
+import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
 import java.sql.Timestamp
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -73,11 +77,25 @@ data class Cultivo(@PrimaryKey
                    @Column(getterName = "getEstadoSincronizacion")
                    var EstadoSincronizacion: Boolean? = false,
 
+                   @Column(getterName = "getEstado_SincronizacionUpdate")
+                   var Estado_SincronizacionUpdate: Boolean? = false,
+
                    @Column(name = "stringFechaInicio")
                    var stringFechaInicio: String? = null,
 
                    @Column(name = "stringFechaFin")
-                   var stringFechaFin: String? = null) {
+                   var stringFechaFin: String? = null,
+
+                   @SerializedName("UnidadMedida")
+                   var unidadMedida: Unidad_Medida?= null,
+
+                   @SerializedName("Produccions")
+                   var produccions:  ArrayList<Produccion>?= null,
+
+                   @SerializedName("DetalleTipoProducto")
+                   var detalleTipoProducto: DetalleTipoProducto?= null
+
+                   ) {
 
     override fun toString(): String {
         return String.format("%s - %s", Nombre, Nombre_Detalle_Tipo_Producto);
@@ -86,6 +104,31 @@ data class Cultivo(@PrimaryKey
     fun getNombreCultio(): String {
         return String.format("%s - %s", Nombre, Nombre_Detalle_Tipo_Producto);
     }
+
+
+    fun getFechaDate(stringDate:String?):Date?{
+        val dateString = stringDate
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var convertedDate = Date()
+        try {
+            convertedDate = dateFormat.parse(dateString)
+        } catch (e: ParseException) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        }
+        return convertedDate
+    }
+
+
+    fun getFechaFormat(date:Date?): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return sdf.format(date)
+    }
+
+
+
+
+
 
 /*
     fun getFechaIncioFormat(): String {

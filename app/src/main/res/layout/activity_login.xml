@@ -136,21 +136,10 @@
 
                         </LinearLayout>
 
-                        <ProgressBar
-                            android:id="@+id/progressBar"
-                            style="?android:attr/progressBarStyleInverse"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:indeterminate="true"
-                            android:indeterminateTint="@color/colorPrimary"
-                            android:indeterminateTintMode="src_atop"
-                            android:visibility="gone" />
 
                     </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
-
         </ScrollView>
 
     </FrameLayout>

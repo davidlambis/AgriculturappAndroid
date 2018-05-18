@@ -14,19 +14,17 @@ class ProduccionInteractor:IMainProduccion.Interactor {
         this.repository = ProduccionRepository()
     }
 
-    override fun saveProduccion(produccion: Produccion, cultivo_id: Long) {
-       repository?.saveProduccion(produccion,cultivo_id)
+    override fun saveProduccion(produccion: Produccion, cultivo_id: Long,checkConection:Boolean) {
+       repository?.saveProduccion(produccion,cultivo_id,checkConection)
+    }
+
+    override fun updateProduccion(produccion: Produccion, cultivo_id: Long, checkConection: Boolean) {
+        repository?.updateProduccion(produccion,cultivo_id,checkConection)
     }
 
 
-
-
-    override fun saveProduccionOnline(produccion: Produccion, cultivo_id: Long) {
-        repository?.saveProduccionOnline(produccion,cultivo_id)
-    }
-
-    override fun deleteProducccion(produccion: Produccion, cultivo_id: Long?) {
-        repository?.deleteProduccion(produccion,cultivo_id)
+    override fun deleteProducccion(produccion: Produccion, cultivo_id: Long?,checkConection:Boolean) {
+        repository?.deleteProduccion(produccion,cultivo_id,checkConection)
     }
 
     override fun execute(cultivo_id:Long?) {

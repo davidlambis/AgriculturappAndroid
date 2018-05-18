@@ -13,20 +13,15 @@ class UpInteractor : IUnidadProductiva.Interactor {
         this.upRepo = UpRepository()
     }
 
-    override fun registerUP(unidadProductivaModel: Unidad_Productiva?) {
-        upRepo!!.saveUp(unidadProductivaModel!!)
+    override fun registerUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean) {
+        upRepo!!.saveUp(unidadProductivaModel!!,checkConection)
+    }
+    override fun updateUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean) {
+        upRepo!!.updateUp(unidadProductivaModel!!,checkConection)
     }
 
-    override fun registerOnlineUP(unidadProductivaModel: Unidad_Productiva?) {
-        upRepo?.registerOnlineUP(unidadProductivaModel)
-    }
-
-    override fun updateUP(unidadProductivaModel: Unidad_Productiva?) {
-        upRepo!!.updateUp(unidadProductivaModel!!)
-    }
-
-    override fun deleteUP(unidadProductivaModel: Unidad_Productiva?) {
-        upRepo!!.deleteUp(unidadProductivaModel!!)
+    override fun deleteUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean) {
+        upRepo!!.deleteUp(unidadProductivaModel!!,checkConection)
     }
 
     override fun execute() {
@@ -36,6 +31,4 @@ class UpInteractor : IUnidadProductiva.Interactor {
     override fun getListas() {
         upRepo!!.getListas()
     }
-
-
 }

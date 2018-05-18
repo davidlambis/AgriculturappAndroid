@@ -496,7 +496,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             presenter?.setListSpinnerCultivo(loteGlobal?.Id, tipoProductoId)
 
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
-            viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
+            viewDialogFilter?.spinnerLote?.setText(loteGlobal?.toString())
             viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.Nombre)
         }
 

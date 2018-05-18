@@ -32,5 +32,7 @@ data class RequestEventProduccion (var eventType: Int,
 
         //Query Single
         val GET_EVENT_CULTIVO: Int = 13
+        //Error Connection
+        val ERROR_VERIFICATE_CONECTION: Int = 14
     }
 }

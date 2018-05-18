@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/container_fragment"
-    tools:context="com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.ui.Lote_Fragment">
+    tools:context="com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.Lote_Fragment">
 
 <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"

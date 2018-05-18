@@ -12,7 +12,7 @@ import android.view.ViewGroup
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.adapters.SingleAdapter
-import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.ui.Lote_Fragment
+import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.Lote_Fragment
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Produccion.ProduccionFragment
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.UnidadProductiva.UnidadProductiva_Fragment
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.cultivos.Cultivo_Fragment

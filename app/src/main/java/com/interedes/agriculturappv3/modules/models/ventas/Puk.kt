@@ -23,9 +23,10 @@ data class Puk(@PrimaryKey
 
                        @SerializedName("Descripcion")
                        @Column(name = "Descripcion")
-                       var Descripcion: String? = null
+                       var Descripcion: String? = null,
 
-
+                       @SerializedName("CategoriaPuc")
+                       var CategoriaPuk:CategoriaPuk?=null
 ) {
 
     override fun toString(): String {

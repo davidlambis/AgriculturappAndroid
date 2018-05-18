@@ -307,7 +307,7 @@
     <string name="name_usuario">Nombre Usuario</string>
     <string name="identificacion_usuario">Identificación Usuario</string>
     <string name="tittle_register_success">! Felicitaciones !</string>
-    <string name="description_register_success">Te has registrado exitosamente, recuerda confirmar la cuenta en tu dirección de correo electronico</string>
+    <string name="description_register_success">Te has registrado exitosamente, recuerda confirmar la cuenta en tu dirección de correo electrónico.</string>
 
     <!-- INTERNET CONNECTION -->
     <string name="internet_connected">Conectado a Internet</string>
@@ -326,7 +326,7 @@
     <string name="Sincronizado">Sincronizado</string>
     <string name="noSincronizado">No Sincronizado</string>
 
-    <string name="init_service_coords">Iniciar serrvicio de coordenadas para obtener ubicacion</string>
+    <string name="init_service_coords">Iniciar servicio de coordenadas para obtener ubicación</string>
 
 
     <string-array name="array_type_get_location_with_conection">
@@ -347,14 +347,14 @@
 
     <string name="tittle_is_calificate_tratamiento">Ya haz calificado este tratamiento con %.1f</string>
     <string name="tittle_not_calificate_tratamiento">Calificar tratamiento</string>
-    <string name="request_calificate_exist_ok">Ya haz realizado la califficacion para este tratamiento, hemos actualizado tu calificacion</string>
+    <string name="request_calificate_exist_ok">Ya haz realizado la califficación para este tratamiento, hemos actualizado tu calificacion</string>
     <string name="request_calificate_ok">Haz calificado el tratamiento, Gracias</string>
     <string name="required_calificacion_tratamiento">Debes seleccionar tu calificacion</string>
 
     <string name="calificar_tratamiento">Calificar Tratamiento</string>
 
     <!--CHAT SMS-->
-    <string name="tittle_sms_messajes">My bandeja de entrada de mensajes</string>
+    <string name="tittle_sms_messajes">Mi bandeja de entrada de mensajes</string>
     <string name="idenfication_sms_app">AgriculturApp</string>
     <string name="idenfication_send_sms_app">AgriculturApp:</string>
     <string name="online">En linea</string>

@@ -3,41 +3,41 @@ package com.interedes.agriculturappv3.modules.models.unidad_productiva.localizac
 import com.google.gson.annotations.SerializedName
 
 
-data class PostLocalizacionUp(@SerializedName("Id")
+data class LocalizacionUp(@SerializedName("Id")
                                 var Id: Long? = 0,
 
-                                @SerializedName("Barrio")
+                          @SerializedName("Barrio")
                                 var Barrio: String? = null,
 
-                                @SerializedName("Coordenadas")
+                          @SerializedName("Coordenadas")
                                 var Coordenadas: String? = null,
 
-                                @SerializedName("Direccion")
+                          @SerializedName("Direccion")
                                 var Direccion: String? = null,
 
-                                @SerializedName("DireccionAproximadaGps")
+                          @SerializedName("DireccionAproximadaGps")
                                 var DireccionAproximadaGps: String? = null,
 
-                                @SerializedName("Latitud")
+                          @SerializedName("Latitud")
                                 var Latitud: Double? = null,
 
-                                @SerializedName("Longitud")
+                          @SerializedName("Longitud")
                                 var Longitud: Double? = null,
 
-                                @SerializedName("ReferenciaLocalizacion")
+                          @SerializedName("ReferenciaLocalizacion")
                                 var ReferenciaLocalizacion: String? = null,
 
-                                @SerializedName("Localidad")
+                          @SerializedName("Localidad")
                                 var Localidad: String? = null,
 
-                                @SerializedName("Sector")
+                          @SerializedName("Sector")
                                 var Sector: String? = null,
 
 
-                                @SerializedName("UnidadProductivaId")
+                          @SerializedName("UnidadProductivaId")
                                 var UnidadProductivaId: Long? = 0,
 
-                                @SerializedName("veredad")
-                                var Vereda: String? = null) {
+                          @SerializedName("vereda")
+                                var vereda: String? = null) {
 
 }

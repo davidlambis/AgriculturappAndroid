@@ -95,7 +95,57 @@ class CultivoRepository : ICultivo.Repository {
         return listResponse;
     }
 
-    override fun saveCultivo(mCultivo: Cultivo, loteId: Long?) {
+    override fun saveCultivo(mCultivo: Cultivo, loteId: Long?,checkConection:Boolean) {
+        //TODO si existe conexion a internet
+        if(checkConection){
+            //TODO Ciudad Id de la tabla del backend
+            val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.Id.eq(loteId)).querySingle()
+            if (lote?.EstadoSincronizacion == true) {
+                val postCultivo = PostCultivo(0,
+                        mCultivo?.Descripcion,
+                        mCultivo?.DetalleTipoProductoId,
+                        mCultivo.Unidad_Medida_Id,
+                        mCultivo?.EstimadoCosecha,
+                        mCultivo?.stringFechaFin,
+                        mCultivo?.stringFechaInicio,
+                        mCultivo?.LoteId,
+                        mCultivo?.Nombre,
+                        mCultivo?.siembraTotal)
+
+                val call = apiService?.postCultivo(postCultivo)
+                call?.enqueue(object : Callback<Cultivo> {
+                    override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
+                        if (response != null && response.code() == 201) {
+                            val value = response.body()
+                            mCultivo?.Id = value?.Id!!
+                            mCultivo?.FechaIncio = value.FechaIncio
+                            mCultivo?.FechaFin = value.FechaFin
+                            mCultivo?.EstadoSincronizacion = true
+                            mCultivo?.Estado_SincronizacionUpdate = true
+                            mCultivo?.save()
+                            postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
+                        } else {
+                            postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                            Log.e("error", response?.message().toString())
+                        }
+                    }
+                    override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
+                        postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                })
+            }
+            //TODO con conexion a internet sin sincronizacion, registro local
+            else {
+                saveCultivoLocal(mCultivo, loteId)
+            }
+        }
+        //TODO sin conexion a internet, registro local
+        else{
+            saveCultivoLocal(mCultivo, loteId)
+        }
+    }
+
+    override fun saveCultivoLocal(mCultivo: Cultivo, loteId: Long?){
         val last_cultivo = getLastCultivo()
         if (last_cultivo == null) {
             mCultivo.Id = 1
@@ -106,92 +156,79 @@ class CultivoRepository : ICultivo.Repository {
         postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
     }
 
-    override fun registerOnlineCultivo(mCultivo: Cultivo?, loteId: Long?) {
-        val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.Id.eq(loteId)).querySingle()
-        if (lote?.EstadoSincronizacion == true) {
-            val postCultivo = PostCultivo(0,
-                    mCultivo?.Descripcion,
-                    mCultivo?.DetalleTipoProductoId,
-                    mCultivo?.EstimadoCosecha,
-                    mCultivo?.stringFechaFin,
-                    mCultivo?.stringFechaInicio,
-                    mCultivo?.LoteId,
-                    mCultivo?.Nombre,
-                    mCultivo?.siembraTotal)
 
-            val call = apiService?.postCultivo(postCultivo)
-            call?.enqueue(object : Callback<Cultivo> {
-                override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
-                    if (response != null && response.code() == 201) {
-                        val value = response.body()
-                        mCultivo?.Id = value?.Id!!
-                        mCultivo?.FechaIncio = value.FechaIncio
-                        mCultivo?.FechaFin = value.FechaFin
-                        mCultivo?.EstadoSincronizacion = true
-                        mCultivo?.save()
-                        postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
-                    } else {
-                        postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
-                        Log.e("error", response?.message().toString())
+    override fun updateCultivo(mCultivo: Cultivo, loteId: Long?,checkConection:Boolean) {
+
+        //TODO si existe coneccion a internet
+        if(checkConection){
+            //TODO se valida estado de sincronizacion  para actualizar,actualizacion remota
+            if (mCultivo.EstadoSincronizacion == true) {
+                val postCultivo = PostCultivo(mCultivo.Id,
+                        mCultivo.Descripcion,
+                        mCultivo.DetalleTipoProductoId,
+                        mCultivo.Unidad_Medida_Id,
+                        mCultivo.EstimadoCosecha,
+                        mCultivo.stringFechaFin,
+                        mCultivo.stringFechaInicio,
+                        mCultivo.LoteId,
+                        mCultivo.Nombre,
+                        mCultivo.siembraTotal)
+                val call = apiService?.updateCultivo(postCultivo, mCultivo.Id!!)
+                call?.enqueue(object : Callback<Cultivo> {
+                    override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
+                        if (response != null && response.code() == 200) {
+                            mCultivo?.Estado_SincronizacionUpdate = true
+                            mCultivo.update()
+                            postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
+                        } else {
+                            postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                        }
                     }
-                }
-
-                override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
-                    postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
-                }
-
-            })
-        } else {
-            saveCultivo(mCultivo!!, loteId)
-            //postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
+                    override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
+                        postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                })
+            }
+            //TODO con  conexion a internet, pero no se ha sincronizado,actualizacion local
+            else {
+                mCultivo?.Estado_SincronizacionUpdate = false
+                mCultivo.update()
+                postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
+            }
+        }
+        //TODO sin conexion a internet, actualizacion local
+        else{
+            mCultivo?.Estado_SincronizacionUpdate = false
+            mCultivo.update()
+            postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
         }
     }
 
-    override fun updateCultivo(mCultivo: Cultivo, loteId: Long?) {
+    override fun deleteCultivo(mCultivo: Cultivo, loteId: Long?,checkConection:Boolean) {
+
+        //TODO se valida estado de sincronizacion  para eliminar
         if (mCultivo.EstadoSincronizacion == true) {
-            val postCultivo = PostCultivo(mCultivo.Id,
-                    mCultivo.Descripcion,
-                    mCultivo.DetalleTipoProductoId,
-                    mCultivo.EstimadoCosecha,
-                    mCultivo.stringFechaFin,
-                    mCultivo.stringFechaInicio,
-                    mCultivo.LoteId,
-                    mCultivo.Nombre,
-                    mCultivo.siembraTotal)
-            val call = apiService?.updateCultivo(postCultivo, mCultivo.Id!!)
-            call?.enqueue(object : Callback<Cultivo> {
-                override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
-                    if (response != null && response.code() == 200) {
-                        mCultivo.update()
-                        postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
-                    } else {
+            //TODO si existe coneccion a internet se elimina
+            if(checkConection){
+                val call = apiService?.deleteCultivo(mCultivo.Id!!)
+                call?.enqueue(object : Callback<Cultivo> {
+                    override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
+                        if (response != null && response.code() == 204) {
+                            mCultivo.delete()
+                            postEventOk(CultivoEvent.DELETE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
+                        }
+                    }
+                    override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
                         postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
                     }
-                }
-                override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
-                    postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
-                }
-            })
-        } else {
-            postEventError(CultivoEvent.ERROR_EVENT, "Error!. El Cultivo no se ha subido")
-        }
-    }
+                })
 
-    override fun deleteCultivo(mCultivo: Cultivo, loteId: Long?) {
-        if (mCultivo.EstadoSincronizacion == true) {
-            val call = apiService?.deleteCultivo(mCultivo.Id!!)
-            call?.enqueue(object : Callback<Cultivo> {
-                override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
-                    if (response != null && response.code() == 204) {
-                        mCultivo.delete()
-                        postEventOk(CultivoEvent.DELETE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
-                    }
-                }
-                override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
-                    postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
-                }
-            })
+            }else{
+                postEventError(CultivoEvent.ERROR_VERIFICATE_CONECTION, null)
+            }
         } else {
+            //TODO No sincronizado, Eliminar de manera local
+            //Verificate if cultivos register
             var vericateRegisterProduccion= SQLite.select().from(Produccion::class.java).where(Produccion_Table.CultivoId.eq(mCultivo.Id)).querySingle()
             if(vericateRegisterProduccion!=null){
                 postEventError(CultivoEvent.ERROR_EVENT, "Error!.El cultivo no se ha podido eliminar, recuerde eliminar la produccion primero")
@@ -199,9 +236,7 @@ class CultivoRepository : ICultivo.Repository {
                 mCultivo.delete()
                 postEventOk(CultivoEvent.DELETE_EVENT,  getCultivos(mCultivo.LoteId), mCultivo)
             }
-           /// postEventError(CultivoEvent.ERROR_EVENT, "Error!. El Cultivo no se ha eliminado")
         }
-
     }
 
 

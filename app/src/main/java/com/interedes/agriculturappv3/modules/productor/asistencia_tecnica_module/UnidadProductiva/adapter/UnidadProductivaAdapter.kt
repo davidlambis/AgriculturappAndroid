@@ -85,10 +85,17 @@ class UnidadProductivaAdapter(val lista: ArrayList<Unidad_Productiva>) : Recycle
             txt_descripcion_unidadproductiva.text = data.descripcion
             txt_area_unidad_productiva.text = data.Area.toString()
             if (data.Estado_Sincronizacion == true) {
+                txt_fecha_unidad_productiva.setTextColor(resources.getColor(R.color.green))
                 txt_fecha_unidad_productiva.text = context.getString(R.string.Sincronizado)
             } else {
+                txt_fecha_unidad_productiva.setTextColor(resources.getColor(R.color.red_900))
                 txt_fecha_unidad_productiva.text = context.getString(R.string.noSincronizado)
             }
+
+
+
+
+
             //txtCiudaDepartamento.text =data.Nombre_Ciudad+"-"+data.Nombre_Departamento
 
             //var badge_notification_location_up: TextView = itemView.findViewById(R.id.badge_notification_location_up)

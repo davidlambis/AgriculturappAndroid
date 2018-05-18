@@ -10,20 +10,17 @@ class TransaccionInteractor: IMainViewTransacciones.Interactor {
         this.repository = TransaccionRespository()
     }
 
-    override fun registerTransaccion(transaccion: Transaccion, cultivo_id: Long?) {
-        repository?.saveTransaccion(transaccion,cultivo_id)
+    override fun registerTransaccion(transaccion: Transaccion, cultivo_id: Long?,checkConection:Boolean) {
+        repository?.saveTransaccion(transaccion,cultivo_id,checkConection)
     }
 
-    override fun registerTransaccionOnline(transaccion: Transaccion, cultivo_id: Long?) {
-        repository?.saveTransaccionOnline(transaccion,cultivo_id)
+
+    override fun updateTransaccion(transaccion: Transaccion, cultivo_id: Long?,checkConection:Boolean) {
+        repository?.updateTransaccion(transaccion,cultivo_id,checkConection)
     }
 
-    override fun updateTransaccion(transaccion: Transaccion, cultivo_id: Long?) {
-        repository?.updateTransaccion(transaccion,cultivo_id)
-    }
-
-    override fun deleteProducccionTransaccion(transaccion: Transaccion, cultivo_id: Long?) {
-        repository?.deleteTransaccion(transaccion,cultivo_id)
+    override fun deleteProducccionTransaccion(transaccion: Transaccion, cultivo_id: Long?,checkConection:Boolean) {
+        repository?.deleteTransaccion(transaccion,cultivo_id,checkConection)
     }
 
     override fun execute(cultivo_id: Long?,typeTransaccion:Long?) {

@@ -47,7 +47,9 @@ data class ControlPlaga(@PrimaryKey
                         @Column(getterName = "getEstadoErradicacion")
                         var EstadoErradicacion: Boolean? = false,
                         @Column(getterName = "getEstado_Sincronizacion")
-                        var Estado_Sincronizacion: Boolean? = false) {
+                        var Estado_Sincronizacion: Boolean? = false,
+                        @Column(getterName = "getEstado_SincronizacionUpdate")
+                        var Estado_SincronizacionUpdate: Boolean? = false) {
 
     fun getFechaAplicacionFormat(): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())

@@ -45,9 +45,62 @@ class TratamientoRepository : ITratamiento.Repository {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
     }
-    //Controlde plagas
-    override fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?) {
 
+
+    //Controlde plagas
+    override fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?,checkConection:Boolean) {
+
+        //TODO si existe conexion a internet
+        if(checkConection){
+
+            //TODO Ciudad Id de la tabla del backend
+            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+            if (cultivo?.EstadoSincronizacion == true) {
+                val postControlPlaga = PostControlPlaga(
+                        0,
+                        controlPlaga.CultivoId,
+                        controlPlaga.Dosis,
+                        controlPlaga.EnfermedadesId,
+                        controlPlaga.getFechaAplicacionFormatApi(),
+                        controlPlaga.TratamientoId,
+                        controlPlaga.UnidadMedidaId,
+                        controlPlaga.getFechaErradicacionFormatApi(),
+                        controlPlaga.EstadoErradicacion
+                )
+                val call = apiService?.postControlPlaga(postControlPlaga)
+                call?.enqueue(object : Callback<PostControlPlaga> {
+                    override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
+                        if (response != null && response.code() == 201 || response?.code() == 200) {
+
+                            var controlPlagaResponse= response.body()
+                            controlPlaga.Id = controlPlagaResponse?.Id!!
+                            controlPlaga.Estado_Sincronizacion = true
+                            controlPlaga?.Estado_SincronizacionUpdate = true
+                            controlPlaga.save()
+                            postEventControlPlaga(TratamientoEvent.SAVE_CONTROL_PLAGA_EVENT, getControlPlagasByCultivo(cultivo_id))
+                        } else {
+                            postEventError(TratamientoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                        }
+                    }
+                    override fun onFailure(call: Call<PostControlPlaga>?, t: Throwable?) {
+                        postEventError(TratamientoEvent.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                })
+
+            }
+            //TODO con conexion a internet sin sincronizacion, registro local
+            else {
+                saveControlPlagaLocal(controlPlaga,cultivo_id)
+            }
+        }
+        //TODO sin conexion a internet, registro local
+        else{
+            saveControlPlagaLocal(controlPlaga,cultivo_id)
+        }
+    }
+
+
+    override fun saveControlPlagaLocal(controlPlaga: ControlPlaga, cultivo_id: Long?){
         val lastControl = getLastControlPlaga()
         if (lastControl == null) {
             controlPlaga.Id = 1
@@ -64,43 +117,6 @@ class TratamientoRepository : ITratamiento.Repository {
         return lastControlPlaga
     }
 
-    override fun registerControlPlagaOnline(controlPlaga: ControlPlaga, cultivo_id: Long?) {
-        val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
-        if (cultivo?.EstadoSincronizacion == true) {
-            val postControlPlaga = PostControlPlaga(
-                    0,
-                    controlPlaga.CultivoId,
-                    controlPlaga.Dosis,
-                    controlPlaga.EnfermedadesId,
-                    controlPlaga.getFechaAplicacionFormatApi(),
-                    controlPlaga.TratamientoId,
-                    controlPlaga.UnidadMedidaId,
-                    controlPlaga.getFechaErradicacionFormatApi(),
-                    controlPlaga.EstadoErradicacion
-                    )
-            val call = apiService?.postControlPlaga(postControlPlaga)
-            call?.enqueue(object : Callback<PostControlPlaga> {
-                override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
-                    if (response != null && response.code() == 201 || response?.code() == 200) {
-
-                        var controlPlagaResponse= response.body()
-                        controlPlaga.Id = controlPlagaResponse?.Id!!
-                        controlPlaga.Estado_Sincronizacion = true
-                        controlPlaga.save()
-                        postEventControlPlaga(TratamientoEvent.SAVE_CONTROL_PLAGA_EVENT, getControlPlagasByCultivo(cultivo_id))
-                    } else {
-                        postEventError(TratamientoEvent.ERROR_EVENT, "Comprueba tu conexión")
-                    }
-                }
-                override fun onFailure(call: Call<PostControlPlaga>?, t: Throwable?) {
-                    postEventError(TratamientoEvent.ERROR_EVENT, "Comprueba tu conexión")
-                }
-            })
-            //}
-        } else {
-            registerControlPlaga(controlPlaga,cultivo_id)
-        }
-    }
 
 
     override fun getTratamiento(tratamientoId: Long?) {

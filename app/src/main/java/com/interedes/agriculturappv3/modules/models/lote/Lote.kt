@@ -14,7 +14,6 @@ import java.util.ArrayList
 @Table(name = "Lote", database = DataSource::class)
 
 
-
 class Lote : BaseModel() {
 
     @PrimaryKey
@@ -46,11 +45,11 @@ class Lote : BaseModel() {
     @Column(name = "Unidad_Productiva_Id")
     var Unidad_Productiva_Id: Long? = null
 
-    //@SerializedName("Nombre")
+    @SerializedName("Nombre")
     @Column(name = "Nombre")
     var Nombre: String? = null
 
-    //@SerializedName("Descripcion")
+    @SerializedName("Descripcion")
     @Column(name = "Descripcion")
     var Descripcion: String? = null
 
@@ -79,13 +78,23 @@ class Lote : BaseModel() {
     @Column(getterName = "getEstadoSincronizacion")
     var EstadoSincronizacion: Boolean? = false
 
+    @Column(getterName = "getEstado_SincronizacionUpdate")
+    var Estado_SincronizacionUpdate: Boolean? = false
+
     @SerializedName("UnidadMedida")
     var UnidadMedida: Unidad_Medida?= null
 
-    //@SerializedName("Cultivos")
-    //var Cultivos: ArrayList<Cultivo>?= null
+    @SerializedName("Cultivos")
+    var Cultivos: ArrayList<Cultivo>?= null
 
     override fun toString(): String {
+
+        if(Nombre.equals("")){
+            return Coordenadas!!
+        }
         return Nombre!!
     }
+
+
+
 }

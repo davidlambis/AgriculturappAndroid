@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.presenter
+package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -9,9 +9,6 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.events.RequestEventLote
-import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.interactor.LoteInteractor
-import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.interactor.LoteInteractorImpl
-import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.ui.MainViewLote
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
@@ -24,10 +21,10 @@ import org.greenrobot.eventbus.Subscribe
  * Created by EnuarMunoz on 7/03/18.
  */
 
-class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
+class LotePresenterImpl(var loteMainView: MainViewLote.View?) : MainViewLote.Presenter {
 
     var coordsService: CoordsServiceKotlin? = null
-    var loteInteractor: LoteInteractor? = null
+    var loteInteractor: MainViewLote.Interactor? = null
     var eventBus: EventBus? = null
 
 
@@ -158,6 +155,12 @@ class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
                 var list = eventLote.mutableList as List<Unidad_Medida>
                 loteMainView?.setListUnidadMedida(list)
             }
+
+            //Verificate Conection
+        //Error Conection
+            RequestEventLote.ERROR_VERIFICATE_CONECTION -> {
+                onMessageConectionError()
+            }
         }
 
     }
@@ -177,41 +180,19 @@ class LotePresenterImpl(var loteMainView: MainViewLote?) : LotePresenter {
     override fun registerLote(lote: Lote, unidad_productiva_id: Long?) {
         loteMainView?.showProgressHud()
         loteMainView?.disableInputs()
-        if (checkConnection()) {
-            loteInteractor?.registerOnlineLote(lote, unidad_productiva_id)
-        } else {
-            loteInteractor?.registerLote(lote, unidad_productiva_id)
-        }
+        loteInteractor?.registerLote(lote, unidad_productiva_id,checkConnection())
     }
 
     override fun updateLote(lote: Lote, unidad_productiva_id: Long?) {
         loteMainView?.showProgressHud()
-        if (checkConnection()) {
-            loteMainView?.disableInputs()
-            loteInteractor?.updateLote(lote, unidad_productiva_id)
-        } else {
-            onMessageConectionError()
-        }
+        loteMainView?.disableInputs()
+        loteInteractor?.updateLote(lote, unidad_productiva_id,checkConnection())
     }
-
 
     override fun deleteLote(lote: Lote, unidad_productiva_id: Long?) {
         loteMainView?.showProgressHud()
-
-        if(lote.EstadoSincronizacion==true){
-            if (checkConnection()) {
-                loteInteractor?.deleteLote(lote, unidad_productiva_id)
-            } else {
-                onMessageConectionError()
-            }
-
-        }else{
-            loteInteractor?.deleteLote(lote, unidad_productiva_id)
-        }
-
-
+        loteInteractor?.deleteLote(lote, unidad_productiva_id,checkConnection())
     }
-
 
     override fun loadListas() {
         loteInteractor?.loadListas()

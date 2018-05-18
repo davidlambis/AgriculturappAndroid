@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.ui
+package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote
 
 
 import android.Manifest
@@ -39,8 +39,6 @@ import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.adapter.LoteAdapter
-import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.presenter.LotePresenter
-import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.presenter.LotePresenterImpl
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -51,7 +49,7 @@ import kotlinx.android.synthetic.main.fragment_lote.*
 import java.util.ArrayList
 
 
-class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefreshLayout.OnRefreshListener, GoogleMap.OnMapClickListener, View.OnClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerDragListener {
+class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRefreshLayout.OnRefreshListener, GoogleMap.OnMapClickListener, View.OnClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerDragListener {
 
 
     //Mapa
@@ -69,7 +67,7 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
     var markerLocation: Marker? = null
 
     //Presenter
-    var presenter: LotePresenter? = null
+    var presenter: MainViewLote.Presenter? = null
     val handler = Handler()
 
     //Dialog
@@ -121,8 +119,10 @@ class Lote_Fragment : Fragment(), MainViewLote, OnMapReadyCallback, SwipeRefresh
         instance = this
         //Presenter
         //(presenter as LotePresenterImpl).onCreate()
-        presenter = LotePresenterImpl(this);
-        (presenter as LotePresenterImpl).onCreate()
+
+        presenter = LotePresenterImpl(this)
+        presenter?.onCreate()
+
         /// presenter?.onCreate();
     }
 

@@ -68,7 +68,7 @@ class TratamientoPresenter(var view: ITratamiento.View?) : ITratamiento.Presente
     }
 
     override fun setListSpinnerCultivo(lote_id: Long?, tipoProductoId: Long?) {
-        val list = listCultivosGlobal?.filter { cultivo: Cultivo -> cultivo.LoteId == lote_id && cultivo.Id_Tipo_Producto == tipoProductoId }
+        val list = listCultivosGlobal?.filter { cultivo: Cultivo -> cultivo.LoteId == lote_id }
         view?.setListCultivos(list)
     }
 
@@ -91,14 +91,9 @@ class TratamientoPresenter(var view: ITratamiento.View?) : ITratamiento.Presente
     }
 
     override fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?) {
-
         view?.showProgress()
         view?.disableInputs()
-        if(checkConnection()){
-            interactor?.registerControlPlagaOnline(controlPlaga,cultivo_id)
-        }else{
-            interactor?.registerControlPlaga(controlPlaga, cultivo_id)
-        }
+        interactor?.registerControlPlaga(controlPlaga, cultivo_id,checkConnection())
     }
 
     //region Conectividad

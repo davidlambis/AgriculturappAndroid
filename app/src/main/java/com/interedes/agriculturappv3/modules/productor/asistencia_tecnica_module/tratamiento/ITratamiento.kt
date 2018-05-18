@@ -87,8 +87,7 @@ interface ITratamiento {
     interface Interactor {
         fun getTratamiento(tratamientoId: Long?)
         fun getListas()
-        fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?)
-        fun registerControlPlagaOnline(controlPlaga: ControlPlaga, cultivo_id: Long?)
+        fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?,checkConection:Boolean)
         fun sendCalificationTratamietno(tratamiento: Tratamiento?,calificacion: Double?)
     }
 
@@ -96,8 +95,9 @@ interface ITratamiento {
         fun getTratamiento(tratamientoId: Long?)
         fun getListas()
         fun getLastControlPlaga():ControlPlaga?
-        fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?)
-        fun registerControlPlagaOnline(controlPlaga: ControlPlaga, cultivo_id: Long?)
+        fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?,checkConection:Boolean)
+
+        fun saveControlPlagaLocal(controlPlaga: ControlPlaga, cultivo_id: Long?)
         fun sendCalificationTratamietno(tratamiento: Tratamiento?,calificacion:Double?)
     }
 }

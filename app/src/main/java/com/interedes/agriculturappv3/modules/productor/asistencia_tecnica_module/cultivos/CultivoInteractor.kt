@@ -12,20 +12,16 @@ class CultivoInteractor : ICultivo.Interactor {
         repository = CultivoRepository()
     }
 
-    override fun registerCultivo(cultivo: Cultivo?, loteId: Long?) {
-        repository?.saveCultivo(cultivo!!,loteId)
+    override fun registerCultivo(cultivo: Cultivo?, loteId: Long?,checkConection:Boolean) {
+        repository?.saveCultivo(cultivo!!,loteId,checkConection)
     }
 
-    override fun registerOnlineCultivo(cultivo: Cultivo?, loteId: Long?) {
-        repository?.registerOnlineCultivo(cultivo, loteId)
+    override fun updateCultivo(cultivo: Cultivo?, loteId: Long?,checkConection:Boolean) {
+        repository?.updateCultivo(cultivo!!,loteId,checkConection)
     }
 
-    override fun updateCultivo(cultivo: Cultivo?, loteId: Long?) {
-        repository?.updateCultivo(cultivo!!,loteId)
-    }
-
-    override fun deleteCultivo(cultivo: Cultivo?, loteId: Long?) {
-        repository?.deleteCultivo(cultivo!!,loteId)
+    override fun deleteCultivo(cultivo: Cultivo?, loteId: Long?,checkConection:Boolean) {
+        repository?.deleteCultivo(cultivo!!,loteId,checkConection)
     }
 
     override fun getListas() {

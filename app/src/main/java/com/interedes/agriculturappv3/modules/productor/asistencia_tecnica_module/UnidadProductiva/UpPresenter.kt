@@ -151,6 +151,12 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
                 val list_ciudades = requestEvent.mutableList as List<Ciudad>
                 listMunicipiosGlobal = list_ciudades
             }
+
+            //Error Conection
+            RequestEventUP.ERROR_VERIFICATE_CONECTION -> {
+                onMessageConectionError()
+            }
+
         }
     }
 
@@ -180,33 +186,33 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
     override fun registerUP(unidadProductivaModel: Unidad_Productiva?) {
         IUpView?.disableInputs()
         IUpView?.showProgress()
-        if (checkConnection()) {
-            IUpInteractor?.registerOnlineUP(unidadProductivaModel)
-        } else {
-            IUpInteractor?.registerUP(unidadProductivaModel)
-        }
+        IUpInteractor?.registerUP(unidadProductivaModel,checkConnection())
     }
 
     override fun updateUP(unidadProductivaModel: Unidad_Productiva?) {
-        if (checkConnection()) {
-            IUpView?.showProgress()
-            IUpInteractor?.updateUP(unidadProductivaModel)
-        } else {
-            onMessageConectionError()
-        }
+
+        IUpView?.showProgress()
+        IUpInteractor?.updateUP(unidadProductivaModel,checkConnection())
+
     }
 
     override fun deleteUP(unidadProductivaModel: Unidad_Productiva?) {
+
         IUpView?.showProgress()
+        IUpInteractor?.deleteUP(unidadProductivaModel,checkConnection())
+
+
+        /*
         if(unidadProductivaModel?.Estado_Sincronizacion==true){
             if (checkConnection()) {
-                IUpInteractor?.deleteUP(unidadProductivaModel)
+
             } else {
                 onMessageConectionError()
             }
         }else{
             IUpInteractor?.deleteUP(unidadProductivaModel)
-        }
+        }*/
+
     }
 
     override fun getUps() {

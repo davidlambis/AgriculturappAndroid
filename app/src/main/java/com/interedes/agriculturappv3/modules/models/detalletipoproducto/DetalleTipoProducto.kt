@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.modules.models.detalletipoproducto
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
@@ -22,7 +23,20 @@ data class DetalleTipoProducto(@PrimaryKey(autoincrement = true)
 
                           @SerializedName("TipoProductoId")
                           @Column(name = "TipoProductoId")
-                          var TipoProductoId: Long? = 0)
+                          var TipoProductoId: Long? = 0,
+
+                               @SerializedName("TipoProducto")
+                               var tipoProducto: TipoProducto?= null
+
+
+                               )
+
+
+
+
+
+
+
 
 
 

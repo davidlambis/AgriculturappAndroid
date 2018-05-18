@@ -37,50 +37,18 @@ class ProduccionRepository :IMainProduccion.Repository {
     }
 
     //region METHODS
-    override fun saveProduccionOnline(produccion: Produccion, cultivo_id: Long) {
 
-        //UPDATE
-        /*-------------------------------------------------------------------------------------------------------*/
-        if(produccion.Id!!>0){
-            if (produccion.Estado_Sincronizacion == true) {
-                val format1 = SimpleDateFormat("yyyy-MM-dd")
-                val fecha_inicio = format1.format(produccion.FechaInicio)
-                val fecha_fecha_fin = format1.format(produccion.FechaFin)
-                val postProduccion = PostProduccion(
-                        produccion.Id,
-                        produccion.CultivoId,
-                        fecha_inicio,
-                        fecha_fecha_fin,
-                        produccion.UnidadMedidaId,
-                        produccion.ProduccionReal
-                )
-                val call = apiService?.updateProduccion(postProduccion, produccion.Id!!)
-                call?.enqueue(object : Callback<PostProduccion> {
-                    override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
-                        if (response != null && response.code() == 200) {
-                            produccion.update()
-                            postEventOk(RequestEventProduccion.UPDATE_EVENT, getProductions(cultivo_id), produccion)
-                        } else {
-                            postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
-                        }
-                    }
-                    override fun onFailure(call: Call<PostProduccion>?, t: Throwable?) {
-                        postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
-                    }
-                })
-            } else {
-                postEventError(RequestEventProduccion.ERROR_EVENT, "Error!. El Cultivo no se ha actualizado")
-            }
 
-         //REGISTER
-         /*-------------------------------------------------------------------------------------------------------*/
-        }else{
+    override fun saveProduccion(produccion: Produccion,cultivo_id:Long,checkConection:Boolean) {
+
+        //TODO si existe conexion a internet
+        if(checkConection){
+            //TODO Ciudad Id de la tabla del backend
             val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
             if (cultivo?.EstadoSincronizacion == true) {
-
                 val format1 = SimpleDateFormat("yyyy-MM-dd")
-                val fecha_inicio = format1.format(produccion.FechaInicio)
-                val fecha_fecha_fin = format1.format(produccion.FechaFin)
+                val fecha_inicio = format1.format(produccion.FechaInicioProduccion)
+                val fecha_fecha_fin = format1.format(produccion.FechaFinProduccion)
                 val postProduccion = PostProduccion(
                         0
                         ,
@@ -97,6 +65,7 @@ class ProduccionRepository :IMainProduccion.Repository {
 
                             produccion.Id = response.body()?.Id!!
                             produccion.Estado_Sincronizacion = true
+                            produccion?.Estado_SincronizacionUpdate = true
                             produccion.save()
                             postEventOk(RequestEventProduccion.SAVE_EVENT, getProductions(cultivo_id), produccion)
                         } else {
@@ -107,14 +76,19 @@ class ProduccionRepository :IMainProduccion.Repository {
                         postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
                     }
                 })
-                //}
-            } else {
-                saveProduccion(produccion,cultivo_id)
             }
+            //TODO con conexion a internet sin sincronizacion, registro local
+            else {
+                saveProduccionLocal(produccion,cultivo_id)
+            }
+        }
+        //TODO sin conexion a internet, registro local
+        else{
+            saveProduccionLocal(produccion,cultivo_id)
         }
     }
 
-    override fun saveProduccion(produccion: Produccion,cultivo_id:Long) {
+    override fun saveProduccionLocal(produccion: Produccion,cultivo_id:Long){
         val las_prduccion = getLastProduccion()
         if (las_prduccion == null) {
             produccion.Id = 1
@@ -126,11 +100,87 @@ class ProduccionRepository :IMainProduccion.Repository {
         postEventOk(RequestEventProduccion.SAVE_EVENT,listProduccion,null);
     }
 
+    override fun updateProduccion(produccion: Produccion,cultivo_id:Long,checkConection:Boolean){
+        //TODO si existe coneccion a internet
+        if(checkConection){
+            //TODO se valida estado de sincronizacion  para actualizar
+            if (produccion.Estado_Sincronizacion == true) {
+
+                val format1 = SimpleDateFormat("yyyy-MM-dd")
+                val fecha_inicio = format1.format(produccion.FechaInicioProduccion)
+                val fecha_fecha_fin = format1.format(produccion.FechaFinProduccion)
+                val postProduccion = PostProduccion(
+                        produccion.Id,
+                        produccion.CultivoId,
+                        fecha_inicio,
+                        fecha_fecha_fin,
+                        produccion.UnidadMedidaId,
+                        produccion.ProduccionReal
+                )
+                val call = apiService?.updateProduccion(postProduccion, produccion.Id!!)
+                call?.enqueue(object : Callback<PostProduccion> {
+                    override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
+                        if (response != null && response.code() == 200) {
+                            produccion?.Estado_SincronizacionUpdate = true
+                            produccion.update()
+                            postEventOk(RequestEventProduccion.UPDATE_EVENT, getProductions(cultivo_id), produccion)
+                        } else {
+                            postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
+                        }
+                    }
+                    override fun onFailure(call: Call<PostProduccion>?, t: Throwable?) {
+                        postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                })
+
+            }
+            //TODO con  conexion a internet, pero no se ha sincronizado, actualizacion local
+            else {
+                produccion?.Estado_SincronizacionUpdate = false
+                produccion.update()
+                postEventOk(RequestEventProduccion.UPDATE_EVENT, getProductions(cultivo_id), produccion)
+            }
+        }
+        //TODO sin conexion a internet, actualizacion local
+        else{
+            produccion?.Estado_SincronizacionUpdate = false
+            produccion.update()
+            postEventOk(RequestEventProduccion.UPDATE_EVENT, getProductions(cultivo_id), produccion)
+        }
+    }
+
+    override fun deleteProduccion(produccion: Produccion,cultivo_id: Long?,checkConection:Boolean) {
+        //TODO se valida estado de sincronizacion  para eliminar
+        if (produccion.Estado_Sincronizacion == true) {
+            //TODO si existe coneccion a internet se elimina
+            if(checkConection){
+                val call = apiService?.deleteProduccion(produccion.Id!!)
+                call?.enqueue(object : Callback<PostProduccion> {
+                    override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
+                        if (response != null && response.code() == 204 || response?.code() == 200) {
+                            produccion.delete()
+                            postEventOk(RequestEventProduccion.DELETE_EVENT, getProductions(cultivo_id), produccion)
+                        }
+                    }
+                    override fun onFailure(call: Call<PostProduccion>?, t: Throwable?) {
+                        postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                })
+
+            }else{
+                postEventError(RequestEventProduccion.ERROR_VERIFICATE_CONECTION, null)
+            }
+        } else {
+            //TODO No sincronizado, Eliminar de manera local
+            produccion.delete()
+            postEventOk(RequestEventProduccion.DELETE_EVENT, getProductions(cultivo_id), produccion)
+        }
+    }
+
     override fun getListProduccion(cultivo_id:Long?) {
         var listaProduccion = getProductions(cultivo_id)
         postEventOk(RequestEventProduccion.READ_EVENT,listaProduccion,null);
     }
-
 
     override fun getCultivo(cultivo_id:Long?) {
         var cultivo = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
@@ -157,29 +207,6 @@ class ProduccionRepository :IMainProduccion.Repository {
             listResponse = SQLite.select().from(Produccion::class.java!!).where(Produccion_Table.CultivoId.eq(cultivo_id)).queryList()
         }
         return listResponse;
-    }
-
-
-
-    override fun deleteProduccion(produccion: Produccion,cultivo_id: Long?) {
-        if (produccion.Estado_Sincronizacion == true) {
-            val call = apiService?.deleteProduccion(produccion.Id!!)
-            call?.enqueue(object : Callback<PostProduccion> {
-                override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
-                    if (response != null && response.code() == 204 || response?.code() == 200) {
-                        produccion.delete()
-                        postEventOk(RequestEventProduccion.DELETE_EVENT, getProductions(cultivo_id), produccion)
-                    }
-                }
-                override fun onFailure(call: Call<PostProduccion>?, t: Throwable?) {
-                    postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
-                }
-            })
-        } else {
-            produccion.delete()
-            postEventOk(RequestEventProduccion.DELETE_EVENT, getProductions(cultivo_id), produccion)
-            /// postEventError(CultivoEvent.ERROR_EVENT, "Error!. El Cultivo no se ha eliminado")
-        }
     }
 
     fun getLastProduccion(): Produccion? {
@@ -210,8 +237,6 @@ class ProduccionRepository :IMainProduccion.Repository {
         postEvent(type, upMutable,null,messageError)
     }
 
-
-
     private fun postEventOkCultivo(type: Int,  cultivo: Cultivo?) {
         var CultivoMutable:Object?=null
         if(cultivo!=null){
@@ -219,7 +244,6 @@ class ProduccionRepository :IMainProduccion.Repository {
         }
         postEvent(type,null,CultivoMutable,null)
     }
-
 
     private fun postEventOk(type: Int, producciones: List<Produccion>?, produccion:Produccion?) {
         var produccionListMitable= producciones as MutableList<Object>
@@ -230,7 +254,7 @@ class ProduccionRepository :IMainProduccion.Repository {
         postEvent(type, produccionListMitable,ProducciconMutable,null)
     }
 
-    private fun postEventError(type: Int,messageError:String) {
+    private fun postEventError(type: Int,messageError:String?) {
         postEvent(type, null,null,messageError)
     }
 

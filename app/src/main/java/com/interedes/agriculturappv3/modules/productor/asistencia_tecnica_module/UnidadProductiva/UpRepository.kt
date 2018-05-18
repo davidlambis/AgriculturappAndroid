@@ -12,6 +12,7 @@ import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.PostUnidadProductiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.localizacion.LocalizacionUp
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
@@ -22,6 +23,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class UpRepository() : IUnidadProductiva.Repo {
     var eventBus: EventBus? = null
@@ -37,7 +39,88 @@ class UpRepository() : IUnidadProductiva.Repo {
         postEventOk(RequestEventUP.READ_EVENT, getUPs(), null)
     }
 
-    override fun saveUp(mUnidadProductiva: Unidad_Productiva) {
+    override fun saveUp(mUnidadProductiva: Unidad_Productiva,checkConection:Boolean) {
+
+        //TODO si existe conexion a internet
+        if(checkConection){
+            //TODO Ciudad Id de la tabla del backend
+            val postUnidadProductiva = PostUnidadProductiva(0,
+                    mUnidadProductiva?.Area,
+                    mUnidadProductiva?.CiudadId,
+                    mUnidadProductiva?.Codigo,
+                    mUnidadProductiva?.UnidadMedidaId,
+                    mUnidadProductiva?.UsuarioId,
+                    mUnidadProductiva?.descripcion,
+                    mUnidadProductiva?.nombre)
+
+            // mUnidadProductiva?.CiudadId = 1
+            val call = apiService?.postUnidadProductiva(postUnidadProductiva)
+            call?.enqueue(object : Callback<Unidad_Productiva> {
+
+                override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
+                    if (response != null && response.code() == 201) {
+                        val idUP = response.body()?.Id
+                        mUnidadProductiva?.Id = idUP
+                        //mUnidadProductiva?.save()
+
+                        //postLocalizacionUnidadProductiva
+                        val postLocalizacionUnidadProductiva = LocalizacionUp(0,
+                                "",
+                                mUnidadProductiva?.Coordenadas,
+                                if (mUnidadProductiva?.Direccion!=null) mUnidadProductiva.Direccion else "",
+                                mUnidadProductiva?.DireccionAproximadaGps,
+                                mUnidadProductiva?.Latitud,
+                                mUnidadProductiva?.Longitud,
+                                "",
+                                "",
+                                "",
+                                mUnidadProductiva?.Id,
+                                "")
+
+                        val call = apiService?.postLocalizacionUnidadProductiva(postLocalizacionUnidadProductiva)
+                        call?.enqueue(object : Callback<LocalizacionUp> {
+
+                            override fun onResponse(call: Call<LocalizacionUp>?, response: Response<LocalizacionUp>?) {
+                                if (response != null && response.code() == 201) {
+                                    val idLocalizacion = response.body()?.Id
+                                    mUnidadProductiva?.LocalizacionUpId=idLocalizacion
+                                    mUnidadProductiva?.Estado_Sincronizacion = true
+                                    mUnidadProductiva?.Estado_SincronizacionUpdate=true
+                                    mUnidadProductiva?.save()
+                                    //postLocalizacionUnidadProductiva
+                                    postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
+                                } else {
+                                    postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
+                                }
+                            }
+
+                            override fun onFailure(call: Call<LocalizacionUp>?, t: Throwable?) {
+                                postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
+                            }
+
+                        })
+
+                        // postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
+                    } else {
+                        postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                }
+
+                override fun onFailure(call: Call<Unidad_Productiva>?, t: Throwable?) {
+                    postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
+                }
+
+            })
+
+        }
+        //TODO sin conexion a internet, registro local
+        else{
+            saveUpLocal(mUnidadProductiva)
+        }
+    }
+
+
+    override fun saveUpLocal(mUnidadProductiva: Unidad_Productiva){
         val last_up = getLastUp()
         if (last_up == null) {
             mUnidadProductiva.Id = 1
@@ -48,106 +131,120 @@ class UpRepository() : IUnidadProductiva.Repo {
         postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
     }
 
-    override fun registerOnlineUP(mUnidadProductiva: Unidad_Productiva?) {
 
-        //TODO Ciudad Id de la tabla del backend
-        val postUnidadProductiva = PostUnidadProductiva(0,
-                mUnidadProductiva?.Area,
-                1,
-                mUnidadProductiva?.Codigo,
-                mUnidadProductiva?.UnidadMedidaId,
-                mUnidadProductiva?.UsuarioId,
-                mUnidadProductiva?.descripcion,
-                mUnidadProductiva?.nombre)
+    override fun updateUp(mUnidadProductiva: Unidad_Productiva?,checkConection:Boolean) {
+        //TODO si existe coneccion a internet
+        if(checkConection){
+            //TODO se valida estado de sincronizacion  para actualizar
+            if (mUnidadProductiva?.Estado_Sincronizacion == true) {
+                val updateUnidadProductiva = PostUnidadProductiva(mUnidadProductiva.Id,
+                        mUnidadProductiva.Area,
+                        mUnidadProductiva.CiudadId,
+                        mUnidadProductiva.Codigo,
+                        mUnidadProductiva.UnidadMedidaId,
+                        mUnidadProductiva.UsuarioId,
+                        mUnidadProductiva.descripcion,
+                        mUnidadProductiva.nombre)
+                // mUnidadProductiva?.CiudadId = 1
+                val call = apiService?.updateUnidadProductiva(updateUnidadProductiva, mUnidadProductiva.Id!!)
+                call?.enqueue(object : Callback<Unidad_Productiva> {
+                    override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
+                        if (response != null && response.code() == 200) {
+                            val postLocalizacionUnidadProductiva = LocalizacionUp(mUnidadProductiva.LocalizacionUpId,
+                                    "",
+                                    mUnidadProductiva?.Coordenadas,
+                                    if (mUnidadProductiva?.Direccion!=null) mUnidadProductiva.Direccion else "",
+                                    mUnidadProductiva?.DireccionAproximadaGps,
+                                    mUnidadProductiva?.Latitud,
+                                    mUnidadProductiva?.Longitud,
+                                    "",
+                                    "",
+                                    "",
+                                    mUnidadProductiva?.Id,
+                                    "")
 
-        // mUnidadProductiva?.CiudadId = 1
-        val call = apiService?.postUnidadProductiva(postUnidadProductiva)
-        call?.enqueue(object : Callback<Unidad_Productiva> {
+                            val call = apiService?.updateLocalizacionUnidadProductiva(postLocalizacionUnidadProductiva, mUnidadProductiva.LocalizacionUpId!!)
+                            call?.enqueue(object : Callback<LocalizacionUp> {
+                                override fun onResponse(call: Call<LocalizacionUp>?, response: Response<LocalizacionUp>?) {
+                                    if (response != null && response.code() == 200) {
+                                        mUnidadProductiva?.Estado_SincronizacionUpdate=true
+                                        mUnidadProductiva.update()
+                                        postEventOk(RequestEventUP.UPDATE_EVENT, getUPs(), mUnidadProductiva)
 
-            override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
-                if (response != null && response.code() == 201) {
-                    val idUP = response.body()?.Id
-                    mUnidadProductiva?.Id = idUP
-                    mUnidadProductiva?.Estado_Sincronizacion = true
-                    mUnidadProductiva?.save()
-
-
-                    //postLocalizacionUnidadProductiva
-
-
-
-
-                    postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
-                } else {
-                    postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
-                }
-            }
-
-            override fun onFailure(call: Call<Unidad_Productiva>?, t: Throwable?) {
-                postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
-            }
-
-        })
-
-    }
-
-    override fun updateUp(mUnidadProductiva: Unidad_Productiva) {
-        if (mUnidadProductiva.Estado_Sincronizacion == true) {
-            val updateUnidadProductiva = PostUnidadProductiva(mUnidadProductiva.Id,
-                    mUnidadProductiva.Area,
-                    1,
-                    mUnidadProductiva.Codigo,
-                    mUnidadProductiva.UnidadMedidaId,
-                    mUnidadProductiva.UsuarioId,
-                    mUnidadProductiva.descripcion,
-                    mUnidadProductiva.nombre)
-
-            // mUnidadProductiva?.CiudadId = 1
-            val call = apiService?.updateUnidadProductiva(updateUnidadProductiva, mUnidadProductiva.Id!!)
-            call?.enqueue(object : Callback<Unidad_Productiva> {
-                override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
-                    if (response != null && response.code() == 200) {
-                        mUnidadProductiva.update()
-                        postEventOk(RequestEventUP.UPDATE_EVENT, getUPs(), mUnidadProductiva)
-                    } else {
+                                    } else {
+                                        postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
+                                    }
+                                }
+                                override fun onFailure(call: Call<LocalizacionUp>?, t: Throwable?) {
+                                    postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
+                                }
+                            })
+                        } else {
+                            postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
+                        }
+                    }
+                    override fun onFailure(call: Call<Unidad_Productiva>?, t: Throwable?) {
                         postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
                     }
-                }
-
-                override fun onFailure(call: Call<Unidad_Productiva>?, t: Throwable?) {
-                    postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
-                }
-            })
-        } else {
-            postEventError(RequestEventUP.ERROR_EVENT, "Error!. La Unidad Productiva no se ha subido")
+                })
+            }
+            //TODO con  conexion a internet, pero no se ha sincronizado
+            else {
+                mUnidadProductiva?.Estado_SincronizacionUpdate=false
+                mUnidadProductiva?.update()
+                postEventOk(RequestEventUP.UPDATE_EVENT, getUPs(), mUnidadProductiva)
+                //postEventError(RequestEventUP.ERROR_EVENT, "Error!. La Unidad Productiva no se ha subido")
+            }
+        }
+        //TODO sin conexion a internet, actualizacion local
+        else{
+            mUnidadProductiva?.Estado_SincronizacionUpdate=false
+            mUnidadProductiva?.update()
+            postEventOk(RequestEventUP.UPDATE_EVENT, getUPs(), mUnidadProductiva)
         }
     }
 
-    override fun deleteUp(mUnidadProductiva: Unidad_Productiva) {
+
+
+
+
+
+    override fun deleteUp(mUnidadProductiva: Unidad_Productiva,checkConection:Boolean) {
+        //TODO se valida estado de sincronizacion  para eliminar
         if (mUnidadProductiva.Estado_Sincronizacion == true) {
-            val call = apiService?.deleteUnidadProductiva(mUnidadProductiva.Id)
-            call?.enqueue(object : Callback<Unidad_Productiva> {
-                override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
-                    if (response != null && response.code() == 204) {
-                        mUnidadProductiva.delete()
-                        postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
+            //TODO si existe coneccion a internet se elimina
+            if(checkConection){
+                val call = apiService?.deleteUnidadProductiva(mUnidadProductiva.Id)
+                call?.enqueue(object : Callback<Unidad_Productiva> {
+                    override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
+                        if (response != null && response.code() == 204) {
+                            mUnidadProductiva.delete()
+                            postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
+                        }
                     }
-                }
-                override fun onFailure(call: Call<Unidad_Productiva>?, t: Throwable?) {
-                    postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
-                }
-            })
+                    override fun onFailure(call: Call<Unidad_Productiva>?, t: Throwable?) {
+                        postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                })
+
+            }else{
+                postEventError(RequestEventUP.ERROR_VERIFICATE_CONECTION, null)
+            }
         } else {
-            //Verificate if cultivos register
+            //TODO No sincronizado, Eliminar de manera local
             //Verificate if cultivos register
             var vericateRegisterLotes= SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(mUnidadProductiva.Id)).querySingle()
             if(vericateRegisterLotes!=null){
-                postEventError(RequestEventUP.ERROR_EVENT, "Error!.La unidad productiva no se ha podido eliminar")
+
+                postEventError(RequestEventUP.ERROR_EVENT, "Error!. La unidad productiva no se ha podido eliminar, recuerde eliminar los lotes")
             }else{
                 mUnidadProductiva.delete()
                 postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
             }
 
+
+            //mUnidadProductiva.delete()
+            //postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
         }
     }
 

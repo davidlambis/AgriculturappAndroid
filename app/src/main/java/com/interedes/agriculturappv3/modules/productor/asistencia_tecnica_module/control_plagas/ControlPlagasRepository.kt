@@ -106,6 +106,7 @@ class ControlPlagasRepository : IControlPlagas.Repository {
                         var controlPlagaResponse= response.body()
                         controlPlaga.Id = controlPlagaResponse?.Id!!
                         controlPlaga.Estado_Sincronizacion = true
+                        controlPlaga?.Estado_SincronizacionUpdate = true
                         controlPlaga.update()
                         postEventOk(ControlPlagasEvent.UPDATE_EVENT_OK, getControlPlagas(controlPlaga.CultivoId),controlPlaga)
                     } else {
@@ -118,6 +119,7 @@ class ControlPlagasRepository : IControlPlagas.Repository {
             })
             //}
         } else {
+            controlPlaga?.Estado_SincronizacionUpdate = false
             controlPlaga?.update()
         }
     }

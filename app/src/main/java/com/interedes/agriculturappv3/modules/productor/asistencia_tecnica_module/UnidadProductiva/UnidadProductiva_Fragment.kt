@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -36,6 +37,8 @@ import kotlinx.android.synthetic.main.fragment_unidad_productiva.*
 import android.widget.*
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
+import java.io.IOException
+import java.util.*
 
 
 /**
@@ -277,6 +280,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             unidadProductiva.Configuration_Poligon = false
             unidadProductiva.Latitud = latitud
             unidadProductiva.Longitud = longitud
+            unidadProductiva.DireccionAproximadaGps=getAddressGps(latitud,longitud)
             presenter?.registerUP(unidadProductiva)
         }
     }
@@ -300,6 +304,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             unidadProductiva?.Configuration_Poligon = unidadProductivaGlobal!!.Configuration_Poligon
             unidadProductiva?.Latitud = latitud
             unidadProductiva?.Longitud = longitud
+            unidadProductiva?.DireccionAproximadaGps=getAddressGps(latitud,longitud)
             presenter?.updateUP(unidadProductiva)
         }
     }
@@ -330,6 +335,34 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
 
     override fun setListUnidadMedida(listUnidadMedida: List<Unidad_Medida>) {
         listUnidadMedidaGlobal = listUnidadMedida
+    }
+
+
+    override fun getAddressGps(latitud: Double, longitud: Double): String? {
+        //Obtener la direccion de la calle a partir de la latitud y la longitud
+        var direccion_gps = ""
+        if (latitud != 0.0 && longitud != 0.0) {
+            try {
+                val geocoder = Geocoder(activity, Locale.getDefault())
+                val list = geocoder.getFromLocation(
+                        latitud, longitud, 1)
+                if (!list.isEmpty()) {
+                    val DirCalle = list[0]
+                    direccion_gps = DirCalle.getAddressLine(0)
+                    //String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                    // String city = addresses.get(0).getLocality();
+                    //String state = addresses.get(0).getAdminArea();
+                    //String country = addresses.get(0).getCountryName();
+                    // String postalCode = addresses.get(0).getPostalCode();
+                    // String knownName = addresses.get(0).getFeatureName();
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+        }
+
+        return direccion_gps
     }
 
 

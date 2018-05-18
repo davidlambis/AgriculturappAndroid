@@ -14,6 +14,12 @@ data class PostLote(@SerializedName("Id")
                     @SerializedName("Codigo")
                     var Codigo: String? = null,
 
+                    @SerializedName("Nombre")
+                    var Nombre: String? = null,
+
+                    @SerializedName("Descripcion")
+                    var Descripcion: String? = null,
+
                     @SerializedName("Localizacion")
                     var Localizacion: String? = null,
 

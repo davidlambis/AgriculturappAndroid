@@ -147,6 +147,12 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
                 var cultivo = event.objectMutable as Cultivo
                 mainView?.setCultivo(cultivo)
             }
+
+           //Error Conection
+            RequestEventProduccion.ERROR_VERIFICATE_CONECTION -> {
+                onMessageConectionError()
+            }
+
         }
     }
     //endregion
@@ -173,37 +179,19 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
         mainView?.showProgress()
         //if(checkConnection()){
         mainView?.disableInputs()
-        if(checkConnection()){
-            interactor?.saveProduccionOnline(producccion,cultivo_Id)
-        }else{
-            interactor?.saveProduccion(producccion, cultivo_Id)
-        }
+        interactor?.saveProduccion(producccion, cultivo_Id,checkConnection())
     }
 
     override fun updateProducccion(produccion: Produccion, cultivo_id: Long) {
         mainView?.showProgress()
-        if(checkConnection()){
-            mainView?.disableInputs()
-            interactor?.saveProduccionOnline(produccion,cultivo_id)
-        }else{
-            onMessageConectionError()
-        }
+        mainView?.disableInputs()
+        interactor?.updateProduccion(produccion,cultivo_id,checkConnection())
+
     }
-
-
 
     override fun deleteProduccion(producccion: Produccion, cultivo_id: Long?) {
         mainView?.showProgress()
-        if(producccion.Estado_Sincronizacion==true){
-            if (checkConnection()) {
-                interactor?.deleteProducccion(producccion, cultivo_id)
-            } else {
-                onMessageConectionError()
-            }
-        }else{
-            interactor?.deleteProducccion(producccion, cultivo_id)
-        }
-
+        interactor?.deleteProducccion(producccion, cultivo_id,checkConnection())
     }
 
     override fun getListProduccion(cultivo_id:Long?) {

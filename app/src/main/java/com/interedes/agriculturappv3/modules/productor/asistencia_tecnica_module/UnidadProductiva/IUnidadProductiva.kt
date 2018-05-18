@@ -56,6 +56,10 @@ interface IUnidadProductiva {
 
         fun verificateConnection(): AlertDialog?
 
+
+        //Geocoder
+        fun getAddressGps(latitud: Double, longitud: Double): String?
+
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
 
@@ -98,12 +102,11 @@ interface IUnidadProductiva {
     }
 
     interface Interactor {
-        fun registerUP(unidadProductivaModel: Unidad_Productiva?)
-        fun updateUP(unidadProductivaModel: Unidad_Productiva?)
-        fun deleteUP(unidadProductivaModel: Unidad_Productiva?)
+        fun registerUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean)
+        fun updateUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean)
+        fun deleteUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean)
         fun execute()
         fun getListas()
-        fun registerOnlineUP(unidadProductivaModel: Unidad_Productiva?)
     }
 
     interface Repo {
@@ -112,10 +115,10 @@ interface IUnidadProductiva {
 
         fun getListUPs()
         fun getUPs(): List<Unidad_Productiva>
-        fun saveUp(mUnidadProductiva: Unidad_Productiva)
-        fun registerOnlineUP(mUnidadProductiva: Unidad_Productiva?)
-        fun updateUp(mUnidadProductiva: Unidad_Productiva)
-        fun deleteUp(mUnidadProductiva: Unidad_Productiva)
+        fun saveUpLocal(mUnidadProductiva: Unidad_Productiva)
+        fun saveUp(mUnidadProductiva: Unidad_Productiva,checkConection:Boolean)
+        fun updateUp(mUnidadProductiva: Unidad_Productiva?,checkConection:Boolean)
+        fun deleteUp(mUnidadProductiva: Unidad_Productiva,checkConection:Boolean)
         fun getLastUserLogued(): Usuario?
         fun getLastUp(): Unidad_Productiva?
     }
