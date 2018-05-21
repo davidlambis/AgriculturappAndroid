@@ -14,9 +14,8 @@ import java.util.*
 
 @Table(database = DataSource::class)
 data class Unidad_Productiva(@PrimaryKey
-                            @SerializedName("Id")
-                            @Column(name = "Id")
-                            var Id: Long? = 0,
+                            @Column(name = "Unidad_Productiva_Id")
+                            var Unidad_Productiva_Id: Long? = 0,
 
                              @SerializedName("Area")
                             @Column(name = "Area")
@@ -78,6 +77,11 @@ data class Unidad_Productiva(@PrimaryKey
 
                              @Column(name = "Nombre_Unidad_Medida")
                             var Nombre_Unidad_Medida: String? = null,
+
+
+                             @SerializedName("Id")
+                             @Column(name = "Id_Remote")
+                             var Id_Remote: Long? = 0,
 
 
 

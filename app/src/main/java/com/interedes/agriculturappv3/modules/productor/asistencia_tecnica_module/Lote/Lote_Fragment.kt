@@ -560,6 +560,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             viewDialog?.name_lote?.isEnabled = b
             viewDialog?.description_lote?.isEnabled = b
             viewDialog?.area_lote?.isEnabled = b
+            viewDialog?.btnSaveLote?.isEnabled = b
+            viewDialog?.btnSaveLote?.isClickable = b
         }
     }
 
@@ -697,13 +699,13 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             lote.Area = viewDialog?.area_lote?.text.toString().toDoubleOrNull()
             lote.Coordenadas = viewDialog?.coordenadas_lote?.text.toString()
             lote.Localizacion = lote.Coordenadas
-            lote.Unidad_Productiva_Id = unidadProductivaGlobalSppiner?.Id
+            lote.Unidad_Productiva_Id = unidadProductivaGlobalSppiner?.Unidad_Productiva_Id
             lote.Latitud = locationLote.latitude
             lote.Longitud = locationLote.longitude
             lote.Nombre_Unidad_Productiva = unidadProductivaGlobalSppiner?.nombre
             lote.Unidad_Medida_Id = unidadMedidaGlobal?.Id
             lote.Nombre_Unidad_Medida = unidadMedidaGlobal?.Descripcion
-            presenter?.registerLote(lote, unidadProductivaGlobalSppiner?.Id)
+            presenter?.registerLote(lote, unidadProductivaGlobalSppiner?.Unidad_Productiva_Id)
         }
     }
 
@@ -762,7 +764,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         else {
             viewDialog?.txtTitle?.setText(getString(R.string.edit_lote))
             //unidadMedidaGlobal = Unidad_Medida(lote.Id, lote.Nombre_Unidad_Medida, null)
-            var unidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Id.eq(lote.Unidad_Productiva_Id)).querySingle()
+            var unidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(lote.Unidad_Productiva_Id)).querySingle()
             unidadMedidaGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(lote.Unidad_Medida_Id)).querySingle()
             viewDialog?.name_lote?.setText(lote.Nombre)
             viewDialog?.description_lote?.setText(lote.Descripcion)
@@ -932,7 +934,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             } else {
                 DIALOG_SELECT_ALL_UP = false
                 var position = which - 1
-                Unidad_Productiva_Id_Selected = listUnidadProductivaGlobal!![position].Id
+                Unidad_Productiva_Id_Selected = listUnidadProductivaGlobal!![position].Unidad_Productiva_Id
                 unidadProductivaGlobalDialog = listUnidadProductivaGlobal!![position]
                 DIALOG_SELECTT_POSITION_UP = which
                 //Toast.makeText(activity,""+Unidad_Productiva_Id_Selected,Toast.LENGTH_LONG).show()

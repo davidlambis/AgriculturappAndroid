@@ -35,10 +35,12 @@ class LoteRepositoryImpl : MainViewLote.Repository {
     //region METHODS
     override fun saveLotes(mLote: Lote, unidad_productiva_id: Long?,checkConection:Boolean) {
 
+
+
         //TODO si existe conexion a internet
         if(checkConection){
             //TODO Ciudad Id de la tabla del backend
-            val unidad_productiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Id.eq(unidad_productiva_id)).querySingle()
+            val unidad_productiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()
             if (unidad_productiva?.Estado_Sincronizacion == true) {
                 val postLote = PostLote(0,
                         mLote.Area,
@@ -48,9 +50,9 @@ class LoteRepositoryImpl : MainViewLote.Repository {
                         mLote.Localizacion,
                         mLote.Localizacion_Poligono,
                         mLote.Unidad_Medida_Id,
-                        mLote.Unidad_Productiva_Id)
+                        unidad_productiva.Id_Remote)
 
-                val up_area = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Id.eq(unidad_productiva_id)).querySingle()?.Area
+                val up_area = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()?.Area
                 val total_areas = area_lotes(mLote, unidad_productiva_id)
 
                 if (total_areas!! > up_area!!) {
@@ -60,7 +62,14 @@ class LoteRepositoryImpl : MainViewLote.Repository {
                     call?.enqueue(object : Callback<Lote> {
                         override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
                             if (response != null && response.code() == 201) {
-                                mLote.Id = response.body()?.Id!!
+                                mLote.Id_Remote = response.body()?.Id_Remote!!
+                                val last_lote = getLastLote()
+                                if (last_lote == null) {
+                                    mLote.LoteId = 1
+                                } else {
+                                    mLote.LoteId = last_lote.LoteId + 1
+                                }
+
                                 mLote.EstadoSincronizacion = true
                                 mLote.Estado_SincronizacionUpdate = true
                                 mLote.save()
@@ -91,14 +100,14 @@ class LoteRepositoryImpl : MainViewLote.Repository {
 
 
     override fun saveLotesLocal(mLote: Lote, unidad_productiva_id: Long?){
-        val up_area = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Id.eq(unidad_productiva_id)).querySingle()?.Area
+        val up_area = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()?.Area
         val total_areas = area_lotes(mLote, unidad_productiva_id)
         if (total_areas!! < up_area!!) {
             val last_lote = getLastLote()
             if (last_lote == null) {
-                mLote.Id = 1
+                mLote.LoteId = 1
             } else {
-                mLote.Id = last_lote.Id + 1
+                mLote.LoteId = last_lote.LoteId + 1
             }
             mLote.save()
             val lotes = getLotes(unidad_productiva_id)
@@ -133,7 +142,7 @@ class LoteRepositoryImpl : MainViewLote.Repository {
     }
 
     override fun getLastLote(): Lote? {
-        val lastLote = SQLite.select().from(Lote::class.java).where().orderBy(Lote_Table.Id, false).querySingle()
+        val lastLote = SQLite.select().from(Lote::class.java).where().orderBy(Lote_Table.LoteId, false).querySingle()
         return lastLote
     }
 
@@ -156,9 +165,14 @@ class LoteRepositoryImpl : MainViewLote.Repository {
     override fun updateLote(mLote: Lote, unidad_productiva_id: Long?,checkConection:Boolean){
         //TODO si existe coneccion a internet
         if(checkConection){
+
+
+            val unidad_productiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()
+
+
             //TODO se valida estado de sincronizacion  para actualizar,actualizacion remota
             if (mLote.EstadoSincronizacion == true) {
-                val postLote = PostLote(mLote.Id,
+                val postLote = PostLote(mLote.Id_Remote,
                         mLote.Area,
                         mLote.Codigo,
                         mLote.Nombre,
@@ -166,10 +180,10 @@ class LoteRepositoryImpl : MainViewLote.Repository {
                         mLote.Localizacion,
                         mLote.Localizacion_Poligono,
                         mLote.Unidad_Medida_Id,
-                        mLote.Unidad_Productiva_Id)
+                        unidad_productiva?.Id_Remote)
 
 
-                val call = apiService?.updateLote(postLote, mLote.Id)
+                val call = apiService?.updateLote(postLote, mLote.Id_Remote!!)
                 call?.enqueue(object : Callback<Lote> {
                     override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
                         if (response != null && response.code() == 200) {
@@ -210,7 +224,7 @@ class LoteRepositoryImpl : MainViewLote.Repository {
         if (mLote.EstadoSincronizacion == true) {
             //TODO si existe coneccion a internet se elimina
             if(checkConection){
-                val call = apiService?.deleteLote(mLote.Id)
+                val call = apiService?.deleteLote(mLote.Id_Remote!!)
                 call?.enqueue(object : Callback<Lote> {
                     override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
                         if (response != null && response.code() == 204) {
@@ -231,7 +245,7 @@ class LoteRepositoryImpl : MainViewLote.Repository {
         } else {
             //TODO No sincronizado, Eliminar de manera local
             //Verificate if cultivos register
-            var vericateRegisterCultivos= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(mLote.Id)).querySingle()
+            var vericateRegisterCultivos= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(mLote.LoteId)).querySingle()
             if(vericateRegisterCultivos!=null){
 
                 postEventError(RequestEventLote.ERROR_EVENT, "Error!. El lote no se ha podido eliminar, recuerde eliminar los cultivos")

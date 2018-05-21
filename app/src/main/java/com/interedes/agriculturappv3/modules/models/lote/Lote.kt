@@ -18,9 +18,8 @@ import java.util.ArrayList
 class Lote : BaseModel() {
 
     @PrimaryKey
-    @SerializedName("Id")
-    @Column(name = "Id")
-    var Id: Long = 0
+    @Column(name = "LoteId")
+    var LoteId: Long = 0
 
     @SerializedName("Area")
     @Column(name = "Area")
@@ -75,6 +74,10 @@ class Lote : BaseModel() {
 
     @Column(name = "Nombre_Unidad_Medida")
     var Nombre_Unidad_Medida: String? = null
+
+    @SerializedName("Id")
+    @Column(name = "Id_Remote")
+    var Id_Remote: Long? = 0
 
     @Column(getterName = "getEstadoSincronizacion")
     var EstadoSincronizacion: Boolean? = false

@@ -80,9 +80,9 @@ class ProductosRepository : IProductos.Repository {
         //TODO si existe conexion a internet
        if(checkConection){
 
-           val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+           val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
            if (cultivo?.EstadoSincronizacion == true) {
-               val postProducto = PostProducto(mProducto.Id,
+               val postProducto = PostProducto(mProducto.ProductoId,
                        mProducto.CalidadId,
                        1,
                        mProducto.CodigoUp,
@@ -93,7 +93,7 @@ class ProductosRepository : IProductos.Repository {
                        mProducto.Precio,
                        mProducto.PrecioSpecial,
                        mProducto.Stock,
-                       mProducto.cultivoId,
+                       cultivo.Id_Remote,
                        mProducto.Nombre,
                        mProducto.Unidad_Medida_Id,
                        mProducto.PrecioUnidadMedida,
@@ -105,9 +105,20 @@ class ProductosRepository : IProductos.Repository {
                    override fun onResponse(call: Call<Producto>?, response: Response<Producto>?) {
                        if (response != null && response.code() == 201) {
                            val value = response.body()
-                           mProducto.Id = value?.Id!!
+
+                           mProducto.Id_Remote = value?.Id_Remote!!
+
+
+                           val last_producto = getLastProducto()
+                           if (last_producto == null) {
+                               mProducto.ProductoId = 1
+                           } else {
+                               mProducto.ProductoId = last_producto.ProductoId!! + 1
+                           }
+
                            mProducto.Estado_Sincronizacion = true
                            mProducto.Estado_SincronizacionUpdate = true
+
                            mProducto.save()
                            postEventOk(ProductosEvent.SAVE_EVENT, getProductos(cultivo_id), null)
                        } else {
@@ -135,9 +146,9 @@ class ProductosRepository : IProductos.Repository {
     override fun registerProductoLocal(mProducto: Producto, cultivo_id: Long) {
         val last_producto = getLastProducto()
         if (last_producto == null) {
-            mProducto.Id = 1
+            mProducto.ProductoId = 1
         } else {
-            mProducto.Id = last_producto.Id!! + 1
+            mProducto.ProductoId = last_producto.ProductoId!! + 1
         }
         postEventOk(ProductosEvent.SAVE_EVENT, getProductos(cultivo_id), null)
     }
@@ -151,7 +162,11 @@ class ProductosRepository : IProductos.Repository {
         if(checkConection){
             //TODO se valida estado de sincronizacion  para actualizar,actualizacion remota
             if (mProducto.Estado_Sincronizacion == true) {
-                val postProducto = PostProducto(mProducto.Id,
+
+                val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
+
+
+                val postProducto = PostProducto(mProducto.Id_Remote,
                         mProducto.CalidadId,
                         1,
                         mProducto.CodigoUp,
@@ -162,17 +177,18 @@ class ProductosRepository : IProductos.Repository {
                         mProducto.Precio,
                         mProducto.PrecioSpecial,
                         mProducto.Stock,
-                        mProducto.cultivoId,
+                        cultivo?.Id_Remote,
                         mProducto.Nombre,
                         mProducto.Unidad_Medida_Id,
                         mProducto.PrecioUnidadMedida,
                         mProducto?.userId
                 )
 
-                val call = apiService?.updateProducto(postProducto, mProducto.Id!!)
+                val call = apiService?.updateProducto(postProducto, mProducto.Id_Remote!!)
                 call?.enqueue(object : Callback<Producto> {
                     override fun onResponse(call: Call<Producto>?, response: Response<Producto>?) {
                         if (response != null && response.code() == 200) {
+
                             mProducto.update()
                             postEventOk(ProductosEvent.SAVE_EVENT, getProductos(cultivo_id), null)
                         } else {
@@ -205,7 +221,7 @@ class ProductosRepository : IProductos.Repository {
         if (mProducto.Estado_Sincronizacion == true) {
             //TODO si existe coneccion a internet se elimina
             if(checkConection){
-                val call = apiService?.deleteProducto(mProducto.Id!!)
+                val call = apiService?.deleteProducto(mProducto.Id_Remote!!)
                 call?.enqueue(object : Callback<Producto> {
                     override fun onResponse(call: Call<Producto>?, response: Response<Producto>?) {
                         if (response != null && response.code() == 204) {
@@ -237,12 +253,12 @@ class ProductosRepository : IProductos.Repository {
     }
 
     override fun getCultivo(cultivo_id: Long?) {
-        val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+        val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
         postEventOkCultivo(ProductosEvent.GET_EVENT_CULTIVO, cultivo)
     }
 
     override fun getLastProducto(): Producto? {
-        val lastProducto = SQLite.select().from(Producto::class.java).where().orderBy(Producto_Table.Id, false).querySingle()
+        val lastProducto = SQLite.select().from(Producto::class.java).where().orderBy(Producto_Table.ProductoId, false).querySingle()
         return lastProducto
     }
 

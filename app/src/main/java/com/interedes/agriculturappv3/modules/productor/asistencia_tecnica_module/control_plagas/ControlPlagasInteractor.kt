@@ -24,16 +24,12 @@ class ControlPlagasInteractor : IControlPlagas.Interactor {
         repository?.getCultivo(cultivo_id)
     }
 
-    override fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?) {
-        repository?.deleteControlPlaga(controlPlaga, cultivo_id)
+    override fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?,checkConection:Boolean) {
+        repository?.deleteControlPlaga(controlPlaga, cultivo_id,checkConection)
     }
 
-    override fun updateControlPlaga(controlPlaga: ControlPlaga?) {
-        repository?.updateControlPlaga(controlPlaga)
-    }
-
-    override fun updateControlPlagaOnline(controlPlaga: ControlPlaga?) {
-        repository?.updateControlPlagaOnline(controlPlaga)
+    override fun updateControlPlaga(controlPlaga: ControlPlaga?,checkConection:Boolean) {
+        repository?.updateControlPlaga(controlPlaga,checkConection)
     }
 
 

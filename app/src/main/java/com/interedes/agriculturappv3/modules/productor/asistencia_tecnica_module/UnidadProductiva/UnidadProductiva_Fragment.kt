@@ -198,6 +198,8 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             viewDialog?.edtNombreUnidadProductiva?.isEnabled = b
             viewDialog?.etDescripcionUnidadProductiva?.isEnabled = b
             viewDialog?.edtAreaUnidadProductiva?.isEnabled = b
+            viewDialog?.btnSaveUnidadProductiva?.isEnabled = b
+            viewDialog?.btnSaveUnidadProductiva?.isClickable = b
         }
     }
 
@@ -290,7 +292,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             //val updateUP = Unidad_Productiva()
             /* val id_user_logued = (activity as MenuMainActivity).getLastUserLogued()?.Id
              unidadProductiva?.UsuarioId = id_user_logued*/
-            unidadProductiva?.Id = unidadProductivaGlobal!!.Id
+            unidadProductiva?.Unidad_Productiva_Id = unidadProductivaGlobal!!.Unidad_Productiva_Id
             /* unidadProductiva?.CiudadId = municipioGlobal?.Id
              unidadProductiva?.Nombre_Ciudad = municipioGlobal?.Nombre
              unidadProductiva?.Nombre_Departamento = departamentoGlobal?.Nombre*/

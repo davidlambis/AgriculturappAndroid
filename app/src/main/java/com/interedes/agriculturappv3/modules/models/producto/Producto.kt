@@ -16,9 +16,9 @@ import java.util.*
 
 @Table(database = DataSource::class)
 data class Producto(@PrimaryKey
-                    @SerializedName("Id")
-                    @Column(name = "Id")
-                    var Id: Long? = 0,
+
+                    @Column(name = "ProductoId")
+                    var ProductoId: Long? = 0,
 
                     @SerializedName("CalidadId")
                     @Column(name = "CalidadId")
@@ -107,6 +107,11 @@ data class Producto(@PrimaryKey
 
                     @Column(name = "Usuario_Logued")
                     var Usuario_Logued: UUID? = null,
+
+
+                    @SerializedName("Id")
+                    @Column(name = "Id_Remote")
+                    var Id_Remote: Long? = 0,
 
                     @Column(getterName = "getEstado_Sincronizacion")
                     var Estado_Sincronizacion: Boolean? = false,

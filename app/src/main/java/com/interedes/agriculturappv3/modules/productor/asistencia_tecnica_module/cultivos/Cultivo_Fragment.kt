@@ -267,6 +267,10 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             viewDialog?.spinnerUnidadMedidaCosecha?.isEnabled = b
             viewDialog?.edtFechaInicio?.isEnabled = b
             viewDialog?.edtFechaFin?.isEnabled = b
+
+            viewDialog?.btnSaveCultivo?.isEnabled = b
+            viewDialog?.btnSaveCultivo?.isEnabled = b
+
         }
     }
 
@@ -316,7 +320,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
     override fun updateCultivo(cultivo: Cultivo?, loteId: Long?) {
         if (presenter?.validarCampos() == true) {
-            cultivo?.Id = cultivoGlobal?.Id
+            cultivo?.CultivoId = cultivoGlobal?.CultivoId
             cultivo?.Descripcion = viewDialog?.edtDescripcionCultivo?.text?.trim().toString()
             cultivo?.EstimadoCosecha = viewDialog?.edtEstimadoCosecha?.text?.trim().toString().toDoubleOrNull()
             cultivo?.stringFechaInicio = viewDialog?.edtFechaInicio?.text?.trim().toString()
@@ -461,7 +465,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             viewDialog?.spinnerUnidadMedidaCosecha?.setText(cultivo.Nombre_Unidad_Medida)
             viewDialog?.edtNombreCultivo?.setText(cultivo.Nombre)
             viewDialog?.edtDescripcionCultivo?.setText(cultivo.Descripcion)
-            viewDialog?.edtEstimadoCosecha?.setText(cultivo.EstimadoCosecha.toString())
+
             viewDialog?.edtFechaInicio?.setText(cultivo.stringFechaInicio)
             viewDialog?.edtFechaFin?.setText(cultivo.stringFechaFin)
             viewDialog?.spinnerTipoProducto?.setText(cultivo.Nombre_Tipo_Producto)
@@ -469,6 +473,14 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             unidadMedidaGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(cultivo.Unidad_Medida_Id)).querySingle()
             tipoProductoGlobal = SQLite.select().from(TipoProducto::class.java).where(TipoProducto_Table.Id.eq(cultivo.Id_Tipo_Producto)).querySingle()
             detalleTipoProductoGlobal = SQLite.select().from(DetalleTipoProducto::class.java).where(DetalleTipoProducto_Table.Id.eq(cultivo.DetalleTipoProductoId)).querySingle()
+
+            if(cultivo.EstimadoCosecha.toString().contains(".0")){
+                viewDialog?.edtEstimadoCosecha?.setText(String.format(context!!.getString(R.string.price_empty_signe),
+                        cultivo.EstimadoCosecha))
+            }else{
+                viewDialog?.edtEstimadoCosecha?.setText(cultivo.EstimadoCosecha.toString())
+            }
+
         }
 
         val dialog = AlertDialog.Builder(context!!, android.R.style.Theme_Light_NoTitleBar)
@@ -505,7 +517,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         }
 
         if (unidadProductivaGlobal != null && loteGlobal != null) {
-            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
         }
@@ -569,7 +581,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialogFilter?.spinnerLote?.setText("")
                 unidadProductivaGlobal = listUnidadProductiva!![position] as Unidad_Productiva
-                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
             }
         }
         presenter?.setListSpinnerLote(null)
@@ -583,8 +595,8 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             viewDialogFilter?.spinnerLote!!.setAdapter(loteArrayAdapter)
             viewDialogFilter?.spinnerLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 loteGlobal = listLotes!![position] as Lote
-                Lote_Id = listLotes.get(position).Id
-                presenter?.setListSpinnerLote(loteGlobal?.Id)
+                Lote_Id = listLotes.get(position).LoteId
+                presenter?.setListSpinnerLote(loteGlobal?.LoteId)
             }
         }
     }

@@ -59,8 +59,17 @@ class UpRepository() : IUnidadProductiva.Repo {
 
                 override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
                     if (response != null && response.code() == 201) {
-                        val idUP = response.body()?.Id
-                        mUnidadProductiva?.Id = idUP
+                        val idUP = response.body()?.Id_Remote
+                        mUnidadProductiva?.Id_Remote = idUP
+
+                        //Se crea valor primario en SQlite
+                        val last_up = getLastUp()
+                        if (last_up == null) {
+                            mUnidadProductiva.Unidad_Productiva_Id = 1
+                        } else {
+                            mUnidadProductiva.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
+                        }
+
                         //mUnidadProductiva?.save()
 
                         //postLocalizacionUnidadProductiva
@@ -74,7 +83,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                                 "",
                                 "",
                                 "",
-                                mUnidadProductiva?.Id,
+                                mUnidadProductiva?.Id_Remote,
                                 "")
 
                         val call = apiService?.postLocalizacionUnidadProductiva(postLocalizacionUnidadProductiva)
@@ -97,9 +106,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                             override fun onFailure(call: Call<LocalizacionUp>?, t: Throwable?) {
                                 postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
                             }
-
                         })
-
                         // postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
                     } else {
                         postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
@@ -109,7 +116,6 @@ class UpRepository() : IUnidadProductiva.Repo {
                 override fun onFailure(call: Call<Unidad_Productiva>?, t: Throwable?) {
                     postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
                 }
-
             })
 
         }
@@ -123,9 +129,9 @@ class UpRepository() : IUnidadProductiva.Repo {
     override fun saveUpLocal(mUnidadProductiva: Unidad_Productiva){
         val last_up = getLastUp()
         if (last_up == null) {
-            mUnidadProductiva.Id = 1
+            mUnidadProductiva.Unidad_Productiva_Id = 1
         } else {
-            mUnidadProductiva.Id = last_up.Id!! + 1
+            mUnidadProductiva.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
         }
         mUnidadProductiva.save()
         postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
@@ -137,7 +143,7 @@ class UpRepository() : IUnidadProductiva.Repo {
         if(checkConection){
             //TODO se valida estado de sincronizacion  para actualizar
             if (mUnidadProductiva?.Estado_Sincronizacion == true) {
-                val updateUnidadProductiva = PostUnidadProductiva(mUnidadProductiva.Id,
+                val updateUnidadProductiva = PostUnidadProductiva(mUnidadProductiva.Id_Remote,
                         mUnidadProductiva.Area,
                         mUnidadProductiva.CiudadId,
                         mUnidadProductiva.Codigo,
@@ -146,7 +152,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                         mUnidadProductiva.descripcion,
                         mUnidadProductiva.nombre)
                 // mUnidadProductiva?.CiudadId = 1
-                val call = apiService?.updateUnidadProductiva(updateUnidadProductiva, mUnidadProductiva.Id!!)
+                val call = apiService?.updateUnidadProductiva(updateUnidadProductiva, mUnidadProductiva.Id_Remote!!)
                 call?.enqueue(object : Callback<Unidad_Productiva> {
                     override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
                         if (response != null && response.code() == 200) {
@@ -160,7 +166,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                                     "",
                                     "",
                                     "",
-                                    mUnidadProductiva?.Id,
+                                    mUnidadProductiva?.Id_Remote,
                                     "")
 
                             val call = apiService?.updateLocalizacionUnidadProductiva(postLocalizacionUnidadProductiva, mUnidadProductiva.LocalizacionUpId!!)
@@ -214,7 +220,7 @@ class UpRepository() : IUnidadProductiva.Repo {
         if (mUnidadProductiva.Estado_Sincronizacion == true) {
             //TODO si existe coneccion a internet se elimina
             if(checkConection){
-                val call = apiService?.deleteUnidadProductiva(mUnidadProductiva.Id)
+                val call = apiService?.deleteUnidadProductiva(mUnidadProductiva.Id_Remote)
                 call?.enqueue(object : Callback<Unidad_Productiva> {
                     override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
                         if (response != null && response.code() == 204) {
@@ -233,7 +239,7 @@ class UpRepository() : IUnidadProductiva.Repo {
         } else {
             //TODO No sincronizado, Eliminar de manera local
             //Verificate if cultivos register
-            var vericateRegisterLotes= SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(mUnidadProductiva.Id)).querySingle()
+            var vericateRegisterLotes= SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(mUnidadProductiva.Unidad_Productiva_Id)).querySingle()
             if(vericateRegisterLotes!=null){
 
                 postEventError(RequestEventUP.ERROR_EVENT, "Error!. La unidad productiva no se ha podido eliminar, recuerde eliminar los lotes")
@@ -254,7 +260,7 @@ class UpRepository() : IUnidadProductiva.Repo {
     }
 
     override fun getLastUp(): Unidad_Productiva? {
-        val lastUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).where().orderBy(Unidad_Productiva_Table.Id, false).querySingle()
+        val lastUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).where().orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id, false).querySingle()
         return lastUnidadProductiva
     }
 

@@ -201,8 +201,17 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         }
         txtNombreCultivo.setText(cultivo?.Nombre)
         txtNombreLote.setText(cultivo?.Nombre_Tipo_Producto)
-        txtPrecio.setText(cultivo?.FechaIncio)
-        txtArea.setText(cultivo?.FechaFin)
+
+        var fechaDateInicio= cultivo?.getFechaDate(cultivo.FechaIncio)
+        var fechaDateFin= cultivo?.getFechaDate(cultivo.FechaFin)
+
+        var fechaInicioFormat= cultivo?.getFechaFormat(fechaDateInicio)
+        var fechaFinFormat= cultivo?.getFechaFormat(fechaDateFin)
+
+        txtPrecio.setText(fechaInicioFormat)
+        txtArea.setText(fechaFinFormat)
+
+
     }
 
     override fun updatePlaga(controlPlaga: ControlPlaga?) {
@@ -247,8 +256,8 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         title = getString(R.string.tittle_filter)
 
         if (unidadProductivaGlobal != null && loteGlobal != null && cultivoGlobal != null) {
-            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
 
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
@@ -324,7 +333,7 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
                 viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
 
                 unidadProductivaGlobal = listUnidadProductiva!![position] as Unidad_Productiva
-                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
             }
             presenter?.setListSpinnerLote(null)
             presenter?.setListSpinnerCultivo(null)
@@ -341,7 +350,7 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
             viewDialogFilter?.spinnerCultivo?.setText("")
             viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
             loteGlobal = listLotes!![position]
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
         }
     }
 
@@ -353,7 +362,7 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         viewDialogFilter?.spinnerCultivo!!.setAdapter(cultivoArrayAdapter)
         viewDialogFilter?.spinnerCultivo!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             cultivoGlobal = listCultivos!![position]
-            Cultivo_Id = cultivoGlobal?.Id
+            Cultivo_Id = cultivoGlobal?.CultivoId
         }
     }
 

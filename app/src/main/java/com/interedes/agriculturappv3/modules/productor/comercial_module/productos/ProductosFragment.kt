@@ -227,8 +227,8 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         }
 
         if (unidadProductivaGlobal != null && loteGlobal != null && cultivoGlobal != null) {
-            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
 
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
@@ -403,7 +403,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
 
                 unidadProductivaGlobal = listUnidadProductiva!![position] as Unidad_Productiva
-                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
             }
             presenter?.setListSpinnerLote(null)
             presenter?.setListSpinnerCultivo(null)
@@ -420,7 +420,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialogFilter?.spinnerCultivo?.setText("")
             viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
             loteGlobal = listLotes!![position]
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
         }
     }
 
@@ -432,7 +432,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         viewDialogFilter?.spinnerCultivo!!.setAdapter(cultivoArrayAdapter)
         viewDialogFilter?.spinnerCultivo!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             cultivoGlobal = listCultivos!![position]
-            Cultivo_Id = cultivoGlobal?.Id
+            Cultivo_Id = cultivoGlobal?.CultivoId
         }
     }
 
@@ -731,7 +731,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     override fun registerProducto() {
         if (presenter?.validarCampos() == true) {
             val producto = Producto()
-            producto.Id=0
+            producto.ProductoId=0
             producto.CalidadId = calidadProductoGlobal?.Id
             producto.NombreCalidad = calidadProductoGlobal?.Nombre
             //producto.Nombre = viewDialog?.txtNombreProducto?.text.toString()

@@ -55,74 +55,91 @@ class ControlPlagasRepository : IControlPlagas.Repository {
     }
 
     override fun getCultivo(cultivo_id: Long?) {
-        val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+        val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
         postEventOkCultivo(ControlPlagasEvent.GET_EVENT_CULTIVO, cultivo)
     }
 
-    override fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?) {
+    override fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?,checkConection: Boolean) {
+        //TODO se valida estado de sincronizacion  para eliminar
         if (controlPlaga.Estado_Sincronizacion == true) {
-            val call = apiService?.deleteControlPlaga(controlPlaga.Id!!)
-            call?.enqueue(object : Callback<PostControlPlaga> {
-                override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
-                    if (response != null && response.code() == 204 || response?.code() == 200) {
-                        controlPlaga.delete()
-                        postEventOk(ControlPlagasEvent.DELETE_EVENT, getControlPlagas(controlPlaga.CultivoId),controlPlaga)
+            //TODO si existe coneccion a internet se elimina
+            if(checkConection){
+                val call = apiService?.deleteControlPlaga(controlPlaga.ControlPlagaId!!)
+                call?.enqueue(object : Callback<PostControlPlaga> {
+                    override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
+                        if (response != null && response.code() == 204 || response?.code() == 200) {
+                            controlPlaga.delete()
+                            postEventOk(ControlPlagasEvent.DELETE_EVENT, getControlPlagas(controlPlaga.CultivoId),controlPlaga)
+                        }
                     }
-                }
-                override fun onFailure(call: Call<PostControlPlaga>?, t: Throwable?) {
-                    postEventError(ControlPlagasEvent.ERROR_EVENT, "Comprueba tu conexión")
-                }
-            })
-        } else {
-            controlPlaga.delete()
-            postEventOk(ControlPlagasEvent.DELETE_EVENT, getControlPlagas(controlPlaga.CultivoId), controlPlaga)
-            /// postEventError(CultivoEvent.ERROR_EVENT, "Error!. El Cultivo no se ha eliminado")
-        }
-        controlPlaga.delete()
-        postEventOk(ControlPlagasEvent.DELETE_EVENT, getControlPlagas(cultivo_id),controlPlaga);
-    }
-
-    override fun updateControlPlaga(controlPlaga: ControlPlaga?) {
-        controlPlaga?.update()
-    }
-
-    override fun updateControlPlagaOnline(controlPlaga: ControlPlaga?) {
-        if (controlPlaga?.Estado_Sincronizacion == true) {
-            val postControlPlaga = PostControlPlaga(
-                    controlPlaga?.Id,
-                    controlPlaga?.CultivoId,
-                    controlPlaga?.Dosis,
-                    controlPlaga?.EnfermedadesId,
-                    controlPlaga?.getFechaAplicacionFormatApi(),
-                    controlPlaga?.TratamientoId,
-                    controlPlaga?.UnidadMedidaId,
-                    controlPlaga?.getFechaErradicacionFormatApi(),
-                    controlPlaga?.EstadoErradicacion
-            )
-            val call = apiService?.updateControlPlaga(postControlPlaga,controlPlaga?.Id!!)
-            call?.enqueue(object : Callback<PostControlPlaga> {
-                override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
-                    if (response != null && response.code() == 201 || response?.code() == 200) {
-                        var controlPlagaResponse= response.body()
-                        controlPlaga.Id = controlPlagaResponse?.Id!!
-                        controlPlaga.Estado_Sincronizacion = true
-                        controlPlaga?.Estado_SincronizacionUpdate = true
-                        controlPlaga.update()
-                        postEventOk(ControlPlagasEvent.UPDATE_EVENT_OK, getControlPlagas(controlPlaga.CultivoId),controlPlaga)
-                    } else {
+                    override fun onFailure(call: Call<PostControlPlaga>?, t: Throwable?) {
                         postEventError(ControlPlagasEvent.ERROR_EVENT, "Comprueba tu conexión")
                     }
-                }
-                override fun onFailure(call: Call<PostControlPlaga>?, t: Throwable?) {
-                    postEventError(ControlPlagasEvent.ERROR_EVENT, "Comprueba tu conexión")
-                }
-            })
-            //}
+                })
+            }else{
+                postEventError(ControlPlagasEvent.ERROR_VERIFICATE_CONECTION, null)
+            }
         } else {
-            controlPlaga?.Estado_SincronizacionUpdate = false
-            controlPlaga?.update()
+            //TODO No sincronizado, Eliminar de manera local
+            controlPlaga.delete()
+            postEventOk(ControlPlagasEvent.DELETE_EVENT, getControlPlagas(controlPlaga.CultivoId), controlPlaga)
         }
     }
+
+    override fun updateControlPlaga(controlPlaga: ControlPlaga?,checkConection: Boolean) {
+        //TODO si existe coneccion a internet
+        if(checkConection){
+
+            //TODO se valida estado de sincronizacion  para actualizar
+            if (controlPlaga?.Estado_Sincronizacion == true) {
+
+                val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(controlPlaga.CultivoId)).querySingle()
+
+                val postControlPlaga = PostControlPlaga(
+                        controlPlaga?.Id_Remote,
+                        cultivo?.Id_Remote,
+                        controlPlaga?.Dosis,
+                        controlPlaga?.EnfermedadesId,
+                        controlPlaga?.getFechaAplicacionFormatApi(),
+                        controlPlaga?.TratamientoId,
+                        controlPlaga?.UnidadMedidaId,
+                        controlPlaga?.getFechaErradicacionFormatApi(),
+                        controlPlaga?.EstadoErradicacion
+                )
+                val call = apiService?.updateControlPlaga(postControlPlaga,controlPlaga?.Id_Remote!!)
+                call?.enqueue(object : Callback<PostControlPlaga> {
+                    override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
+                        if (response != null && response.code() == 201 || response?.code() == 200) {
+                            var controlPlagaResponse= response.body()
+                            controlPlaga.Estado_Sincronizacion = true
+                            controlPlaga?.Estado_SincronizacionUpdate = true
+                            controlPlaga.update()
+                            postEventOk(ControlPlagasEvent.UPDATE_EVENT_OK, getControlPlagas(controlPlaga.CultivoId),controlPlaga)
+                        } else {
+                            postEventError(ControlPlagasEvent.ERROR_EVENT, "Comprueba tu conexión")
+                        }
+                    }
+                    override fun onFailure(call: Call<PostControlPlaga>?, t: Throwable?) {
+                        postEventError(ControlPlagasEvent.ERROR_EVENT, "Comprueba tu conexión")
+                    }
+                })
+
+            }
+            //TODO con  conexion a internet, pero no se ha sincronizado, actualizacion local
+            else {
+                controlPlaga?.Estado_SincronizacionUpdate = false
+                controlPlaga?.update()
+                postEventOk(ControlPlagasEvent.UPDATE_EVENT_OK,  getControlPlagas(controlPlaga?.CultivoId),controlPlaga)
+            }
+        }
+        //TODO sin conexion a internet, actualizacion local
+        else{
+            controlPlaga?.Estado_SincronizacionUpdate = false
+            controlPlaga?.update()
+            postEventOk(ControlPlagasEvent.UPDATE_EVENT_OK, getControlPlagas(controlPlaga?.CultivoId),controlPlaga)
+        }
+    }
+
 
 
     //endregion
@@ -160,7 +177,7 @@ class ControlPlagasRepository : IControlPlagas.Repository {
         postEvent(type, null, CultivoMutable, null)
     }
 
-    private fun postEventError(type: Int,messageError:String) {
+    private fun postEventError(type: Int,messageError:String?) {
         postEvent(type, null,null,messageError)
     }
 

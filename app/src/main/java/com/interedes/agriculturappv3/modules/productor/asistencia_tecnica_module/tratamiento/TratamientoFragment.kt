@@ -287,7 +287,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         hideProgressHud()
         //Toast.makeText(activity, "Se ha registrado el control de plaga", Toast.LENGTH_SHORT).show()
         val bundle = Bundle()
-        bundle.putLong("cultivoId", cultivoGlobal?.Id!!)
+        bundle.putLong("cultivoId", cultivoGlobal?.CultivoId!!)
         val controlPlagasFragment: ControlPlagasFragment
         controlPlagasFragment = ControlPlagasFragment()
         controlPlagasFragment.arguments = bundle
@@ -400,7 +400,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
                 viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
 
                 unidadProductivaGlobal = listUnidadProductiva!![position]
-                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
             }
             presenter?.setListSpinnerLote(null)
             presenter?.setListSpinnerCultivo(null, null)
@@ -417,7 +417,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             viewDialogFilter?.spinnerCultivo?.setText("")
             viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
             loteGlobal = listLotes!![position]
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id, tipoProductoId)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId, tipoProductoId)
         }
     }
 
@@ -429,7 +429,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         viewDialogFilter?.spinnerCultivo!!.setAdapter(cultivoArrayAdapter)
         viewDialogFilter?.spinnerCultivo!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             cultivoGlobal = listCultivos!![position]
-            Cultivo_Id = cultivoGlobal?.Id
+            Cultivo_Id = cultivoGlobal?.CultivoId
         }
     }
 
@@ -472,7 +472,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
     override fun registerControlPlaga() {
         if (presenter?.validarCampos() == true) {
             val controlPlaga = ControlPlaga()
-            controlPlaga.CultivoId = cultivoGlobal?.Id
+            controlPlaga.CultivoId = cultivoGlobal?.CultivoId
             controlPlaga.Dosis = viewDialog?.txtDosis?.text.toString().toDoubleOrNull()
             controlPlaga.UnidadMedidaId = unidadMedidaGlobal?.Id
             controlPlaga.Fecha_aplicacion_local = Calendar.getInstance().time
@@ -480,7 +480,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             controlPlaga.EnfermedadesId = enfermedadId
             controlPlaga.NombrePlaga = nombreTipoEnfermedad
             controlPlaga.EstadoErradicacion = false
-            presenter?.registerControlPlaga(controlPlaga, cultivoGlobal?.Id)
+            presenter?.registerControlPlaga(controlPlaga, cultivoGlobal?.CultivoId)
         }
     }
 
@@ -492,8 +492,8 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         val title: String? = getString(R.string.tittle_select_cultivo_tratamiento)
 
         if (unidadProductivaGlobal != null && loteGlobal != null && cultivoGlobal != null) {
-            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id, tipoProductoId)
+            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId, tipoProductoId)
 
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.toString())

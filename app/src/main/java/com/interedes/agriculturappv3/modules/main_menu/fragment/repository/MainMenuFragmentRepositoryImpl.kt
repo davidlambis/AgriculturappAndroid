@@ -51,12 +51,9 @@ import com.interedes.agriculturappv3.modules.models.unidad_productiva.PostUnidad
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.modules.models.ventas.*
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.CategoriaPucResponse
-import com.interedes.agriculturappv3.modules.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.EstadoTransaccionResponse
-import com.interedes.agriculturappv3.modules.models.ventas.Estado_Transaccion
-import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
-import com.interedes.agriculturappv3.modules.models.ventas.Transaccion_Table
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.RolResources
 import java.text.SimpleDateFormat
@@ -80,6 +77,47 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
         //mUserDatabase = mDatabase.child("Users")
         //mAuth = FirebaseAuth.getInstance()
         //mUserReference = mUserDatabase?.child(mAuth?.currentUser?.uid)
+    }
+
+
+    fun getLastUp(): Unidad_Productiva? {
+        val lastUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).where().orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id, false).querySingle()
+        return lastUnidadProductiva
+    }
+
+    fun getLastLote(): Lote? {
+        val lastLote = SQLite.select().from(Lote::class.java).where().orderBy(Lote_Table.LoteId, false).querySingle()
+        return lastLote
+    }
+
+    fun getLastCultivo(): Cultivo? {
+        val lastCultivo = SQLite.select().from(Cultivo::class.java).where().orderBy(Cultivo_Table.CultivoId, false).querySingle()
+        return lastCultivo
+    }
+
+    fun getLastProduccion(): Produccion? {
+        val lastProduccion = SQLite.select().from(Produccion::class.java).where().orderBy(Produccion_Table.ProduccionId, false).querySingle()
+        return lastProduccion
+    }
+
+    fun getLastControlPlaga(): ControlPlaga? {
+        val lastControlPlaga = SQLite.select().from(ControlPlaga::class.java).where().orderBy(ControlPlaga_Table.ControlPlagaId, false).querySingle()
+        return lastControlPlaga
+    }
+
+    fun getLastTransaccion(): Transaccion? {
+        val lastTransaccion = SQLite.select().from(Transaccion::class.java).where().orderBy(Transaccion_Table.TransaccionId, false).querySingle()
+        return lastTransaccion
+    }
+
+    fun getLastTercero(): Tercero? {
+        val lastTercero = SQLite.select().from(Tercero::class.java).where().orderBy(Tercero_Table.TerceroId, false).querySingle()
+        return lastTercero
+    }
+
+    fun getLastProducto(): Producto? {
+        val lastProducto = SQLite.select().from(Producto::class.java).where().orderBy(Producto_Table.ProductoId, false).querySingle()
+        return lastProducto
     }
 
 
@@ -144,6 +182,15 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                             item.Estado_Sincronizacion=true
                             item.Estado_SincronizacionUpdate=true
 
+
+                            val last_up = getLastUp()
+                            if (last_up == null) {
+                                item.Unidad_Productiva_Id = 1
+                            } else {
+                                item.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
+                            }
+
+
                             if(item.LocalizacionUps?.size!!>0){
                                 for (localizacion in item.LocalizacionUps!!){
                                     item.DireccionAproximadaGps=localizacion.DireccionAproximadaGps
@@ -158,7 +205,18 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                             }
 
                             if(item.Lotes?.size!!>0){
+
+
+
                                 for (lote in item.Lotes!!){
+
+                                    val last_lote = getLastLote()
+                                    if (last_lote == null) {
+                                        lote.LoteId = 1
+                                    } else {
+                                        lote.LoteId = last_lote.LoteId!! + 1
+                                    }
+
                                     val coordenadas =lote.Localizacion
                                     if(coordenadas!=null || coordenadas!=""){
                                         val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
@@ -169,6 +227,7 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                                         lote.Coordenadas=coordenadas
                                     }
 
+                                    lote.Unidad_Productiva_Id=item.Unidad_Productiva_Id
                                     lote.Nombre_Unidad_Medida= if (item.UnidadMedida!=null) item.UnidadMedida?.Descripcion else null
                                     lote.Nombre_Unidad_Productiva= item.nombre
                                     lote.EstadoSincronizacion=true
@@ -179,12 +238,26 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                                     lote.save()
 
                                     if(lote.Cultivos?.size!!>0){
+
                                         for(cultivo in lote.Cultivos!!){
+                                            val last_cultivo = getLastCultivo()
+                                            if (last_cultivo == null) {
+                                                cultivo.CultivoId = 1
+                                            } else {
+                                                cultivo.CultivoId = last_cultivo.CultivoId!! + 1
+                                            }
+
+
+                                            cultivo.LoteId=lote.LoteId
                                             cultivo.NombreUnidadProductiva= item.nombre
                                             cultivo.NombreLote= lote.Nombre
                                             cultivo.EstadoSincronizacion= true
                                             cultivo.Estado_SincronizacionUpdate= true
+                                            cultivo.stringFechaInicio=cultivo.getFechaStringFormatApi(cultivo.FechaIncio)
+                                            cultivo.stringFechaFin=cultivo.getFechaStringFormatApi(cultivo.FechaFin)
 
+
+                                            cultivo.Nombre_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.tipoProducto?.Nombre else null
                                             cultivo.Nombre_Detalle_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.Descripcion else null
                                             cultivo.Id_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.TipoProductoId else null
                                             cultivo.Nombre_Unidad_Medida=if (cultivo.unidadMedida!=null) cultivo.unidadMedida?.Descripcion else null
@@ -192,7 +265,19 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
 
 
                                             if(cultivo.produccions?.size!!>0){
+
+
+
                                                 for(produccion in cultivo.produccions!!){
+
+                                                    val last_productions = getLastProduccion()
+                                                    if (last_productions == null) {
+                                                        produccion.ProduccionId = 1
+                                                    } else {
+                                                        produccion.ProduccionId = last_productions.ProduccionId!! + 1
+                                                    }
+
+                                                    produccion.CultivoId=cultivo.CultivoId
                                                     produccion.Estado_Sincronizacion=true
                                                     produccion.Estado_SincronizacionUpdate=true
                                                     produccion.NombreCultivo=cultivo.Nombre
@@ -204,26 +289,33 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                                                     produccion.save()
 
 
-                                                    if(cultivo.controlPlagas?.size!!>0){
-                                                        for(controlplaga in cultivo.controlPlagas!!){
-                                                            controlplaga.Estado_Sincronizacion=true
-                                                            controlplaga.Estado_SincronizacionUpdate=true
-                                                            controlplaga.Fecha_aplicacion_local=controlplaga.getFechaDate(controlplaga.Fecha_aplicacion)
-                                                            controlplaga.Fecha_Erradicacion_Local=if(controlplaga.FechaErradicacion!=null)controlplaga.getFechaDate(controlplaga.FechaErradicacion)else null
 
-                                                            controlplaga.save()
-
-                                                        }
-                                                    }
                                                 }
                                             }
 
 
+
+                                            if(cultivo.controlPlagas?.size!!>0){
+                                                for(controlplaga in cultivo.controlPlagas!!){
+                                                    val last_controlplaga = getLastControlPlaga()
+                                                    if (last_controlplaga == null) {
+                                                        controlplaga.ControlPlagaId = 1
+                                                    } else {
+                                                        controlplaga.ControlPlagaId = last_controlplaga.ControlPlagaId!! + 1
+                                                    }
+                                                    controlplaga.CultivoId=cultivo.CultivoId
+                                                    controlplaga.Estado_Sincronizacion=true
+                                                    controlplaga.Estado_SincronizacionUpdate=true
+                                                    controlplaga.Fecha_aplicacion_local=controlplaga.getFechaDate(controlplaga.Fecha_aplicacion)
+                                                    controlplaga.Fecha_Erradicacion_Local=if(controlplaga.FechaErradicacion!=null)controlplaga.getFechaDate(controlplaga.FechaErradicacion)else null
+
+                                                    controlplaga.save()
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
-
                             item.save()
                         }
 
@@ -624,8 +716,20 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                              .async()
                              .execute()
 
+                     SQLite.delete<Tercero>(Tercero::class.java)
+                             .where(Tercero_Table.Estado_Sincronizacion.eq(true))
+                             .async()
+                             .execute()
 
                      for (item in transacciones) {
+
+
+                         val lastTransaccion = getLastTransaccion()
+                         if (lastTransaccion == null) {
+                             item.TransaccionId = 1
+                         } else {
+                             item.TransaccionId = lastTransaccion.TransaccionId!! + 1
+                         }
 
                          item.UsuarioId=usuario?.Id
                          item.Nombre_Tercero= if (item.Tercero!=null) item.Tercero?.Nombre else null
@@ -646,14 +750,24 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
 
                          item.Valor_Unitario=if (item.Valor_Total!=null && item.Cantidad!=null)  item.Valor_Total!! / item.Cantidad?.toLong()!! else null
 
-                         var cultivo =SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(item.Cultivo_Id)).querySingle()
-                         if(cultivo!=null){
-                             item.Nombre_Cultivo=cultivo.Nombre
-                             item.Nombre_Detalle_Producto_Cultivo=cultivo.Nombre_Detalle_Tipo_Producto
+                         var cultivo =SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id_Remote.eq(item.Cultivo_Id)).querySingle()
+                         item.Nombre_Cultivo=cultivo?.Nombre
+                         item.Nombre_Detalle_Producto_Cultivo=cultivo?.Nombre_Detalle_Tipo_Producto
+                         item.Cultivo_Id=cultivo?.CultivoId
+
+                         val lastTercero = getLastTercero()
+                         if (lastTercero == null) {
+                             item.Tercero?.TerceroId = 1
+                         } else {
+                             item.Tercero?.TerceroId = lastTercero.TerceroId!! + 1
                          }
+                         item.Tercero?.save()
+
 
                          item.save()
                      }
+
+
                  } else {
                      postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                  }

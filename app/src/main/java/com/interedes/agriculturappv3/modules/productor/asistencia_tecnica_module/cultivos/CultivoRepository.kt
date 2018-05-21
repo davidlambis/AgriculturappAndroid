@@ -77,7 +77,7 @@ class CultivoRepository : ICultivo.Repository {
     }
 
     override fun getLote(loteId: Long?) {
-        val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.Id.eq(loteId)).querySingle()
+        val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.LoteId.eq(loteId)).querySingle()
         postEventOkLote(CultivoEvent.GET_EVENT_LOTE, lote)
         /*
         var cultivo = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
@@ -99,7 +99,7 @@ class CultivoRepository : ICultivo.Repository {
         //TODO si existe conexion a internet
         if(checkConection){
             //TODO Ciudad Id de la tabla del backend
-            val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.Id.eq(loteId)).querySingle()
+            val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.LoteId.eq(loteId)).querySingle()
             if (lote?.EstadoSincronizacion == true) {
                 val postCultivo = PostCultivo(0,
                         mCultivo?.Descripcion,
@@ -108,7 +108,7 @@ class CultivoRepository : ICultivo.Repository {
                         mCultivo?.EstimadoCosecha,
                         mCultivo?.stringFechaFin,
                         mCultivo?.stringFechaInicio,
-                        mCultivo?.LoteId,
+                        lote?.Id_Remote,
                         mCultivo?.Nombre,
                         mCultivo?.siembraTotal)
 
@@ -117,7 +117,16 @@ class CultivoRepository : ICultivo.Repository {
                     override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
                         if (response != null && response.code() == 201) {
                             val value = response.body()
-                            mCultivo?.Id = value?.Id!!
+                            mCultivo?.Id_Remote = value?.Id_Remote!!
+
+                            val last_cultivo = getLastCultivo()
+                            if (last_cultivo == null) {
+                                mCultivo.CultivoId = 1
+                            } else {
+                                mCultivo.CultivoId = last_cultivo.CultivoId!! + 1
+                            }
+
+
                             mCultivo?.FechaIncio = value.FechaIncio
                             mCultivo?.FechaFin = value.FechaFin
                             mCultivo?.EstadoSincronizacion = true
@@ -148,9 +157,9 @@ class CultivoRepository : ICultivo.Repository {
     override fun saveCultivoLocal(mCultivo: Cultivo, loteId: Long?){
         val last_cultivo = getLastCultivo()
         if (last_cultivo == null) {
-            mCultivo.Id = 1
+            mCultivo.CultivoId = 1
         } else {
-            mCultivo.Id = last_cultivo.Id!! + 1
+            mCultivo.CultivoId = last_cultivo.CultivoId!! + 1
         }
         mCultivo.save()
         postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
@@ -161,19 +170,20 @@ class CultivoRepository : ICultivo.Repository {
 
         //TODO si existe coneccion a internet
         if(checkConection){
+            val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.LoteId.eq(loteId)).querySingle()
             //TODO se valida estado de sincronizacion  para actualizar,actualizacion remota
             if (mCultivo.EstadoSincronizacion == true) {
-                val postCultivo = PostCultivo(mCultivo.Id,
+                val postCultivo = PostCultivo(mCultivo.Id_Remote,
                         mCultivo.Descripcion,
                         mCultivo.DetalleTipoProductoId,
                         mCultivo.Unidad_Medida_Id,
                         mCultivo.EstimadoCosecha,
                         mCultivo.stringFechaFin,
                         mCultivo.stringFechaInicio,
-                        mCultivo.LoteId,
+                        lote?.Id_Remote,
                         mCultivo.Nombre,
                         mCultivo.siembraTotal)
-                val call = apiService?.updateCultivo(postCultivo, mCultivo.Id!!)
+                val call = apiService?.updateCultivo(postCultivo, mCultivo.Id_Remote!!)
                 call?.enqueue(object : Callback<Cultivo> {
                     override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
                         if (response != null && response.code() == 200) {
@@ -210,7 +220,7 @@ class CultivoRepository : ICultivo.Repository {
         if (mCultivo.EstadoSincronizacion == true) {
             //TODO si existe coneccion a internet se elimina
             if(checkConection){
-                val call = apiService?.deleteCultivo(mCultivo.Id!!)
+                val call = apiService?.deleteCultivo(mCultivo.Id_Remote!!)
                 call?.enqueue(object : Callback<Cultivo> {
                     override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
                         if (response != null && response.code() == 204) {
@@ -229,7 +239,7 @@ class CultivoRepository : ICultivo.Repository {
         } else {
             //TODO No sincronizado, Eliminar de manera local
             //Verificate if cultivos register
-            var vericateRegisterProduccion= SQLite.select().from(Produccion::class.java).where(Produccion_Table.CultivoId.eq(mCultivo.Id)).querySingle()
+            var vericateRegisterProduccion= SQLite.select().from(Produccion::class.java).where(Produccion_Table.CultivoId.eq(mCultivo.CultivoId)).querySingle()
             if(vericateRegisterProduccion!=null){
                 postEventError(CultivoEvent.ERROR_EVENT, "Error!.El cultivo no se ha podido eliminar, recuerde eliminar la produccion primero")
             }else{
@@ -241,7 +251,7 @@ class CultivoRepository : ICultivo.Repository {
 
 
     override fun getLastCultivo(): Cultivo? {
-        val lastCultivo = SQLite.select().from(Cultivo::class.java).where().orderBy(Cultivo_Table.Id, false).querySingle()
+        val lastCultivo = SQLite.select().from(Cultivo::class.java).where().orderBy(Cultivo_Table.CultivoId, false).querySingle()
         return lastCultivo
     }
 

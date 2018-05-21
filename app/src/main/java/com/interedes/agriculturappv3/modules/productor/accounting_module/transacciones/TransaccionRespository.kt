@@ -77,10 +77,10 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
 
         transaccion.UsuarioId= getLastUserLogued()?.Id
 
-        var terceroLocal=Tercero(Id = transaccion.TerceroId,Nombre = transaccion.Nombre_Tercero,Apellido = "",NitRut = transaccion.Identificacion_Tercero)
+        var terceroLocal=Tercero(TerceroId = transaccion.TerceroId,Nombre = transaccion.Nombre_Tercero,Apellido = "",NitRut = transaccion.Identificacion_Tercero)
 
         if(checkConection){
-            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
             if (cultivo?.EstadoSincronizacion == true) {
 
                 val postTercero = PostTercero(
@@ -94,9 +94,18 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                 postTrecero?.enqueue(object : Callback<PostTercero> {
                     override fun onResponse(call: Call<PostTercero>?, response: Response<PostTercero>?) {
                         if (response != null && response.code() == 201 || response?.code() == 200) {
-                            terceroLocal.Id = response.body()?.Id!!
+                            terceroLocal.Id_Remote = response.body()?.Id!!
                             terceroLocal.Estado_Sincronizacion = true
                             transaccion.Estado_SincronizacionUpdate = true
+
+                            val lastTercero = getLastTercero()
+                            if (lastTercero == null) {
+                                terceroLocal.TerceroId = 1
+                            } else {
+                                terceroLocal.TerceroId = lastTercero.TerceroId!! + 1
+                            }
+
+
                             terceroLocal.save()
                             val postTransaccion = PostTransaccion(
                                     0,
@@ -105,20 +114,28 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                                     transaccion.getFechaTransacccionFormatApi(),
                                     transaccion.NaturalezaId,
                                     transaccion.PucId,
-                                    terceroLocal.Id,
+                                    terceroLocal.Id_Remote,
                                     transaccion.Valor_Total,
                                     transaccion.Cantidad,
-                                    transaccion.Cultivo_Id,
+                                    cultivo.Id_Remote,
                                     getLastUserLogued()?.Id
                             )
                             val call = apiService?.postTransaccion(postTransaccion)
                             call?.enqueue(object : Callback<PostTransaccion> {
                                 override fun onResponse(call: Call<PostTransaccion>?, response: Response<PostTransaccion>?) {
                                     if (response != null && response.code() == 201 || response?.code() == 200) {
-                                        transaccion.Id = response.body()?.Id!!
+                                        transaccion.Id_Remote = response.body()?.Id!!
+
+                                        val lastTransaccion = getLastTransaccion()
+                                        if (lastTransaccion == null) {
+                                            transaccion.TransaccionId = 1
+                                        } else {
+                                            transaccion.TransaccionId = lastTransaccion.TransaccionId!! + 1
+                                        }
+
                                         transaccion.Estado_Sincronizacion = true
                                         transaccion.Estado_SincronizacionUpdate = true
-                                        transaccion.TerceroId=terceroLocal.Id
+                                        transaccion.TerceroId=terceroLocal.TerceroId
                                         transaccion.save()
                                         var listProduccion = getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id)
                                         postEventOk(RequestEventTransaccion.SAVE_EVENT, listProduccion, transaccion)
@@ -156,9 +173,9 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
 
         val lastTercero = getLastTercero()
         if (lastTercero == null) {
-            tercero.Id = 1
+            tercero.TerceroId = 1
         } else {
-            tercero.Id = lastTercero.Id!! + 1
+            tercero.TerceroId = lastTercero.TerceroId!! + 1
         }
         tercero.save()
 
@@ -166,63 +183,67 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
 
         val lastTransaccion = getLastTransaccion()
         if (lastTransaccion == null) {
-            transaccion.Id = 1
+            transaccion.TransaccionId = 1
         } else {
-            transaccion.Id = lastTransaccion.Id!! + 1
+            transaccion.TransaccionId = lastTransaccion.TransaccionId!! + 1
         }
-        transaccion.TerceroId=tercero.Id
+        transaccion.TerceroId=tercero.TerceroId
         transaccion.save()
         var listProduccion = getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id)
         postEventOk(RequestEventTransaccion.SAVE_EVENT,listProduccion,null);
     }
 
     override fun getLastTransaccion(): Transaccion? {
-        val lastTransaccion = SQLite.select().from(Transaccion::class.java).where().orderBy(Transaccion_Table.Id, false).querySingle()
+        val lastTransaccion = SQLite.select().from(Transaccion::class.java).where().orderBy(Transaccion_Table.TransaccionId, false).querySingle()
         return lastTransaccion
     }
 
     override fun getLastTercero(): Tercero? {
-        val lastTercero = SQLite.select().from(Tercero::class.java).where().orderBy(Tercero_Table.Id, false).querySingle()
+        val lastTercero = SQLite.select().from(Tercero::class.java).where().orderBy(Tercero_Table.TerceroId, false).querySingle()
         return lastTercero
     }
 
     override fun updateTransaccion(transaccion: Transaccion, cultivo_id: Long?,checkConection:Boolean) {
         transaccion.UsuarioId= getLastUserLogued()?.Id
-        var terceroLocal=Tercero(Id = transaccion.TerceroId,Nombre = transaccion.Nombre_Tercero,Apellido = "",NitRut = transaccion.Identificacion_Tercero)
+        var terceroLocal=Tercero(TerceroId = transaccion.TerceroId,Nombre = transaccion.Nombre_Tercero,Apellido = "",NitRut = transaccion.Identificacion_Tercero)
         //TODO si existe coneccion a internet
         if(checkConection){
             //TODO se valida estado de sincronizacion  para actualizar,actualizacion remota
             if (transaccion.Estado_Sincronizacion == true) {
 
+                val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
+                val tercero = SQLite.select().from(Tercero::class.java).where(Tercero_Table.TerceroId.eq(terceroLocal.TerceroId)).querySingle()
+                terceroLocal.Id_Remote=tercero?.Id_Remote
                 val postTercero = PostTercero(
-                        transaccion.TerceroId,
+                        tercero?.Id_Remote,
                         terceroLocal.Nombre,
                         terceroLocal.Apellido,
                         terceroLocal.NitRut,
                         ""
                 )
 
-                val call = apiService?.updateTercero(postTercero, terceroLocal.Id!!)
+                val call = apiService?.updateTercero(postTercero, tercero?.Id_Remote!!)
                 call?.enqueue(object : Callback<PostTercero> {
                     override fun onResponse(call: Call<PostTercero>?, response: Response<PostTercero>?) {
                         if (response != null && response.code() == 200  || response?.code()==204) {
 
                             terceroLocal.update()
+
                             val postTransaccion = PostTransaccion(
-                                    transaccion.Id,
+                                    transaccion.Id_Remote,
                                     transaccion.Concepto,
                                     transaccion.EstadoId,
                                     transaccion.getFechaTransacccionFormatApi(),
                                     transaccion.NaturalezaId,
                                     transaccion.PucId,
-                                    terceroLocal.Id,
+                                    terceroLocal.Id_Remote,
                                     transaccion.Valor_Total,
                                     transaccion.Cantidad,
-                                    transaccion.Cultivo_Id,
+                                    cultivo?.Id_Remote,
                                     getLastUserLogued()?.Id
                             )
 
-                            val call = apiService?.updateTransaccion(postTransaccion, transaccion.Id!!)
+                            val call = apiService?.updateTransaccion(postTransaccion, transaccion.Id_Remote!!)
                             call?.enqueue(object : Callback<PostTransaccion> {
                                 override fun onResponse(call: Call<PostTransaccion>?, response: Response<PostTransaccion>?) {
                                     if (response != null && response.code() == 200) {
@@ -276,24 +297,20 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
             //TODO si existe coneccion a internet se elimina
             if(checkConection){
 
-
-
-
-                val call = apiService?.deletetransaccion(transaccion.Id!!)
+                val call = apiService?.deletetransaccion(transaccion.Id_Remote!!)
                 call?.enqueue(object : Callback<PostTransaccion> {
                     override fun onResponse(call: Call<PostTransaccion>?, response: Response<PostTransaccion>?) {
                         if (response != null && response.code() == 204 ||  response?.code() == 201 ||  response?.code() == 200 ) {
                             transaccion.delete()
 
-                            var tercero = SQLite.select().from(Tercero::class.java).where(Tercero_Table.Id.eq(transaccion.TerceroId)).querySingle()
+                            var tercero = SQLite.select().from(Tercero::class.java).where(Tercero_Table.TerceroId.eq(transaccion.TerceroId)).querySingle()
 
                             if(tercero!=null){
-                                val callDeleteTercero = apiService?.deleteTercero(transaccion.TerceroId!!)
+                                val callDeleteTercero = apiService?.deleteTercero(tercero.Id_Remote!!)
                                 callDeleteTercero?.enqueue(object : Callback<PostTercero> {
                                     override fun onResponse(call: Call<PostTercero>?, response: Response<PostTercero>?) {
                                         if (response != null && response.code() == 204 ||  response?.code() == 201 ||  response?.code() == 200 ) {
                                             tercero?.delete()
-
                                             postEventOk(RequestEventTransaccion.DELETE_EVENT,getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id), transaccion)
                                         }
                                     }
@@ -303,7 +320,6 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                                 })
                             }else{
                                 postEventOk(RequestEventTransaccion.DELETE_EVENT,getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id), transaccion)
-
                             }
                         }
                     }
@@ -326,7 +342,7 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
     }
 
     override fun getCultivo(cultivo_id: Long?) {
-        var cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+        var cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
         postEventOkCultivo(RequestEventTransaccion.GET_EVENT_CULTIVO,cultivo)
     }
 

@@ -209,7 +209,7 @@ class ReporteRepository: IMainViewReportes.Repository {
     }
 
     override fun getCultivo(cultivo_id: Long?) {
-        var cultivo = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+        var cultivo = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
         postEventOkCultivo(RequestEventReporte.GET_EVENT_CULTIVO,cultivo)
     }
 

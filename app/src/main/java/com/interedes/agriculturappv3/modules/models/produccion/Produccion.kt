@@ -15,9 +15,8 @@ import java.util.*
  */
 @Table(database = DataSource::class)
 data class Produccion(@PrimaryKey
-                      @SerializedName("Id")
-                      @Column(name = "Id")
-                      var Id: Long? = 0,
+                      @Column(name = "ProduccionId")
+                      var ProduccionId: Long? = 0,
 
                       @SerializedName("CultivoId")
                       @Column(name = "CultivoId")
@@ -60,6 +59,12 @@ data class Produccion(@PrimaryKey
 
                       @SerializedName("FechaFin")
                       var StringFechaFin: String? = null,
+
+
+                      @SerializedName("Id")
+                      @Column(name = "Id_Remote")
+                      var Id_Remote: Long? = 0,
+
 
 
                       @Column(getterName = "getEstado_Sincronizacion")

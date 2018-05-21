@@ -17,9 +17,9 @@ import java.util.*
 
 @Table(database = DataSource::class)
 data class Transaccion(@PrimaryKey
-                       @SerializedName("Id")
-                       @Column(name = "Id")
-                       var Id: Long? = 0,
+
+                       @Column(name = "TransaccionId")
+                       var TransaccionId: Long? = 0,
 
                        @SerializedName("Concepto")
                        @Column(name = "Concepto")
@@ -98,6 +98,10 @@ data class Transaccion(@PrimaryKey
                        @Column(getterName = "getEstado_SincronizacionUpdate")
                        var Estado_SincronizacionUpdate: Boolean? = false,
 
+                       @SerializedName("Id")
+                       @Column(name = "Id_Remote")
+                       var Id_Remote: Long? = 0,
+
                        @SerializedName("userId")
                        @Column(name = "UsuarioId")
                        var UsuarioId: UUID? = null,
@@ -159,7 +163,7 @@ data class Transaccion(@PrimaryKey
 
 
     private constructor(p: Parcel) : this(
-            Id = p.readLong(),
+            TransaccionId = p.readLong(),
             Concepto = p.readString(),
             Fecha_Transaccion = p.readDate(),
             NaturalezaId = p.readLong(),
@@ -178,7 +182,7 @@ data class Transaccion(@PrimaryKey
             Nombre_Estado_Transaccion = p.readString())
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeLong(Id!!)
+        dest.writeLong(TransaccionId!!)
         dest.writeString(Concepto)
         dest.writeLong(EstadoId!!)
         dest.writeDate(Fecha_Transaccion)

@@ -239,6 +239,10 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
             viewDialog?.txtPrecioTransaccion?.isEnabled = b
             viewDialog?.txtTotalTransaccion?.isEnabled = b
             viewDialog?.txtConceptoVenta?.isEnabled = b
+            viewDialog?.fabAddVenta?.isEnabled = b
+            viewDialog?.fabAddVenta?.isClickable = b
+
+
         }
     }
 
@@ -273,7 +277,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
             val FechaString = dateFormatFecha.format(Calendar.getInstance().getTime())
 
             val transaccion = Transaccion()
-            transaccion.Id=0
+            transaccion.TransaccionId=0
             transaccion.TerceroId=0
             transaccion.Concepto=viewDialog?.txtConceptoVenta?.text.toString()
             transaccion.EstadoId=estadoTransaccionGlobal?.Id
@@ -287,7 +291,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
             transaccion.Valor_Unitario=viewDialog?.txtPrecioTransaccion?.text.toString().toDoubleOrNull()
             transaccion.Valor_Total=valorTotalGlobal
             transaccion.Cantidad=viewDialog?.txtCantidadTransaccion?.text.toString().toDoubleOrNull()
-            transaccion.Cultivo_Id=cultivoGlobal?.Id
+            transaccion.Cultivo_Id=cultivoGlobal?.CultivoId
             transaccion.Nombre_Cultivo=cultivoGlobal?.Nombre
             transaccion.Nombre_Detalle_Producto_Cultivo=cultivoGlobal?.Nombre_Detalle_Tipo_Producto
             transaccion.CategoriaPuk_Id= typeTransaccion
@@ -312,7 +316,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
             transaccion.Valor_Unitario=viewDialog?.txtPrecioTransaccion?.text.toString().toDoubleOrNull()
             transaccion.Valor_Total=valorTotalGlobal
             transaccion.Cantidad=viewDialog?.txtCantidadTransaccion?.text.toString().toDoubleOrNull()
-            transaccion.Cultivo_Id=cultivoGlobal?.Id
+            transaccion.Cultivo_Id=cultivoGlobal?.CultivoId
             transaccion.Nombre_Detalle_Producto_Cultivo=cultivoGlobal?.Nombre_Detalle_Tipo_Producto
             transaccion.CategoriaPuk_Id= typeTransaccion
             transaccion.Nombre_Estado_Transaccion=estadoTransaccionGlobal?.Nombre
@@ -340,6 +344,8 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         }
         onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
     }
+
+
 
     override fun requestResponseItemOK(string1:String?, string2:String?) {
 
@@ -385,7 +391,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
                 viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
 
                 unidadProductivaGlobal= listUnidadProductiva!![position] as Unidad_Productiva
-                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
             }
             presenter?.setListSpinnerLote(null)
             presenter?.setListSpinnerCultivo(null)
@@ -402,7 +408,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
             viewDialogFilter?.spinnerCultivo?.setText("")
             viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
             loteGlobal= listLotes!![position] as Lote
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
         }
     }
 
@@ -414,7 +420,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         viewDialogFilter?.spinnerCultivo!!.setAdapter(cultivoArrayAdapter)
         viewDialogFilter?.spinnerCultivo!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             cultivoGlobal= listCultivos!![position] as Cultivo
-            Cultivo_Id=cultivoGlobal?.Id
+            Cultivo_Id=cultivoGlobal?.CultivoId
         }
     }
 
@@ -512,7 +518,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         else {
             estadoTransaccionGlobal=SQLite.select().from(Estado_Transaccion::class.java).where(Estado_Transaccion_Table.Id.eq(transaccion.EstadoId)).querySingle()
             //cultivoGlobal = Cultivo(transaccion.Cultivo_Id, "", 0, 0.0, null, null, 0, transaccion.Nombre_Cultivo, null, Nombre_Detalle_Tipo_Producto = transaccion.Nombre_Detalle_Producto_Cultivo)
-            cultivoGlobal =SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(transaccion.Cultivo_Id)).querySingle()
+            cultivoGlobal =SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(transaccion.Cultivo_Id)).querySingle()
             pukGlobal = SQLite.select().from(Puk::class.java).where(Puk_Table.Id.eq(transaccion.PucId)).querySingle()
 
             if(CategoriaPukResources.INGRESO== typeTransaccion){
@@ -664,8 +670,8 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         }
 
         if(unidadProductivaGlobal!=null && loteGlobal!=null && cultivoGlobal!=null){
-            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
 
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)

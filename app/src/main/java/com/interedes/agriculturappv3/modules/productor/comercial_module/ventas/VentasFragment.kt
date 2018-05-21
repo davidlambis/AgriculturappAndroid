@@ -162,9 +162,9 @@ class VentasFragment : Fragment(), IVentas.View, View.OnClickListener, SwipeRefr
         presenter?.setListSpinnerUnidadProductiva()
         val title: String? = getString(R.string.select_product_ventas)
         if (unidadProductivaGlobal != null && loteGlobal != null && cultivoGlobal != null && productoGlobal != null) {
-            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
-            presenter?.setListSpinnerProducto(cultivoGlobal?.Id)
+            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
+            presenter?.setListSpinnerProducto(cultivoGlobal?.CultivoId)
 
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
@@ -230,7 +230,7 @@ class VentasFragment : Fragment(), IVentas.View, View.OnClickListener, SwipeRefr
                 viewDialogFilter?.spinnerCultivo?.setText("")
                 viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
                 unidadProductivaGlobal = listUnidadProductiva!![position] as Unidad_Productiva
-                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
             }
             presenter?.setListSpinnerLote(null)
             presenter?.setListSpinnerCultivo(null)
@@ -247,7 +247,7 @@ class VentasFragment : Fragment(), IVentas.View, View.OnClickListener, SwipeRefr
             viewDialogFilter?.spinnerCultivo?.setText("")
             viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
             loteGlobal = listLotes!![position]
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
         }
     }
 
@@ -261,7 +261,7 @@ class VentasFragment : Fragment(), IVentas.View, View.OnClickListener, SwipeRefr
             viewDialogFilter?.spinnerProducto?.visibility = View.VISIBLE
             cultivoGlobal = listCultivos!![position]
             viewDialogFilter?.spinnerProducto?.setText("")
-            presenter?.setListSpinnerProducto(cultivoGlobal?.Id)
+            presenter?.setListSpinnerProducto(cultivoGlobal?.CultivoId)
         }
     }
 
@@ -274,7 +274,7 @@ class VentasFragment : Fragment(), IVentas.View, View.OnClickListener, SwipeRefr
         viewDialogFilter?.spinnerProducto!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
 
             productoGlobal = listProductos!![position]
-            Producto_Id = productoGlobal?.Id
+            Producto_Id = productoGlobal?.ProductoId
         }
     }
 

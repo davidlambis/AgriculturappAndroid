@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.modules.productor.ui.main_menu
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
@@ -25,7 +26,7 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.main_menu.fragment.ui.adapter.AdapterFragmetMenu
 import com.interedes.agriculturappv3.modules.main_menu.fragment.ui.MainMenuFragment
 import kotlinx.android.synthetic.main.activity_menu_main.*
-import com.interedes.agriculturappv3.modules.main_menu.presenter.MenuPresenterImpl
+import com.interedes.agriculturappv3.modules.main_menu.ui.MenuPresenterImpl
 import com.interedes.agriculturappv3.modules.main_menu.ui.MainViewMenu
 import com.interedes.agriculturappv3.services.Const
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -40,15 +41,15 @@ import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
-import com.interedes.agriculturappv3.modules.comprador.productos.adapter.ProductosCompradorAdapter
 import com.interedes.agriculturappv3.services.resources.Status_Chat
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.navigation_drawer_header.*
 
 
-class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu,View.OnClickListener {
+class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu.MainView,View.OnClickListener {
 
 
     // var coordsService: CoordsService? = null
@@ -60,15 +61,15 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     var mPhoneNumber: String? = null
 
 
+    //Progress
+    private var hud: KProgressHUD?=null
+
     //Firebase
     //FIREBASE
      var mUserDBRef: DatabaseReference? = null
      var mStorageRef: StorageReference? = null
      var mCurrentUserID: String? = null
     var mAuth: FirebaseAuth? = null
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +94,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
 
         populateTheViews()
+
+
 
 
 
@@ -325,6 +328,42 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
     //region Implemetacion Interfaz ViewMenu
+
+
+    override fun showProgressHud(){
+        hud = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setWindowColor(getResources().getColor(R.color.colorPrimary))
+                .setLabel("Cargando...", resources.getColor(R.color.white_solid))
+                .setDetailsLabel("Sincronizando Informacion")
+        hud?.show()
+    }
+
+    override fun hideProgressHud(){
+        hud?.dismiss()
+    }
+
+
+    override fun requestResponseOK() {
+        onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
+    }
+
+    override fun requestResponseError(error: String?) {
+        onMessageError(R.color.red_900,error);
+    }
+
+
+    override fun verificateConnection(): AlertDialog? {
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.alert));
+        builder.setMessage(getString(R.string.verificate_conexion));
+        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            dialog.dismiss()
+        })
+        builder.setIcon(R.drawable.ic_contabilidad_color_500);
+        return builder.show();
+    }
+
     override fun onConnectivity() {
        /// mUserDBRef?.database?.goOnline()
         /*
@@ -391,8 +430,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
 
-
-
     override fun onMessageOk(colorPrimary: Int, message: String?) {
         val color = Color.WHITE
         val snackbar = Snackbar
@@ -436,16 +473,16 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 return true
             }
 
+            R.id.action_menu_sync -> {
+                presenter?.syncData()
+                return true
+            }
+
             else -> return super.onOptionsItemSelected(item)
         }
     }
 
     //endregion
-
-
-
-
-
 
     override fun onResume() {
         super.onResume()

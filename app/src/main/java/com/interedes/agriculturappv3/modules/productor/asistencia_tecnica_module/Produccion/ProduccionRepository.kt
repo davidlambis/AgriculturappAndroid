@@ -44,7 +44,7 @@ class ProduccionRepository :IMainProduccion.Repository {
         //TODO si existe conexion a internet
         if(checkConection){
             //TODO Ciudad Id de la tabla del backend
-            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
             if (cultivo?.EstadoSincronizacion == true) {
                 val format1 = SimpleDateFormat("yyyy-MM-dd")
                 val fecha_inicio = format1.format(produccion.FechaInicioProduccion)
@@ -52,7 +52,7 @@ class ProduccionRepository :IMainProduccion.Repository {
                 val postProduccion = PostProduccion(
                         0
                         ,
-                        produccion.CultivoId,
+                        cultivo.Id_Remote,
                         fecha_inicio,
                         fecha_fecha_fin,
                         produccion.UnidadMedidaId,
@@ -63,7 +63,18 @@ class ProduccionRepository :IMainProduccion.Repository {
                     override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
                         if (response != null && response.code() == 201 || response?.code() == 200) {
 
-                            produccion.Id = response.body()?.Id!!
+                            produccion.Id_Remote = response.body()?.Id!!
+
+
+                            val las_prduccion = getLastProduccion()
+                            if (las_prduccion == null) {
+                                produccion.ProduccionId = 1
+                            } else {
+                                produccion.ProduccionId = las_prduccion.ProduccionId!! + 1
+                            }
+
+
+
                             produccion.Estado_Sincronizacion = true
                             produccion?.Estado_SincronizacionUpdate = true
                             produccion.save()
@@ -91,9 +102,9 @@ class ProduccionRepository :IMainProduccion.Repository {
     override fun saveProduccionLocal(produccion: Produccion,cultivo_id:Long){
         val las_prduccion = getLastProduccion()
         if (las_prduccion == null) {
-            produccion.Id = 1
+            produccion.ProduccionId = 1
         } else {
-            produccion.Id = las_prduccion.Id!! + 1
+            produccion.ProduccionId = las_prduccion.ProduccionId!! + 1
         }
         produccion.save()
         var listProduccion = getProductions(cultivo_id)
@@ -103,6 +114,7 @@ class ProduccionRepository :IMainProduccion.Repository {
     override fun updateProduccion(produccion: Produccion,cultivo_id:Long,checkConection:Boolean){
         //TODO si existe coneccion a internet
         if(checkConection){
+            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
             //TODO se valida estado de sincronizacion  para actualizar
             if (produccion.Estado_Sincronizacion == true) {
 
@@ -110,17 +122,19 @@ class ProduccionRepository :IMainProduccion.Repository {
                 val fecha_inicio = format1.format(produccion.FechaInicioProduccion)
                 val fecha_fecha_fin = format1.format(produccion.FechaFinProduccion)
                 val postProduccion = PostProduccion(
-                        produccion.Id,
-                        produccion.CultivoId,
+                        produccion.Id_Remote,
+                        cultivo?.Id_Remote,
                         fecha_inicio,
                         fecha_fecha_fin,
                         produccion.UnidadMedidaId,
                         produccion.ProduccionReal
                 )
-                val call = apiService?.updateProduccion(postProduccion, produccion.Id!!)
+                val call = apiService?.updateProduccion(postProduccion, produccion.Id_Remote!!)
                 call?.enqueue(object : Callback<PostProduccion> {
                     override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
                         if (response != null && response.code() == 200) {
+
+
                             produccion?.Estado_SincronizacionUpdate = true
                             produccion.update()
                             postEventOk(RequestEventProduccion.UPDATE_EVENT, getProductions(cultivo_id), produccion)
@@ -154,7 +168,7 @@ class ProduccionRepository :IMainProduccion.Repository {
         if (produccion.Estado_Sincronizacion == true) {
             //TODO si existe coneccion a internet se elimina
             if(checkConection){
-                val call = apiService?.deleteProduccion(produccion.Id!!)
+                val call = apiService?.deleteProduccion(produccion.Id_Remote!!)
                 call?.enqueue(object : Callback<PostProduccion> {
                     override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
                         if (response != null && response.code() == 204 || response?.code() == 200) {
@@ -166,7 +180,6 @@ class ProduccionRepository :IMainProduccion.Repository {
                         postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
                     }
                 })
-
             }else{
                 postEventError(RequestEventProduccion.ERROR_VERIFICATE_CONECTION, null)
             }
@@ -183,7 +196,7 @@ class ProduccionRepository :IMainProduccion.Repository {
     }
 
     override fun getCultivo(cultivo_id:Long?) {
-        var cultivo = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.Id.eq(cultivo_id)).querySingle()
+        var cultivo = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
         postEventOkCultivo(RequestEventProduccion.GET_EVENT_CULTIVO,cultivo)
     }
 
@@ -210,7 +223,7 @@ class ProduccionRepository :IMainProduccion.Repository {
     }
 
     fun getLastProduccion(): Produccion? {
-        val lastProduccion = SQLite.select().from(Produccion::class.java).where().orderBy(Produccion_Table.Id, false).querySingle()
+        val lastProduccion = SQLite.select().from(Produccion::class.java).where().orderBy(Produccion_Table.ProduccionId, false).querySingle()
         return lastProduccion
     }
     //endregion

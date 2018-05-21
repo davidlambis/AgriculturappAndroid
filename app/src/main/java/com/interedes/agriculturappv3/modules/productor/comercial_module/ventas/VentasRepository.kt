@@ -64,7 +64,7 @@ class VentasRepository : IVentas.Repository {
     }
 
     override fun getProducto(productoId: Long?) {
-        val producto = SQLite.select().from(Producto::class.java).where(Producto_Table.Id.eq(productoId)).querySingle()
+        val producto = SQLite.select().from(Producto::class.java).where(Producto_Table.ProductoId.eq(productoId)).querySingle()
         postEventOkProducto(OfertasEvent.GET_EVENT_PRODUCTO, producto)
     }
 

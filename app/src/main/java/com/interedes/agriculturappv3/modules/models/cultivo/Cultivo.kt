@@ -19,9 +19,9 @@ import java.util.*
 
 @Table(database = DataSource::class)
 data class Cultivo(@PrimaryKey
-                   @SerializedName("Id")
-                   @Column(name = "Id")
-                   var Id: Long? = 0,
+
+                   @Column(name = "CultivoId")
+                   var CultivoId: Long? = 0,
 
                    @SerializedName("Descripcion")
                    @Column(name = "Descripcion")
@@ -82,11 +82,17 @@ data class Cultivo(@PrimaryKey
                    @Column(getterName = "getEstado_SincronizacionUpdate")
                    var Estado_SincronizacionUpdate: Boolean? = false,
 
+
                    @Column(name = "stringFechaInicio")
                    var stringFechaInicio: String? = null,
 
                    @Column(name = "stringFechaFin")
                    var stringFechaFin: String? = null,
+
+
+                   @SerializedName("Id")
+                   @Column(name = "Id_Remote")
+                   var Id_Remote: Long? = 0,
 
                    @SerializedName("UnidadMedida")
                    var unidadMedida: Unidad_Medida?= null,
@@ -126,6 +132,32 @@ data class Cultivo(@PrimaryKey
         }
         return convertedDate
     }
+
+
+    fun getFechaStringFormatApi(stringDate:String?):String?{
+        val dateString = stringDate
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var convertedDate = Date()
+        try {
+            convertedDate = dateFormat.parse(dateString)
+        } catch (e: ParseException) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        }
+
+
+        try {
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            return sdf.format(convertedDate)
+        }catch (ex:Exception){
+            // Log.println(ex.toString())
+
+            return  ""
+        }
+
+    }
+
+
 
 
     fun getFechaFormat(date:Date?): String {

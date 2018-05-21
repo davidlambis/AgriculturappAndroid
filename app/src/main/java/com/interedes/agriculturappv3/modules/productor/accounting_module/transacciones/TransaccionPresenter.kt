@@ -254,6 +254,7 @@ class TransaccionPresenter(var mainView: IMainViewTransacciones.MainView?) : IMa
     }
 
     private fun onDeleteOk() {
+        mainView?.hideProgressHud()
         mainView?.requestResponseOK()
     }
     //endregion

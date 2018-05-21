@@ -11,9 +11,8 @@ import java.util.*
 
 @Table(database = DataSource::class)
 data class ControlPlaga(@PrimaryKey
-                        @SerializedName("Id")
-                        @Column(name = "Id")
-                        var Id: Long? = 0,
+                        @Column(name = "ControlPlagaId")
+                        var ControlPlagaId: Long? = 0,
 
                         @SerializedName("CultivoId")
                         @Column(name = "CultivoId")
@@ -59,7 +58,13 @@ data class ControlPlaga(@PrimaryKey
                         var Estado_Sincronizacion: Boolean? = false,
 
                         @Column(getterName = "getEstado_SincronizacionUpdate")
-                        var Estado_SincronizacionUpdate: Boolean? = false) {
+                        var Estado_SincronizacionUpdate: Boolean? = false,
+
+                        @SerializedName("Id")
+                        @Column(name = "Id_Remote")
+                        var Id_Remote: Long? = 0
+
+                        ) {
 
     fun getFechaAplicacionFormat(): String {
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())

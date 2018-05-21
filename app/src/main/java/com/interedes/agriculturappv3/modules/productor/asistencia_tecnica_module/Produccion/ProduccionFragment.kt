@@ -221,6 +221,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             viewDialog?.txtFechaFin?.isEnabled = b
             viewDialog?.spinnerUnidadMedidaProduccion?.isEnabled = b
             viewDialog?.txtCantidadProduccionReal?.isEnabled = b
+            viewDialog?.btnSaveProduccion?.isEnabled = b
+            viewDialog?.btnSaveProduccion?.isClickable = b
         }
     }
     override fun showProgress() {
@@ -249,7 +251,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     override fun registerProduccion() {
         if (presenter?.validarCampos() == true) {
             val producccion =  Produccion()
-            producccion.Id=0
+            producccion.ProduccionId=0
             producccion.FechaInicioProduccion=fechaInicio
             producccion.FechaFinProduccion=fechaFin
             producccion.ProduccionReal=viewDialog?.txtCantidadProduccionReal?.text.toString().toDoubleOrNull()
@@ -361,7 +363,18 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
             unidadMedidaGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(produccion.UnidadMedidaId)).querySingle()
             viewDialog?.txtFechaInicio?.setText(produccion.getFechaInicioFormat())
             viewDialog?.txtFechaFin?.setText(produccion.getFechafinFormat())
-            viewDialog?.txtCantidadProduccionReal?.setText(produccion.ProduccionReal.toString())
+
+            if(produccion.ProduccionReal.toString().contains(".0")){
+                viewDialog?.txtCantidadProduccionReal?.setText(String.format(context!!.getString(R.string.price_empty_signe),
+                        produccion.ProduccionReal))
+            }else{
+                viewDialog?.txtCantidadProduccionReal?.setText(produccion.ProduccionReal.toString())
+            }
+
+
+
+
+
             viewDialog?.spinnerUnidadMedidaProduccion?.setText(produccion.NombreUnidadMedida)
 
             fechaInicio= produccion.FechaInicioProduccion
@@ -434,8 +447,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         }
 
         if(unidadProductivaGlobal!=null && loteGlobal!=null && cultivoGlobal!=null){
-            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
 
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
@@ -529,7 +542,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
                 viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
 
                 unidadProductivaGlobal= listUnidadProductiva!![position] as Unidad_Productiva
-                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
             }
             presenter?.setListSpinnerLote(null)
             presenter?.setListSpinnerCultivo(null)
@@ -546,7 +559,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
            viewDialogFilter?.spinnerCultivo?.setText("")
            viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
             loteGlobal= listLotes!![position] as Lote
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
         }
     }
 
@@ -558,7 +571,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         viewDialogFilter?.spinnerCultivo!!.setAdapter(cultivoArrayAdapter)
         viewDialogFilter?.spinnerCultivo!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             cultivoGlobal= listCultivos!![position] as Cultivo
-            Cultivo_Id=cultivoGlobal?.Id
+            Cultivo_Id=cultivoGlobal?.CultivoId
         }
     }
 
@@ -582,8 +595,16 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         }
         txtNombreCultivo.setText(cultivo?.Nombre_Detalle_Tipo_Producto)
         txtNombreLote.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
-        txtPrecio.setText(cultivo?.getFechaDate(cultivo.FechaIncio).toString())
-        txtArea.setText(cultivo?.getFechaDate(cultivo.FechaFin).toString())
+
+
+        var fechaDateInicio= cultivo?.getFechaDate(cultivo.FechaIncio)
+        var fechaDateFin= cultivo?.getFechaDate(cultivo.FechaFin)
+
+        var fechaInicioFormat= cultivo?.getFechaFormat(fechaDateInicio)
+        var fechaFinFormat= cultivo?.getFechaFormat(fechaDateFin)
+
+        txtPrecio.setText(fechaInicioFormat)
+        txtArea.setText(fechaFinFormat)
     }
 
     override fun verificateConnection(): AlertDialog? {

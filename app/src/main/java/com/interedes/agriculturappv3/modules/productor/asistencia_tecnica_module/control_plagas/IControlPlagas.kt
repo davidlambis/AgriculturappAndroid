@@ -79,9 +79,8 @@ interface IControlPlagas {
         fun getListas()
         fun getListControlPlaga(cultivo_id: Long?)
         fun getCultivo(cultivo_id: Long?)
-        fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id:Long?)
-        fun updateControlPlaga(controlPlaga: ControlPlaga?)
-        fun updateControlPlagaOnline(controlPlaga: ControlPlaga?)
+        fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id:Long?,checkConection:Boolean)
+        fun updateControlPlaga(controlPlaga: ControlPlaga?,checkConection:Boolean)
     }
 
     interface Repository {
@@ -89,8 +88,7 @@ interface IControlPlagas {
         fun getListControlPlaga(cultivo_id: Long?)
         fun getControlPlagas(cultivo_id: Long?): List<ControlPlaga>
         fun getCultivo(cultivo_id: Long?)
-        fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id:Long?)
-        fun updateControlPlaga(controlPlaga: ControlPlaga?)
-        fun updateControlPlagaOnline(controlPlaga: ControlPlaga?)
+        fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id:Long?,checkConection:Boolean)
+        fun updateControlPlaga(controlPlaga: ControlPlaga?,checkConection:Boolean)
     }
 }

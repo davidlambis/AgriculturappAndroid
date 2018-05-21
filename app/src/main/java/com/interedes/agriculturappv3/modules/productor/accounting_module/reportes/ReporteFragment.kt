@@ -297,7 +297,7 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
                 viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
 
                 unidadProductivaGlobal= listUnidadProductiva!![position] as Unidad_Productiva
-                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
+                presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
             }
             presenter?.setListSpinnerLote(null)
             presenter?.setListSpinnerCultivo(null)
@@ -314,7 +314,7 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
             viewDialogFilter?.spinnerCultivo?.setText("")
             viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
             loteGlobal= listLotes!![position] as Lote
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
         }
     }
 
@@ -326,7 +326,7 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
         viewDialogFilter?.spinnerCultivo!!.setAdapter(cultivoArrayAdapter)
         viewDialogFilter?.spinnerCultivo!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             cultivoGlobal= listCultivos!![position] as Cultivo
-            Cultivo_Id=cultivoGlobal?.Id
+            Cultivo_Id=cultivoGlobal?.CultivoId
         }
     }
 
@@ -396,8 +396,8 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
 
 
         if(unidadProductivaGlobal!=null && loteGlobal!=null && cultivoGlobal!=null){
-            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Id)
-            presenter?.setListSpinnerCultivo(loteGlobal?.Id)
+            presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
 
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
