@@ -249,7 +249,7 @@
                     style="@style/editText"
                     android:background="@color/green_100"
                     android:hint="@string/name_usuario"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     android:textSize="@dimen/text_size_16"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
@@ -285,7 +285,7 @@
                     android:layout_height="150dp"
                     android:background="@color/green_100"
                     android:hint="@string/concepto"
-                    android:inputType="text|textMultiLine"
+                    android:inputType="textCapWords|textMultiLine"
                     android:textColor="@color/black"
                     android:gravity="start"
                     android:textSize="@dimen/text_size_16"

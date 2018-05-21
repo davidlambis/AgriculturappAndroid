@@ -5,6 +5,7 @@ import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table.FechaIncio
 import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleTipoProducto
+import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.produccion.Produccion
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.raizlabs.android.dbflow.annotation.Column
@@ -97,7 +98,10 @@ data class Cultivo(@PrimaryKey
                    var controlPlagas:  ArrayList<ControlPlaga>?= null,
 
                    @SerializedName("DetalleTipoProducto")
-                   var detalleTipoProducto: DetalleTipoProducto?= null
+                   var detalleTipoProducto: DetalleTipoProducto?= null,
+
+                   @SerializedName("Lote")
+                   var Lote: Lote?=null
 
                    ) {
 
@@ -125,8 +129,17 @@ data class Cultivo(@PrimaryKey
 
 
     fun getFechaFormat(date:Date?): String {
-        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        return sdf.format(date)
+
+        try {
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            return sdf.format(date)
+        }catch (ex:Exception){
+            // Log.println(ex.toString())
+
+            return  ""
+        }
+
+
     }
 
 

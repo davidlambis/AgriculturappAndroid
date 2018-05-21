@@ -39,6 +39,7 @@ class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
                 onErrorIngresar(event.mensajeError)
             }
             LoginEvent.SAVE_EVENT -> {
+                loginView?.hideProgress()
                 loginView?.navigateToMainActivity()
             }
             LoginEvent.RESET_PASSWORD_EVENT -> {

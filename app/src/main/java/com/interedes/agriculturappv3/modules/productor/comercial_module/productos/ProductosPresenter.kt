@@ -130,6 +130,7 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
                 val list = event.mutableList as List<Producto>
                 view?.setListProductos(list)
                 view?.requestResponseOK()
+                view?.hideProgressHud()
             }
 
         //ITEMS

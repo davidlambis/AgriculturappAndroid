@@ -34,9 +34,11 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPlaga
 import com.interedes.agriculturappv3.modules.models.plagas.EnfermedadResponseApi
+import com.interedes.agriculturappv3.modules.models.producto.GetProductosByTipoResponse
 import com.interedes.agriculturappv3.modules.models.rol.RolUserLogued
 import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSincronizacionResponse
 import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSincronizacionTransacciones
+import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSynProductosUserResponse
 import com.interedes.agriculturappv3.modules.models.tratamiento.TratamientoResponse
 import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento
 import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.PostCalificacion
@@ -327,17 +329,29 @@ interface ApiInterface {
     fun getSyncInformacionUsuario( @Query("\$filter") filter: String): Call<GetSincronizacionResponse>
 
 
+    @GET("odata/Agp2/Productos?\$expand=UnidadMedida,Calidad,Cultivo(\$expand=DetalleTipoProducto,Lote(\$expand=UnidadProductiva))")
+    fun getSyncProductos( @Query("\$filter") filter: String): Call<GetSynProductosUserResponse>
+
+
     @GET("odata/Agp2/Transaccions?\$expand=Estado,Tercero,Puc(\$expand=CategoriaPuc)")
     fun getSyncInformacionUsuarioTransacciones( @Query("\$filter") filter: String): Call<GetSincronizacionTransacciones>
 
-
-
-
-
-
     // http://18.233.87.16/odata/Agp2/UnidadProductivas?$expand=Lotes($expand=Cultivos)&$filter=UsuarioId eq '0bdb5fcd-79cd-458d-bc24-59074f7b7aab'
+    //endregion
+
+
+
+
+    //region COMPRADOR
+    @GET("odata/Agp2/DetalleTipoProductos?\$expand=Cultivos(\$expand=Productos(\$expand=UnidadMedida,Calidad),Lote(\$expand=UnidadProductiva(\$expand=Usuario))),TipoProducto")
+    fun getProductosByTipoProductos( @Query("\$filter") filter: String): Call<GetProductosByTipoResponse>
+
+    //http://18.233.87.16/odata/Agp2/DetalleTipoProductos?$expand=Cultivos($expand=Productos($expand=UnidadMedida,Calidad),Lote($expand=UnidadProductiva($expand=Usuario))),TipoProducto&$filter=TipoProductoId eq 2
 
     //endregion
+
+
+
 
     //endregion
 

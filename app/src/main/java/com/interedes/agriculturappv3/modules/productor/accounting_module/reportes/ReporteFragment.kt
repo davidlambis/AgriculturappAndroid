@@ -509,6 +509,8 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
                         { dialog1, which ->
                             if (presenter?.validarDatesSelect() == true) {
                                dialog1.dismiss()
+
+
                                 presenter?.getTotalTransacciones(Cultivo_Id,fechaInicio,fechaFin)
                             }
                         })

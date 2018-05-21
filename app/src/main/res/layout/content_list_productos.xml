@@ -13,17 +13,10 @@
 
 
     <LinearLayout
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,16 +39,6 @@
 
 
 
-                        <TextView
-                            android:id="@+id/txtNombreDetalleProducto"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/txtNombreCultivo"
-                            android:text=""
-                            android:textAlignment="center"
-                            android:textColor="@color/blue"
-                            android:textSize="@dimen/text_size_12"
-                            android:textStyle="bold" />
 
                         <!--<ImageView
                             android:adjustViewBounds="true"
@@ -65,49 +48,48 @@
                             android:layout_height="300dp"
                             android:layout_below="@+id/txtNombreDetalleProducto"
                             android:src="@drawable/aguacate" />-->
-
-                        <ImageView
+                        <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/imageViewProducto"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/height_140"
-                            android:layout_below="@+id/txtNombreDetalleProducto"
-                            android:layout_centerInParent="true"
-                            android:adjustViewBounds="true"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/ic_foto_producto" />
-
+                            android:layout_gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:padding="@dimen/margin_10"
+                            android:src="@drawable/ic_foto_producto"/>
 
                         <TextView
-                            android:id="@+id/txtDescripcionProducto"
+                            android:id="@+id/txtNombreDetalleProducto"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/imageViewProducto"
-                            android:text="Descripción Producto"
+                            android:text=""
                             android:textAlignment="center"
                             android:textColor="@color/blue"
-                            android:textSize="@dimen/text_size_16" />
+                            android:textSize="@dimen/text_size_12"
+                            android:textStyle="bold" />
 
                         <TextView
-                            android:textStyle="bold"
-                            android:id="@+id/txtEstaodSincronizacion"
+                            android:layout_below="@+id/txtNombreDetalleProducto"
+                            android:id="@+id/txtPrecioProducto"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/txtDescripcionProducto"
                             android:text=""
-                            android:paddingEnd="@dimen/margin_10"
-                            android:textAlignment="textEnd"
+                            android:textAlignment="center"
                             android:textColor="@color/blue"
-                            android:textSize="@dimen/text_size_16" />
+                            android:textSize="@dimen/text_size_25"
+                            android:textStyle="bold" />
+
+
+
 
 
                         <com.robertlevonyan.views.expandable.Expandable
                             android:id="@+id/expandable"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/txtEstaodSincronizacion"
-                            app:exp_backgroundColor="@color/amber_luiyi"
+                            android:layout_below="@id/txtPrecioProducto"
+                            app:exp_backgroundColor="@color/orange"
                             app:exp_expandIndicator="@drawable/ic_down_arrow"
-                            app:exp_headerBackgroundColor="@color/amber_luiyi">
+                            app:exp_headerBackgroundColor="@color/orange">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -128,34 +110,44 @@
                         </com.robertlevonyan.views.expandable.Expandable>
 
                         <LinearLayout
+                            android:padding="@dimen/margin_10"
                             android:visibility="gone"
                             android:id="@+id/contentPrice"
                             android:layout_below="@+id/expandable"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
                             <TextView
-                                android:layout_weight="1"
-                                android:id="@+id/txtFechaDisponibilidad"
+                                android:id="@+id/txtDescripcionProducto"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="12/12/2018"
-                                android:textAlignment="center"
-                                android:textColor="@color/green"
-                                android:textSize="@dimen/text_size_12"
-                                android:textStyle="bold" />
+                                android:text="Descripción Producto"
+                                android:textAlignment="textStart"
+                                android:textColor="@color/blue"
+                                android:textSize="@dimen/text_size_15" />
 
                             <TextView
-                                android:layout_weight="1"
-                                android:id="@+id/txtPrecioProducto"
+                                android:textStyle="bold"
+                                android:id="@+id/txtEstaodSincronizacion"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="$ 12000"
-                                android:textAlignment="center"
-                                android:textColor="@color/orange"
-                                android:textSize="@dimen/text_size_15"
-                                android:textStyle="bold" />
+                                android:layout_below="@+id/txtNombreDetalleProducto"
+                                android:text=""
+                                android:textAlignment="textStart"
+                                android:textColor="@color/blue"
+                                android:textSize="@dimen/text_size_12" />
+
+
+                                <TextView
+                                    android:id="@+id/txtFechaDisponibilidad"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="12/12/2018"
+                                    android:textAlignment="textStart"
+                                    android:textColor="@color/orange"
+                                    android:textSize="@dimen/text_size_12"
+                                    android:textStyle="bold" />
 
 
                         </LinearLayout>
@@ -209,7 +201,6 @@
                 </TableRow>
 
             </TableLayout>
-        </LinearLayout>
 
     </LinearLayout>
 

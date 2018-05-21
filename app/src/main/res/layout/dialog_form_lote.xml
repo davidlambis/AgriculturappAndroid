@@ -114,7 +114,7 @@
                             android:drawableLeft="@drawable/ic_nombres"
                             android:drawableStart="@drawable/ic_nombres"
                             android:hint="@string/name"
-                            android:inputType="text" />
+                            android:inputType="textCapWords" />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -132,7 +132,7 @@
                             android:drawableStart="@drawable/ic_apellidos"
                             android:gravity="start"
                             android:hint="@string/description"
-                            android:inputType="text|textMultiLine"
+                            android:inputType="textCapWords|textMultiLine"
                             android:maxLength="60" />
                     </android.support.design.widget.TextInputLayout>
 

@@ -89,15 +89,15 @@ class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
             txtFechaDisponibilidad.text = String.format(context.getString(R.string.title_adapter_fecha_disponibilidad), data.FechaLimiteDisponibilidad)
             txtPrecioProducto.text = String.format(context.getString(R.string.title_adapter_precio_producto), data.Precio)*/
 
-            txtNombreDetalleProducto.text = data.NombreDetalleTipoProducto+" ${data.NombreCultivo}"
+            txtNombreDetalleProducto.text = data.NombreDetalleTipoProducto+"( ${data.NombreCultivo} )"
             txtDescripcionProducto.text =  data.Descripcion
-            txtFechaDisponibilidad.text =data.FechaLimiteDisponibilidad
+            txtFechaDisponibilidad.text =if(data.FechaLimiteDisponibilidad!=null)data.getFechaLimiteDisponibilidadFormat() else null
             txtPrecioProducto.text = String.format(context.getString(R.string.title_adapter_precio_producto), data.Precio)
 
 
 
 
-            if (data.EstadoSincronizacion == true) {
+            if (data.Estado_Sincronizacion == true) {
                 txtEstaodSincronizacion.setTextColor(resources.getColor(R.color.green))
                 txtEstaodSincronizacion.text = context.getString(R.string.Sincronizado)
             } else {

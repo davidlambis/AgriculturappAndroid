@@ -1,11 +1,17 @@
 package com.interedes.agriculturappv3.modules.models.producto
 
+import android.util.Log
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
 import com.raizlabs.android.dbflow.data.Blob
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 @Table(database = DataSource::class)
@@ -94,11 +100,30 @@ data class Producto(@PrimaryKey
                     @Column(name = "NombreCalidad")
                     var NombreCalidad: String? = null,
 
-                    @Column(getterName = "getEstadoSincronizacion")
-                    var EstadoSincronizacion: Boolean? = false,
+                    @SerializedName("userId")
+                    @Column(name = "userId")
+                    var userId: UUID? = null,
+
+
+                    @Column(name = "Usuario_Logued")
+                    var Usuario_Logued: UUID? = null,
+
+                    @Column(getterName = "getEstado_Sincronizacion")
+                    var Estado_Sincronizacion: Boolean? = false,
 
                     @Column(getterName = "getEstado_SincronizacionUpdate")
-                    var Estado_SincronizacionUpdate: Boolean? = false
+                    var Estado_SincronizacionUpdate: Boolean? = false,
+
+                    @SerializedName("Cultivo")
+                    var Cultivo:Cultivo?=null,
+
+                    @SerializedName("UnidadMedida")
+                    var UnidadMedida:Unidad_Medida?=null,
+
+                    @SerializedName("Calidad")
+                    var Calidad:CalidadProducto?=null
+
+
 
                     ) {
 
@@ -106,10 +131,60 @@ data class Producto(@PrimaryKey
         return Nombre!!
     }*/
 
-    /*fun getFechaLimiteDisponibilidadFormat(): String {
-        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        return sdf.format(FechaLimiteDisponibilidad)
-    }*/
+    fun getFechaLimiteDisponibilidadFormat(): String {
+
+        try {
+
+
+            val dateString = FechaLimiteDisponibilidad
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            var convertedDate = Date()
+            try {
+                convertedDate = dateFormat.parse(dateString)
+            } catch (e: ParseException) {
+                // TODO Auto-generated catch block
+                e.printStackTrace()
+            }
+
+
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            return sdf.format(convertedDate)
+
+        }catch (ex:Exception){
+           // Log.println(ex.toString())
+
+            return  ""
+        }
+
+    }
+
+
+    fun getFechaLimiteDisponibilidadFormatApi(): String {
+
+        try {
+
+
+            val dateString = FechaLimiteDisponibilidad
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            var convertedDate = Date()
+            try {
+                convertedDate = dateFormat.parse(dateString)
+            } catch (e: ParseException) {
+                // TODO Auto-generated catch block
+                e.printStackTrace()
+            }
+
+
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            return sdf.format(convertedDate)
+
+        }catch (ex:Exception){
+            // Log.println(ex.toString())
+
+            return  ""
+        }
+
+    }
 
 
 }

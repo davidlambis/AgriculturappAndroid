@@ -13,6 +13,8 @@ import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.events.ProductosEvent
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.resources.CategoriaMediaResources
@@ -70,6 +72,11 @@ class ProductosRepository : IProductos.Repository {
 
     override fun registerProducto(mProducto: Producto, cultivo_id: Long,checkConection:Boolean) {
 
+
+        var usuarioLogued= getLastUserLogued()
+        mProducto.userId=usuarioLogued?.Id
+        mProducto.Usuario_Logued=usuarioLogued?.Id
+
         //TODO si existe conexion a internet
        if(checkConection){
 
@@ -89,7 +96,8 @@ class ProductosRepository : IProductos.Repository {
                        mProducto.cultivoId,
                        mProducto.Nombre,
                        mProducto.Unidad_Medida_Id,
-                       mProducto.PrecioUnidadMedida
+                       mProducto.PrecioUnidadMedida,
+                       mProducto.userId
                )
 
                val call = apiService?.postProducto(postProducto)
@@ -98,7 +106,7 @@ class ProductosRepository : IProductos.Repository {
                        if (response != null && response.code() == 201) {
                            val value = response.body()
                            mProducto.Id = value?.Id!!
-                           mProducto.EstadoSincronizacion = true
+                           mProducto.Estado_Sincronizacion = true
                            mProducto.Estado_SincronizacionUpdate = true
                            mProducto.save()
                            postEventOk(ProductosEvent.SAVE_EVENT, getProductos(cultivo_id), null)
@@ -136,10 +144,13 @@ class ProductosRepository : IProductos.Repository {
 
     override fun updateProducto(mProducto: Producto, cultivo_id: Long,checkConection:Boolean) {
 
+        var usuarioLogued= getLastUserLogued()
+        mProducto.userId=usuarioLogued?.Id
+        mProducto.Usuario_Logued=usuarioLogued?.Id
         //TODO si existe coneccion a internet
         if(checkConection){
             //TODO se valida estado de sincronizacion  para actualizar,actualizacion remota
-            if (mProducto.EstadoSincronizacion == true) {
+            if (mProducto.Estado_Sincronizacion == true) {
                 val postProducto = PostProducto(mProducto.Id,
                         mProducto.CalidadId,
                         1,
@@ -154,7 +165,8 @@ class ProductosRepository : IProductos.Repository {
                         mProducto.cultivoId,
                         mProducto.Nombre,
                         mProducto.Unidad_Medida_Id,
-                        mProducto.PrecioUnidadMedida
+                        mProducto.PrecioUnidadMedida,
+                        mProducto?.userId
                 )
 
                 val call = apiService?.updateProducto(postProducto, mProducto.Id!!)
@@ -190,7 +202,7 @@ class ProductosRepository : IProductos.Repository {
     override fun deleteProducto(mProducto: Producto, cultivo_id: Long?,checkConection:Boolean) {
 
         //TODO se valida estado de sincronizacion  para eliminar
-        if (mProducto.EstadoSincronizacion == true) {
+        if (mProducto.Estado_Sincronizacion == true) {
             //TODO si existe coneccion a internet se elimina
             if(checkConection){
                 val call = apiService?.deleteProducto(mProducto.Id!!)
@@ -216,6 +228,12 @@ class ProductosRepository : IProductos.Repository {
             postEventOk(ProductosEvent.DELETE_EVENT, getProductos(cultivo_id), null)
 
         }
+    }
+
+
+    fun getLastUserLogued(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
     }
 
     override fun getCultivo(cultivo_id: Long?) {

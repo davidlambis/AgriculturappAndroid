@@ -141,6 +141,11 @@ data class Transaccion(@PrimaryKey
         return sdf.format(Fecha_Transaccion)
     }
 
+    fun getFechaTransacccionFormatMMddyyyy(): String {
+        val sdf = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
+        return sdf.format(Fecha_Transaccion)
+    }
+
 
     fun getFechaTransacccionFormatApi(): String? {
         if(Fecha_Transaccion!=null){

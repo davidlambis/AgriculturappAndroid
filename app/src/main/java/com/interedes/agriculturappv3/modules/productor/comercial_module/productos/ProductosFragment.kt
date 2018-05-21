@@ -43,6 +43,7 @@ import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.producto.CalidadProducto
+import com.interedes.agriculturappv3.modules.models.producto.CalidadProducto_Table
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
@@ -328,9 +329,14 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.spinnerCalidadProducto?.setText(producto.NombreCalidad)
             viewDialog?.spinnerMonedaPrecio?.setText(producto.NombreUnidadMedidaPrecio)
             viewDialog?.spinnerUnidadMedidaCosecha?.setText(producto.NombreUnidadMedidaCantidad)
-            viewDialog?.txtFechaLimiteDisponibilidad?.setText(producto.FechaLimiteDisponibilidad)
-            viewDialog?.txtCantidadProductoDisponible?.setText(
-                    producto.Stock.toString())
+
+            Cultivo_Id=producto.cultivoId
+            viewDialog?.txtFechaLimiteDisponibilidad?.setText(producto.getFechaLimiteDisponibilidadFormatApi())
+
+            viewDialog?.txtCantidadProductoDisponible?.setText(String.format(context!!.getString(R.string.price_empty_signe),
+                    producto.Stock))
+
+
             viewDialog?.txtPrecioProducto?.setText(String.format(context!!.getString(R.string.price_empty_signe),
                     producto.Precio))
 
@@ -338,6 +344,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                     producto.Precio))
 
 
+            calidadProductoGlobal = SQLite.select().from(CalidadProducto::class.java).where(CalidadProducto_Table.Id.eq(producto.CalidadId)).querySingle()
             unidadMedidaPrecioGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(producto.Unidad_Medida_Id)).querySingle()
 
 
@@ -481,8 +488,11 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         }
         txtNombreCultivo.setText(cultivo?.Nombre)
         txtNombreLote.setText(cultivo?.Nombre_Tipo_Producto)
-        txtPrecio.setText(cultivo?.FechaIncio)
-        txtArea.setText(cultivo?.FechaFin)
+
+
+
+        txtPrecio.setText(cultivo?.getFechaFormat(cultivo?.getFechaDate(cultivo.FechaIncio)))
+        txtArea.setText(cultivo?.getFechaFormat(cultivo?.getFechaDate(cultivo.FechaFin)))
 
     }
 
@@ -710,7 +720,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
     fun convertBitmapToByte(bitmapCompressed: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()
-        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 70, stream)
         return stream.toByteArray()
         //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }
@@ -767,7 +777,8 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 stringBuilder.append("data:image/jpeg;base64,")
                 stringBuilder.append(android.util.Base64.encodeToString(imageGlobal, android.util.Base64.DEFAULT))
                 mProducto.Imagen = stringBuilder.toString()
-            } else {
+            } /*else {
+
                 viewDialog?.product_image?.isDrawingCacheEnabled = true
                 val bitmap = viewDialog?.product_image?.getDrawingCache()
                 val byte = convertBitmapToByte(bitmap!!)
@@ -776,15 +787,14 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 stringBuilder.append("data:image/jpeg;base64,")
                 stringBuilder.append(android.util.Base64.encodeToString(byte, android.util.Base64.DEFAULT))
                 mProducto.Imagen = stringBuilder.toString()
-            }
-            mProducto.Stock=txtCantidadProductoDisponible.text.toString().toDoubleOrNull()
+            }*/
+            mProducto.Stock= viewDialog?.txtCantidadProductoDisponible?.text.toString().toDoubleOrNull()
             mProducto.Precio = viewDialog?.txtPrecioProducto?.text.toString().toDoubleOrNull()
             mProducto.NombreUnidadMedidaPrecio = viewDialog?.spinnerMonedaPrecio?.text.toString()
             mProducto.NombreUnidadMedidaCantidad = viewDialog?.spinnerUnidadMedidaCosecha?.text.toString()
             mProducto.PrecioUnidadMedida = viewDialog?.spinnerMonedaPrecio?.text.toString()
             mProducto.Unidad_Medida_Id=unidadMedidaCantidadGlobal?.Id
             presenter?.updateProducto(mProducto, Cultivo_Id!!)
-
 
 
         }

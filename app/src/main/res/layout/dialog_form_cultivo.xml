@@ -98,7 +98,7 @@
                     android:drawableLeft="@drawable/ic_nombre_finca"
                     android:drawableStart="@drawable/ic_nombre_finca"
                     android:hint="@string/edit_text_nombre_cultivo"
-                    android:inputType="text" />
+                    android:inputType="textCapWords" />
 
 
             </android.support.design.widget.TextInputLayout>
@@ -116,7 +116,7 @@
                     android:drawableStart="@drawable/ic_nombre_finca"
                     android:gravity="start"
                     android:hint="@string/edit_text_descripcion_cultivo"
-                    android:inputType="text|textMultiLine"
+                    android:inputType="textCapWords|textMultiLine"
                     android:maxLength="60" />
             </android.support.design.widget.TextInputLayout>
 

@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
@@ -86,6 +87,9 @@ class Lote : BaseModel() {
 
     @SerializedName("Cultivos")
     var Cultivos: ArrayList<Cultivo>?= null
+
+    @SerializedName("UnidadProductiva")
+    var UnidadProductiva: Unidad_Productiva?=null
 
     override fun toString(): String {
 

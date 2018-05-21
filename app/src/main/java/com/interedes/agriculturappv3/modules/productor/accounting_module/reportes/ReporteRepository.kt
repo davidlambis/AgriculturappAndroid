@@ -38,6 +38,7 @@ class ReporteRepository: IMainViewReportes.Repository {
         var sumEgresos:CountOfPost?=null
         var balance:Double?=null
 
+
         if(cultivo_id==null && dateStart==null && dateEnd==null){
             for (itemCategorias in categoriaPukList){
                 var listTransaciones=ArrayList<Transaccion>()
@@ -99,7 +100,10 @@ class ReporteRepository: IMainViewReportes.Repository {
             balance= sumIngresos?.count!!-sumEgresos?.count!!
         }
 
-        else if(cultivo_id==null && dateStart!=null && dateEnd!=null){
+        else if(cultivo_id==null   && dateStart!=null && dateEnd!=null){
+
+
+
 
             var format1 = SimpleDateFormat("MM-dd-yyyy")
             var formattedStart = format1.format(dateStart.getTime())
@@ -141,6 +145,8 @@ class ReporteRepository: IMainViewReportes.Repository {
         }
 
         else if(cultivo_id!=null && dateStart!=null && dateEnd!=null){
+
+
 
             var format1 = SimpleDateFormat("MM-dd-yyyy")
             var formattedStart = format1.format(dateStart.getTime())

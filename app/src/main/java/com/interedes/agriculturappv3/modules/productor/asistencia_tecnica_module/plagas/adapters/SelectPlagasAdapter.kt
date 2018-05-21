@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.plagas.adapters
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -17,6 +18,8 @@ import com.interedes.agriculturappv3.modules.models.plagas.FotoEnfermedad
 import com.interedes.agriculturappv3.modules.models.plagas.FotoEnfermedad_Table
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.squareup.picasso.Picasso
+import java.io.ByteArrayOutputStream
 
 /**
  * Created by MAKERS on 26/03/2018.
@@ -79,9 +82,18 @@ class SelectPlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapt
                         Log.d("Convert Image", "defaultValue = " + ss);
                     }
                 }
+            }else{
+                //val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.emtpy_img_plaga)
+                //val bos = ByteArrayOutputStream()
+                //largeIcon.compress(Bitmap.CompressFormat.PNG, 100, bos)
+                //data.blobImagenEnfermedad=Blob(bos.toByteArray())
+                //imgPlaga.setImageBitmap(largeIcon)
+               /* try {
+                    Picasso.with(context).load(R.drawable.emtpy_img_plaga).resize(50, 50).placeholder(R.drawable.emtpy_img_plaga).centerCrop().into(imgPlaga)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }*/
             }
-
-
             itemView.setOnClickListener {
                 SelectPlagasAdapter.instance?.postEvent(PlagasEvent.ITEM_SELECT_PLAGA_EVENT, data)
             }
