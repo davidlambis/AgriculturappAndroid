@@ -261,6 +261,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         hud = KProgressHUD.create(activity)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setWindowColor(getResources().getColor(R.color.colorPrimary))
+                .setLabel("Cargando...", resources.getColor(R.color.white))
         hud?.show()
     }
 

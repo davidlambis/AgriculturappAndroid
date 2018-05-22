@@ -139,157 +139,197 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
             callInformacionSinronized?.enqueue(object : Callback<GetSincronizacionResponse> {
                 override fun onResponse(call: Call<GetSincronizacionResponse>?, response: Response<GetSincronizacionResponse>?) {
                     if (response != null && response.code() == 200) {
+
+
                         val unidadesProductivas = response.body()?.value as MutableList<Unidad_Productiva>
 
 
                         //TODO Delete information in local, add new remote
                         SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
                                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true))
+                                .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
 
-
                         SQLite.delete<Lote>(Lote::class.java)
                                 .where(Lote_Table.EstadoSincronizacion.eq(true))
+                                .and(Lote_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
 
 
                         SQLite.delete<Cultivo>(Cultivo::class.java)
                                 .where(Cultivo_Table.EstadoSincronizacion.eq(true))
+                                .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
 
                         SQLite.delete<Produccion>(Produccion::class.java)
                                 .where(Produccion_Table.Estado_Sincronizacion.eq(true))
+                                .and(Produccion_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
 
                         SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
                                 .where(ControlPlaga_Table.Estado_Sincronizacion.eq(true))
+                                .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
 
-
-
                         //TODO Add information new remote
                         for (item in unidadesProductivas) {
-
-                            item.UsuarioId=usuario?.Id
-                            item.Nombre_Ciudad= if (item.Ciudad!=null) item.Ciudad?.Nombre else null
-                            item.Nombre_Unidad_Medida= if (item.UnidadMedida!=null) item.UnidadMedida?.Descripcion else null
-                            item.Nombre_Departamento= if (item.Ciudad!=null) item.Ciudad?.Departamento?.Nombre else null
-                            item.Estado_Sincronizacion=true
-                            item.Estado_SincronizacionUpdate=true
-
-
-                            val last_up = getLastUp()
-                            if (last_up == null) {
-                                item.Unidad_Productiva_Id = 1
-                            } else {
-                                item.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
-                            }
-
-
-                            if(item.LocalizacionUps?.size!!>0){
-                                for (localizacion in item.LocalizacionUps!!){
-                                    item.DireccionAproximadaGps=localizacion.DireccionAproximadaGps
-                                    item.Latitud=localizacion.Latitud
-                                    item.Longitud=localizacion.Longitud
-                                    item.Coordenadas=localizacion.Coordenadas
-                                    item.Direccion=localizacion.Direccion
-                                    item.Configuration_Point=true
-                                    item.Configuration_Poligon=false
-                                    item.LocalizacionUpId=localizacion.Id
+                            var unidadProductivaVerficateSave= SQLite.select()
+                                    .from(Unidad_Productiva::class.java)
+                                    .where(Unidad_Productiva_Table.Id_Remote.eq(item.Id_Remote))
+                                    .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(false))
+                                    .querySingle()
+                            //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                            if (unidadProductivaVerficateSave !=null){
+                                item.Unidad_Productiva_Id=unidadProductivaVerficateSave?.Unidad_Productiva_Id
+                            }else{
+                                val last_up = getLastUp()
+                                if (last_up == null) {
+                                    item.Unidad_Productiva_Id = 1
+                                } else {
+                                    item.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
                                 }
+
+                                item.UsuarioId=usuario?.Id
+                                item.Nombre_Ciudad= if (item.Ciudad!=null) item.Ciudad?.Nombre else null
+                                item.Nombre_Unidad_Medida= if (item.UnidadMedida!=null) item.UnidadMedida?.Descripcion else null
+                                item.Nombre_Departamento= if (item.Ciudad!=null) item.Ciudad?.Departamento?.Nombre else null
+                                item.Estado_Sincronizacion=true
+                                item.Estado_SincronizacionUpdate=true
+
+
+                                if(item.LocalizacionUps?.size!!>0){
+                                    for (localizacion in item.LocalizacionUps!!){
+                                        item.DireccionAproximadaGps=localizacion.DireccionAproximadaGps
+                                        item.Latitud=localizacion.Latitud
+                                        item.Longitud=localizacion.Longitud
+                                        item.Coordenadas=localizacion.Coordenadas
+                                        item.Direccion=localizacion.Direccion
+                                        item.Configuration_Point=true
+                                        item.Configuration_Poligon=false
+                                        item.LocalizacionUpId=localizacion.Id
+                                    }
+                                }
+
+
+                                item.save()
                             }
 
                             if(item.Lotes?.size!!>0){
 
-
-
                                 for (lote in item.Lotes!!){
 
-                                    val last_lote = getLastLote()
-                                    if (last_lote == null) {
-                                        lote.LoteId = 1
-                                    } else {
-                                        lote.LoteId = last_lote.LoteId!! + 1
+                                    var loteVerficateSave= SQLite.select()
+                                            .from(Lote::class.java)
+                                            .where(Lote_Table.Id_Remote.eq(lote.Id_Remote))
+                                            .and(Lote_Table.Estado_SincronizacionUpdate.eq(false))
+                                            .querySingle()
+
+                                    //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                                    if (loteVerficateSave!=null){
+                                        lote.LoteId=loteVerficateSave.LoteId
+                                    }else{
+
+                                        val last_lote = getLastLote()
+                                        if (last_lote == null) {
+                                            lote.LoteId = 1
+                                        } else {
+                                            lote.LoteId = last_lote.LoteId!! + 1
+                                        }
+
+                                        val coordenadas =lote.Localizacion
+                                        if(coordenadas!=null || coordenadas!=""){
+                                            val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
+                                            var latitud= separated!![0].toDoubleOrNull() // this will contain "Fruit"
+                                            var longitud=separated!![1].toDoubleOrNull() // this will contain " they taste good"
+                                            lote.Latitud=latitud
+                                            lote.Longitud=longitud
+                                            lote.Coordenadas=coordenadas
+                                        }
+
+                                        lote.Unidad_Productiva_Id=item.Unidad_Productiva_Id
+                                        lote.Nombre_Unidad_Medida= if (item.UnidadMedida!=null) item.UnidadMedida?.Descripcion else null
+                                        lote.Nombre_Unidad_Productiva= item.nombre
+                                        lote.EstadoSincronizacion=true
+                                        lote.Nombre= if (lote.Nombre==null) "" else lote.Nombre
+                                        lote.Descripcion= if (lote.Descripcion==null) "" else lote.Descripcion
+                                        lote.Estado_SincronizacionUpdate=true
+
+                                        lote.save()
                                     }
-
-                                    val coordenadas =lote.Localizacion
-                                    if(coordenadas!=null || coordenadas!=""){
-                                        val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
-                                        var latitud= separated!![0].toDoubleOrNull() // this will contain "Fruit"
-                                        var longitud=separated!![1].toDoubleOrNull() // this will contain " they taste good"
-                                        lote.Latitud=latitud
-                                        lote.Longitud=longitud
-                                        lote.Coordenadas=coordenadas
-                                    }
-
-                                    lote.Unidad_Productiva_Id=item.Unidad_Productiva_Id
-                                    lote.Nombre_Unidad_Medida= if (item.UnidadMedida!=null) item.UnidadMedida?.Descripcion else null
-                                    lote.Nombre_Unidad_Productiva= item.nombre
-                                    lote.EstadoSincronizacion=true
-                                    lote.Nombre= if (lote.Nombre==null) "" else lote.Nombre
-                                    lote.Descripcion= if (lote.Descripcion==null) "" else lote.Descripcion
-                                    lote.Estado_SincronizacionUpdate=true
-
-                                    lote.save()
 
                                     if(lote.Cultivos?.size!!>0){
 
                                         for(cultivo in lote.Cultivos!!){
-                                            val last_cultivo = getLastCultivo()
-                                            if (last_cultivo == null) {
-                                                cultivo.CultivoId = 1
-                                            } else {
-                                                cultivo.CultivoId = last_cultivo.CultivoId!! + 1
+
+
+                                            var cultivoVerficateSave= SQLite.select()
+                                                    .from(Cultivo::class.java)
+                                                    .where(Cultivo_Table.Id_Remote.eq(cultivo.Id_Remote))
+                                                    .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(false))
+                                                    .querySingle()
+                                            //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                                            if (cultivoVerficateSave!=null){
+                                                cultivo.CultivoId=cultivoVerficateSave.CultivoId
+                                            }else{
+                                                val last_cultivo = getLastCultivo()
+                                                if (last_cultivo == null) {
+                                                    cultivo.CultivoId = 1
+                                                } else {
+                                                    cultivo.CultivoId = last_cultivo.CultivoId!! + 1
+                                                }
+
+                                                cultivo.LoteId=lote.LoteId
+                                                cultivo.NombreUnidadProductiva= item.nombre
+                                                cultivo.NombreLote= lote.Nombre
+                                                cultivo.EstadoSincronizacion= true
+                                                cultivo.Estado_SincronizacionUpdate= true
+                                                cultivo.stringFechaInicio=cultivo.getFechaStringFormatApi(cultivo.FechaIncio)
+                                                cultivo.stringFechaFin=cultivo.getFechaStringFormatApi(cultivo.FechaFin)
+
+                                                cultivo.Nombre_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.tipoProducto?.Nombre else null
+                                                cultivo.Nombre_Detalle_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.Descripcion else null
+                                                cultivo.Id_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.TipoProductoId else null
+                                                cultivo.Nombre_Unidad_Medida=if (cultivo.unidadMedida!=null) cultivo.unidadMedida?.Descripcion else null
+
+                                                cultivo.save()
                                             }
-
-
-                                            cultivo.LoteId=lote.LoteId
-                                            cultivo.NombreUnidadProductiva= item.nombre
-                                            cultivo.NombreLote= lote.Nombre
-                                            cultivo.EstadoSincronizacion= true
-                                            cultivo.Estado_SincronizacionUpdate= true
-                                            cultivo.stringFechaInicio=cultivo.getFechaStringFormatApi(cultivo.FechaIncio)
-                                            cultivo.stringFechaFin=cultivo.getFechaStringFormatApi(cultivo.FechaFin)
-
-
-                                            cultivo.Nombre_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.tipoProducto?.Nombre else null
-                                            cultivo.Nombre_Detalle_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.Descripcion else null
-                                            cultivo.Id_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.TipoProductoId else null
-                                            cultivo.Nombre_Unidad_Medida=if (cultivo.unidadMedida!=null) cultivo.unidadMedida?.Descripcion else null
-                                            cultivo.save()
-
 
                                             if(cultivo.produccions?.size!!>0){
 
-
-
                                                 for(produccion in cultivo.produccions!!){
 
-                                                    val last_productions = getLastProduccion()
-                                                    if (last_productions == null) {
-                                                        produccion.ProduccionId = 1
-                                                    } else {
-                                                        produccion.ProduccionId = last_productions.ProduccionId!! + 1
+                                                    var produccionVerficateSave= SQLite.select()
+                                                            .from(Produccion::class.java)
+                                                            .where(Producto_Table.Id_Remote.eq(produccion.Id_Remote))
+                                                            .and(Producto_Table.Estado_SincronizacionUpdate.eq(false))
+                                                            .querySingle()
+
+                                                    //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                                                    if (produccionVerficateSave!=null){
+                                                        produccion.ProduccionId=produccionVerficateSave.ProduccionId
+                                                    }else{
+                                                        val last_productions = getLastProduccion()
+                                                        if (last_productions == null) {
+                                                            produccion.ProduccionId = 1
+                                                        } else {
+                                                            produccion.ProduccionId = last_productions.ProduccionId!! + 1
+                                                        }
+                                                        produccion.CultivoId=cultivo.CultivoId
+                                                        produccion.Estado_Sincronizacion=true
+                                                        produccion.Estado_SincronizacionUpdate=true
+                                                        produccion.NombreCultivo=cultivo.Nombre
+                                                        produccion.NombreLote=lote.Nombre
+                                                        produccion.NombreUnidadProductiva=item.nombre
+                                                        produccion.FechaInicioProduccion=produccion.getFechaDate(produccion.StringFechaInicio)
+                                                        produccion.FechaFinProduccion=produccion.getFechaDate(produccion.StringFechaFin)
+                                                        produccion.NombreUnidadMedida= if (produccion.unidadMedida!=null) produccion.unidadMedida?.Descripcion else null
+                                                        produccion.save()
                                                     }
-
-                                                    produccion.CultivoId=cultivo.CultivoId
-                                                    produccion.Estado_Sincronizacion=true
-                                                    produccion.Estado_SincronizacionUpdate=true
-                                                    produccion.NombreCultivo=cultivo.Nombre
-                                                    produccion.NombreLote=lote.Nombre
-                                                    produccion.NombreUnidadProductiva=item.nombre
-                                                    produccion.FechaInicioProduccion=produccion.getFechaDate(produccion.StringFechaInicio)
-                                                    produccion.FechaFinProduccion=produccion.getFechaDate(produccion.StringFechaFin)
-                                                    produccion.NombreUnidadMedida= if (produccion.unidadMedida!=null) produccion.unidadMedida?.Descripcion else null
-                                                    produccion.save()
-
-
-
                                                 }
                                             }
 
@@ -297,26 +337,38 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
 
                                             if(cultivo.controlPlagas?.size!!>0){
                                                 for(controlplaga in cultivo.controlPlagas!!){
-                                                    val last_controlplaga = getLastControlPlaga()
-                                                    if (last_controlplaga == null) {
-                                                        controlplaga.ControlPlagaId = 1
-                                                    } else {
-                                                        controlplaga.ControlPlagaId = last_controlplaga.ControlPlagaId!! + 1
-                                                    }
-                                                    controlplaga.CultivoId=cultivo.CultivoId
-                                                    controlplaga.Estado_Sincronizacion=true
-                                                    controlplaga.Estado_SincronizacionUpdate=true
-                                                    controlplaga.Fecha_aplicacion_local=controlplaga.getFechaDate(controlplaga.Fecha_aplicacion)
-                                                    controlplaga.Fecha_Erradicacion_Local=if(controlplaga.FechaErradicacion!=null)controlplaga.getFechaDate(controlplaga.FechaErradicacion)else null
 
-                                                    controlplaga.save()
+                                                    var controlPlagasVerficateSave= SQLite.select()
+                                                            .from(ControlPlaga::class.java)
+                                                            .where(ControlPlaga_Table.Id_Remote.eq(controlplaga.Id_Remote))
+                                                            .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(false))
+                                                            .querySingle()
+
+                                                    //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                                                    if (controlPlagasVerficateSave!=null){
+                                                        controlplaga.ControlPlagaId=controlPlagasVerficateSave.ControlPlagaId
+                                                    }else{
+                                                        val last_controlplaga = getLastControlPlaga()
+                                                        if (last_controlplaga == null) {
+                                                            controlplaga.ControlPlagaId = 1
+                                                        } else {
+                                                            controlplaga.ControlPlagaId = last_controlplaga.ControlPlagaId!! + 1
+                                                        }
+                                                        controlplaga.CultivoId=cultivo.CultivoId
+                                                        controlplaga.Estado_Sincronizacion=true
+                                                        controlplaga.Estado_SincronizacionUpdate=true
+                                                        controlplaga.Fecha_aplicacion_local=controlplaga.getFechaDate(controlplaga.Fecha_aplicacion)
+                                                        controlplaga.Fecha_Erradicacion_Local=if(controlplaga.FechaErradicacion!=null)controlplaga.getFechaDate(controlplaga.FechaErradicacion)else null
+
+                                                        controlplaga.save()
+
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-                            item.save()
                         }
 
                         loadTransacciones(usuario)
@@ -340,39 +392,58 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                     if (response != null && response.code() == 200) {
                         val productos = response.body()?.value as MutableList<Producto>
 
-                        var productosList= SQLite.select().from(Producto::class.java).queryList()
-                        if(productosList.size>0){
-                            SQLite.delete<Producto>(Producto::class.java)
-                                    .where(Produccion_Table.Estado_Sincronizacion.eq(true))
+
+                        SQLite.delete<Producto>(Producto::class.java)
+                                    .where(Producto_Table.Estado_Sincronizacion.eq(true))
+                                    .and(Producto_Table.Estado_SincronizacionUpdate.eq(true))
                                     .async()
                                     .execute()
-                        }
 
 
                         for(producto in productos){
-                            producto.NombreCultivo= if(producto.Cultivo!=null)producto?.Cultivo?.Nombre else null
-                            producto.NombreLote= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.Nombre else null
-                            producto.NombreUnidadProductiva= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.UnidadProductiva?.nombre else null
-                            producto.NombreUnidadMedidaCantidad=if(producto.UnidadMedida!= null)producto.UnidadMedida?.Descripcion else null
-                            producto.NombreCalidad=if(producto.Calidad!=null)producto.Calidad?.Nombre else null
-                            producto.NombreUnidadMedidaPrecio=producto.PrecioUnidadMedida
-                            producto.Estado_Sincronizacion=true
-                            producto.Estado_SincronizacionUpdate=true
-                            producto.Usuario_Logued=usuario?.Id
 
-                            producto.NombreDetalleTipoProducto=if(producto.Cultivo!=null)producto.Cultivo?.detalleTipoProducto?.Nombre else null
+                            var productoVerficateSave= SQLite.select()
+                                    .from(Producto::class.java)
+                                    .where(Producto_Table.Id_Remote.eq(producto.Id_Remote))
+                                    .and(Producto_Table.Estado_SincronizacionUpdate.eq(false))
+                                    .querySingle()
 
-                            try {
-                                val base64String = producto?.Imagen
-                                val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
-                                val byte = Base64.decode(base64Image, Base64.DEFAULT)
-                                producto.blobImagen = Blob(byte)
-                            }catch (ex:Exception){
-                                var ss= ex.toString()
-                                Log.d("Convert Image", "defaultValue = " + ss);
+                            //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                            if (productoVerficateSave!=null){
+                                producto.ProductoId=productoVerficateSave.ProductoId
+                            }else{
+
+                                val last_producto = getLastProducto()
+                                if (last_producto == null) {
+                                    producto.ProductoId = 1
+                                } else {
+                                    producto.ProductoId = last_producto.ProductoId!! + 1
+                                }
+
+                                producto.NombreCultivo= if(producto.Cultivo!=null)producto?.Cultivo?.Nombre else null
+                                producto.NombreLote= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.Nombre else null
+                                producto.NombreUnidadProductiva= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.UnidadProductiva?.nombre else null
+                                producto.NombreUnidadMedidaCantidad=if(producto.UnidadMedida!= null)producto.UnidadMedida?.Descripcion else null
+                                producto.NombreCalidad=if(producto.Calidad!=null)producto.Calidad?.Nombre else null
+                                producto.NombreUnidadMedidaPrecio=producto.PrecioUnidadMedida
+                                producto.Estado_Sincronizacion=true
+                                producto.Estado_SincronizacionUpdate=true
+                                producto.Usuario_Logued=usuario?.Id
+
+                                producto.NombreDetalleTipoProducto=if(producto.Cultivo!=null)producto.Cultivo?.detalleTipoProducto?.Nombre else null
+
+                                try {
+                                    val base64String = producto?.Imagen
+                                    val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                    val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                    producto.blobImagen = Blob(byte)
+                                }catch (ex:Exception){
+                                    var ss= ex.toString()
+                                    Log.d("Convert Image", "defaultValue = " + ss);
+                                }
+
+                                producto.save()
                             }
-
-                            producto.save()
                         }
                     } else {
                         postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
@@ -713,61 +784,72 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
 
                      SQLite.delete<Transaccion>(Transaccion::class.java)
                              .where(Transaccion_Table.Estado_Sincronizacion.eq(true))
+                             .and(Transaccion_Table.Estado_SincronizacionUpdate.eq(true))
                              .async()
                              .execute()
 
                      SQLite.delete<Tercero>(Tercero::class.java)
                              .where(Tercero_Table.Estado_Sincronizacion.eq(true))
+                             .and(Tercero_Table.Estado_SincronizacionUpdate.eq(true))
                              .async()
                              .execute()
 
                      for (item in transacciones) {
 
+                         var transaccionVerficateSave= SQLite.select()
+                                 .from(Transaccion::class.java)
+                                 .where(Transaccion_Table.Id_Remote.eq(item.Id_Remote))
+                                 .and(Transaccion_Table.Estado_SincronizacionUpdate.eq(false))
+                                 .querySingle()
 
-                         val lastTransaccion = getLastTransaccion()
-                         if (lastTransaccion == null) {
-                             item.TransaccionId = 1
-                         } else {
-                             item.TransaccionId = lastTransaccion.TransaccionId!! + 1
+                         //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                         if (transaccionVerficateSave!=null){
+                             item.TransaccionId=transaccionVerficateSave.TransaccionId
+                         }else{
+                             val lastTransaccion = getLastTransaccion()
+                             if (lastTransaccion == null) {
+                                 item.TransaccionId = 1
+                             } else {
+                                 item.TransaccionId = lastTransaccion.TransaccionId!! + 1
+                             }
+
+                             item.UsuarioId=usuario?.Id
+                             item.Nombre_Tercero= if (item.Tercero!=null) item.Tercero?.Nombre else null
+                             item.Nombre_Estado_Transaccion= if (item.EstadoTransaccion!=null) item.EstadoTransaccion?.Nombre else null
+                             item.Estado_Sincronizacion=true
+                             item.Identificacion_Tercero= if (item.Tercero!=null) item.Tercero?.NitRut else null
+                             item.Descripcion_Puk=if (item.Puc!=null) item.Puc?.Descripcion else null
+                             item.CategoriaPuk_Id=if (item.Puc!=null) item.Puc?.CategoriaId else null
+                             item.Estado_Sincronizacion=true
+                             item.Estado_SincronizacionUpdate=true
+                             var fechaDate=item.getFechaDate(item.FechaString)
+                             item.Fecha_Transaccion=fechaDate
+
+
+
+                             val dateFechaFromatMMddyyy =item.getFechaTransacccionFormatMMddyyyy()
+                             item.FechaString=dateFechaFromatMMddyyy
+
+                             item.Valor_Unitario=if (item.Valor_Total!=null && item.Cantidad!=null)  item.Valor_Total!! / item.Cantidad?.toLong()!! else null
+
+                             var cultivo =SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id_Remote.eq(item.Cultivo_Id)).querySingle()
+                             item.Nombre_Cultivo=cultivo?.Nombre
+                             item.Nombre_Detalle_Producto_Cultivo=cultivo?.Nombre_Detalle_Tipo_Producto
+                             item.Cultivo_Id=cultivo?.CultivoId
+
+                             val lastTercero = getLastTercero()
+                             if (lastTercero == null) {
+                                 item.Tercero?.TerceroId = 1
+                             } else {
+                                 item.Tercero?.TerceroId = lastTercero.TerceroId!! + 1
+                             }
+                             item.Tercero?.save()
+
+
+                             item.save()
+
                          }
-
-                         item.UsuarioId=usuario?.Id
-                         item.Nombre_Tercero= if (item.Tercero!=null) item.Tercero?.Nombre else null
-                         item.Nombre_Estado_Transaccion= if (item.EstadoTransaccion!=null) item.EstadoTransaccion?.Nombre else null
-                         item.Estado_Sincronizacion=true
-                         item.Identificacion_Tercero= if (item.Tercero!=null) item.Tercero?.NitRut else null
-                         item.Descripcion_Puk=if (item.Puc!=null) item.Puc?.Descripcion else null
-                         item.CategoriaPuk_Id=if (item.Puc!=null) item.Puc?.CategoriaId else null
-                         item.Estado_Sincronizacion=true
-                         item.Estado_SincronizacionUpdate=true
-                         var fechaDate=item.getFechaDate(item.FechaString)
-                         item.Fecha_Transaccion=fechaDate
-
-
-
-                         val dateFechaFromatMMddyyy =item.getFechaTransacccionFormatMMddyyyy()
-                         item.FechaString=dateFechaFromatMMddyyy
-
-                         item.Valor_Unitario=if (item.Valor_Total!=null && item.Cantidad!=null)  item.Valor_Total!! / item.Cantidad?.toLong()!! else null
-
-                         var cultivo =SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id_Remote.eq(item.Cultivo_Id)).querySingle()
-                         item.Nombre_Cultivo=cultivo?.Nombre
-                         item.Nombre_Detalle_Producto_Cultivo=cultivo?.Nombre_Detalle_Tipo_Producto
-                         item.Cultivo_Id=cultivo?.CultivoId
-
-                         val lastTercero = getLastTercero()
-                         if (lastTercero == null) {
-                             item.Tercero?.TerceroId = 1
-                         } else {
-                             item.Tercero?.TerceroId = lastTercero.TerceroId!! + 1
-                         }
-                         item.Tercero?.save()
-
-
-                         item.save()
                      }
-
-
                  } else {
                      postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                  }
@@ -776,9 +858,6 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
                  postEvent(RequestEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
              }
          })
-
-
-
     }
 
 

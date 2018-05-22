@@ -314,6 +314,8 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo.DetalleTipoProductoId = detalleTipoProductoGlobal?.Id
             cultivo.Nombre_Detalle_Tipo_Producto = detalleTipoProductoGlobal?.Nombre
             cultivo.Id_Tipo_Producto = tipoProductoGlobal?.Id
+            cultivo.FechaIncio= viewDialog?.edtFechaInicio?.text?.trim().toString()
+            cultivo.FechaFin= viewDialog?.edtFechaFin?.text?.trim().toString()
             presenter?.registerCultivo(cultivo, cultivo.LoteId)
         }
     }
@@ -347,7 +349,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         })
         builder.setMessage(getString(R.string.alert_delete_cultivo));
         builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
-            presenter?.deleteCultivo(cultivo, cultivo.LoteId)
+            presenter?.deleteCultivo(cultivo, Lote_Id)
         })
         builder.setIcon(R.drawable.ic_cultivos);
         return builder.show();

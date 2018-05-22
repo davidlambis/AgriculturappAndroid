@@ -192,5 +192,20 @@ data class Producto(@PrimaryKey
     }
 
 
+    fun getFechaLimiteDisponibilidadFormatDate(stringDate:String?):Date?{
+        val dateString = stringDate
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var convertedDate = Date()
+        try {
+            convertedDate = dateFormat.parse(dateString)
+        } catch (e: ParseException) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        }
+        return convertedDate
+    }
+
+
+
 }
 

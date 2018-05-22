@@ -41,15 +41,18 @@ import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
+import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import kotlinx.android.synthetic.main.navigation_drawer_header.*
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu.MainView,View.OnClickListener {
+
 
 
     // var coordsService: CoordsService? = null
@@ -70,6 +73,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
      var mStorageRef: StorageReference? = null
      var mCurrentUserID: String? = null
     var mAuth: FirebaseAuth? = null
+
+
+    //Alert Dialog Sync
+    var viewDialogSync:View?= null
+    var _dialogSync: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -343,6 +351,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         hud?.dismiss()
     }
 
+    override fun showProgressBar() {
+        progressBarSync?.visibility=View.VISIBLE
+    }
+
+    override fun hideProgressBar() {
+        progressBarSync?.visibility=View.GONE
+    }
+
 
     override fun requestResponseOK() {
         onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
@@ -351,6 +367,50 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun requestResponseError(error: String?) {
         onMessageError(R.color.red_900,error);
     }
+
+
+    override fun verificateSync(quantitySync: QuantitySync?): AlertDialog? {
+        val inflater = this.layoutInflater
+        viewDialogSync = inflater.inflate(R.layout.dialog_sync_data , null)
+
+        var message= ""
+        if(quantitySync?.CantidadRegistrosSync!!.toInt()==0 && quantitySync?.CantidadUpdatesSync!!.toInt()==0 ){
+            message=getString(R.string.tittle_no_sync)
+            viewDialogSync?.imageViewSyncNone?.visibility=View.VISIBLE
+        }else{
+            message=getString(R.string.tiitle_verificate_sync)
+            viewDialogSync?.imageViewSyncNone?.visibility=View.GONE
+        }
+
+        viewDialogSync?.txtCantidadRegistros?.setText(String.format(getString(R.string.size_register_sync),quantitySync?.CantidadRegistrosSync))
+        viewDialogSync?.txtCantidadActulizaciones?.setText(String.format(getString(R.string.size_updates_sync),quantitySync?.CantidadUpdatesSync))
+
+
+
+        var builder = AlertDialog.Builder(this)
+                .setView(viewDialogSync)
+                .setTitle(getString(R.string.alert))
+                .setMessage(message)
+                .setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+                    presenter?.syncData()
+                })
+                .setNegativeButton(getString(R.string.cancel), DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+                .setIcon(R.drawable.ic_cloud_sync)
+                .create()
+        builder.show()
+
+        _dialogSync=builder
+        return _dialogSync
+    }
+
+
+    override fun setQuantitySync(quantitySync: QuantitySync?){
+        verificateSync(quantitySync)
+    }
+
+
 
 
     override fun verificateConnection(): AlertDialog? {
@@ -474,7 +534,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             }
 
             R.id.action_menu_sync -> {
-                presenter?.syncData()
+                presenter?.syncQuantityData()
                 return true
             }
 

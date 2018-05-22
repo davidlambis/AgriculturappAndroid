@@ -347,7 +347,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             calidadProductoGlobal = SQLite.select().from(CalidadProducto::class.java).where(CalidadProducto_Table.Id.eq(producto.CalidadId)).querySingle()
             unidadMedidaPrecioGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(producto.Unidad_Medida_Id)).querySingle()
 
-
+            fechaLimiteDisponibilidad=producto.getFechaLimiteDisponibilidadFormatDate(producto.FechaLimiteDisponibilidad)
         }
 
 
@@ -497,6 +497,10 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     }
 
     override fun validarCampos(): Boolean {
+
+        var dateNow=Calendar.getInstance().time
+
+
         var cancel = false
         var focusView: View? = null
 
@@ -525,23 +529,25 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.spinnerMonedaPrecio?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerMonedaPrecio
             cancel = true
-        }
-        else if (viewDialog?.txtCantidadProductoDisponible?.text.toString().isEmpty()) {
+        } else if (viewDialog?.txtCantidadProductoDisponible?.text.toString().isEmpty()) {
             viewDialog?.txtCantidadProductoDisponible?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.txtCantidadProductoDisponible
             cancel = true
-        }
-        else if (viewDialog?.spinnerUnidadMedidaCosecha?.text.toString().isEmpty()) {
+        } else if (viewDialog?.spinnerUnidadMedidaCosecha?.text.toString().isEmpty()) {
             viewDialog?.spinnerUnidadMedidaCosecha?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerUnidadMedidaCosecha
             cancel = true
-        }
-        else if (isFoto == false) {
+        } else if (isFoto == false) {
             onMessageError(R.color.grey_luiyi, getString(R.string.error_image_selected))
             focusView = viewDialog?.spinnerMonedaPrecio
             cancel = true
         }
 
+        else if (fechaLimiteDisponibilidad?.before(dateNow) == true){
+            viewDialog?.txtFechaLimiteDisponibilidad?.setError(getString(R.string.error_date))
+            focusView = viewDialog?.txtFechaLimiteDisponibilidad
+            cancel = true
+        }
         if (cancel) {
             focusView?.requestFocus()
         } else {
@@ -889,9 +895,17 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     private fun mostrarResultadosFechaLimiteDisponibilidad() {
         val format1 = SimpleDateFormat("yyyy-MM-dd")
         val formatted = format1.format(dateTime.time)
-        fechaLimiteDisponibilidad = dateTime.time
         viewDialog?.txtFechaLimiteDisponibilidad?.setText(formatted)
+
+
+        val format2 = SimpleDateFormat("MM/dd/yyyy")
+        val formatted2 = format1.format(dateTime.time)
+        fechaLimiteDisponibilidad=dateTime.time
+
+
     }
+
+
     //endregion
 
     override fun onRefresh() {

@@ -864,7 +864,6 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     }
 
 
-
     override fun showProgressHud() {
         hud = KProgressHUD.create(activity)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)

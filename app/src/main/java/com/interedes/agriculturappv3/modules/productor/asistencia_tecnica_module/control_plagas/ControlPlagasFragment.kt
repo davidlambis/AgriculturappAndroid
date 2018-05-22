@@ -180,12 +180,11 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
     }
 
     override fun setListControlPlagas(listControlPlagas: List<ControlPlaga>) {
-        dialogo?.dismiss()
         adapter?.clear()
         controlPlagaList?.clear()
         adapter?.setItems(listControlPlagas)
-        hideProgressHud()
-        hideProgress()
+        //hideProgressHud()
+        //hideProgress()
         setResults(listControlPlagas.size)
     }
 
@@ -240,6 +239,7 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         })
         builder.setMessage(getString(R.string.title_alert_control_plaga))
         builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            dialog.dismiss()
             presenter?.deleteControlPlaga(controlPlaga, Cultivo_Id)
         })
         builder.setIcon(R.drawable.ic_plagas)

@@ -32,18 +32,41 @@
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+
+
         </android.support.design.widget.AppBarLayout>
+
+
 
         <!-- <include layout="@layout/content_main_menu" />
          app:layout_behavior="@string/appbar_scrolling_view_behavior"
         -->
-
-        <FrameLayout
-            android:id="@+id/container"
+        <LinearLayout
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/fondo_general"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="match_parent">
+
+            <ProgressBar
+                android:layout_marginTop="-7dp"
+                android:id="@+id/progressBarSync"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:indeterminateTint="@color/green"
+                style="@android:style/Widget.Holo.ProgressBar.Horizontal"
+                android:indeterminate="true"
+                />
+
+            <FrameLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/fondo_general"
+                 />
+
+        </LinearLayout>
+
 
 
     </android.support.design.widget.CoordinatorLayout>

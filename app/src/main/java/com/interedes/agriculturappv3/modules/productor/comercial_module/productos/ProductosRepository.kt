@@ -82,7 +82,7 @@ class ProductosRepository : IProductos.Repository {
 
            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
            if (cultivo?.EstadoSincronizacion == true) {
-               val postProducto = PostProducto(mProducto.ProductoId,
+               val postProducto = PostProducto(0,
                        mProducto.CalidadId,
                        1,
                        mProducto.CodigoUp,
@@ -150,6 +150,8 @@ class ProductosRepository : IProductos.Repository {
         } else {
             mProducto.ProductoId = last_producto.ProductoId!! + 1
         }
+
+        mProducto.save()
         postEventOk(ProductosEvent.SAVE_EVENT, getProductos(cultivo_id), null)
     }
 
@@ -216,7 +218,6 @@ class ProductosRepository : IProductos.Repository {
     }
 
     override fun deleteProducto(mProducto: Producto, cultivo_id: Long?,checkConection:Boolean) {
-
         //TODO se valida estado de sincronizacion  para eliminar
         if (mProducto.Estado_Sincronizacion == true) {
             //TODO si existe coneccion a internet se elimina
@@ -233,7 +234,6 @@ class ProductosRepository : IProductos.Repository {
                         postEventError(ProductosEvent.ERROR_EVENT, "Comprueba tu conexión")
                     }
                 })
-
             }else{
                 postEventError(ProductosEvent.ERROR_VERIFICATE_CONECTION, null)
             }
@@ -242,10 +242,8 @@ class ProductosRepository : IProductos.Repository {
             //Verificate if cultivos register
             mProducto.delete()
             postEventOk(ProductosEvent.DELETE_EVENT, getProductos(cultivo_id), null)
-
         }
     }
-
 
     fun getLastUserLogued(): Usuario? {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()

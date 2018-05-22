@@ -129,8 +129,8 @@ class ProductosPresenter(var view: IProductos.View?) : IProductos.Presenter {
             ProductosEvent.DELETE_EVENT -> {
                 val list = event.mutableList as List<Producto>
                 view?.setListProductos(list)
-                view?.requestResponseOK()
                 view?.hideProgressHud()
+                view?.requestResponseOK()
             }
 
         //ITEMS

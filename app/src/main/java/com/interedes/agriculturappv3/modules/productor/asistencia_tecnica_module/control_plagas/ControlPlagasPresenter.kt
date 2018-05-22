@@ -93,13 +93,14 @@ class ControlPlagasPresenter(var view: IControlPlagas.View?) : IControlPlagas.Pr
     }
 
     override fun deleteControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?) {
-        view?.showProgress()
+        //view?.showProgress()
+        view?.showProgressHud()
         interactor?.deleteControlPlaga(controlPlaga, cultivo_id,checkConnection())
 
     }
 
     override fun updateControlPlaga(controlPlaga: ControlPlaga?) {
-        view?.showProgress()
+        //view?.showProgress()
         view?.showProgressHud()
         interactor?.updateControlPlaga(controlPlaga,checkConnection())
     }
@@ -116,6 +117,7 @@ class ControlPlagasPresenter(var view: IControlPlagas.View?) : IControlPlagas.Pr
 
                 val list = event.mutableList as List<ControlPlaga>
                 view?.setListControlPlagas(list)
+                onSaveOk()
             }
         //LIST EVENTS
             ControlPlagasEvent.LIST_EVENT_UP -> {
@@ -139,12 +141,14 @@ class ControlPlagasPresenter(var view: IControlPlagas.View?) : IControlPlagas.Pr
             ControlPlagasEvent.ITEM_DELETE_EVENT -> {
                 val controlPlaga = event.objectMutable as ControlPlaga
                 view?.confirmDelete(controlPlaga)
+
             }
 
             ControlPlagasEvent.DELETE_EVENT -> {
                 val list = event.mutableList as List<ControlPlaga>
                 view?.setListControlPlagas(list)
-                //onDeleteOk()
+
+                onDeleteOk()
             }
 
             ControlPlagasEvent.ITEM_ERRADICAR_EVENT -> {
@@ -177,11 +181,18 @@ class ControlPlagasPresenter(var view: IControlPlagas.View?) : IControlPlagas.Pr
     //endregion
 
     private fun onDeleteOk() {
+        view?.hideProgressHud()
+        view?.requestResponseOK()
+    }
+
+    private fun onSaveOk() {
+        view?.hideProgressHud()
         view?.requestResponseOK()
     }
 
     private fun onMessageConectionError() {
-        view?.hideProgress()
+        //view?.hideProgress()
+        view?.hideProgressHud()
         view?.verificateConnection()
     }
 

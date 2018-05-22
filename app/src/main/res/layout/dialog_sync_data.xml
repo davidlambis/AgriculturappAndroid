@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:paddingStart="@dimen/text_size_15"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageViewSyncNone"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:src="@drawable/register_success" />
+
+        <TextView
+            android:text="@string/tittle_register_sync"
+            android:textStyle="bold"
+            android:textColor="@color/grey_luiyi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/txtCantidadRegistros"
+            android:text=""
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/tittle_updates_sync"
+            android:textStyle="bold"
+            android:textColor="@color/grey_luiyi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/txtCantidadActulizaciones"
+            android:text=""
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</LinearLayout>

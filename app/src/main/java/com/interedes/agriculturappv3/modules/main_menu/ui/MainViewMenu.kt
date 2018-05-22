@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.modules.main_menu.ui
 import android.content.Context
 import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
+import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 
 /**
  * Created by EnuarMunoz on 8/03/18.
@@ -18,6 +19,9 @@ interface MainViewMenu {
         fun showProgressHud()
         fun hideProgressHud()
 
+        fun showProgressBar()
+        fun hideProgressBar()
+
         fun onMessageOk(colorPrimary: Int, message: String?)
         fun onMessageError(colorPrimary: Int, message: String?)
 
@@ -25,6 +29,9 @@ interface MainViewMenu {
         fun requestResponseError(error: String?)
         //Verifcate conection
         fun verificateConnection(): AlertDialog?
+        fun  verificateSync(quantitySync: QuantitySync?): AlertDialog?
+
+        fun setQuantitySync(quantitySync: QuantitySync?)
     }
 
     interface Presenter {
@@ -35,17 +42,19 @@ interface MainViewMenu {
 
         //syncData
         fun syncData()
-
+        fun syncQuantityData()
         //Conection
         fun checkConnection(): Boolean?
     }
 
     interface Interactor {
+        fun syncQuantityData()
       fun syncData()
     }
 
 
     interface Repository {
+        fun syncQuantityData()
         fun syncData()
     }
 }

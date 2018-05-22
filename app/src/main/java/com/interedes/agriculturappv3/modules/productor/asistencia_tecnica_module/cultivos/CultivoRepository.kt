@@ -92,6 +92,7 @@ class CultivoRepository : ICultivo.Repository {
         } else {
             listResponse = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(loteId)).queryList()
         }
+
         return listResponse;
     }
 
@@ -118,21 +119,12 @@ class CultivoRepository : ICultivo.Repository {
                         if (response != null && response.code() == 201) {
                             val value = response.body()
                             mCultivo?.Id_Remote = value?.Id_Remote!!
-
-                            val last_cultivo = getLastCultivo()
-                            if (last_cultivo == null) {
-                                mCultivo.CultivoId = 1
-                            } else {
-                                mCultivo.CultivoId = last_cultivo.CultivoId!! + 1
-                            }
-
-
                             mCultivo?.FechaIncio = value.FechaIncio
                             mCultivo?.FechaFin = value.FechaFin
                             mCultivo?.EstadoSincronizacion = true
                             mCultivo?.Estado_SincronizacionUpdate = true
-                            mCultivo?.save()
-                            postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
+                            saveCultivoLocal(mCultivo,loteId)
+                            //postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
                         } else {
                             postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")
                             Log.e("error", response?.message().toString())
@@ -162,7 +154,9 @@ class CultivoRepository : ICultivo.Repository {
             mCultivo.CultivoId = last_cultivo.CultivoId!! + 1
         }
         mCultivo.save()
+
         postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
+        getLote(loteId)
     }
 
 
@@ -225,7 +219,7 @@ class CultivoRepository : ICultivo.Repository {
                     override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
                         if (response != null && response.code() == 204) {
                             mCultivo.delete()
-                            postEventOk(CultivoEvent.DELETE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
+                            postEventOk(CultivoEvent.DELETE_EVENT, getCultivos(loteId), mCultivo)
                         }
                     }
                     override fun onFailure(call: Call<Cultivo>?, t: Throwable?) {
@@ -244,7 +238,8 @@ class CultivoRepository : ICultivo.Repository {
                 postEventError(CultivoEvent.ERROR_EVENT, "Error!.El cultivo no se ha podido eliminar, recuerde eliminar la produccion primero")
             }else{
                 mCultivo.delete()
-                postEventOk(CultivoEvent.DELETE_EVENT,  getCultivos(mCultivo.LoteId), mCultivo)
+                postEventOk(CultivoEvent.DELETE_EVENT,  getCultivos(loteId), mCultivo)
+                //getLote(mCultivo.LoteId)
             }
         }
     }

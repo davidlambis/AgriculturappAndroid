@@ -240,6 +240,7 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
     }
 
     private fun onDeleteOk() {
+        mainView?.hideProgress()
         mainView?.requestResponseOK()
     }
     //endregion

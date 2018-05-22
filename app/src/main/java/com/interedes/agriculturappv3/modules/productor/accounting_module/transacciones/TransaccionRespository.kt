@@ -76,7 +76,6 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
     override fun saveTransaccion(transaccion: Transaccion, cultivo_id: Long?,checkConection:Boolean) {
 
         transaccion.UsuarioId= getLastUserLogued()?.Id
-
         var terceroLocal=Tercero(TerceroId = transaccion.TerceroId,Nombre = transaccion.Nombre_Tercero,Apellido = "",NitRut = transaccion.Identificacion_Tercero)
 
         if(checkConection){
@@ -118,7 +117,7 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                                     transaccion.Valor_Total,
                                     transaccion.Cantidad,
                                     cultivo.Id_Remote,
-                                    getLastUserLogued()?.Id
+                                    transaccion.UsuarioId
                             )
                             val call = apiService?.postTransaccion(postTransaccion)
                             call?.enqueue(object : Callback<PostTransaccion> {
@@ -132,7 +131,6 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                                         } else {
                                             transaccion.TransaccionId = lastTransaccion.TransaccionId!! + 1
                                         }
-
                                         transaccion.Estado_Sincronizacion = true
                                         transaccion.Estado_SincronizacionUpdate = true
                                         transaccion.TerceroId=terceroLocal.TerceroId
@@ -178,8 +176,6 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
             tercero.TerceroId = lastTercero.TerceroId!! + 1
         }
         tercero.save()
-
-
 
         val lastTransaccion = getLastTransaccion()
         if (lastTransaccion == null) {

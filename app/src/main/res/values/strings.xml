@@ -212,6 +212,8 @@
     <string name="title_adapter_fecha_disponibilidad">Fecha Límite: %s</string>
     <string name="title_adapter_precio_producto">%1$,.0f</string>
 
+    <string name="error_date">La fecha limite no puede ser inferior a la fecha actual</string>
+
 
 
     <string name="title_alert_delete_producto">¿Está seguro de eliminar este producto?</string>
@@ -367,9 +369,22 @@
     <string name="offline">Desconectado</string>
 
 
+    <!--Sincronizacion -->
+
+
+    <string name="size_register_sync">Pendientes %d registros por sincronizar</string>
+    <string name="size_updates_sync">Pendientes %d actualizaciones por sincronizar</string>
+
+    <string name="tiitle_verificate_sync">Desea iniciar sincronizacion de su informacion ?</string>
+    <string name="tittle_no_sync">No tienes informacion por sincronizar</string>
+
+    <string name="tittle_register_sync">Registros</string>
+    <string name="tittle_updates_sync">Actualizaciones</string>
+
     <!--COMPRADOR MODULE-->
     <string name="tittle_productos">Productos</string>
     <string name="tittle_productos_interes">Estos son los productos de tu interes !Selecciona uno!</string>
+
 
     <!--CONFIGURATION-->
 

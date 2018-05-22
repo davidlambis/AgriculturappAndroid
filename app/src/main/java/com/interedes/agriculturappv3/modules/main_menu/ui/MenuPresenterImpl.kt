@@ -8,6 +8,7 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.main_menu.ui.MainViewMenu
 import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
+import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 
@@ -15,6 +16,7 @@ import org.greenrobot.eventbus.Subscribe
  * Created by EnuarMunoz on 8/03/18.
  */
 class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityReceiver.connectivityReceiverListener, MainViewMenu.Presenter {
+
 
     var eventBus: EventBus? = null
     var connectivityReceiver: ConnectivityReceiver? = null
@@ -83,6 +85,12 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
             RequestEventMainMenu.ERROR_VERIFICATE_CONECTION -> {
                 mainView?.verificateConnection()
             }
+
+            RequestEventMainMenu.SYNC_RESUME -> {
+                var quantitySync = event.objectMutable as QuantitySync
+                mainView?.setQuantitySync(quantitySync)
+                mainView?.hideProgressHud()
+            }
         }
     }
     //endregion
@@ -91,22 +99,27 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
     //region SyncData
     override fun syncData() {
         if(checkConnection()!!){
-            mainView?.showProgressHud()
+            mainView?.showProgressBar()
             interactor?.syncData()
         }else{
             mainView?.verificateConnection()
         }
     }
 
+    override fun syncQuantityData() {
+        mainView?.showProgressHud()
+        interactor?.syncQuantityData()
+    }
+
     //endregion
 
     private fun onMessageOk() {
-        mainView?.hideProgressHud()
+        mainView?.hideProgressBar()
         mainView?.requestResponseOK()
     }
 
     private fun onMessageError(error: String?) {
-        mainView?.hideProgressHud()
+        mainView?.hideProgressBar()
         mainView?.requestResponseError(error)
     }
 

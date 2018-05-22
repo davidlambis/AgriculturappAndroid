@@ -126,9 +126,11 @@ data class Cultivo(@PrimaryKey
         var convertedDate = Date()
         try {
             convertedDate = dateFormat.parse(dateString)
-        } catch (e: ParseException) {
+        } catch (e: Exception) {
             // TODO Auto-generated catch block
-            e.printStackTrace()
+           // e.printStackTrace()
+
+            return  null
         }
         return convertedDate
     }

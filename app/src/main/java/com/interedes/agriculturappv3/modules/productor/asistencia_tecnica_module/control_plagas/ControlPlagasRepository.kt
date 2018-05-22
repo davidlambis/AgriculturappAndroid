@@ -64,7 +64,7 @@ class ControlPlagasRepository : IControlPlagas.Repository {
         if (controlPlaga.Estado_Sincronizacion == true) {
             //TODO si existe coneccion a internet se elimina
             if(checkConection){
-                val call = apiService?.deleteControlPlaga(controlPlaga.ControlPlagaId!!)
+                val call = apiService?.deleteControlPlaga(controlPlaga.Id_Remote!!)
                 call?.enqueue(object : Callback<PostControlPlaga> {
                     override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
                         if (response != null && response.code() == 204 || response?.code() == 200) {

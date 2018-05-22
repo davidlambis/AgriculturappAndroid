@@ -102,10 +102,16 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
             var fechaDateInicio= data.getFechaDate(data.FechaIncio)
             var fechaDateFin= data.getFechaDate(data.FechaFin)
 
-            var fechaInicioFormat= data.getFechaFormat(fechaDateInicio)
-            var fechaFinFormat= data.getFechaFormat(fechaDateFin)
+            var fechaInicioFormat:String?=""
+            var fechaFinFormat:String?=""
 
+            if(fechaDateInicio!=null){
+                fechaInicioFormat= data.getFechaFormat(fechaDateInicio)
+            }
 
+            if(fechaDateFin!=null){
+                fechaFinFormat= data.getFechaFormat(fechaDateFin)
+            }
 
             txt_cosecha_estimada.text = String.format(context.getString(R.string.cantidad_estimada)!!, data.EstimadoCosecha, data.Nombre_Unidad_Medida)
             txt_fechas_cultivo.setText(String.format(context.getString(R.string.range_dates)!!, fechaInicioFormat, fechaFinFormat))

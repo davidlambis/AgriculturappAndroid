@@ -435,7 +435,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             //viewDialog?.spinnerMunicipio?.setText(unidadProductivaGlobal?.Nombre_Ciudad)
             viewDialog?.edtNombreUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialog?.etDescripcionUnidadProductiva?.setText(unidadProductivaGlobal?.descripcion)
-            viewDialog?.edtAreaUnidadProductiva?.setText(unidadProductivaGlobal?.Area.toString())
+
             viewDialog?.edtLocalizacionUnidadProductiva?.setText(unidadProductivaGlobal?.Coordenadas)
             viewDialog?.spinnerUnidadMedidaUp?.setText(unidadProductivaGlobal?.Nombre_Unidad_Medida)
             latitud = unidadProductiva.Latitud!!
@@ -443,6 +443,13 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
 
             viewDialog?.spinnerDepartamento?.setDropDownHeight(0)
             viewDialog?.spinnerMunicipio?.setDropDownHeight(0)
+
+            if(unidadProductiva.Area.toString().contains(".0")){
+                viewDialog?.edtAreaUnidadProductiva?.setText(String.format(context!!.getString(R.string.price_empty_signe),
+                        unidadProductiva.Area))
+            }else{
+                viewDialog?.edtAreaUnidadProductiva?.setText(unidadProductivaGlobal?.Area.toString())
+            }
 
         }
 
