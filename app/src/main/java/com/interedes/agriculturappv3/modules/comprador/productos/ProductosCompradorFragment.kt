@@ -91,6 +91,7 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
         hud = KProgressHUD.create(activity)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setWindowColor(getResources().getColor(R.color.colorPrimary))
+                .setLabel("Cargando...", resources.getColor(R.color.white))
         hud?.show()
     }
 
@@ -160,8 +161,6 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
     }
 
     //endregion
-
-
 
 
     //region Overrides Methods

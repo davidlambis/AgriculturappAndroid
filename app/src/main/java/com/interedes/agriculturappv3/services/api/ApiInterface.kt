@@ -323,7 +323,6 @@ interface ApiInterface {
     //endregion
 
 
-
     //region SINCRONIZE INFORMACION USUARIO LOGUED
     @GET("odata/Agp2/UnidadProductivas?\$expand=LocalizacionUps,UnidadMedida,Ciudad(\$expand=Departamento),Lotes(\$expand=UnidadMedida,Cultivos(\$expand=UnidadMedida,ControlPlagas,Produccions(\$expand=UnidadMedida),DetalleTipoProducto(\$expand=TipoProducto(\$select=Nombre))))")
     fun getSyncInformacionUsuario( @Query("\$filter") filter: String): Call<GetSincronizacionResponse>
@@ -340,10 +339,8 @@ interface ApiInterface {
     //endregion
 
 
-
-
     //region COMPRADOR
-    @GET("odata/Agp2/DetalleTipoProductos?\$expand=Cultivos(\$expand=Productos(\$expand=UnidadMedida,Calidad),Lote(\$expand=UnidadProductiva(\$expand=Usuario))),TipoProducto")
+    @GET("odata/Agp2/DetalleTipoProductos?\$expand=Cultivos(\$expand=Productos(\$expand=UnidadMedida,Calidad),Lote(\$expand=UnidadProductiva(\$expand=LocalizacionUps,Ciudad(\$expand=Departamento),Usuario))),TipoProducto(\$select=Nombre)")
     fun getProductosByTipoProductos( @Query("\$filter") filter: String): Call<GetProductosByTipoResponse>
 
     //http://18.233.87.16/odata/Agp2/DetalleTipoProductos?$expand=Cultivos($expand=Productos($expand=UnidadMedida,Calidad),Lote($expand=UnidadProductiva($expand=Usuario))),TipoProducto&$filter=TipoProductoId eq 2

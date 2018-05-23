@@ -7,6 +7,7 @@ import com.interedes.agriculturappv3.modules.models.departments.Ciudad
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.localizacion.LocalizacionUp
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
@@ -107,7 +108,11 @@ data class Unidad_Productiva(@PrimaryKey
 
 
                              @SerializedName("LocalizacionUps")
-                             var LocalizacionUps: ArrayList<LocalizacionUp>?= null
+                             var LocalizacionUps: ArrayList<LocalizacionUp>?= null,
+
+
+                             @SerializedName("Usuario")
+                             var Usuario: Usuario?= null
 
 
 

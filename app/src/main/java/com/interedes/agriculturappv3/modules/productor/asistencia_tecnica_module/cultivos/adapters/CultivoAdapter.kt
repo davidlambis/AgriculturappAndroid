@@ -96,7 +96,7 @@ class CultivoAdapter(val lista: ArrayList<Cultivo>) : RecyclerView.Adapter<Culti
             //val txt_nombre_cultivo: TextView = itemView.findViewById(R.id.txtNombreCultivo)
 
             //txt_nombre_cultivo.text = data.Nombre
-            txt_nombre_cultivo.text = data.Nombre_Detalle_Tipo_Producto +"( ${data.Nombre})"
+            txt_nombre_cultivo.text = data.Nombre
             txt_descripcion_cultivo.text = data.Descripcion
 
             var fechaDateInicio= data.getFechaDate(data.FechaIncio)

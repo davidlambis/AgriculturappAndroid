@@ -768,11 +768,19 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             unidadMedidaGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(lote.Unidad_Medida_Id)).querySingle()
             viewDialog?.name_lote?.setText(lote.Nombre)
             viewDialog?.description_lote?.setText(lote.Descripcion)
-            viewDialog?.area_lote?.setText(lote.Area.toString())
+
             viewDialog?.coordenadas_lote?.setText(lote.Coordenadas)
             viewDialog?.spinnerUnidadProductiva?.setText(unidadProductiva?.nombre)
             viewDialog?.spinnerUnidadMedidaLote?.setText(lote.Nombre_Unidad_Medida)
             viewDialog?.spinnerUnidadProductiva?.setDropDownHeight(0)
+
+            if(lote.Area.toString().contains(".0")){
+                viewDialog?.area_lote?.setText(String.format(context!!.getString(R.string.price_empty_signe),
+                        lote.Area))
+            }else{
+                viewDialog?.area_lote?.setText(lote.Area.toString())
+            }
+
             //viewDialog?.spinnerUnidadProductiva?.visibility = View.GONE
         }
 

@@ -82,6 +82,12 @@ class ProductoCompradorPresenter(var mainView: IMainViewProductoComprador.MainVi
                 onMessageError(event.mensajeError)
             }
 
+            RequestEventProductosComprador.ITEM_EVENT -> {
+                var tipoProducto = event.objectMutable as TipoProducto
+
+
+            }
+
         }
     }
     //endregion
@@ -90,7 +96,7 @@ class ProductoCompradorPresenter(var mainView: IMainViewProductoComprador.MainVi
     override fun getListTipoProducto() {
         mainView?.showProgress()
         mainView?.showProgressHud()
-       interactor?.execute()
+       interactor?.execute(checkConnection())
     }
 
 
@@ -102,11 +108,13 @@ class ProductoCompradorPresenter(var mainView: IMainViewProductoComprador.MainVi
 
     private fun onMessageError(error: String?) {
         mainView?.hideProgress()
+        mainView?.showProgressHud()
         mainView?.requestResponseError(error)
     }
 
     private fun onMessageConectionError() {
         mainView?.hideProgress()
+        mainView?.showProgressHud()
         mainView?.verificateConnection()
     }
     //endregion

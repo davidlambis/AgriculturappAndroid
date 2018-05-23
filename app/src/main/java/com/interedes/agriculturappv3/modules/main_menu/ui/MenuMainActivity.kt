@@ -31,6 +31,10 @@ import com.interedes.agriculturappv3.modules.main_menu.ui.MainViewMenu
 import com.interedes.agriculturappv3.services.Const
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import android.view.MenuInflater
+import android.widget.Toast
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -42,6 +46,7 @@ import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
+import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.kotlinextensions.save
@@ -79,6 +84,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     var viewDialogSync:View?= null
     var _dialogSync: AlertDialog? = null
 
+    //Chat Type
+    private var DIALOG_SET_TYPE_CHAT: Int = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_main)
@@ -105,9 +113,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         //Status Chat
         makeUserOnline()
-
         getListasIniciales()
     }
+
 
     override fun getListasIniciales() {
         presenter?.getListasIniciales()
@@ -139,23 +147,22 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val MainMenuFragment = MainMenuFragment()
         val ProductosCompradorFragment = ProductosCompradorFragment()
 
-        if (getLastUserLogued()?.RolNombre.equals("Productor")) {
+        if (getLastUserLogued()?.RolNombre.equals(RolResources.PRODUCTOR)) {
             AdapterFragmetMenu(MainMenuFragment, fragmentManager, R.id.container)
-        } else if (getLastUserLogued()?.RolNombre.equals("Comprador")) {
+        } else if (getLastUserLogued()?.RolNombre.equals(RolResources.COMPRADOR)) {
             AdapterFragmetMenu(ProductosCompradorFragment, fragmentManager, R.id.container)
         }
+
     }
 
     //TODO pasar al repository
     fun getLastUserLogued(): Usuario? {
-        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
-        return usuarioLogued
+      return presenter?.getLastUserLogued()
     }
 
-
-    //region ADAPTER FRAGMENTS
-
     //region SETUP INJECTION
+
+
     private fun setToolbarInjection() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
@@ -196,6 +203,118 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
 
+    //region MENU
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        //getMenuInflater().inflate(R.menu.menu_main_fragment, menu)
+        inflaterGlobal = menuInflater
+        inflaterGlobal?.inflate(R.menu.menu_main_fragment, menu)
+
+        menuItemGlobal = menu?.findItem(R.id.action_menu_icon)
+        menuItemGlobal?.isVisible = false
+
+        var itemSync=menu?.findItem(R.id.action_menu_sync)
+        if (getLastUserLogued()?.RolNombre.equals(RolResources.PRODUCTOR)) {
+            itemSync?.isVisible = true
+        } else if (getLastUserLogued()?.RolNombre.equals(RolResources.COMPRADOR)) {
+            itemSync?.isVisible = false
+        }
+
+        return true
+        //return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        when (item.itemId) {
+            R.id.action_menu_icon_chat -> {
+                ///startActivity(Intent(this, ChatUsersActivity::class.java))
+                showAlertTypeChat()
+                return true
+            }
+
+           /* R.id.action_menu_email -> {
+                startActivity(Intent(this, UserSmsActivity::class.java))
+                return true
+            }*/
+
+            R.id.action_menu_sync -> {
+                presenter?.syncQuantityData()
+                return true
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+
+    /*
+    override fun showAlertTypeChat(): AlertDialog? {
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.select_type_chat))
+        Toast.makeText(this, getString(R.string.message_location_lote), Toast.LENGTH_SHORT).show()
+        //var options=arrayOf(getString(R.string.location_type_gps), getString(R.string.location_type_manual))
+        var options  = resources.getStringArray(R.array.array_type_chat)
+        //La lista varia dependiendo del tipo de conectividad
+        builder.setSingleChoiceItems(options, DIALOG_SET_TYPE_CHAT, DialogInterface.OnClickListener { dialog, which ->
+            when (which) {
+            //Position State Location GPS
+                0 -> {
+                    DIALOG_SET_TYPE_CHAT=0
+                    dialog.dismiss()
+                    startActivity(Intent(this, ChatUsersActivity::class.java))
+                    //scheduleDismiss();
+                }
+            //Position State Location Manual
+                else -> {
+                    DIALOG_SET_TYPE_CHAT=1
+                    dialog.dismiss()
+                    startActivity(Intent(this, UserSmsActivity::class.java))
+                    //showAlertDialogSelectUp()
+                }
+            }
+        })
+        builder.setIcon(R.drawable.ic_localizacion_finca);
+        return builder.show();
+    }*/
+
+
+    override fun showAlertTypeChat(){
+
+        val adapter=MaterialSimpleListAdapter({dialog, index, item ->
+            if(index==0){
+                dialog.dismiss()
+                startActivity(Intent(this, UserSmsActivity::class.java))
+            }else{
+                dialog.dismiss()
+                startActivity(Intent(this, ChatUsersActivity::class.java))
+            }
+        })
+
+        adapter.add(MaterialSimpleListItem.Builder(this)
+                    .content(getString(R.string.tittle_chat_sms))
+                    .icon(R.drawable.ic_action_email_green)
+                    .backgroundColor(Color.WHITE)
+                  //  .backgroundColorRes(R.color.black)
+                    .build());
+        adapter.add(
+                 MaterialSimpleListItem.Builder(this)
+                    .content(getString(R.string.tittle_chat_online))
+                    .icon(R.drawable.ic_action_sms_green)
+                         .backgroundColor(Color.WHITE)
+                       //  .backgroundColorRes(R.color.black)
+                    .build());
+
+        MaterialDialog.Builder(this)
+                .title(R.string.select_type_chat)
+                .autoDismiss(true)
+                .adapter(adapter, null).show();
+    }
+
+
+
+    //endregion
+
     //region EVENTS UI
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
@@ -221,12 +340,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             showExit()
 
         }
-
-
-
-
         drawer_layout.closeDrawer(GravityCompat.START)
-
         return true
     }
 
@@ -289,11 +403,12 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         } else {
             supportFragmentManager.popBackStackImmediate()
         }*/
-
     }
 
 
     //endregion
+
+    //region NAVIGATION FRAGMENTS
 
     fun replaceFragment(fragment: Fragment) {
         /*val fragmentManager = supportFragmentManager
@@ -336,6 +451,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     }
 
+
+
+    //endregion
 
     //region Implemetacion Interfaz ViewMenu
 
@@ -419,9 +537,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         verificateSync(quantitySync)
     }
 
-
-
-
     override fun verificateConnection(): AlertDialog? {
         var builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.alert));
@@ -439,9 +554,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
            viewDialogSync?.viewEstateConect?.setBackgroundResource(R.drawable.is_online_user);
            viewDialogSync?.txtconectividad?.setText(getString(R.string.on_connectividad));
        }
-
-
-
 
         /// mUserDBRef?.database?.goOnline()
         /*
@@ -533,41 +645,12 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        //getMenuInflater().inflate(R.menu.menu_main_fragment, menu)
 
-        inflaterGlobal = menuInflater
-        inflaterGlobal?.inflate(R.menu.menu_main_fragment, menu)
-        menuItemGlobal = menu?.findItem(R.id.action_menu_icon)
-        menuItemGlobal?.isVisible = false
-        return true
-        //return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle item selection
-        when (item.itemId) {
-            R.id.action_menu_icon_chat -> {
-                startActivity(Intent(this, ChatUsersActivity::class.java))
-                return true
-            }
-
-            R.id.action_menu_email -> {
-                startActivity(Intent(this, UserSmsActivity::class.java))
-                return true
-            }
-
-            R.id.action_menu_sync -> {
-                presenter?.syncQuantityData()
-                return true
-            }
-
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
 
     //endregion
 
+
+    //region OVERRIDES METHODS
     override fun onResume() {
         super.onResume()
         presenter?.onResume(this)
@@ -588,6 +671,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
+    //endregion
 }
 
 

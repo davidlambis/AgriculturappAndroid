@@ -128,8 +128,6 @@ data class Producto(@PrimaryKey
                     @SerializedName("Calidad")
                     var Calidad:CalidadProducto?=null
 
-
-
                     ) {
 
     /*override fun toString(): String {

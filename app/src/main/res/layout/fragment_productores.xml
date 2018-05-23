@@ -3,12 +3,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".modules.comprador.productores.ProductoresFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/logoPlaga"
+                android:layout_gravity="left"
+                android:layout_width="wrap_content"
+                android:layout_below="@+id/titlePlaga"
+                android:layout_marginRight="@dimen/margin_3"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_productos" />
+            <TextView
+                android:textColor="@color/grey_luiyi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cafe"/>
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/division"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/logoPlaga"
+            android:layout_marginTop="1dp"
+            android:background="@color/purple" />
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        </LinearLayout>
+
+        <include layout="@layout/content_recyclerview" />
+
+
+    </LinearLayout>
+  
 
 </FrameLayout>

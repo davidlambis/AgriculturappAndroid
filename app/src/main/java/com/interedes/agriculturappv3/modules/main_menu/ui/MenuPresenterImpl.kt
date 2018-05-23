@@ -9,6 +9,7 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.main_menu.ui.MainViewMenu
 import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 
@@ -16,6 +17,7 @@ import org.greenrobot.eventbus.Subscribe
  * Created by EnuarMunoz on 8/03/18.
  */
 class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityReceiver.connectivityReceiverListener, MainViewMenu.Presenter {
+
 
 
     var eventBus: EventBus? = null
@@ -96,7 +98,7 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
     //endregion
 
 
-    //region SyncData
+    //region REQUEST REPOSITORY
     override fun getListasIniciales() {
         if (checkConnection()!!) {
             interactor?.getListasIniciales()
@@ -117,6 +119,10 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
         interactor?.syncQuantityData()
     }
 
+
+    override fun getLastUserLogued(): Usuario? {
+        return  interactor?.getLastUserLogued()
+    }
     //endregion
 
     private fun onMessageOk() {

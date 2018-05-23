@@ -1,6 +1,9 @@
 package com.interedes.agriculturappv3.modules.main_menu.ui
 
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+
 class MenuInteractor:MainViewMenu.Interactor {
+
 
 
     var repository: MainViewMenu.Repository? = null
@@ -20,6 +23,10 @@ class MenuInteractor:MainViewMenu.Interactor {
 
     override fun getListasIniciales() {
         repository?.getListasIniciales()
+    }
+
+    override fun getLastUserLogued(): Usuario? {
+       return  repository?.getLastUserLogued()
     }
 
 }

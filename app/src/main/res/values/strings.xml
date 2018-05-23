@@ -336,6 +336,16 @@
 
     <string name="init_service_coords">Iniciar servicio de coordenadas para obtener ubicación</string>
 
+    <!--<string-array name="array_type_chat">
+        <item>Mensages de Texto</item>
+        <item>Chat en Linea</item>
+    </string-array>-->
+
+
+    <string name="tittle_chat_sms">Mensages de Texto</string>
+    <string name="tittle_chat_online">Chat en Linea</string>
+
+
 
     <string-array name="array_type_get_location_with_conection">
         <item>Ubicación GPS</item>
@@ -367,6 +377,10 @@
     <string name="idenfication_send_sms_app">AgriculturApp:</string>
     <string name="online">En linea</string>
     <string name="offline">Desconectado</string>
+
+
+
+    <string name="select_type_chat">¿Porfavor selecciona una opcion?</string>
 
 
     <!--Sincronizacion -->

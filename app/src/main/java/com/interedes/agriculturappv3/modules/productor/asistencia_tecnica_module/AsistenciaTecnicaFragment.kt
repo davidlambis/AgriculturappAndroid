@@ -42,8 +42,6 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
         setupInitDesign()
         ivBackButton?.setOnClickListener(this)
         loadItems()
-
-
     }
 
 

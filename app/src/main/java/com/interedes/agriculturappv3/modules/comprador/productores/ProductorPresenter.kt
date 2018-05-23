@@ -1,4 +1,124 @@
 package com.interedes.agriculturappv3.modules.comprador.productores
 
-class ProductorPresenter {
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import com.interedes.agriculturappv3.libs.EventBus
+import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
+import com.interedes.agriculturappv3.modules.models.producto.Producto
+import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
+import org.greenrobot.eventbus.Subscribe
+import java.util.ArrayList
+
+
+class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewProductor.Presenter {
+
+    var interactor: IMainViewProductor.Interactor? = null
+    var eventBus: EventBus? = null
+
+    //GLOBALS
+    var listTipoProducto:List<Producto>?= ArrayList<Producto>()
+
+    companion object {
+        var instance: ProductorPresenter? = null
+    }
+
+    init {
+        instance = this
+        interactor = ProductorInteractor()
+        eventBus = GreenRobotEventBus()
+    }
+
+    override fun onCreate() {
+        eventBus?.register(this)
+
+    }
+
+    override fun onDestroy() {
+        mainView = null
+        eventBus?.unregister(this)
+    }
+
+    //region Conectividad
+    private val mNotificationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            var extras = intent.extras
+            if (extras != null) {
+                mainView?.onEventBroadcastReceiver(extras, intent)
+            }
+        }
+    }
+
+    override fun checkConnection(): Boolean {
+        return ConnectivityReceiver.isConnected
+    }
+
+    override fun onResume(context: Context) {
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
+    }
+
+    override fun onPause(context: Context) {
+        context.unregisterReceiver(this.mNotificationReceiver);
+    }
+
+    //endregion
+
+    //region Suscribe Events
+    @Subscribe
+    override fun onEventMainThread(event: RequestEventProductor?) {
+        when (event?.eventType) {
+            RequestEventProductor.READ_EVENT -> {
+                var list = event.mutableList as List<Producto>
+                listTipoProducto=list
+                mainView?.setListProducto(list)
+                mainView?.hideProgress()
+                mainView?.hideProgressHud()
+
+            }
+
+            RequestEventProductor.ERROR_EVENT -> {
+                onMessageError(event.mensajeError)
+            }
+
+            RequestEventProductor.ITEM_EVENT -> {
+                var tipoProducto = event.objectMutable as Producto
+
+
+            }
+
+        }
+    }
+    //endregion
+
+    //region Request Repository
+    override fun getListProducto(tipoProducto:Long) {
+        mainView?.showProgress()
+        mainView?.showProgressHud()
+        interactor?.execute(checkConnection(),tipoProducto)
+    }
+
+
+    //region Messages/Notificaciones
+    private fun onMessageOk() {
+        mainView?.hideProgress()
+        mainView?.requestResponseOK()
+    }
+
+    private fun onMessageError(error: String?) {
+        mainView?.hideProgress()
+        mainView?.showProgressHud()
+        mainView?.requestResponseError(error)
+    }
+
+    private fun onMessageConectionError() {
+        mainView?.hideProgress()
+        mainView?.showProgressHud()
+        mainView?.verificateConnection()
+    }
+    //endregion
+
+
 }

@@ -10,8 +10,8 @@ class ProductoCompradorInteractor:IMainViewProductoComprador.Interactor  {
     }
 
 
-    override fun execute() {
-      repository?.getListTipoProductos()
+    override fun execute(checkConection:Boolean) {
+      repository?.getListTipoProductos(checkConection)
     }
 
 

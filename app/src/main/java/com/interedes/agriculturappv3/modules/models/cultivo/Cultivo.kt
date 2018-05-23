@@ -7,6 +7,7 @@ import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table.FechaI
 import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.produccion.Produccion
+import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
@@ -100,6 +101,9 @@ data class Cultivo(@PrimaryKey
                    @SerializedName("Produccions")
                    var produccions:  ArrayList<Produccion>?= null,
 
+                   @SerializedName("Productos")
+                   var productos:  ArrayList<Producto>?= null,
+
                    @SerializedName("ControlPlagas")
                    var controlPlagas:  ArrayList<ControlPlaga>?= null,
 
@@ -112,11 +116,13 @@ data class Cultivo(@PrimaryKey
                    ) {
 
     override fun toString(): String {
-        return String.format("%s - %s", Nombre, Nombre_Detalle_Tipo_Producto);
+        //return String.format("%s - %s", Nombre, Nombre_Detalle_Tipo_Producto);
+        return String.format("%s", Nombre);
     }
 
     fun getNombreCultio(): String {
-        return String.format("%s - %s", Nombre, Nombre_Detalle_Tipo_Producto);
+       // return String.format("%s - %s", Nombre, Nombre_Detalle_Tipo_Producto);
+        return String.format("%s", Nombre);
     }
 
 
@@ -159,11 +165,7 @@ data class Cultivo(@PrimaryKey
 
     }
 
-
-
-
     fun getFechaFormat(date:Date?): String {
-
         try {
             val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             return sdf.format(date)
@@ -172,14 +174,7 @@ data class Cultivo(@PrimaryKey
 
             return  ""
         }
-
-
     }
-
-
-
-
-
 
 /*
     fun getFechaIncioFormat(): String {

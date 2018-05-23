@@ -39,8 +39,6 @@ class AccountingFragment : Fragment(), View.OnClickListener {
         setupInitDesign()
         ivBackButton?.setOnClickListener(this)
         loadItems()
-
-
     }
 
 

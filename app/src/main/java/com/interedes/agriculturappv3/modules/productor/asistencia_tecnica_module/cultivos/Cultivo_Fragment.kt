@@ -203,11 +203,12 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     override fun validarCampos(): Boolean {
         var cancel = false
         var focusView: View? = null
-        if (viewDialog?.edtNombreCultivo?.text.toString().isEmpty()) {
+        /*if (viewDialog?.edtNombreCultivo?.text.toString().isEmpty()) {
             viewDialog?.edtNombreCultivo?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.edtNombreCultivo
             cancel = true
-        } else if (viewDialog?.edtDescripcionCultivo?.text.toString().isEmpty()) {
+        } */
+        if (viewDialog?.edtDescripcionCultivo?.text.toString().isEmpty()) {
             viewDialog?.edtDescripcionCultivo?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.edtDescripcionCultivo
             cancel = true
@@ -261,7 +262,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
     private fun setInputs(b: Boolean) {
         if (viewDialog != null) {
-            viewDialog?.edtNombreCultivo?.isEnabled = b
+            //viewDialog?.edtNombreCultivo?.isEnabled = b
             viewDialog?.edtDescripcionCultivo?.isEnabled = b
             viewDialog?.edtEstimadoCosecha?.isEnabled = b
             viewDialog?.spinnerUnidadMedidaCosecha?.isEnabled = b
@@ -305,7 +306,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo.stringFechaInicio = viewDialog?.edtFechaInicio?.text?.trim().toString()
             cultivo.stringFechaFin = viewDialog?.edtFechaFin?.text?.trim().toString()
             cultivo.LoteId = Lote_Id
-            cultivo.Nombre = viewDialog?.edtNombreCultivo?.text?.trim()?.toString()
+            cultivo.Nombre =  viewDialog?.spinnerDetalleTipoProducto?.text?.toString()
             cultivo.Unidad_Medida_Id = Unidad_Medida_Id
             cultivo.Nombre_Unidad_Medida = viewDialog?.spinnerUnidadMedidaCosecha?.text?.toString()
             cultivo.NombreUnidadProductiva = viewDialog?.txtUnidadProductivaSelected?.text.toString()
@@ -328,7 +329,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo?.stringFechaInicio = viewDialog?.edtFechaInicio?.text?.trim().toString()
             cultivo?.stringFechaFin = viewDialog?.edtFechaFin?.text?.trim().toString()
             cultivo?.LoteId = loteId
-            cultivo?.Nombre = viewDialog?.edtNombreCultivo?.text?.trim()?.toString()
+            cultivo?.Nombre =  viewDialog?.spinnerDetalleTipoProducto?.text?.toString()
             cultivo?.Unidad_Medida_Id = unidadMedidaGlobal?.Id
             cultivo?.Nombre_Unidad_Medida = viewDialog?.spinnerUnidadMedidaCosecha?.text?.toString()
             cultivo?.NombreUnidadProductiva = viewDialog?.txtUnidadProductivaSelected?.text.toString()
@@ -465,7 +466,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             viewDialog?.txtUnidadProductivaSelected?.text = cultivo.NombreUnidadProductiva
             viewDialog?.txtLoteSelected?.text = cultivo.NombreLote
             viewDialog?.spinnerUnidadMedidaCosecha?.setText(cultivo.Nombre_Unidad_Medida)
-            viewDialog?.edtNombreCultivo?.setText(cultivo.Nombre)
+           //viewDialog?.edtNombreCultivo?.setText(cultivo.Nombre)
             viewDialog?.edtDescripcionCultivo?.setText(cultivo.Descripcion)
 
             viewDialog?.edtFechaInicio?.setText(cultivo.stringFechaInicio)

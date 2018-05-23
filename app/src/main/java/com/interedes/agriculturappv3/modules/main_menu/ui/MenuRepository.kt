@@ -578,7 +578,7 @@ class MenuRepository: MainViewMenu.Repository {
 
     //region Métodos Interfaz
 
-    fun getLastUserLogued(): Usuario? {
+    override fun getLastUserLogued(): Usuario? {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
         return usuarioLogued
     }
@@ -712,7 +712,7 @@ class MenuRepository: MainViewMenu.Repository {
                                         }
 
                                         lote.Unidad_Productiva_Id=item.Unidad_Productiva_Id
-                                        lote.Nombre_Unidad_Medida= if (item.UnidadMedida!=null) item.UnidadMedida?.Descripcion else null
+                                        lote.Nombre_Unidad_Medida= if (lote.UnidadMedida!=null) lote.UnidadMedida?.Descripcion else null
                                         lote.Nombre_Unidad_Productiva= item.nombre
                                         lote.EstadoSincronizacion=true
                                         lote.Nombre= if (lote.Nombre==null) "" else lote.Nombre
@@ -1076,12 +1076,12 @@ class MenuRepository: MainViewMenu.Repository {
         }
 
 
-        //LISTAS ROL PRODUCTOR
+        //LISTAS ROL COMPRADOR
         /*-----------------------------------------------------------------------------------------------------------------*/
         else if(usuario?.RolNombre?.equals(RolResources.COMPRADOR)!!){
 
             //TODO Delete information in local, add new remote
-            SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
+            /*SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
                     .async()
                     .execute()
 
@@ -1100,7 +1100,7 @@ class MenuRepository: MainViewMenu.Repository {
 
             SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
                     .async()
-                    .execute()
+                    .execute()*/
 
             SQLite.delete<Producto>(Producto::class.java)
                     .where(Producto_Table.Usuario_Logued.notEq(usuario.Id))
@@ -1227,9 +1227,6 @@ class MenuRepository: MainViewMenu.Repository {
 
         //Categorías de Producto
         //getLastUserLogued
-
-
-
         //
     }
 

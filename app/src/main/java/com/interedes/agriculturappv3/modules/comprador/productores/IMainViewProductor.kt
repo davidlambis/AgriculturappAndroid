@@ -1,13 +1,13 @@
-package com.interedes.agriculturappv3.modules.comprador.productos
+package com.interedes.agriculturappv3.modules.comprador.productores
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import com.interedes.agriculturappv3.modules.comprador.productos.events.RequestEventProductosComprador
-import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
+import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
+import com.interedes.agriculturappv3.modules.models.producto.Producto
 
-interface IMainViewProductoComprador {
+interface IMainViewProductor {
 
     interface MainView {
         //Progress and progress Hud
@@ -17,8 +17,8 @@ interface IMainViewProductoComprador {
         fun hideProgressHud()
 
         //Fun  CRUD
-        fun setListTipoProducto(listTipoProducto: List<TipoProducto>)
-        fun setResults(unidadesProductivas:Int)
+        fun setListProducto(listTipoProducto: List<Producto>)
+        fun setResults(productos:Int)
 
         //Response Notify
         fun requestResponseOK()
@@ -40,20 +40,21 @@ interface IMainViewProductoComprador {
         fun onPause(context: Context)
 
         //Events
-        fun onEventMainThread(requestEvent: RequestEventProductosComprador?)
+        fun onEventMainThread(requestEvent: RequestEventProductor?)
 
         //Methods
-        fun getListTipoProducto()
+        fun getListProducto(tipoProducto:Long)
 
         //Conecttion
         fun checkConnection(): Boolean
     }
 
     interface Interactor {
-        fun execute(checkConection:Boolean)
+        fun execute(checkConection:Boolean,tipoProducto:Long)
     }
 
     interface Repository {
-        fun getListTipoProductos(checkConection:Boolean)
+        fun getListTipoProductos(checkConection:Boolean,tipoProducto:Long)
     }
+
 }

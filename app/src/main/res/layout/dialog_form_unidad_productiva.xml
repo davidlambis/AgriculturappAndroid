@@ -140,8 +140,7 @@
                     android:gravity="start"
                     android:hint="@string/edit_text_description"
                     android:inputType="textCapWords|textMultiLine"
-
-                    android:maxLength="60" />
+                    android:maxLength="250" />
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout

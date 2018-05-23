@@ -288,6 +288,7 @@
                     android:inputType="textCapWords|textMultiLine"
                     android:textColor="@color/black"
                     android:gravity="start"
+                    android:maxLength="250"
                     android:textSize="@dimen/text_size_16"
                     android:textStyle="bold" />
 
