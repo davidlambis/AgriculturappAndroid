@@ -97,6 +97,12 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
 
 
     //region SyncData
+    override fun getListasIniciales() {
+        if (checkConnection()!!) {
+            interactor?.getListasIniciales()
+        }
+    }
+
     override fun syncData() {
         if(checkConnection()!!){
             mainView?.showProgressBar()

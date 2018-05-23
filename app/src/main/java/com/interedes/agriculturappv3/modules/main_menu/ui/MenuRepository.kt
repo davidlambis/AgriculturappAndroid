@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.modules.main_menu.ui
 
+import android.util.Base64
 import android.util.Log
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
@@ -10,29 +11,47 @@ import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPla
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.cultivo.PostCultivo
+import com.interedes.agriculturappv3.modules.models.departments.Ciudad
+import com.interedes.agriculturappv3.modules.models.departments.DeparmentsResponse
+import com.interedes.agriculturappv3.modules.models.departments.Departamento
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.lote.PostLote
+import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad
+import com.interedes.agriculturappv3.modules.models.plagas.EnfermedadResponseApi
 import com.interedes.agriculturappv3.modules.models.produccion.PostProduccion
 import com.interedes.agriculturappv3.modules.models.produccion.Produccion
 import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
-import com.interedes.agriculturappv3.modules.models.producto.PostProducto
-import com.interedes.agriculturappv3.modules.models.producto.Producto
-import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
+import com.interedes.agriculturappv3.modules.models.producto.*
+import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSincronizacionResponse
+import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSincronizacionTransacciones
+import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSynProductosUserResponse
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
+import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
+import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProductoResponse
+import com.interedes.agriculturappv3.modules.models.tratamiento.Tratamiento
+import com.interedes.agriculturappv3.modules.models.tratamiento.TratamientoResponse
+import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento
+import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento_Table
+import com.interedes.agriculturappv3.modules.models.unidad_medida.CategoriaMedida
+import com.interedes.agriculturappv3.modules.models.unidad_medida.CategoriaMedidaResponse
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.PostUnidadProductiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.localizacion.LocalizacionUp
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.modules.models.ventas.*
+import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.CategoriaPucResponse
+import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.EstadoTransaccionResponse
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.PostTercero
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.PostTransaccion
-import com.interedes.agriculturappv3.modules.models.ventas.Tercero
-import com.interedes.agriculturappv3.modules.models.ventas.Tercero_Table
-import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
-import com.interedes.agriculturappv3.modules.models.ventas.Transaccion_Table
 import com.interedes.agriculturappv3.modules.productor.accounting_module.transacciones.events.RequestEventTransaccion
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.RolResources
+import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -469,6 +488,8 @@ class MenuRepository: MainViewMenu.Repository {
 
                         val call = apiService?.postTransaccion(postTransaccion)
                         call?.enqueue(object : Callback<PostTransaccion> {
+
+
                             override fun onResponse(call: Call<PostTransaccion>?, response: Response<PostTransaccion>?) {
                                 if (response != null && response.code() == 201 || response?.code() == 200) {
                                     transaccion.Id_Remote = response.body()?.Id!!
@@ -487,21 +508,23 @@ class MenuRepository: MainViewMenu.Repository {
                                         postEventOk(RequestEventMainMenu.SYNC_EVENT)
                                     }
                                 } else {
-                                    postEventError(RequestEventTransaccion.ERROR_EVENT, "Comprueba tu conexión")
+                                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión")
                                 }
                             }
+
                             override fun onFailure(call: Call<PostTransaccion>?, t: Throwable?) {
-                                postEventError(RequestEventTransaccion.ERROR_EVENT, "Comprueba tu conexión")
+                                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión")
                             }
+
                         })
 
                         //postEventOk(RequestEventTransaccion.SAVE_EVENT, getProductions(cultivo_id), produccion)
                     } else {
-                        postEventError(RequestEventTransaccion.ERROR_EVENT, "Comprueba tu conexión")
+                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión")
                     }
                 }
                 override fun onFailure(call: Call<PostTercero>?, t: Throwable?) {
-                    postEventError(RequestEventTransaccion.ERROR_EVENT, "Comprueba tu conexión")
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión")
                 }
             })
         }else{
@@ -509,6 +532,795 @@ class MenuRepository: MainViewMenu.Repository {
             postEventOk(RequestEventMainMenu.SYNC_EVENT)
         }
     }
+
+
+    //Listas Iniciales
+    fun getLastUp(): Unidad_Productiva? {
+        val lastUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).where().orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id, false).querySingle()
+        return lastUnidadProductiva
+    }
+
+    fun getLastLote(): Lote? {
+        val lastLote = SQLite.select().from(Lote::class.java).where().orderBy(Lote_Table.LoteId, false).querySingle()
+        return lastLote
+    }
+
+    fun getLastCultivo(): Cultivo? {
+        val lastCultivo = SQLite.select().from(Cultivo::class.java).where().orderBy(Cultivo_Table.CultivoId, false).querySingle()
+        return lastCultivo
+    }
+
+    fun getLastProduccion(): Produccion? {
+        val lastProduccion = SQLite.select().from(Produccion::class.java).where().orderBy(Produccion_Table.ProduccionId, false).querySingle()
+        return lastProduccion
+    }
+
+    fun getLastControlPlaga(): ControlPlaga? {
+        val lastControlPlaga = SQLite.select().from(ControlPlaga::class.java).where().orderBy(ControlPlaga_Table.ControlPlagaId, false).querySingle()
+        return lastControlPlaga
+    }
+
+    fun getLastTransaccion(): Transaccion? {
+        val lastTransaccion = SQLite.select().from(Transaccion::class.java).where().orderBy(Transaccion_Table.TransaccionId, false).querySingle()
+        return lastTransaccion
+    }
+
+    fun getLastTercero(): Tercero? {
+        val lastTercero = SQLite.select().from(Tercero::class.java).where().orderBy(Tercero_Table.TerceroId, false).querySingle()
+        return lastTercero
+    }
+
+    fun getLastProducto(): Producto? {
+        val lastProducto = SQLite.select().from(Producto::class.java).where().orderBy(Producto_Table.ProductoId, false).querySingle()
+        return lastProducto
+    }
+
+
+    //region Métodos Interfaz
+
+    fun getLastUserLogued(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
+
+    override fun getListasIniciales() {
+
+
+        var usuario= getLastUserLogued()
+
+
+        //LISTAS ROL PRODUCTOR
+        /*-----------------------------------------------------------------------------------------------------------------*/
+
+        if(usuario?.RolNombre?.equals(RolResources.PRODUCTOR)!!){
+
+            val query = Listas.queryGeneral("UsuarioId",usuario?.Id.toString())
+            val callInformacionSinronized = apiService?.getSyncInformacionUsuario(query)
+            callInformacionSinronized?.enqueue(object : Callback<GetSincronizacionResponse> {
+                override fun onResponse(call: Call<GetSincronizacionResponse>?, response: Response<GetSincronizacionResponse>?) {
+                    if (response != null && response.code() == 200) {
+
+
+                        val unidadesProductivas = response.body()?.value as MutableList<Unidad_Productiva>
+
+
+                        //TODO Delete information in local, add new remote
+                        SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
+                                .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true))
+                                .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(true))
+                                .async()
+                                .execute()
+
+                        SQLite.delete<Lote>(Lote::class.java)
+                                .where(Lote_Table.EstadoSincronizacion.eq(true))
+                                .and(Lote_Table.Estado_SincronizacionUpdate.eq(true))
+                                .async()
+                                .execute()
+
+
+                        SQLite.delete<Cultivo>(Cultivo::class.java)
+                                .where(Cultivo_Table.EstadoSincronizacion.eq(true))
+                                .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(true))
+                                .async()
+                                .execute()
+
+                        SQLite.delete<Produccion>(Produccion::class.java)
+                                .where(Produccion_Table.Estado_Sincronizacion.eq(true))
+                                .and(Produccion_Table.Estado_SincronizacionUpdate.eq(true))
+                                .async()
+                                .execute()
+
+                        SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
+                                .where(ControlPlaga_Table.Estado_Sincronizacion.eq(true))
+                                .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(true))
+                                .async()
+                                .execute()
+
+                        //TODO Add information new remote
+                        for (item in unidadesProductivas) {
+                            var unidadProductivaVerficateSave= SQLite.select()
+                                    .from(Unidad_Productiva::class.java)
+                                    .where(Unidad_Productiva_Table.Id_Remote.eq(item.Id_Remote))
+                                    .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(false))
+                                    .querySingle()
+                            //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                            if (unidadProductivaVerficateSave !=null){
+                                item.Unidad_Productiva_Id=unidadProductivaVerficateSave?.Unidad_Productiva_Id
+                            }else{
+                                val last_up = getLastUp()
+                                if (last_up == null) {
+                                    item.Unidad_Productiva_Id = 1
+                                } else {
+                                    item.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
+                                }
+
+                                item.UsuarioId=usuario?.Id
+                                item.Nombre_Ciudad= if (item.Ciudad!=null) item.Ciudad?.Nombre else null
+                                item.Nombre_Unidad_Medida= if (item.UnidadMedida!=null) item.UnidadMedida?.Descripcion else null
+                                item.Nombre_Departamento= if (item.Ciudad!=null) item.Ciudad?.Departamento?.Nombre else null
+                                item.Estado_Sincronizacion=true
+                                item.Estado_SincronizacionUpdate=true
+
+
+                                if(item.LocalizacionUps?.size!!>0){
+                                    for (localizacion in item.LocalizacionUps!!){
+                                        item.DireccionAproximadaGps=localizacion.DireccionAproximadaGps
+                                        item.Latitud=localizacion.Latitud
+                                        item.Longitud=localizacion.Longitud
+                                        item.Coordenadas=localizacion.Coordenadas
+                                        item.Direccion=localizacion.Direccion
+                                        item.Configuration_Point=true
+                                        item.Configuration_Poligon=false
+                                        item.LocalizacionUpId=localizacion.Id
+                                    }
+                                }
+
+
+                                item.save()
+                            }
+
+                            if(item.Lotes?.size!!>0){
+
+                                for (lote in item.Lotes!!){
+
+                                    var loteVerficateSave= SQLite.select()
+                                            .from(Lote::class.java)
+                                            .where(Lote_Table.Id_Remote.eq(lote.Id_Remote))
+                                            .and(Lote_Table.Estado_SincronizacionUpdate.eq(false))
+                                            .querySingle()
+
+                                    //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                                    if (loteVerficateSave!=null){
+                                        lote.LoteId=loteVerficateSave.LoteId
+                                    }else{
+
+                                        val last_lote = getLastLote()
+                                        if (last_lote == null) {
+                                            lote.LoteId = 1
+                                        } else {
+                                            lote.LoteId = last_lote.LoteId!! + 1
+                                        }
+
+                                        val coordenadas =lote.Localizacion
+                                        if(coordenadas!=null || coordenadas!=""){
+                                            val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
+                                            var latitud= separated!![0].toDoubleOrNull() // this will contain "Fruit"
+                                            var longitud=separated!![1].toDoubleOrNull() // this will contain " they taste good"
+                                            lote.Latitud=latitud
+                                            lote.Longitud=longitud
+                                            lote.Coordenadas=coordenadas
+                                        }
+
+                                        lote.Unidad_Productiva_Id=item.Unidad_Productiva_Id
+                                        lote.Nombre_Unidad_Medida= if (item.UnidadMedida!=null) item.UnidadMedida?.Descripcion else null
+                                        lote.Nombre_Unidad_Productiva= item.nombre
+                                        lote.EstadoSincronizacion=true
+                                        lote.Nombre= if (lote.Nombre==null) "" else lote.Nombre
+                                        lote.Descripcion= if (lote.Descripcion==null) "" else lote.Descripcion
+                                        lote.Estado_SincronizacionUpdate=true
+
+                                        lote.save()
+                                    }
+
+                                    if(lote.Cultivos?.size!!>0){
+
+                                        for(cultivo in lote.Cultivos!!){
+
+
+                                            var cultivoVerficateSave= SQLite.select()
+                                                    .from(Cultivo::class.java)
+                                                    .where(Cultivo_Table.Id_Remote.eq(cultivo.Id_Remote))
+                                                    .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(false))
+                                                    .querySingle()
+                                            //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                                            if (cultivoVerficateSave!=null){
+                                                cultivo.CultivoId=cultivoVerficateSave.CultivoId
+                                            }else{
+                                                val last_cultivo = getLastCultivo()
+                                                if (last_cultivo == null) {
+                                                    cultivo.CultivoId = 1
+                                                } else {
+                                                    cultivo.CultivoId = last_cultivo.CultivoId!! + 1
+                                                }
+
+                                                cultivo.LoteId=lote.LoteId
+                                                cultivo.NombreUnidadProductiva= item.nombre
+                                                cultivo.NombreLote= lote.Nombre
+                                                cultivo.EstadoSincronizacion= true
+                                                cultivo.Estado_SincronizacionUpdate= true
+                                                cultivo.stringFechaInicio=cultivo.getFechaStringFormatApi(cultivo.FechaIncio)
+                                                cultivo.stringFechaFin=cultivo.getFechaStringFormatApi(cultivo.FechaFin)
+
+                                                cultivo.Nombre_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.tipoProducto?.Nombre else null
+                                                cultivo.Nombre_Detalle_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.Descripcion else null
+                                                cultivo.Id_Tipo_Producto= if (cultivo.detalleTipoProducto!=null) cultivo.detalleTipoProducto?.TipoProductoId else null
+                                                cultivo.Nombre_Unidad_Medida=if (cultivo.unidadMedida!=null) cultivo.unidadMedida?.Descripcion else null
+
+                                                cultivo.save()
+                                            }
+
+                                            if(cultivo.produccions?.size!!>0){
+
+                                                for(produccion in cultivo.produccions!!){
+
+                                                    var produccionVerficateSave= SQLite.select()
+                                                            .from(Produccion::class.java)
+                                                            .where(Producto_Table.Id_Remote.eq(produccion.Id_Remote))
+                                                            .and(Producto_Table.Estado_SincronizacionUpdate.eq(false))
+                                                            .querySingle()
+
+                                                    //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                                                    if (produccionVerficateSave!=null){
+                                                        produccion.ProduccionId=produccionVerficateSave.ProduccionId
+                                                    }else{
+                                                        val last_productions = getLastProduccion()
+                                                        if (last_productions == null) {
+                                                            produccion.ProduccionId = 1
+                                                        } else {
+                                                            produccion.ProduccionId = last_productions.ProduccionId!! + 1
+                                                        }
+                                                        produccion.CultivoId=cultivo.CultivoId
+                                                        produccion.Estado_Sincronizacion=true
+                                                        produccion.Estado_SincronizacionUpdate=true
+                                                        produccion.NombreCultivo=cultivo.Nombre
+                                                        produccion.NombreLote=lote.Nombre
+                                                        produccion.NombreUnidadProductiva=item.nombre
+                                                        produccion.FechaInicioProduccion=produccion.getFechaDate(produccion.StringFechaInicio)
+                                                        produccion.FechaFinProduccion=produccion.getFechaDate(produccion.StringFechaFin)
+                                                        produccion.NombreUnidadMedida= if (produccion.unidadMedida!=null) produccion.unidadMedida?.Descripcion else null
+                                                        produccion.save()
+                                                    }
+                                                }
+                                            }
+
+
+
+                                            if(cultivo.controlPlagas?.size!!>0){
+                                                for(controlplaga in cultivo.controlPlagas!!){
+
+                                                    var controlPlagasVerficateSave= SQLite.select()
+                                                            .from(ControlPlaga::class.java)
+                                                            .where(ControlPlaga_Table.Id_Remote.eq(controlplaga.Id_Remote))
+                                                            .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(false))
+                                                            .querySingle()
+
+                                                    //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                                                    if (controlPlagasVerficateSave!=null){
+                                                        controlplaga.ControlPlagaId=controlPlagasVerficateSave.ControlPlagaId
+                                                    }else{
+                                                        val last_controlplaga = getLastControlPlaga()
+                                                        if (last_controlplaga == null) {
+                                                            controlplaga.ControlPlagaId = 1
+                                                        } else {
+                                                            controlplaga.ControlPlagaId = last_controlplaga.ControlPlagaId!! + 1
+                                                        }
+                                                        controlplaga.CultivoId=cultivo.CultivoId
+                                                        controlplaga.Estado_Sincronizacion=true
+                                                        controlplaga.Estado_SincronizacionUpdate=true
+                                                        controlplaga.Fecha_aplicacion_local=controlplaga.getFechaDate(controlplaga.Fecha_aplicacion)
+                                                        controlplaga.Fecha_Erradicacion_Local=if(controlplaga.FechaErradicacion!=null)controlplaga.getFechaDate(controlplaga.FechaErradicacion)else null
+
+                                                        controlplaga.save()
+
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        loadTransacciones(usuario)
+
+                    } else {
+                        postEventError(RequestEventTransaccion.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    }
+                }
+                override fun onFailure(call: Call<GetSincronizacionResponse>?, t: Throwable?) {
+                    postEventError(RequestEventTransaccion.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            })
+
+
+
+            //Get Productos by user
+            val queryProductos = Listas.queryGeneral("userId",usuario?.Id.toString())
+            val callProductos = apiService?.getSyncProductos(queryProductos)
+            callProductos?.enqueue(object : Callback<GetSynProductosUserResponse> {
+                override fun onResponse(call: Call<GetSynProductosUserResponse>?, response: Response<GetSynProductosUserResponse>?) {
+                    if (response != null && response.code() == 200) {
+                        val productos = response.body()?.value as MutableList<Producto>
+
+
+                        SQLite.delete<Producto>(Producto::class.java)
+                                .where(Producto_Table.Estado_Sincronizacion.eq(true))
+                                .and(Producto_Table.Estado_SincronizacionUpdate.eq(true))
+                                .async()
+                                .execute()
+
+
+                        for(producto in productos){
+
+                            var productoVerficateSave= SQLite.select()
+                                    .from(Producto::class.java)
+                                    .where(Producto_Table.Id_Remote.eq(producto.Id_Remote))
+                                    .and(Producto_Table.Estado_SincronizacionUpdate.eq(false))
+                                    .querySingle()
+
+                            //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                            if (productoVerficateSave!=null){
+                                producto.ProductoId=productoVerficateSave.ProductoId
+                            }else{
+
+                                val last_producto = getLastProducto()
+                                if (last_producto == null) {
+                                    producto.ProductoId = 1
+                                } else {
+                                    producto.ProductoId = last_producto.ProductoId!! + 1
+                                }
+
+                                producto.NombreCultivo= if(producto.Cultivo!=null)producto?.Cultivo?.Nombre else null
+                                producto.NombreLote= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.Nombre else null
+                                producto.NombreUnidadProductiva= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.UnidadProductiva?.nombre else null
+                                producto.NombreUnidadMedidaCantidad=if(producto.UnidadMedida!= null)producto.UnidadMedida?.Descripcion else null
+                                producto.NombreCalidad=if(producto.Calidad!=null)producto.Calidad?.Nombre else null
+                                producto.NombreUnidadMedidaPrecio=producto.PrecioUnidadMedida
+                                producto.Estado_Sincronizacion=true
+                                producto.Estado_SincronizacionUpdate=true
+                                producto.Usuario_Logued=usuario?.Id
+
+                                producto.NombreDetalleTipoProducto=if(producto.Cultivo!=null)producto.Cultivo?.detalleTipoProducto?.Nombre else null
+
+                                try {
+                                    val base64String = producto?.Imagen
+                                    val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                    val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                    producto.blobImagen = Blob(byte)
+                                }catch (ex:Exception){
+                                    var ss= ex.toString()
+                                    Log.d("Convert Image", "defaultValue = " + ss);
+                                }
+
+                                producto.save()
+                            }
+                        }
+                    } else {
+                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    }
+                }
+                override fun onFailure(call: Call<GetSynProductosUserResponse>?, t: Throwable?) {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            })
+
+            //Enfermedades
+            val callEnfermedades = apiService?.getEnfermedades()
+            callEnfermedades?.enqueue(object : Callback<EnfermedadResponseApi> {
+                override fun onResponse(call: Call<EnfermedadResponseApi>?, enfermedadResponse: Response<EnfermedadResponseApi>?) {
+                    if (enfermedadResponse != null && enfermedadResponse.code() == 200) {
+                        val enfermedades = enfermedadResponse.body()?.value as MutableList<Enfermedad>
+                        for (item in enfermedades){
+                            item.NombreTipoEnfermedad=item.TipoEnfermedad?.Nombre
+                            item.NombreTipoProducto=item.TipoProducto?.Nombre
+                            item.NombreCientificoTipoEnfermedad=item.TipoEnfermedad?.NombreCientifico
+                            item.DescripcionTipoEnfermedad=item.TipoEnfermedad?.Descripcion
+
+                            item.save()
+                            if(item.Fotos!=null){
+                                for (itemFoto in item?.Fotos!!){
+
+                                    try {
+                                        val base64String = itemFoto?.Ruta
+                                        val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                        val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                        itemFoto.blobImagen = Blob(byte)
+
+                                    }catch (ex:Exception){
+                                        var ss= ex.toString()
+                                        Log.d("Convert Image", "defaultValue = " + ss);
+                                    }
+
+                                    itemFoto.save()
+                                }
+                            }
+                        }
+                    } else {
+                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    }
+                }
+                override fun onFailure(call: Call<EnfermedadResponseApi>?, t: Throwable?) {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            })
+
+
+            //Tratamientos, Calificaciones e Insumos
+            val callTrtamientos = apiService?.getTratamientos()
+            callTrtamientos?.enqueue(object : Callback<TratamientoResponse> {
+                override fun onResponse(call: Call<TratamientoResponse>?, tratamientoResponse: Response<TratamientoResponse>?) {
+                    if (tratamientoResponse != null && tratamientoResponse.code() == 200) {
+                        val tratamientos = tratamientoResponse.body()?.value as MutableList<Tratamiento>
+
+                        //Update Informacion
+
+                        for (item in tratamientos){
+
+                            var sumacalificacion:Double?=0.0
+                            var promedioCalificacion:Double?=0.0
+
+                            if(item.Insumo!=null){
+
+
+                                item.Descripcion_Insumo=item.Insumo?.Descripcion
+                                item.Nombre_Insumo=item.Insumo?.Nombre
+
+                                if(item?.Insumo?.Imagen!=null || item?.Insumo?.Imagen!=""){
+                                    try {
+                                        val base64String = item?.Insumo?.Imagen
+                                        val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                        val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                        item.Insumo?.blobImagen = Blob(byte)
+                                    }catch (ex:Exception){
+                                        var ss= ex.toString()
+                                        Log.d("Convert Image", "defaultValue = " + ss);
+                                    }
+                                }
+
+                                if(item.Insumo?.Laboratorio!=null){
+                                    item.Insumo?.NombreLaboratorio=item.Insumo?.Laboratorio?.Nombre
+                                    item.Insumo?.Laboratorio?.save()
+                                }
+
+                                if(item.Insumo?.TipoInsumo!=null){
+                                    item.Insumo?.NombreTipoInsumo=item.Insumo?.TipoInsumo?.Nombre
+                                    item.Insumo?.TipoInsumo?.save()
+                                }
+
+                                item.Insumo?.save()
+                            }
+
+
+                            if(item?.Calificacions!!.size==0){
+                                SQLite.delete<Calificacion_Tratamiento>(Calificacion_Tratamiento::class.java)
+                                        .where(Calificacion_Tratamiento_Table.TratamientoId.eq(item.Id))
+                                        .async()
+                                        .execute()
+                            }else{
+                                SQLite.delete<Calificacion_Tratamiento>(Calificacion_Tratamiento::class.java)
+                                        .where(Calificacion_Tratamiento_Table.TratamientoId.eq(item.Id))
+                                        .async()
+                                        .execute()
+
+                                for (calification in item?.Calificacions!!){
+                                    calification.save()
+                                    sumacalificacion=sumacalificacion!!+ calification.Valor!!
+                                }
+                                promedioCalificacion= sumacalificacion!! /item?.Calificacions!!.size
+                            }
+
+                            item.CalificacionPromedio=promedioCalificacion
+                            item.save()
+                        }
+                    } else {
+                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    }
+                }
+                override fun onFailure(call: Call<TratamientoResponse>?, t: Throwable?) {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            })
+
+
+
+
+            //Categorias Puk
+            val categoriaspuk = apiService?.getCategoriasPuc()
+            categoriaspuk?.enqueue(object : Callback<CategoriaPucResponse> {
+                override fun onResponse(call: Call<CategoriaPucResponse>?, response: Response<CategoriaPucResponse>?) {
+                    if (response != null && response.code() == 200) {
+                        val categorias: MutableList<CategoriaPuk> = response.body()?.value!!
+                        for (item in categorias) {
+                            item.save()
+                            for (puk in item.Pucs!!) {
+                                puk.save()
+                            }
+                        }
+                    } else {
+                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    }
+                }
+                override fun onFailure(call: Call<CategoriaPucResponse>?, t: Throwable?) {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            })
+
+            //Estados de  transaccion
+            val estadosTransaccion = apiService?.getEstadosTransaccion()
+            estadosTransaccion?.enqueue(object : Callback<EstadoTransaccionResponse> {
+                override fun onResponse(call: Call<EstadoTransaccionResponse>?, response: Response<EstadoTransaccionResponse>?) {
+                    if (response != null && response.code() == 200) {
+                        val estadostransaccion: MutableList<Estado_Transaccion> = response.body()?.value!!
+                        for (item in estadostransaccion) {
+                            item.save()
+                        }
+                    } else {
+                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    }
+                }
+                override fun onFailure(call: Call<EstadoTransaccionResponse>?, t: Throwable?) {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            })
+
+        }
+
+
+        //LISTAS ROL PRODUCTOR
+        /*-----------------------------------------------------------------------------------------------------------------*/
+        else if(usuario?.RolNombre?.equals(RolResources.COMPRADOR)!!){
+
+            //TODO Delete information in local, add new remote
+            SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
+                    .async()
+                    .execute()
+
+            SQLite.delete<Lote>(Lote::class.java)
+                    .async()
+                    .execute()
+
+
+            SQLite.delete<Cultivo>(Cultivo::class.java)
+                    .async()
+                    .execute()
+
+            SQLite.delete<Produccion>(Produccion::class.java)
+                    .async()
+                    .execute()
+
+            SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
+                    .async()
+                    .execute()
+
+            SQLite.delete<Producto>(Producto::class.java)
+                    .where(Producto_Table.Usuario_Logued.notEq(usuario.Id))
+                    .async()
+                    .execute()
+
+
+
+        }
+
+
+
+        //LISTAS PARA AMBOS ROLES
+        /*------------------------------------------------------------------------------------------------------------------*/
+        //Tipos de Producto
+        //val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
+        val callTipoProducto = apiService?.getTipoAndDetalleTipoProducto()
+        callTipoProducto?.enqueue(object : Callback<TipoProductoResponse> {
+            override fun onResponse(call: Call<TipoProductoResponse>?, response: Response<TipoProductoResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val tiposProducto = response.body()?.value as MutableList<TipoProducto>
+
+                    for (item in tiposProducto) {
+
+                        try {
+                            val base64String = item?.Icono
+                            val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                            val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                            item.Imagen = Blob(byte)
+
+                        }catch (ex:Exception){
+                            var ss= ex.toString()
+                            Log.d("Convert Image", "defaultValue = " + ss);
+                        }
+
+                        item.save()
+                        for (detalleTipoProducto in item.DetalleTipoProductos!!) {
+                            detalleTipoProducto.save()
+                        }
+                    }
+                } else {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<TipoProductoResponse>?, t: Throwable?) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+
+
+
+
+
+        //Departamentos y Ciudades
+        val lista_departamentos = SQLite.select().from(Departamento::class.java).queryList()
+        val lista_ciudades = SQLite.select().from(Ciudad::class.java).queryList()
+        if (lista_departamentos.size <= 0 || lista_ciudades.size <= 0) {
+            val call = apiService?.getDepartamentos()
+            call?.enqueue(object : Callback<DeparmentsResponse> {
+                override fun onResponse(call: Call<DeparmentsResponse>?, response: Response<DeparmentsResponse>?) {
+                    if (response != null && response.code() == 200) {
+                        val departamentos: MutableList<Departamento> = response.body()?.value!!
+                        for (item in departamentos) {
+                            item.save()
+                            for (ciudad in item.ciudades!!) {
+                                ciudad.save()
+                            }
+                        }
+                    } else {
+                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    }
+                }
+                override fun onFailure(call: Call<DeparmentsResponse>?, t: Throwable?) {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            })
+        }
+
+
+
+        //Categorías Medida
+        val callCategoriaMedida = apiService?.getCategoriasMedida()
+        callCategoriaMedida?.enqueue(object : Callback<CategoriaMedidaResponse> {
+            override fun onResponse(call: Call<CategoriaMedidaResponse>?, response: Response<CategoriaMedidaResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val categoriasMedida = response.body()?.value as MutableList<CategoriaMedida>
+                    for (item in categoriasMedida) {
+                        item.save()
+                        for (itemUnidadmedida in item?.UnidadMedidas!!){
+                            itemUnidadmedida.save()
+                        }
+                    }
+                } else {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<CategoriaMedidaResponse>?, t: Throwable?) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+
+
+
+        //Calidades de Producto
+        val callCalidadProducto = apiService?.getCalidadesProducto()
+        callCalidadProducto?.enqueue(object : Callback<CalidadProductoResponse> {
+            override fun onResponse(call: Call<CalidadProductoResponse>?, response: Response<CalidadProductoResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val calidadesProducto = response.body()?.value as MutableList<CalidadProducto>
+                    for (item in calidadesProducto) {
+                        item.save()
+                    }
+                } else {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+
+            override fun onFailure(call: Call<CalidadProductoResponse>?, t: Throwable?) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+
+        })
+
+
+        //Categorías de Producto
+        //getLastUserLogued
+
+
+
+        //
+    }
+
+    fun loadTransacciones(usuario: Usuario?) {
+        //Sinc transacciones
+        val queryTransacciones = Listas.queryGeneral("userId",usuario?.Id.toString())
+        val callInformacionTransaccionesSinronized = apiService?.getSyncInformacionUsuarioTransacciones(queryTransacciones)
+        callInformacionTransaccionesSinronized?.enqueue(object : Callback<GetSincronizacionTransacciones> {
+            override fun onResponse(call: Call<GetSincronizacionTransacciones>?, response: Response<GetSincronizacionTransacciones>?) {
+                if (response != null && response.code() == 200) {
+                    val transacciones = response.body()?.value as MutableList<Transaccion>
+
+                    SQLite.delete<Transaccion>(Transaccion::class.java)
+                            .where(Transaccion_Table.Estado_Sincronizacion.eq(true))
+                            .and(Transaccion_Table.Estado_SincronizacionUpdate.eq(true))
+                            .async()
+                            .execute()
+
+                    SQLite.delete<Tercero>(Tercero::class.java)
+                            .where(Tercero_Table.Estado_Sincronizacion.eq(true))
+                            .and(Tercero_Table.Estado_SincronizacionUpdate.eq(true))
+                            .async()
+                            .execute()
+
+                    for (item in transacciones) {
+
+                        var transaccionVerficateSave= SQLite.select()
+                                .from(Transaccion::class.java)
+                                .where(Transaccion_Table.Id_Remote.eq(item.Id_Remote))
+                                .and(Transaccion_Table.Estado_SincronizacionUpdate.eq(false))
+                                .querySingle()
+
+                        //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                        if (transaccionVerficateSave!=null){
+                            item.TransaccionId=transaccionVerficateSave.TransaccionId
+                        }else{
+                            val lastTransaccion = getLastTransaccion()
+                            if (lastTransaccion == null) {
+                                item.TransaccionId = 1
+                            } else {
+                                item.TransaccionId = lastTransaccion.TransaccionId!! + 1
+                            }
+
+                            item.UsuarioId=usuario?.Id
+                            item.Nombre_Tercero= if (item.Tercero!=null) item.Tercero?.Nombre else null
+                            item.Nombre_Estado_Transaccion= if (item.EstadoTransaccion!=null) item.EstadoTransaccion?.Nombre else null
+                            item.Estado_Sincronizacion=true
+                            item.Identificacion_Tercero= if (item.Tercero!=null) item.Tercero?.NitRut else null
+                            item.Descripcion_Puk=if (item.Puc!=null) item.Puc?.Descripcion else null
+                            item.CategoriaPuk_Id=if (item.Puc!=null) item.Puc?.CategoriaId else null
+                            item.Estado_Sincronizacion=true
+                            item.Estado_SincronizacionUpdate=true
+                            var fechaDate=item.getFechaDate(item.FechaString)
+                            item.Fecha_Transaccion=fechaDate
+
+
+
+                            val dateFechaFromatMMddyyy =item.getFechaTransacccionFormatMMddyyyy()
+                            item.FechaString=dateFechaFromatMMddyyy
+
+                            item.Valor_Unitario=if (item.Valor_Total!=null && item.Cantidad!=null)  item.Valor_Total!! / item.Cantidad?.toLong()!! else null
+
+                            var cultivo =SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id_Remote.eq(item.Cultivo_Id)).querySingle()
+                            item.Nombre_Cultivo=cultivo?.Nombre
+                            item.Nombre_Detalle_Producto_Cultivo=cultivo?.Nombre_Detalle_Tipo_Producto
+                            item.Cultivo_Id=cultivo?.CultivoId
+
+                            val lastTercero = getLastTercero()
+                            if (lastTercero == null) {
+                                item.Tercero?.TerceroId = 1
+                            } else {
+                                item.Tercero?.TerceroId = lastTercero.TerceroId!! + 1
+                            }
+                            item.Tercero?.save()
+
+
+                            item.save()
+
+                        }
+                    }
+                } else {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<GetSincronizacionTransacciones>?, t: Throwable?) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+    }
+
+
 
 
 

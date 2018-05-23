@@ -48,12 +48,15 @@
             android:layout_height="match_parent">
 
             <ProgressBar
-                android:layout_marginTop="-7dp"
+                android:layout_marginTop="-6dp"
                 android:id="@+id/progressBarSync"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:indeterminateTint="@color/green"
+                android:backgroundTint="@color/green"
+                android:progressBackgroundTint="@color/green"
+
                 style="@android:style/Widget.Holo.ProgressBar.Horizontal"
                 android:indeterminate="true"
                 />

@@ -103,12 +103,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         populateTheViews()
 
-
-
-
-
         //Status Chat
         makeUserOnline()
+
+        getListasIniciales()
+    }
+
+    override fun getListasIniciales() {
+        presenter?.getListasIniciales()
     }
 
     private fun populateTheViews() {

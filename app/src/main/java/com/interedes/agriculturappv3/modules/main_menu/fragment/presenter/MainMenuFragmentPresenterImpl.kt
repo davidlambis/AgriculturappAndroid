@@ -49,11 +49,7 @@ class MainMenuFragmentPresenterImpl(var view: MainMenuFragmentView?) : MainMenuF
         }
     }
 
-    override fun getListasIniciales() {
-        if (checkConnection()) {
-            interactor?.getListasIniciales()
-        }
-    }
+
 
     //Cerrar Sesión
     override fun logOut(usuario: Usuario?) {

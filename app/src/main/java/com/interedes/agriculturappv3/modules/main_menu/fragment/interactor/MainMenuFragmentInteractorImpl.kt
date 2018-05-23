@@ -21,8 +21,6 @@ class MainMenuFragmentInteractorImpl : MainMenuFragmentInteractor {
         repository?.offlineLogOut(usuario)
     }
 
-    override fun getListasIniciales() {
-        repository?.getListasIniciales()
-    }
+
 
 }

@@ -15,5 +15,5 @@ interface MainMenuFragmentView {
     fun errorLogOut(error: String?)
     fun onMessageOk(colorPrimary: Int, message: String?)
     fun onMessageError(colorPrimary: Int, message: String?)
-    fun getListasIniciales()
+
 }

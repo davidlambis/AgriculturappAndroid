@@ -59,7 +59,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getListasIniciales()
+
         loadItems()
         setupInit()
     }
@@ -108,9 +108,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
         }
     }
 
-    override fun getListasIniciales() {
-        presenter?.getListasIniciales()
-    }
+
 
     //region Métodos Interfaz
     override fun loadItems() {

@@ -12,7 +12,7 @@ interface MainMenuFragmentPresenter {
     fun onPause(context: Context)
     fun onEventMainThread(event: RequestEvent?)
     fun logOut(usuario: Usuario?)
-    fun getListasIniciales()
+
     //Conecttion
     fun checkConnection(): Boolean
 }

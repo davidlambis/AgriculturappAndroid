@@ -32,6 +32,8 @@ interface MainViewMenu {
         fun  verificateSync(quantitySync: QuantitySync?): AlertDialog?
 
         fun setQuantitySync(quantitySync: QuantitySync?)
+
+        fun getListasIniciales()
     }
 
     interface Presenter {
@@ -45,15 +47,21 @@ interface MainViewMenu {
         fun syncQuantityData()
         //Conection
         fun checkConnection(): Boolean?
+
+        //
+        fun getListasIniciales()
     }
 
     interface Interactor {
+        fun getListasIniciales()
         fun syncQuantityData()
       fun syncData()
     }
 
 
     interface Repository {
+
+        fun getListasIniciales()
         fun syncQuantityData()
         fun syncData()
     }

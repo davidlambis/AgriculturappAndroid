@@ -10,5 +10,5 @@ interface MainMenuFragmentInteractor {
     //Offline
     fun offlineLogOut(usuario: Usuario?)
 
-    fun getListasIniciales()
+
 }
