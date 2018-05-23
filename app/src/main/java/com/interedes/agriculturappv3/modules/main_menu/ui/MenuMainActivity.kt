@@ -388,6 +388,13 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         viewDialogSync?.txtCantidadActulizaciones?.setText(String.format(getString(R.string.size_updates_sync),quantitySync?.CantidadUpdatesSync))
 
 
+        if(presenter?.checkConnection()!!){
+            viewDialogSync?.viewEstateConect?.setBackgroundResource(R.drawable.is_online_user);
+            viewDialogSync?.txtconectividad?.setText(getString(R.string.on_connectividad));
+        }else{
+            viewDialogSync?.viewEstateConect?.setBackgroundResource(R.drawable.is_offline_user);
+            viewDialogSync?.txtconectividad?.setText(getString(R.string.off_connectividad));
+        }
 
         var builder = AlertDialog.Builder(this)
                 .setView(viewDialogSync)
@@ -427,7 +434,16 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     override fun onConnectivity() {
-       /// mUserDBRef?.database?.goOnline()
+
+       if(viewDialogSync!=null){
+           viewDialogSync?.viewEstateConect?.setBackgroundResource(R.drawable.is_online_user);
+           viewDialogSync?.txtconectividad?.setText(getString(R.string.on_connectividad));
+       }
+
+
+
+
+        /// mUserDBRef?.database?.goOnline()
         /*
         var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
         var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
@@ -442,6 +458,12 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     override fun offConnectivity() {
+
+        if(viewDialogSync!=null){
+            viewDialogSync?.viewEstateConect?.setBackgroundResource(R.drawable.is_offline_user);
+            viewDialogSync?.txtconectividad?.setText(getString(R.string.off_connectividad));
+        }
+
 
       /*  var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
         var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")

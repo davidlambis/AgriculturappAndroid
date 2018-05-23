@@ -52,7 +52,7 @@
                 android:id="@+id/progressBarSync"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:indeterminateTint="@color/green"
                 android:backgroundTint="@color/green"
                 android:progressBackgroundTint="@color/green"

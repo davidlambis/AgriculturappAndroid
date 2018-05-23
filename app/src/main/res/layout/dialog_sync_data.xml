@@ -12,10 +12,61 @@
 
         <ImageView
             android:id="@+id/imageViewSyncNone"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="100dp"
             android:src="@drawable/register_success" />
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_wifi" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/conectao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Conexion"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/viewEstateConect"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_below="@+id/conectao"
+                    android:background="@drawable/is_online_user" />
+
+                <TextView
+                    android:id="@+id/txtconectividad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/viewEstateConect"
+                    android:layout_toEndOf="@+id/viewEstateConect"
+                    android:layout_toRightOf="@+id/viewEstateConect"
+                    android:text="" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+
+
 
         <TextView
             android:text="@string/tittle_register_sync"
