@@ -185,7 +185,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                                             cultivo.CultivoId = last_cultivo.CultivoId!! + 1
                                         }
                                     }
-                                    
+
                                     cultivo.LoteId=lote?.LoteId
                                     cultivo.NombreUnidadProductiva= unidaProductiva?.nombre
                                     cultivo.NombreLote= lote?.Nombre
