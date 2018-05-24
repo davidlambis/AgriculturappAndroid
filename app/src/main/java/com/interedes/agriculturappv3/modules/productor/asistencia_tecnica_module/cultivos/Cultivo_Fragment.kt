@@ -220,7 +220,13 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             viewDialog?.spinnerUnidadMedidaCosecha?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerUnidadMedidaCosecha
             cancel = true
-        } else if (viewDialog?.edtFechaInicio?.text.toString().isEmpty()) {
+        }
+        else if (viewDialog?.edtSiembraTotal?.text.toString().isEmpty()) {
+            viewDialog?.edtSiembraTotal?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.edtSiembraTotal
+            cancel = true
+        }
+        else if (viewDialog?.edtFechaInicio?.text.toString().isEmpty()) {
             viewDialog?.edtFechaInicio?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.edtFechaInicio
             cancel = true
@@ -311,12 +317,13 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo.Nombre_Unidad_Medida = viewDialog?.spinnerUnidadMedidaCosecha?.text?.toString()
             cultivo.NombreUnidadProductiva = viewDialog?.txtUnidadProductivaSelected?.text.toString()
             cultivo.NombreLote = viewDialog?.txtLoteSelected?.text.toString()
-            cultivo.Nombre_Tipo_Producto = tipoProductoGlobal?.Nombre
+            cultivo.Nombre_Tipo_Producto = viewDialog?.spinnerTipoProducto?.text?.toString()
             cultivo.DetalleTipoProductoId = detalleTipoProductoGlobal?.Id
-            cultivo.Nombre_Detalle_Tipo_Producto = detalleTipoProductoGlobal?.Nombre
+            cultivo.Nombre_Detalle_Tipo_Producto = viewDialog?.spinnerDetalleTipoProducto?.text?.toString()
             cultivo.Id_Tipo_Producto = tipoProductoGlobal?.Id
             cultivo.FechaIncio= viewDialog?.edtFechaInicio?.text?.trim().toString()
             cultivo.FechaFin= viewDialog?.edtFechaFin?.text?.trim().toString()
+            cultivo.siembraTotal=viewDialog?.edtSiembraTotal?.text?.toString()?.toLongOrNull()
             presenter?.registerCultivo(cultivo, cultivo.LoteId)
         }
     }
@@ -338,6 +345,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo?.DetalleTipoProductoId = detalleTipoProductoGlobal?.Id
             cultivo?.Nombre_Detalle_Tipo_Producto = viewDialog?.spinnerDetalleTipoProducto?.text?.toString()
             cultivo?.Id_Tipo_Producto = tipoProductoGlobal?.Id
+            cultivo?.siembraTotal=viewDialog?.edtSiembraTotal?.text?.toString()?.toLongOrNull()
             presenter?.updateCultivo(cultivo, cultivo?.LoteId)
         }
     }
@@ -467,8 +475,8 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             viewDialog?.txtLoteSelected?.text = cultivo.NombreLote
             viewDialog?.spinnerUnidadMedidaCosecha?.setText(cultivo.Nombre_Unidad_Medida)
            //viewDialog?.edtNombreCultivo?.setText(cultivo.Nombre)
-            viewDialog?.edtDescripcionCultivo?.setText(cultivo.Descripcion)
-
+            viewDialog?.edtSiembraTotal?.setText(cultivo.siembraTotal.toString())
+            viewDialog?.edtFechaInicio?.setText(cultivo.stringFechaInicio)
             viewDialog?.edtFechaInicio?.setText(cultivo.stringFechaInicio)
             viewDialog?.edtFechaFin?.setText(cultivo.stringFechaFin)
             viewDialog?.spinnerTipoProducto?.setText(cultivo.Nombre_Tipo_Producto)
@@ -476,6 +484,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             unidadMedidaGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(cultivo.Unidad_Medida_Id)).querySingle()
             tipoProductoGlobal = SQLite.select().from(TipoProducto::class.java).where(TipoProducto_Table.Id.eq(cultivo.Id_Tipo_Producto)).querySingle()
             detalleTipoProductoGlobal = SQLite.select().from(DetalleTipoProducto::class.java).where(DetalleTipoProducto_Table.Id.eq(cultivo.DetalleTipoProductoId)).querySingle()
+
 
             if(cultivo.EstimadoCosecha.toString().contains(".0")){
                 viewDialog?.edtEstimadoCosecha?.setText(String.format(context!!.getString(R.string.price_empty_signe),

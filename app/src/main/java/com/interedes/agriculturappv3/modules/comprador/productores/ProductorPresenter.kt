@@ -8,6 +8,7 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
 import com.interedes.agriculturappv3.modules.models.producto.Producto
+import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -84,7 +85,7 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
             }
 
             RequestEventProductor.ITEM_EVENT -> {
-                var tipoProducto = event.objectMutable as Producto
+                var producto = event.objectMutable as Producto
 
 
             }
@@ -94,12 +95,15 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
     //endregion
 
     //region Request Repository
-    override fun getListProducto(tipoProducto:Long) {
+    override fun getListProducto(tipoProducto:Long,top:Int,skip:Int) {
         mainView?.showProgress()
         mainView?.showProgressHud()
-        interactor?.execute(checkConnection(),tipoProducto)
+        interactor?.execute(checkConnection(),tipoProducto,top,skip)
     }
 
+    override fun getTipoProducto(tipoProducto: Long): TipoProducto? {
+        return interactor?.getTipoProducto(tipoProducto)
+    }
 
     //region Messages/Notificaciones
     private fun onMessageOk() {

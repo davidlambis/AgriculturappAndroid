@@ -341,7 +341,7 @@ interface ApiInterface {
 
     //region COMPRADOR
     @GET("odata/Agp2/DetalleTipoProductos?\$expand=Cultivos(\$expand=Productos(\$expand=UnidadMedida,Calidad),Lote(\$expand=UnidadProductiva(\$expand=LocalizacionUps,Ciudad(\$expand=Departamento),Usuario))),TipoProducto(\$select=Nombre)")
-    fun getProductosByTipoProductos( @Query("\$filter") filter: String): Call<GetProductosByTipoResponse>
+    fun getProductosByTipoProductos( @Query("\$filter") filter: String,@Query("\$top") top: Int,@Query("\$skip") skip: Int): Call<GetProductosByTipoResponse>
 
     //http://18.233.87.16/odata/Agp2/DetalleTipoProductos?$expand=Cultivos($expand=Productos($expand=UnidadMedida,Calidad),Lote($expand=UnidadProductiva($expand=Usuario))),TipoProducto&$filter=TipoProductoId eq 2
 

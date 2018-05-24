@@ -109,9 +109,26 @@ data class Producto(@PrimaryKey
                     var Usuario_Logued: UUID? = null,
 
 
+
                     @SerializedName("Id")
                     @Column(name = "Id_Remote")
                     var Id_Remote: Long? = 0,
+
+                    @Column(name = "TipoProductoId")
+                    var TipoProductoId: Long? = 0,
+
+
+                    @Column(name = "Ciudad")
+                    var Ciudad: String? = null,
+
+                    @Column(name = "Depatamento")
+                    var Departamento: String? = null,
+
+                    @Column(name = "NombreProductor")
+                    var NombreProductor: String? = null,
+
+                    @Column(name = "EmailProductor")
+                    var EmailProductor: String? = null,
 
                     @Column(getterName = "getEstado_Sincronizacion")
                     var Estado_Sincronizacion: Boolean? = false,
@@ -138,7 +155,6 @@ data class Producto(@PrimaryKey
 
         try {
 
-
             val dateString = FechaLimiteDisponibilidad
             val dateFormat = SimpleDateFormat("yyyy-MM-dd")
             var convertedDate = Date()
@@ -149,24 +165,18 @@ data class Producto(@PrimaryKey
                 e.printStackTrace()
             }
 
-
             val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             return sdf.format(convertedDate)
-
         }catch (ex:Exception){
            // Log.println(ex.toString())
-
             return  ""
         }
-
     }
 
 
     fun getFechaLimiteDisponibilidadFormatApi(): String {
 
         try {
-
-
             val dateString = FechaLimiteDisponibilidad
             val dateFormat = SimpleDateFormat("yyyy-MM-dd")
             var convertedDate = Date()

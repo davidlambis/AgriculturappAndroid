@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.modules.comprador.productores.ProductoresFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.adapter.ProductosCompradorAdapter
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
@@ -37,8 +38,6 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
     companion object {
 
     }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter =  ProductoCompradorPresenter(this)
@@ -84,8 +83,6 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
     override fun hideProgress() {
         swipeRefreshLayout.setRefreshing(false);
     }
-
-
 
     override fun showProgressHud(){
         hud = KProgressHUD.create(activity)
@@ -158,6 +155,16 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
                 var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
             }
         }
+    }
+
+
+    override  fun navigateDetalleTipoProducto(idtipoProducto:Long){
+        val bundle = Bundle()
+        bundle.putLong("idtipoProducto", idtipoProducto)
+        val productosFragment: ProductoresFragment
+        productosFragment = ProductoresFragment()
+        productosFragment.arguments = bundle
+        (activity as MenuMainActivity).replaceFragment(productosFragment)
     }
 
     //endregion

@@ -18,6 +18,8 @@ import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.rol.Rol
 import com.interedes.agriculturappv3.modules.models.rol.Rol_Table
 import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSynProductosUserResponse
+import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
+import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
@@ -33,6 +35,7 @@ import retrofit2.Response
 
 class ProductorRepository:IMainViewProductor.Repository {
 
+
     var eventBus: EventBus? = null
     var apiService: ApiInterface? = null
     init {
@@ -41,12 +44,18 @@ class ProductorRepository:IMainViewProductor.Repository {
     }
 
 
-    override fun getListTipoProductos(checkConection: Boolean,tipoProducto:Long) {
+    override fun getTipoProducto(tipoProducto: Long): TipoProducto? {
+        var tipoProducto= SQLite.select().from(TipoProducto::class.java).where(TipoProducto_Table.Id.eq(tipoProducto)).querySingle()
+        return tipoProducto
+    }
+
+    override fun getListTipoProductos(checkConection: Boolean,tipoProductoId:Long,top:Int,skip:Int) {
 
         if(checkConection){
             //Get Productos by user
-            val queryProductos = Listas.queryGeneralLong("TipoProductoId",tipoProducto)
-            val callProductos = apiService?.getProductosByTipoProductos(queryProductos)
+            val queryProductos = Listas.queryGeneralLong("TipoProductoId",tipoProductoId)
+
+            val callProductos = apiService?.getProductosByTipoProductos(queryProductos,top,skip)
             callProductos?.enqueue(object : Callback<GetProductosByTipoResponse> {
                 override fun onResponse(call: Call<GetProductosByTipoResponse>?, response: Response<GetProductosByTipoResponse>?) {
                     if (response != null && response.code() == 200) {
@@ -125,6 +134,9 @@ class ProductorRepository:IMainViewProductor.Repository {
                                             }
                                         }
 
+                                        unidaProductiva.Estado_Sincronizacion=true
+                                        unidaProductiva.Estado_SincronizacionUpdate=true
+
                                         unidaProductiva.save()
                                     }
 
@@ -163,8 +175,8 @@ class ProductorRepository:IMainViewProductor.Repository {
                                         lote.Nombre_Unidad_Productiva= unidaProductiva?.nombre
                                         lote.Nombre= if (lote.Nombre==null) "" else lote.Nombre
                                         lote.Descripcion= if (lote.Descripcion==null) "" else lote.Descripcion
-
-
+                                        lote.EstadoSincronizacion=true
+                                        lote.Estado_SincronizacionUpdate=true
                                         lote.save()
                                     }
 
@@ -187,6 +199,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                                     }
 
                                     cultivo.LoteId=lote?.LoteId
+
                                     cultivo.NombreUnidadProductiva= unidaProductiva?.nombre
                                     cultivo.NombreLote= lote?.Nombre
                                     cultivo.EstadoSincronizacion= true
@@ -198,6 +211,8 @@ class ProductorRepository:IMainViewProductor.Repository {
                                     cultivo.Nombre_Detalle_Tipo_Producto=detalleTipoProducto.Nombre
                                     cultivo.Id_Tipo_Producto= detalleTipoProducto.TipoProductoId
                                     cultivo.Nombre_Unidad_Medida=if (cultivo.unidadMedida!=null) cultivo.unidadMedida?.Descripcion else null
+                                    cultivo.EstadoSincronizacion=true
+                                    cultivo.Estado_SincronizacionUpdate=true
                                     cultivo.save()
 
                                     if(cultivo?.productos?.size!!>0){
@@ -206,6 +221,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                                                     .from(Producto::class.java)
                                                     .where(Producto_Table.Id_Remote.eq(producto.Id_Remote))
                                                     .querySingle()
+
                                             //TODO Verifica si tiene pendiente actualizacion por sincronizar
                                             if (productoVerficateSave!=null){
                                                 producto.ProductoId=productoVerficateSave.ProductoId
@@ -217,14 +233,22 @@ class ProductorRepository:IMainViewProductor.Repository {
                                                     producto.ProductoId = last_producto.ProductoId!! + 1
                                                 }
                                             }
+                                            producto.EmailProductor=usuario?.Email
+                                            producto.NombreProductor="${usuario?.Nombre} ${usuario?.Apellidos}"
+                                            producto.CodigoUp=unidaProductiva?.Unidad_Productiva_Id.toString()
+                                            producto.Ciudad=unidaProductiva?.Nombre_Ciudad
+                                            producto.Departamento=unidaProductiva?.Nombre_Departamento
+                                            producto.TipoProductoId=detalleTipoProducto.TipoProductoId
                                             producto.NombreCultivo= cultivo.Nombre
                                             producto.NombreLote= if(lote!=null)lote.Nombre else null
                                             producto.NombreUnidadProductiva= if(unidaProductiva!=null)unidaProductiva.nombre else null
                                             producto.NombreUnidadMedidaCantidad=if(producto.UnidadMedida!= null)producto.UnidadMedida?.Descripcion else null
                                             producto.NombreCalidad=if(producto.Calidad!=null)producto.Calidad?.Nombre else null
                                             producto.NombreUnidadMedidaPrecio=producto.PrecioUnidadMedida
-                                            producto.Usuario_Logued=usuario?.Id
+                                            producto.Usuario_Logued=getLastUserLogued()?.Id
                                             producto.NombreDetalleTipoProducto=detalleTipoProducto.Nombre
+                                            producto.Estado_Sincronizacion=true
+                                            producto.Estado_SincronizacionUpdate=true
                                             try {
                                                     val base64String = producto?.Imagen
                                                     val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
@@ -234,12 +258,17 @@ class ProductorRepository:IMainViewProductor.Repository {
                                                     var ss= ex.toString()
                                                     Log.d("Convert Image", "defaultValue = " + ss);
                                             }
+
                                             producto.save()
                                         }
                                     }
                                 }
                             }
                         }
+
+
+                        postEventOk(RequestEventProductor.READ_EVENT,getListProductos(tipoProductoId),null)
+
                     } else {
                         postEventError(RequestEventProductor.ERROR_EVENT, "Comprueba tu conexión a Internet")
                     }
@@ -255,12 +284,18 @@ class ProductorRepository:IMainViewProductor.Repository {
 
 
         }
-
-
-
-
     }
 
+    fun getListProductos(tipoProducto: Long): List<Producto>? {
+
+        val productos = SQLite.select().from(Producto::class.java).where(Producto_Table.TipoProductoId.eq(tipoProducto)).queryList()
+        return productos
+    }
+
+    fun getLastUserLogued(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
 
 
 
@@ -288,10 +323,16 @@ class ProductorRepository:IMainViewProductor.Repository {
 
 
     //region Events
-    private fun postEventOk(type: Int) {
-        postEvent(type, null,null,null)
-    }
 
+
+    private fun postEventOk(type: Int, listProducto: List<Producto>?, producto: Producto?) {
+        val productoListMutable = listProducto as MutableList<Object>
+        var productoMutable: Object? = null
+        if (producto != null) {
+            productoMutable = producto as Object
+        }
+        postEvent(type, productoListMutable, productoMutable, null)
+    }
 
 
     private fun postEventError(type: Int,messageError:String?) {

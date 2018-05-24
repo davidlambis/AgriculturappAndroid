@@ -18,18 +18,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/logoPlaga"
-                android:layout_gravity="left"
-                android:layout_width="wrap_content"
-                android:layout_below="@+id/titlePlaga"
+                android:id="@+id/logoTipoProducto"
+                android:layout_width="40dp"
                 android:layout_marginRight="@dimen/margin_3"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_productos" />
             <TextView
+                android:id="@+id/txtTipoProducto"
                 android:textColor="@color/grey_luiyi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cafe"/>
+                android:text=""/>
         </LinearLayout>
 
 

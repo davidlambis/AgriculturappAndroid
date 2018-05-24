@@ -346,7 +346,6 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
             calidadProductoGlobal = SQLite.select().from(CalidadProducto::class.java).where(CalidadProducto_Table.Id.eq(producto.CalidadId)).querySingle()
             unidadMedidaPrecioGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(producto.Unidad_Medida_Id)).querySingle()
-
             fechaLimiteDisponibilidad=producto.getFechaLimiteDisponibilidadFormatDate(producto.FechaLimiteDisponibilidad)
         }
 
@@ -784,7 +783,6 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 stringBuilder.append(android.util.Base64.encodeToString(imageGlobal, android.util.Base64.DEFAULT))
                 mProducto.Imagen = stringBuilder.toString()
             } /*else {
-
                 viewDialog?.product_image?.isDrawingCacheEnabled = true
                 val bitmap = viewDialog?.product_image?.getDrawingCache()
                 val byte = convertBitmapToByte(bitmap!!)
@@ -794,6 +792,8 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 stringBuilder.append(android.util.Base64.encodeToString(byte, android.util.Base64.DEFAULT))
                 mProducto.Imagen = stringBuilder.toString()
             }*/
+
+            mProducto.NombreCultivo = cultivoGlobal?.Nombre
             mProducto.Stock= viewDialog?.txtCantidadProductoDisponible?.text.toString().toDoubleOrNull()
             mProducto.Precio = viewDialog?.txtPrecioProducto?.text.toString().toDoubleOrNull()
             mProducto.NombreUnidadMedidaPrecio = viewDialog?.spinnerMonedaPrecio?.text.toString()

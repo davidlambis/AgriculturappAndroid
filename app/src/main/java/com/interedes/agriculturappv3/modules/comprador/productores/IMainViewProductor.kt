@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
 import com.interedes.agriculturappv3.modules.models.producto.Producto
+import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 
 interface IMainViewProductor {
 
@@ -29,6 +30,8 @@ interface IMainViewProductor {
         //Dialog
         fun verificateConnection(): AlertDialog?
 
+
+
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
     }
@@ -43,18 +46,21 @@ interface IMainViewProductor {
         fun onEventMainThread(requestEvent: RequestEventProductor?)
 
         //Methods
-        fun getListProducto(tipoProducto:Long)
+        fun getListProducto(tipoProducto:Long,top:Int,skip:Int)
+        fun getTipoProducto(tipoProducto:Long):TipoProducto?
 
         //Conecttion
         fun checkConnection(): Boolean
     }
 
     interface Interactor {
-        fun execute(checkConection:Boolean,tipoProducto:Long)
+        fun getTipoProducto(tipoProducto:Long):TipoProducto?
+        fun execute(checkConection:Boolean,tipoProducto:Long,top:Int,skip:Int)
     }
 
     interface Repository {
-        fun getListTipoProductos(checkConection:Boolean,tipoProducto:Long)
+        fun getTipoProducto(tipoProducto:Long):TipoProducto?
+        fun getListTipoProductos(checkConection:Boolean,tipoProducto:Long,top:Int,skip:Int)
     }
 
 }

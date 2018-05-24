@@ -194,6 +194,20 @@
 
             </LinearLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                <EditText
+                    android:id="@+id/edtSiembraTotal"
+                    style="@style/editText"
+                    android:inputType="number"
+                    android:drawableLeft="@drawable/ic_productos"
+                    android:drawableStart="@drawable/ic_productos"
+                    android:hint="@string/tittle_simbra_total" />
+            </android.support.design.widget.TextInputLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

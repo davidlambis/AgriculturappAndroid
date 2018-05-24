@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_margin="@dimen/margin_1"
+app:cardBackgroundColor="@android:color/white"
+app:cardCornerRadius="6dp"
+app:cardElevation="1dp"
+android:foreground="?android:attr/selectableItemBackground"
+app:cardUseCompatPadding="true"
+    >
+
+<LinearLayout
+    android:background="@drawable/sombra_drawing_up"
+    android:padding="@dimen/margin_3"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@drawable/ic_clientes_azul"
+                android:id="@+id/imgProductor"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                />
+
+            <TextView
+                android:id="@+id/txtNombreProductor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="@dimen/text_size_10"
+                android:text=""/>
+
+            <android.support.v7.widget.AppCompatRatingBar
+                android:id="@+id/ratingBar"
+                android:numStars="5"
+                android:stepSize=".1"
+                style="@style/RatingBar"
+                android:layout_width="wrap_content"
+                android:progressBackgroundTint="@color/colorPrimary"
+                android:progressTint="@color/dark_green"
+                android:secondaryProgressTint="@color/colorPrimary"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:paddingStart="@dimen/margin_5"
+            android:paddingLeft="@dimen/margin_5"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtProducto"
+                android:textSize="@dimen/text_size_15"
+                android:gravity="start"
+                android:textColor="@color/grey_luiyi"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="@dimen/margin_5"
+                android:background="@color/grey_luiyi" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/tittle_ubicacion"
+                />
+            <TextView
+                android:id="@+id/txtUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/tittle_date_avalilable"
+                />
+
+            <TextView
+                android:id="@+id/txtFechaDisponibilidad"
+                android:gravity="start"
+                android:layout_gravity="start"
+                android:textSize="@dimen/text_size_12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/tittle_disponibilidad"
+                />
+
+            <TextView
+                android:id="@+id/txtDisponibilidad"
+                android:gravity="start"
+                android:layout_gravity="start"
+                android:textSize="@dimen/text_size_12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/tittle_price"
+                />
+
+            <TextView
+                android:id="@+id/txtPrecio"
+                android:gravity="start"
+                android:layout_gravity="start"
+                android:textColor="@color/black"
+
+                android:textSize="@dimen/text_size_15"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""/>
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
+</android.support.v7.widget.CardView>
+

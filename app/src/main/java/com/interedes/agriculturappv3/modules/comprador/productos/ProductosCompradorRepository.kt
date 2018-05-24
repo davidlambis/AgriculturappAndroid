@@ -28,40 +28,46 @@ class ProductosCompradorRepository:IMainViewProductoComprador.Repository  {
     //region Implemnts Interface
     override fun getListTipoProductos(checkConection:Boolean) {
         if(checkConection){
-            val callTipoProducto = apiService?.getTipoAndDetalleTipoProducto()
-            callTipoProducto?.enqueue(object : Callback<TipoProductoResponse> {
-                override fun onResponse(call: Call<TipoProductoResponse>?, response: Response<TipoProductoResponse>?) {
-                    if (response != null && response.code() == 200) {
-                        val tiposProducto = response.body()?.value as MutableList<TipoProducto>
-                        for (item in tiposProducto) {
-                            try {
-                                val base64String = item?.Icono
-                                val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
-                                val byte = Base64.decode(base64Image, Base64.DEFAULT)
-                                item.Imagen = Blob(byte)
+            val lista_tipo_producto = SQLite.select().from(TipoProducto::class.java).queryList()
+            if(lista_tipo_producto.size==0){
+                val callTipoProducto = apiService?.getTipoAndDetalleTipoProducto()
+                callTipoProducto?.enqueue(object : Callback<TipoProductoResponse> {
+                    override fun onResponse(call: Call<TipoProductoResponse>?, response: Response<TipoProductoResponse>?) {
+                        if (response != null && response.code() == 200) {
+                            val tiposProducto = response.body()?.value as MutableList<TipoProducto>
+                            for (item in tiposProducto) {
+                                try {
+                                    val base64String = item?.Icono
+                                    val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                    val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                    item.Imagen = Blob(byte)
 
-                            }catch (ex:Exception){
-                                var ss= ex.toString()
-                                Log.d("Convert Image", "defaultValue = " + ss);
+                                }catch (ex:Exception){
+                                    var ss= ex.toString()
+                                    Log.d("Convert Image", "defaultValue = " + ss);
+                                }
+
+                                item.save()
+                                for (detalleTipoProducto in item.DetalleTipoProductos!!) {
+                                    detalleTipoProducto.save()
+                                }
                             }
 
-                            item.save()
-                            for (detalleTipoProducto in item.DetalleTipoProductos!!) {
-                                detalleTipoProducto.save()
-                            }
+                            val lista_tipo_producto = SQLite.select().from(TipoProducto::class.java).queryList()
+                            postEventListTiposProducto(RequestEventProductosComprador.LIST_EVENT_TIPO_PRODUCTO, lista_tipo_producto)
+
+                        } else {
+                            postEventError(RequestEventProductosComprador.ERROR_EVENT, "Comprueba tu conexión a Internet")
                         }
-
-                        val lista_tipo_producto = SQLite.select().from(TipoProducto::class.java).queryList()
-                        postEventListTiposProducto(RequestEventProductosComprador.LIST_EVENT_TIPO_PRODUCTO, lista_tipo_producto)
-
-                    } else {
+                    }
+                    override fun onFailure(call: Call<TipoProductoResponse>?, t: Throwable?) {
                         postEventError(RequestEventProductosComprador.ERROR_EVENT, "Comprueba tu conexión a Internet")
                     }
-                }
-                override fun onFailure(call: Call<TipoProductoResponse>?, t: Throwable?) {
-                    postEventError(RequestEventProductosComprador.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                }
-            })
+                })
+
+            }else{
+                postEventListTiposProducto(RequestEventProductosComprador.LIST_EVENT_TIPO_PRODUCTO, lista_tipo_producto)
+            }
 
         }else{
             val lista_tipo_producto = SQLite.select().from(TipoProducto::class.java).queryList()

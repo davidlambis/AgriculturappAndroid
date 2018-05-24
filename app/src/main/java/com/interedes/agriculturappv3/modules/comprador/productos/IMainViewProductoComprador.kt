@@ -29,6 +29,9 @@ interface IMainViewProductoComprador {
         //Dialog
         fun verificateConnection(): AlertDialog?
 
+        //Navigate
+        fun navigateDetalleTipoProducto(idtipoProducto:Long)
+
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
     }

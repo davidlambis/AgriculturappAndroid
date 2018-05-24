@@ -84,10 +84,8 @@ class ProductoCompradorPresenter(var mainView: IMainViewProductoComprador.MainVi
 
             RequestEventProductosComprador.ITEM_EVENT -> {
                 var tipoProducto = event.objectMutable as TipoProducto
-
-
+                mainView?.navigateDetalleTipoProducto(tipoProducto.Id!!)
             }
-
         }
     }
     //endregion

@@ -588,7 +588,6 @@ class MenuRepository: MainViewMenu.Repository {
 
         var usuario= getLastUserLogued()
 
-
         //LISTAS ROL PRODUCTOR
         /*-----------------------------------------------------------------------------------------------------------------*/
 
@@ -714,10 +713,11 @@ class MenuRepository: MainViewMenu.Repository {
                                         lote.Unidad_Productiva_Id=item.Unidad_Productiva_Id
                                         lote.Nombre_Unidad_Medida= if (lote.UnidadMedida!=null) lote.UnidadMedida?.Descripcion else null
                                         lote.Nombre_Unidad_Productiva= item.nombre
-                                        lote.EstadoSincronizacion=true
+
                                         lote.Nombre= if (lote.Nombre==null) "" else lote.Nombre
                                         lote.Descripcion= if (lote.Descripcion==null) "" else lote.Descripcion
                                         lote.Estado_SincronizacionUpdate=true
+                                        lote.EstadoSincronizacion=true
 
                                         lote.save()
                                     }

@@ -158,6 +158,9 @@
     <string name="spinner_detalle_tipo_producto">Detalle Tipo Producto</string>
     <string name="tittle_select_lote">Seleccione el lote para agregar un cultivo</string>
     <string name="tittle_edit_cultivo">Editar cultivo</string>
+    <string name="tittle_simbra_total">Cantidad Siembra</string>
+
+
     <!-- Plagas -->
     <string name="title_plagas">Plagas</string>
     <string name="title_plaga">Plaga</string>
@@ -400,6 +403,12 @@
     <string name="tittle_productos_interes">Estos son los productos de tu interes !Selecciona uno!</string>
 
 
+    <!--Lista de productos-->
+    <string name="tittle_ubicacion">Ubicacion</string>
+    <string name="tittle_date_avalilable">Fecha Disponibilidad</string>
+    <string name="tittle_disponibilidad">Disponibilidad</string>
+    <string name="tittle_price">Precio</string>
+    <string name="price_producto">$ %1$,.0f %2$s</string>
     <!--CONFIGURATION-->
 
     <!--Notification Messages-->
