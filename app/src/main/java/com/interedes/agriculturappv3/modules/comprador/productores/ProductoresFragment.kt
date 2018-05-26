@@ -93,8 +93,6 @@ class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefresh
                     Log.d("Convert Image", "defaultValue = " + ss);
                 }
             }
-
-
         }
     }
 
@@ -102,7 +100,7 @@ class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefresh
     //region ADAPTER
     private fun initAdapter() {
         //recyclerView?.layoutManager = GridLayoutManager(activity,1)
-        adapter = ProductorAdapter(productosList!!)
+        adapter = ProductorAdapter(ArrayList<Producto>())
         recyclerView?.adapter = adapter
 
         val linearLayoutManager = LinearLayoutManager(activity)
@@ -115,6 +113,42 @@ class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefresh
                 presenter?.getListProducto(tipoProductoIdGlobal,totalItemsCount,page)
             }
         }
+
+
+
+        /*_-----------------------------------*/
+
+        var loading = true
+        var pastVisiblesItems: Int
+        var visibleItemCount: Int
+        var totalItemCount: Int
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                if (dy > 0)
+                //check for scroll down
+                {
+                    visibleItemCount = linearLayoutManager.getChildCount()
+                    totalItemCount = linearLayoutManager.getItemCount()
+                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition()
+
+                    if (loading) {
+                        if (visibleItemCount + pastVisiblesItems >= totalItemCount) {
+                            loading = false
+
+                            presenter?.getListProducto(tipoProductoIdGlobal,totalItemCount,dx)
+
+                            ///Log.v("...", "Last Item Wow !")
+                            //Do pagination.. i.e. fetch new data
+                        }
+                    }
+                }
+            }
+        })
+
+
+
+
         // Adds the scroll listener to RecyclerView
         recyclerView.addOnScrollListener(scrollListener)
     }

@@ -88,8 +88,6 @@ class ProductorRepository:IMainViewProductor.Repository {
 
                         for (item in list){
 
-
-
                             //TODO Usuario
                             var usuario=Usuario()
                             usuario.Id=item.usuario_id
