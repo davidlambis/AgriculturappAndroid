@@ -14,9 +14,6 @@ import com.interedes.agriculturappv3.modules.models.lote.PostLote
 import com.interedes.agriculturappv3.modules.models.rol.RolResponse
 import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPagoResponse
 import com.interedes.agriculturappv3.modules.models.produccion.PostProduccion
-import com.interedes.agriculturappv3.modules.models.producto.CalidadProductoResponse
-import com.interedes.agriculturappv3.modules.models.producto.PostProducto
-import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.rol.AspNetRolResponse
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProductoResponse
 import com.interedes.agriculturappv3.modules.models.unidad_medida.CategoriaMedidaResponse
@@ -34,7 +31,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPlaga
 import com.interedes.agriculturappv3.modules.models.plagas.EnfermedadResponseApi
-import com.interedes.agriculturappv3.modules.models.producto.GetProductosByTipoResponse
+import com.interedes.agriculturappv3.modules.models.producto.*
 import com.interedes.agriculturappv3.modules.models.rol.RolUserLogued
 import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSincronizacionResponse
 import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSincronizacionTransacciones
@@ -340,8 +337,15 @@ interface ApiInterface {
 
 
     //region COMPRADOR
-    @GET("odata/Agp2/DetalleTipoProductos?\$expand=Cultivos(\$expand=Productos(\$expand=UnidadMedida,Calidad),Lote(\$expand=UnidadProductiva(\$expand=LocalizacionUps,Ciudad(\$expand=Departamento),Usuario))),TipoProducto(\$select=Nombre)")
+    //@GET("odata/Agp2/DetalleTipoProductos?\$expand=Cultivos(\$expand=Productos(\$expand=UnidadMedida,Calidad),Lote(\$expand=UnidadProductiva(\$expand=LocalizacionUps,Ciudad(\$expand=Departamento),Usuario))),TipoProducto(\$select=Nombre)")
+    //fun getProductosByTipoProductos( @Query("\$filter") filter: String,@Query("\$top") top: Int,@Query("\$skip") skip: Int): Call<GetProductosByTipoResponse>
+
+
+    @GET("odata/Agp2/DetalleTipoProductos")
     fun getProductosByTipoProductos( @Query("\$filter") filter: String,@Query("\$top") top: Int,@Query("\$skip") skip: Int): Call<GetProductosByTipoResponse>
+
+
+
 
     //http://18.233.87.16/odata/Agp2/DetalleTipoProductos?$expand=Cultivos($expand=Productos($expand=UnidadMedida,Calidad),Lote($expand=UnidadProductiva($expand=Usuario))),TipoProducto&$filter=TipoProductoId eq 2
 

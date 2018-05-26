@@ -15,9 +15,7 @@ import com.interedes.agriculturappv3.modules.models.produccion.Produccion
 import com.interedes.agriculturappv3.modules.models.producto.GetProductosByTipoResponse
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
-import com.interedes.agriculturappv3.modules.models.rol.Rol
-import com.interedes.agriculturappv3.modules.models.rol.Rol_Table
-import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSynProductosUserResponse
+import com.interedes.agriculturappv3.modules.models.producto.ViewProducto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
@@ -56,6 +54,305 @@ class ProductorRepository:IMainViewProductor.Repository {
             val queryProductos = Listas.queryGeneralLong("TipoProductoId",tipoProductoId)
 
             val callProductos = apiService?.getProductosByTipoProductos(queryProductos,top,skip)
+
+            callProductos?.enqueue(object : Callback<GetProductosByTipoResponse> {
+
+
+                override fun onResponse(call: Call<GetProductosByTipoResponse>?, response: Response<GetProductosByTipoResponse>?) {
+                    if (response != null && response.code() == 200) {
+
+                        //TODO Delete information in local, add new remote
+                        SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
+                                .async()
+                                .execute()
+
+                        SQLite.delete<Lote>(Lote::class.java)
+                                .async()
+                                .execute()
+
+                        SQLite.delete<Cultivo>(Cultivo::class.java)
+                                .async()
+                                .execute()
+
+                        SQLite.delete<Produccion>(Produccion::class.java)
+                                .async()
+                                .execute()
+
+                        SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
+                                .async()
+                                .execute()
+
+
+                        val list = response.body()?.value as MutableList<ViewProducto>
+
+
+                        for (item in list){
+
+                            //TODO Usuario
+                            var usuario=Usuario()
+                            usuario.Id=item.usuario_id
+                            usuario.Nombre=item.nombre_usuario
+                            usuario.Apellidos=item.apellido_usuario
+                            usuario.Email=item.email_usuario
+                            usuario.Estado=item.estado_usuario
+                            usuario.DetalleMetodoPagoId=item.detalle_metodopago_id
+                            usuario.FechaRegistro=item.fecharegistro_usuario
+                            usuario.Fotopefil=item.fotoperfil_usuario
+                            usuario.Identificacion= item.identificacion_usuario
+
+
+                            usuario.save()
+
+                            //Nombre_Usuario,Nro_Movil_Usuario,Numero_Cuenta_Usuario,Phone_Number_Usuario,UserName_Usuario,
+
+
+                            //TODO Detalle Producto
+                            var detalleTipoProducto= DetalleTipoProducto(
+                                    item.detalle_tipo_productoid,
+                                    item.descripcion_detalle_tipoproducto,
+                                    item.nombre_detalle_tipoproducto,
+                                    item.tipo_producto_id
+                            )
+                            detalleTipoProducto.save()
+
+                            //TODO Unidades Productivas
+                            var unidaProductiva= Unidad_Productiva()
+
+                            var unidadProductivaVerficateSave= SQLite.select()
+                                    .from(Unidad_Productiva::class.java)
+                                    .where(Unidad_Productiva_Table.Id_Remote.eq(unidaProductiva.Id_Remote))
+                                    .querySingle()
+                            //TODO Verifica si ya existe
+                            if (unidadProductivaVerficateSave !=null){
+                                unidaProductiva.Unidad_Productiva_Id=unidadProductivaVerficateSave?.Unidad_Productiva_Id
+                            }else{
+                                val last_up = getLastUp()
+                                if (last_up == null) {
+                                    unidaProductiva.Unidad_Productiva_Id = 1
+                                } else {
+                                    unidaProductiva.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
+                                }
+                            }
+
+                            unidaProductiva.UsuarioId=usuario?.Id
+                            unidaProductiva.Nombre_Ciudad= if (unidaProductiva.Ciudad!=null) unidaProductiva.Ciudad?.Nombre else null
+                            unidaProductiva.Nombre_Unidad_Medida= if (unidaProductiva.UnidadMedida!=null) unidaProductiva.UnidadMedida?.Descripcion else null
+                            unidaProductiva.Nombre_Departamento= if (unidaProductiva.Ciudad!=null) unidaProductiva.Ciudad?.Departamento?.Nombre else null
+
+                            if(unidaProductiva.LocalizacionUps?.size!!>0){
+                                for (localizacion in unidaProductiva.LocalizacionUps!!){
+                                    unidaProductiva.DireccionAproximadaGps=localizacion.DireccionAproximadaGps
+                                    unidaProductiva.Latitud=localizacion.Latitud
+                                    unidaProductiva.Longitud=localizacion.Longitud
+                                    unidaProductiva.Coordenadas=localizacion.Coordenadas
+                                    unidaProductiva.Direccion=localizacion.Direccion
+                                    unidaProductiva.Configuration_Point=true
+                                    unidaProductiva.Configuration_Poligon=false
+                                    unidaProductiva.LocalizacionUpId=localizacion.Id
+                                }
+                            }
+
+                            unidaProductiva.Estado_Sincronizacion=true
+                            unidaProductiva.Estado_SincronizacionUpdate=true
+
+                            unidaProductiva.save()
+
+
+
+
+                            if(detalleTipoProducto.cultivos?.size!!>0){
+
+                                for(cultivo in detalleTipoProducto?.cultivos!!){
+                                    var usuario=cultivo?.Lote?.UnidadProductiva?.Usuario
+                                    if(usuario!=null){
+                                        usuario.save()
+                                    }
+
+                                    //TODO Unidades Productivas
+                                    var unidaProductiva=cultivo?.Lote?.UnidadProductiva
+                                    if(unidaProductiva!=null){
+                                        var unidadProductivaVerficateSave= SQLite.select()
+                                                .from(Unidad_Productiva::class.java)
+                                                .where(Unidad_Productiva_Table.Id_Remote.eq(unidaProductiva.Id_Remote))
+                                                .querySingle()
+                                        //TODO Verifica si ya existe
+                                        if (unidadProductivaVerficateSave !=null){
+                                            unidaProductiva.Unidad_Productiva_Id=unidadProductivaVerficateSave?.Unidad_Productiva_Id
+                                        }else{
+                                            val last_up = getLastUp()
+                                            if (last_up == null) {
+                                                unidaProductiva.Unidad_Productiva_Id = 1
+                                            } else {
+                                                unidaProductiva.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
+                                            }
+                                        }
+                                        unidaProductiva.UsuarioId=usuario?.Id
+                                        unidaProductiva.Nombre_Ciudad= if (unidaProductiva.Ciudad!=null) unidaProductiva.Ciudad?.Nombre else null
+                                        unidaProductiva.Nombre_Unidad_Medida= if (unidaProductiva.UnidadMedida!=null) unidaProductiva.UnidadMedida?.Descripcion else null
+                                        unidaProductiva.Nombre_Departamento= if (unidaProductiva.Ciudad!=null) unidaProductiva.Ciudad?.Departamento?.Nombre else null
+
+                                        if(unidaProductiva.LocalizacionUps?.size!!>0){
+                                            for (localizacion in unidaProductiva.LocalizacionUps!!){
+                                                unidaProductiva.DireccionAproximadaGps=localizacion.DireccionAproximadaGps
+                                                unidaProductiva.Latitud=localizacion.Latitud
+                                                unidaProductiva.Longitud=localizacion.Longitud
+                                                unidaProductiva.Coordenadas=localizacion.Coordenadas
+                                                unidaProductiva.Direccion=localizacion.Direccion
+                                                unidaProductiva.Configuration_Point=true
+                                                unidaProductiva.Configuration_Poligon=false
+                                                unidaProductiva.LocalizacionUpId=localizacion.Id
+                                            }
+                                        }
+
+                                        unidaProductiva.Estado_Sincronizacion=true
+                                        unidaProductiva.Estado_SincronizacionUpdate=true
+
+                                        unidaProductiva.save()
+                                    }
+
+
+                                    //TODO Lote
+                                    var lote=cultivo?.Lote
+                                    if(lote!=null){
+                                        var loteVerficateSave= SQLite.select()
+                                                .from(Lote::class.java)
+                                                .where(Lote_Table.Id_Remote.eq(lote.Id_Remote))
+                                                .querySingle()
+                                        //TODO Verifica si ya existe
+                                        if (loteVerficateSave!=null){
+                                            lote.LoteId=loteVerficateSave.LoteId
+                                        }else{
+                                            val last_lote = getLastLote()
+                                            if (last_lote == null) {
+                                                lote.LoteId = 1
+                                            } else {
+                                                lote.LoteId = last_lote.LoteId!! + 1
+                                            }
+                                        }
+
+                                        val coordenadas =lote.Localizacion
+                                        if(coordenadas!=null || coordenadas!=""){
+                                            val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
+                                            var latitud= separated!![0].toDoubleOrNull() // this will contain "Fruit"
+                                            var longitud=separated!![1].toDoubleOrNull() // this will contain " they taste good"
+                                            lote.Latitud=latitud
+                                            lote.Longitud=longitud
+                                            lote.Coordenadas=coordenadas
+                                        }
+
+                                        lote.Unidad_Productiva_Id=unidaProductiva?.Unidad_Productiva_Id
+                                        lote.Nombre_Unidad_Medida= if (lote.UnidadMedida!=null) lote.UnidadMedida?.Descripcion else null
+                                        lote.Nombre_Unidad_Productiva= unidaProductiva?.nombre
+                                        lote.Nombre= if (lote.Nombre==null) "" else lote.Nombre
+                                        lote.Descripcion= if (lote.Descripcion==null) "" else lote.Descripcion
+                                        lote.EstadoSincronizacion=true
+                                        lote.Estado_SincronizacionUpdate=true
+                                        lote.save()
+                                    }
+
+                                    //TODO Cultivo
+
+                                    var cultivoVerficateSave= SQLite.select()
+                                            .from(Cultivo::class.java)
+                                            .where(Cultivo_Table.Id_Remote.eq(cultivo.Id_Remote))
+                                            .querySingle()
+                                    //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                                    if (cultivoVerficateSave!=null){
+                                        cultivo.CultivoId=cultivoVerficateSave.CultivoId
+                                    }else{
+                                        val last_cultivo = getLastCultivo()
+                                        if (last_cultivo == null) {
+                                            cultivo.CultivoId = 1
+                                        } else {
+                                            cultivo.CultivoId = last_cultivo.CultivoId!! + 1
+                                        }
+                                    }
+
+                                    cultivo.LoteId=lote?.LoteId
+
+                                    cultivo.NombreUnidadProductiva= unidaProductiva?.nombre
+                                    cultivo.NombreLote= lote?.Nombre
+                                    cultivo.EstadoSincronizacion= true
+                                    cultivo.Estado_SincronizacionUpdate= true
+                                    cultivo.stringFechaInicio=cultivo.getFechaStringFormatApi(cultivo.FechaIncio)
+                                    cultivo.stringFechaFin=cultivo.getFechaStringFormatApi(cultivo.FechaFin)
+
+                                    cultivo.Nombre_Tipo_Producto= if (detalleTipoProducto.tipoProducto!=null) detalleTipoProducto?.tipoProducto?.Nombre else null
+                                    cultivo.Nombre_Detalle_Tipo_Producto=detalleTipoProducto.Nombre
+                                    cultivo.Id_Tipo_Producto= detalleTipoProducto.TipoProductoId
+                                    cultivo.Nombre_Unidad_Medida=if (cultivo.unidadMedida!=null) cultivo.unidadMedida?.Descripcion else null
+                                    cultivo.EstadoSincronizacion=true
+                                    cultivo.Estado_SincronizacionUpdate=true
+                                    cultivo.save()
+
+                                    if(cultivo?.productos?.size!!>0){
+                                        for(producto in cultivo?.productos!!){
+                                            var productoVerficateSave= SQLite.select()
+                                                    .from(Producto::class.java)
+                                                    .where(Producto_Table.Id_Remote.eq(producto.Id_Remote))
+                                                    .querySingle()
+
+                                            //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                                            if (productoVerficateSave!=null){
+                                                producto.ProductoId=productoVerficateSave.ProductoId
+                                            }else {
+                                                val last_producto = getLastProducto()
+                                                if (last_producto == null) {
+                                                    producto.ProductoId = 1
+                                                } else {
+                                                    producto.ProductoId = last_producto.ProductoId!! + 1
+                                                }
+                                            }
+                                            producto.EmailProductor=usuario?.Email
+                                            producto.NombreProductor="${usuario?.Nombre} ${usuario?.Apellidos}"
+                                            producto.CodigoUp=unidaProductiva?.Unidad_Productiva_Id.toString()
+                                            producto.Ciudad=unidaProductiva?.Nombre_Ciudad
+                                            producto.Departamento=unidaProductiva?.Nombre_Departamento
+                                            producto.TipoProductoId=detalleTipoProducto.TipoProductoId
+                                            producto.NombreCultivo= cultivo.Nombre
+                                            producto.NombreLote= if(lote!=null)lote.Nombre else null
+                                            producto.NombreUnidadProductiva= if(unidaProductiva!=null)unidaProductiva.nombre else null
+                                            producto.NombreUnidadMedidaCantidad=if(producto.UnidadMedida!= null)producto.UnidadMedida?.Descripcion else null
+                                            producto.NombreCalidad=if(producto.Calidad!=null)producto.Calidad?.Nombre else null
+                                            producto.NombreUnidadMedidaPrecio=producto.PrecioUnidadMedida
+                                            producto.Usuario_Logued=getLastUserLogued()?.Id
+                                            producto.NombreDetalleTipoProducto=detalleTipoProducto.Nombre
+                                            producto.Estado_Sincronizacion=true
+                                            producto.Estado_SincronizacionUpdate=true
+                                            try {
+                                                val base64String = producto?.Imagen
+                                                val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                                val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                                producto.blobImagen = Blob(byte)
+                                            }catch (ex:Exception){
+                                                var ss= ex.toString()
+                                                Log.d("Convert Image", "defaultValue = " + ss);
+                                            }
+
+                                            producto.save()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
+                        postEventOk(RequestEventProductor.READ_EVENT,getListProductos(tipoProductoId),null)
+
+                    } else {
+                        postEventError(RequestEventProductor.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    }
+                }
+                override fun onFailure(call: Call<GetProductosByTipoResponse>?, t: Throwable?) {
+                    postEventError(RequestEventProductor.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            })
+
+
+            /*
+
+
+
             callProductos?.enqueue(object : Callback<GetProductosByTipoResponse> {
                 override fun onResponse(call: Call<GetProductosByTipoResponse>?, response: Response<GetProductosByTipoResponse>?) {
                     if (response != null && response.code() == 200) {
@@ -276,8 +573,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                 override fun onFailure(call: Call<GetProductosByTipoResponse>?, t: Throwable?) {
                     postEventError(RequestEventProductor.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
-            })
-
+            }*/
 
         }else{
 

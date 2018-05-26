@@ -8,6 +8,10 @@ import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleT
  */
 class GetProductosByTipoResponse {
 
+    ///@SerializedName("value")
+    //var value: MutableList<DetalleTipoProducto>? = null
+
+
     @SerializedName("value")
-    var value: MutableList<DetalleTipoProducto>? = null
+    var value: MutableList<ViewProducto>? = null
 }
