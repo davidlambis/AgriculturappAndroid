@@ -390,7 +390,12 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val count = supportFragmentManager.backStackEntryCount
         if (count == 1) {
             super.onBackPressed()
-            replaceCleanFragment(MainMenuFragment())
+
+            if (getLastUserLogued()?.RolNombre.equals(RolResources.PRODUCTOR)) {
+                replaceCleanFragment(MainMenuFragment())
+            } else if (getLastUserLogued()?.RolNombre.equals(RolResources.COMPRADOR)) {
+                replaceCleanFragment(ProductosCompradorFragment())
+            }
 
         } else {
             supportFragmentManager.popBackStack()

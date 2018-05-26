@@ -475,6 +475,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             viewDialog?.txtLoteSelected?.text = cultivo.NombreLote
             viewDialog?.spinnerUnidadMedidaCosecha?.setText(cultivo.Nombre_Unidad_Medida)
            //viewDialog?.edtNombreCultivo?.setText(cultivo.Nombre)
+            viewDialog?.edtDescripcionCultivo?.setText(cultivo.Descripcion)
             viewDialog?.edtSiembraTotal?.setText(cultivo.siembraTotal.toString())
             viewDialog?.edtFechaInicio?.setText(cultivo.stringFechaInicio)
             viewDialog?.edtFechaInicio?.setText(cultivo.stringFechaInicio)
