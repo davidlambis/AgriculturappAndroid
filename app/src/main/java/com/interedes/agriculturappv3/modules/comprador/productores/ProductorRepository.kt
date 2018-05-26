@@ -99,11 +99,11 @@ class ProductorRepository:IMainViewProductor.Repository {
                             usuario.FechaRegistro=item.fecharegistro_usuario
                             usuario.Fotopefil=item.fotoperfil_usuario
                             usuario.Identificacion= item.identificacion_usuario
-
-
+                            usuario.PhoneNumber=item.phone_number_usuario
+                            usuario.NumeroCuenta=item.numero_cuenta_usuario
                             usuario.save()
 
-                            //Nombre_Usuario,Nro_Movil_Usuario,Numero_Cuenta_Usuario,Phone_Number_Usuario,UserName_Usuario,
+                          
 
 
                             //TODO Detalle Producto
