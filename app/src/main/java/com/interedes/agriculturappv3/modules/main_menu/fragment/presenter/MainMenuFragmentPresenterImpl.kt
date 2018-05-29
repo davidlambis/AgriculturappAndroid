@@ -66,7 +66,10 @@ class MainMenuFragmentPresenterImpl(var view: MainMenuFragmentView?) : MainMenuF
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             var extras = intent.extras
-            view?.onEventBroadcastReceiver(extras, intent);
+            if(extras!=null){
+                view?.onEventBroadcastReceiver(extras, intent);
+            }
+
         }
     }
 

@@ -267,6 +267,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                                     producto.ProductoId = last_producto.ProductoId!! + 1
                                 }
                             }
+                            producto.Id_Remote= item.id
                             producto.CalidadId= item.calidad_id
                             producto.CategoriaId=0
                             producto.Descripcion= item.descripcion_producto
