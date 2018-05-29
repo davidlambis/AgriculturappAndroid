@@ -131,6 +131,7 @@ data class Producto(@PrimaryKey
 
                     @Column(name = "TelefonoProductor")
                     var TelefonoProductor: String? = null,
+                    
 
                     @Column(getterName = "getEstado_Sincronizacion")
                     var Estado_Sincronizacion: Boolean? = false,
