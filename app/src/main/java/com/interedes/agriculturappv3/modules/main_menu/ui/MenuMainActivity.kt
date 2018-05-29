@@ -104,7 +104,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         //fragmentManager.beginTransaction().add(R.id.container, AccountingFragment()).commit()
 
         //Firebase
-        mCurrentUserID = FirebaseAuth.getInstance().currentUser!!.uid
+        mCurrentUserID = FirebaseAuth.getInstance()?.currentUser?.uid
         //init firebase
         mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
         mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
@@ -122,24 +122,33 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     private fun populateTheViews() {
-        mUserDBRef?.child(FirebaseAuth.getInstance().currentUser!!.uid)?.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val currentuser = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
-                try {
-                    val userPhoto = currentuser!!.Imagen
-                    val userName = currentuser!!.Nombre
-                    val userLastName = currentuser!!.Apellido
-                    val userIdentification = currentuser!!.Cedula
-                    Picasso.with(applicationContext).load(userPhoto).placeholder(R.drawable.ic_logo_productor).into(circleImageView)
+        try {
+            if(mUserDBRef!=null){
+                mUserDBRef?.child(FirebaseAuth.getInstance().currentUser?.uid)?.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val currentuser = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
+                        try {
+                            val userPhoto = currentuser?.Imagen
+                            val userName = currentuser?.Nombre
+                            val userLastName = currentuser?.Apellido
+                            val userIdentification = currentuser?.Cedula
+                            Picasso.with(applicationContext).load(userPhoto).placeholder(R.drawable.ic_logo_productor).into(circleImageView)
 
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
 
+                    }
+                })
             }
-        })
+        }catch (ex: Exception){
+           // Log.println(ex)
+
+        }
+
+
     }
 
     fun setAdapterFragment() {

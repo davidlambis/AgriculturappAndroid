@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo_general"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_10"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivClosetDialogOferta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back_button"
+            android:tint="@color/grey_luiyi" />
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="11dp"
+            android:gravity="center"
+            android:text="@string/tittle_oferta"
+            android:textColor="@color/purple"
+            android:textSize="@dimen/text_size_18"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="match_parent"
+            android:layout_height="40sp"
+            android:layout_below="@+id/txtTitle"
+            android:layout_gravity="center"
+            android:layout_marginBottom="-10dp"
+            android:layout_marginTop="-0dp"
+            android:src="@drawable/ic_calification" />
+
+        <View
+            android:id="@+id/division"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/logo"
+            android:layout_marginTop="5dp"
+            android:background="@color/purple" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/margin_24">
+            <!--
+            <ImageView
+                android:id="@+id/ivClosetDialogLote"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@color/light_green_800"
+                android:tint="@color/white"
+                android:contentDescription="@string/app_name"
+                android:scaleType="center"
+                android:src="@android:drawable/ic_menu_close_clear_cancel" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+
+                    <android.support.design.widget.TextInputLayout
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/grey_luiyi"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtCantidadOfertar"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_ic_ofertas_desplegable"
+                            android:drawableStart="@drawable/ic_ic_ofertas_desplegable"
+                            android:hint="@string/cantidad"
+                            android:inputType="textCapWords" />
+                    </android.support.design.widget.TextInputLayout>
+
+
+                    <android.support.design.widget.TextInputLayout
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/grey_luiyi"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtPriceOferta"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_metodo_pago"
+                            android:drawableStart="@drawable/ic_metodo_pago"
+                            android:hint="@string/tittle_price"
+                            android:inputType="textCapWords" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <RelativeLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:id="@+id/txtTitleSubtotal"
+                            android:paddingStart="@dimen/margin_5"
+                            android:text="@string/subtotal"
+                            android:textColor="@color/grey_luiyi"
+                            android:textSize="@dimen/text_size_16" />
+                        <TextView
+                            android:id="@+id/txtValorSubtotal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/txtTitleSubtotal"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:paddingStart="@dimen/margin_5"
+                            android:text=""
+                            android:textSize="@dimen/text_size_16"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+
+                    <TextView
+                        android:id="@+id/txtValortotal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/tittle_descripcion_total_oferta"
+                        android:textColor="@color/grey_luiyi"
+                        android:paddingStart="@dimen/margin_5"
+                        android:textSize="@dimen/text_size_20"
+                        android:textStyle="italic" />
+
+
+
+
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnSendOferta"
+                    style="@style/button"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/margin_80"
+                    android:background="@color/purple"
+                    android:text="@string/ofertar" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

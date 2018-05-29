@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/container_fragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".modules.comprador.detail_producto.DetalleProductoFragment">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_3">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_10"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivBackButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_back_button" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/logoTipoProducto"
+
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_productos"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/txtTipoProducto"
+                    android:layout_marginLeft="@dimen/margin_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_toEndOf="@+id/logoTipoProducto"
+                    android:text=""
+                    android:textAlignment="center"
+                    android:textColor="@color/grey_luiyi" />
+
+            </RelativeLayout>
+
+
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_1"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="1dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardUseCompatPadding="true"
+                >
+
+                <LinearLayout
+                    android:background="@drawable/sombra_drawing_up"
+                    android:padding="@dimen/margin_3"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:src="@drawable/default_avata"
+                                android:id="@+id/contentIcon"
+                                android:layout_width="50dp"
+                                android:layout_height="wrap_content"
+                                />
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:paddingStart="@dimen/margin_5"
+                            android:paddingLeft="@dimen/margin_5"
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:orientation="vertical"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/txtNombreProductor"
+                                android:textSize="@dimen/text_size_15"
+                                android:gravity="start"
+                                android:textColor="@color/grey_luiyi"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""/>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginBottom="@dimen/margin_5"
+                                android:background="@color/grey_luiyi" />
+
+                            <android.support.v7.widget.AppCompatRatingBar
+                                android:id="@+id/ratingBar"
+                                android:numStars="5"
+                                android:stepSize=".1"
+                                style="@style/RatingBar"
+                                android:layout_width="wrap_content"
+                                android:progressBackgroundTint="@color/colorPrimary"
+                                android:progressTint="@color/dark_green"
+                                android:secondaryProgressTint="@color/colorPrimary"
+                                android:layout_height="match_parent" />
+
+                            <LinearLayout
+                                android:gravity="center|left"
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:src="@drawable/ic_celular"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    />
+
+                                <TextView
+                                    android:id="@+id/txtTelefono"
+                                    android:textSize="@dimen/text_size_15"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=""/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:gravity="center|left"
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:src="@drawable/ic_correo"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    />
+
+                                <TextView
+                                    android:id="@+id/txtEmail"
+                                    android:textSize="@dimen/text_size_12"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=""/>
+                            </LinearLayout>
+
+
+
+
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:gravity="center"
+                            android:layout_weight="1.9"
+                            android:layout_width="match_parent"
+                            android:orientation="vertical"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/btnConatctProductor"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_ic_agrapp_sms" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_1"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="1dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardUseCompatPadding="true"
+                >
+
+                <LinearLayout
+                    android:background="@drawable/sombra_drawing_up"
+                    android:padding="@dimen/margin_3"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="@dimen/margin_5"
+                            android:background="@color/grey_luiyi" />
+                        <TextView
+                            android:id="@+id/txtNombreProducto"
+                            android:textSize="@dimen/text_size_15"
+                            android:textColor="@color/grey_luiyi"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cage caturro"/>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="@dimen/margin_5"
+                            android:background="@color/grey_luiyi" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+                            <ImageView
+                                android:adjustViewBounds="true"
+                                android:scaleType="centerInside"
+                                android:src="@drawable/ic_produccion_cultivo"
+                                android:id="@+id/contenIconProducto"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                />
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:paddingStart="@dimen/margin_5"
+                            android:paddingLeft="@dimen/margin_5"
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:orientation="vertical"
+                            android:layout_height="wrap_content">
+
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"
+                                android:text="@string/tittle_ubicacion"
+                                />
+                            <TextView
+                                android:id="@+id/txtUbicacion"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"
+                                android:text="@string/tittle_date_avalilable"
+                                />
+
+                            <TextView
+                                android:id="@+id/txtFechaDisponibilidad"
+                                android:gravity="start"
+                                android:layout_gravity="start"
+                                android:textSize="@dimen/text_size_12"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text=""/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"
+                                android:text="@string/tittle_disponibilidad"
+                                />
+
+                            <TextView
+                                android:id="@+id/txtDisponibilidad"
+                                android:gravity="start"
+                                android:layout_gravity="start"
+                                android:textSize="@dimen/text_size_12"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text=""/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"
+                                android:text="@string/tittle_price"
+                                />
+
+                            <TextView
+                                android:id="@+id/txtPrecio"
+                                android:gravity="start"
+                                android:layout_gravity="start"
+                                android:textColor="@color/black"
+
+                                android:textSize="@dimen/text_size_15"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text=""/>
+
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
+            <LinearLayout
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+              <Button
+                  android:id="@+id/btnOfertar"
+                  android:textColor="@color/white_solid"
+                  android:background="@color/colorPrimary"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/tittle_ofertar"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+
+
+</FrameLayout>

@@ -30,7 +30,6 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
-import com.interedes.agriculturappv3.R.id.*
 import com.interedes.agriculturappv3.activities.registration.register_user.repository.RegisterUserRepository
 import com.interedes.agriculturappv3.activities.registration.register_user.repository.RegisterUserRepositoryImpl
 import com.interedes.agriculturappv3.modules.models.usuario.User
@@ -306,7 +305,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
      fun showAlertRegistroExitoso() {
         val inflater = this.layoutInflater
-        var viewDialogFilter = inflater.inflate(R.layout.register_user_success, null)
+        var viewDialogFilter = inflater.inflate(R.layout.alert_success, null)
 
         val dialog = MaterialDialog.Builder(this)
                 .title(title)

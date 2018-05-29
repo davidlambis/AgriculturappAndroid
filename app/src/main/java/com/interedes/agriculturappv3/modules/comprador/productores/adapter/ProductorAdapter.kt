@@ -65,6 +65,10 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
 
         }
 
+        fun notifyDataChanged() {
+            notifyDataSetChanged()
+        }
+
         fun clear() {
             lista.clear()
             notifyDataSetChanged()

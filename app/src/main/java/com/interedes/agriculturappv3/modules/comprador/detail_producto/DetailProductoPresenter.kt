@@ -1,12 +1,13 @@
-package com.interedes.agriculturappv3.modules.comprador.productores
+package com.interedes.agriculturappv3.modules.comprador.detail_producto
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import com.google.firebase.database.DatabaseReference
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
+import com.interedes.agriculturappv3.modules.comprador.detail_producto.events.RequestEventDetalleProducto
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.services.Const
@@ -15,21 +16,22 @@ import org.greenrobot.eventbus.Subscribe
 import java.util.ArrayList
 
 
-class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewProductor.Presenter {
+class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):IMainViewDetailProducto.Presenter {
 
-    var interactor: IMainViewProductor.Interactor? = null
+    var interactor: IMainViewDetailProducto.Interactor? = null
     var eventBus: EventBus? = null
+
 
     //GLOBALS
     var listTipoProducto:List<Producto>?= ArrayList<Producto>()
 
     companion object {
-        var instance: ProductorPresenter? = null
+        var instance: DetailProductoPresenter? = null
     }
 
     init {
         instance = this
-        interactor = ProductorInteractor()
+        interactor = DetailProductoInteractor()
         eventBus = GreenRobotEventBus()
     }
 
@@ -69,50 +71,50 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
 
     //region Suscribe Events
     @Subscribe
-    override fun onEventMainThread(event: RequestEventProductor?) {
+    override fun onEventMainThread(event: RequestEventDetalleProducto?) {
         when (event?.eventType) {
-            RequestEventProductor.READ_EVENT -> {
-                var list = event.mutableList as List<Producto>
-                listTipoProducto=list
-                mainView?.setListProducto(list)
-                mainView?.hideProgress()
-                mainView?.hideProgressHud()
 
-            }
 
-            RequestEventProductor.ERROR_EVENT -> {
+            RequestEventDetalleProducto.ERROR_EVENT -> {
                 onMessageError(event.mensajeError)
             }
 
-            RequestEventProductor.ITEM_EVENT -> {
+            RequestEventDetalleProducto.PRODUCTO_EVENT -> {
                 var producto = event.objectMutable as Producto
-                mainView?.navigateDetalleTipoProductoUser(producto)
             }
 
-            RequestEventProductor.LOAD_DATA_FIRTS -> {
-                var list = event.mutableList as List<Producto>
-                listTipoProducto=list
-                mainView?.setListProductoFirts(list)
-                mainView?.hideProgress()
-                mainView?.hideProgressHud()
 
-
-            }
 
         }
     }
     //endregion
 
-    //region Request Repository
-    override fun getListProducto(tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean) {
-        mainView?.showProgress()
-        mainView?.showProgressHud()
-        interactor?.execute(checkConnection(),tipoProducto,top,skip,isFirst)
+    //region VALIDACIONES
+    //region Methods
+    override fun validarCamposAddOferta(): Boolean? {
+        if (mainView?.validarListasAddOferta() == true) {
+            return true
+        }
+        return false
     }
 
-    override fun getTipoProducto(tipoProducto: Long): TipoProducto? {
-        return interactor?.getTipoProducto(tipoProducto)
+    //endregion
+
+    //region METHODS
+    override fun getProducto(producto_id: Long): Producto? {
+       return interactor?.getProducto(producto_id)
     }
+
+    override fun getTipoProducto(tipo_producto_id: Long): TipoProducto? {
+        return  interactor?.getTipoProducto(tipo_producto_id)
+    }
+    override fun verificateCantProducto(producto_id: Long?, catnidad: Double?): Boolean? {
+       return interactor?.verificateCantProducto(producto_id,catnidad)
+    }
+
+
+
+    //endregion
 
     //region Messages/Notificaciones
     private fun onMessageOk() {

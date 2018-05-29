@@ -218,7 +218,6 @@
     <string name="error_date">La fecha limite no puede ser inferior a la fecha actual</string>
 
 
-
     <string name="title_alert_delete_producto">¿Está seguro de eliminar este producto?</string>
     <string name="spinner_producto">Producto</string>
     <string name="select_product_ofertas">Selecciona el producto para consultar sus ofertas</string>
@@ -294,6 +293,7 @@
     <string name="cantidad_estimada">%1$,.0f / %2$s</string>
     <string name="selected">Seleccionar</string>
     <string name="send">Enviar</string>
+    <string name="ofertar">Ofertar</string>
 
     <string name="agregar">Agregar</string>
     <string name="filtrar">Filtrar</string>
@@ -349,7 +349,6 @@
     <string name="tittle_chat_online">Chat en Linea</string>
 
 
-
     <string-array name="array_type_get_location_with_conection">
         <item>Ubicación GPS</item>
         <item>Ubicación Manual</item>
@@ -382,7 +381,6 @@
     <string name="offline">Desconectado</string>
 
 
-
     <string name="select_type_chat">¿Porfavor selecciona una opcion?</string>
 
 
@@ -400,8 +398,22 @@
 
     <!--COMPRADOR MODULE-->
     <string name="tittle_productos">Productos</string>
+    <string name="tittle_detail_productos">Detalle Productos</string>
+
+    <string name="tittle_ofertar">Ofertar !</string>
     <string name="tittle_productos_interes">Estos son los productos de tu interes !Selecciona uno!</string>
 
+
+    <!--COMPRADOR OFERTA-->
+    <string name="tittle_oferta">Oferta !</string>
+    <string name="tittle_total_oferta">Subtotal $</string>
+    <string name="tittle_descripcion_total_oferta">El total de su oferta es</string>
+
+    <string name="verifcate_cantidad_oferta">La cantidad supera el total ofertado</string>
+
+    <string name="content_oferta_tittle">Vas hacer una oferta al señor  <![CDATA[<b>%1$s</b>]]></string>
+
+    <string name="content_oferta_confirm"> <![CDATA[<b>Oferta</b>]]></string>
 
     <!--Lista de productos-->
     <string name="tittle_ubicacion">Ubicacion</string>

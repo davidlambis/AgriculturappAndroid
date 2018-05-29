@@ -47,14 +47,13 @@ class ProductorRepository:IMainViewProductor.Repository {
         return tipoProducto
     }
 
-    override fun getListTipoProductos(checkConection: Boolean,tipoProductoId:Long,top:Int,skip:Int) {
+    override fun getListTipoProductos(checkConection: Boolean,tipoProductoId:Long,top:Int,skip:Int,isFirst:Boolean) {
 
         if(checkConection){
             //Get Productos by user
             val queryProductos = Listas.queryGeneralLong("tipo_producto_id",tipoProductoId)
-
             val callProductos = apiService?.getProductosByTipoProductos(queryProductos,top,skip)
-
+           // val callProductos = apiService?.getProductosByTipoOffPaginate(queryProductos)
             callProductos?.enqueue(object : Callback<GetProductosByTipoResponse> {
 
 
@@ -85,6 +84,8 @@ class ProductorRepository:IMainViewProductor.Repository {
 
                         val list = response.body()?.value as MutableList<ViewProducto>
 
+
+                        var listProductos=ArrayList<Producto>()
 
                         for (item in list){
 
@@ -244,6 +245,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                             cultivo.Nombre_Detalle_Tipo_Producto=item.nombre_detalle_tipoproducto
                             cultivo.Id_Tipo_Producto= detalleTipoProducto.TipoProductoId
                             cultivo.Nombre_Unidad_Medida=item.descripcion_unidadmedida_cultivo
+
                             cultivo.EstadoSincronizacion=true
                             cultivo.Estado_SincronizacionUpdate=true
                             cultivo.save()
@@ -296,6 +298,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                             producto.NombreUnidadMedidaPrecio=producto.PrecioUnidadMedida
                             producto.Usuario_Logued=getLastUserLogued()?.Id
                             producto.NombreDetalleTipoProducto=detalleTipoProducto.Nombre
+                            producto.TelefonoProductor=usuario.PhoneNumber
                             producto.Estado_Sincronizacion=true
                             producto.Estado_SincronizacionUpdate=true
 
@@ -309,8 +312,17 @@ class ProductorRepository:IMainViewProductor.Repository {
                                 Log.d("Convert Image", "defaultValue = " + ss);
                             }
                             producto.save()
+
+                            listProductos.add(producto)
                         }
-                        postEventOk(RequestEventProductor.READ_EVENT,getListProductos(tipoProductoId),null)
+
+                        if(isFirst){
+                            postEventOk(RequestEventProductor.LOAD_DATA_FIRTS,listProductos,null)
+                        }else{
+                            postEventOk(RequestEventProductor.READ_EVENT,listProductos,null)
+                        }
+
+
 
                     } else {
                         postEventError(RequestEventProductor.ERROR_EVENT, "Comprueba tu conexión a Internet")
@@ -323,9 +335,6 @@ class ProductorRepository:IMainViewProductor.Repository {
 
 
             /*
-
-
-
             callProductos?.enqueue(object : Callback<GetProductosByTipoResponse> {
                 override fun onResponse(call: Call<GetProductosByTipoResponse>?, response: Response<GetProductosByTipoResponse>?) {
                     if (response != null && response.code() == 200) {
@@ -549,14 +558,11 @@ class ProductorRepository:IMainViewProductor.Repository {
             }*/
 
         }else{
-
-
-
+            postEventOk(RequestEventProductor.LOAD_DATA_FIRTS,getListProductos(tipoProductoId),null)
         }
     }
 
     fun getListProductos(tipoProducto: Long): List<Producto>? {
-
         val productos = SQLite.select().from(Producto::class.java).where(Producto_Table.TipoProductoId.eq(tipoProducto)).queryList()
         return productos
     }
@@ -565,8 +571,6 @@ class ProductorRepository:IMainViewProductor.Repository {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
         return usuarioLogued
     }
-
-
 
 
     fun getLastUp(): Unidad_Productiva? {

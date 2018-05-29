@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.modules.comprador.productores.adapter
 
 import android.app.Activity
+import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -12,6 +13,9 @@ import android.widget.RatingBar
 import android.widget.TextView
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.libs.EventBus
+import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.squareup.picasso.Picasso
@@ -19,106 +23,138 @@ import com.squareup.picasso.Picasso
 /**
  * Created by EnuarMunoz on 28/05/18.
  */
-class ProductorMoreAdapter(recyclerView:RecyclerView, val products:ArrayList<Producto>? , activi: Activity): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         var mUsersDBRef: DatabaseReference? = null
-        private val VIEW_TYPE_ITEM = 0
-        private val VIEW_TYPE_LOADING = 1
-        private var onLoadMoreListener: OnLoadMoreListener? = null
-        private var isLoading: Boolean = false
-        private var activity: Activity? = null
-        private val visibleThreshold = 5
-        private var lastVisibleItem: Int = 0
-        private var totalItemCount:Int = 0
-    }
 
+        val TYPE_MOVIE = 0
+        val TYPE_LOAD = 1
+        var contextLocal: Context? = null
+
+        var loadMoreListener: OnLoadMoreListener? = null
+        var isLoading = false
+        var isMoreDataAvailable = true
+
+
+        var eventBus: EventBus? = null
+        fun postEvento(type: Int, producto: Producto) {
+            var productonMutable = producto as Object
+            val event = RequestEventProductor(type, null, productonMutable, null)
+            event.eventType = type
+            eventBus?.post(event)
+        }
+    }
 
     init {
-        mUsersDBRef= FirebaseDatabase.getInstance().reference
-        activity = activi
-
-        val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                totalItemCount = linearLayoutManager.itemCount
-                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition()
-                if (!isLoading && totalItemCount <= lastVisibleItem + visibleThreshold) {
-                    if (onLoadMoreListener != null) {
-                        onLoadMoreListener!!.onLoadMore()
-                    }
-                    isLoading = true
-                }
-            }
-        })
+        mUsersDBRef = FirebaseDatabase.getInstance().reference
+        eventBus = GreenRobotEventBus()
+        contextLocal = context
     }
 
-
-    fun setOnLoadMoreListener(mOnLoadMoreListener: OnLoadMoreListener) {
-        onLoadMoreListener = mOnLoadMoreListener
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (position >= itemCount - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
+            isLoading = true
+            loadMoreListener?.onLoadMore()
+        }
+        if (getItemViewType(position) == TYPE_MOVIE) {
+            (holder as ProductHolder).bindData(lista?.get(position)!!)
+        }
+        //No else part needed as load holder doesn't bind any data
     }
 
-
-    override fun getItemViewType(position: Int): Int {
-        return if (products?.get(position) == null) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-
-        var viewHolder: View? = null
         val inflater = LayoutInflater.from(parent.context)
-
-        when (viewType) {
-            VIEW_TYPE_ITEM -> viewHolder = getViewHolder(parent, inflater)
-            VIEW_TYPE_LOADING -> {
-                viewHolder= inflater.inflate(R.layout.item_progress, parent, false)
-            }
+        return if (viewType == TYPE_MOVIE) {
+            ProductHolder(inflater.inflate(R.layout.content_list_producto_productor, parent, false))
+        } else {
+            LoadHolder(inflater.inflate(R.layout.item_progress, parent, false))
         }
-
-        return UserViewHolder(viewHolder)
-
     }
+
 
     private fun getViewHolder(parent: ViewGroup, inflater: LayoutInflater): View? {
         val v1 = inflater.inflate(R.layout.content_list_producto_productor, parent, false)
         return v1
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
+    override fun getItemViewType(position: Int): Int {
+        return if (lista?.get(position)?.Enabled?.equals(true)!!) {
+            TYPE_MOVIE
+        } else {
+            TYPE_LOAD
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return lista?.size!!
+    }
 
 
+    fun setItems(newItems: List<Producto>) {
+        lista?.addAll(newItems)
+        notifyDataSetChanged()
 
+    }
 
-        if (holder is UserViewHolder) {
-            val data = products?.get(position)
-            holder.txtProducto?.setText(data?.Nombre)
+     /*fun clear() {
+         lista.clear()
+         notifyDataSetChanged()
+     }*/
 
-            var disponibilidad=""
+    /* VIEW HOLDERS */
 
-            if(data?.Stock.toString().contains(".0")){
-                disponibilidad= String.format(activity!!.getString(R.string.price_empty_signe),
-                        data?.Stock)
-            }else{
-                disponibilidad=data?.Stock.toString()
+    class ProductHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var txtNombreProductor: TextView? = null
+        var imgProductor: ImageView? = null
+        var ratingBar: RatingBar? = null
+        var txtProducto: TextView? = null
+        var txtUbicacion: TextView? = null
+        var txtFechaDisponibilidad: TextView? = null
+        var txtDisponibilidad: TextView? = null
+        var txtPrecio: TextView? = null
+
+        init {
+            txtNombreProductor = itemView.findViewById(R.id.txtNombreProductor)
+            imgProductor = itemView.findViewById(R.id.imgProductor)
+
+            ratingBar = itemView.findViewById(R.id.ratingBar)
+            txtProducto = itemView.findViewById(R.id.txtProducto)
+            txtUbicacion = itemView.findViewById(R.id.txtUbicacion)
+            txtFechaDisponibilidad = itemView.findViewById(R.id.txtFechaDisponibilidad)
+            txtDisponibilidad = itemView.findViewById(R.id.txtDisponibilidad)
+            txtPrecio = itemView.findViewById(R.id.txtPrecio)
+        }
+
+        fun bindData(data: Producto) {
+            txtProducto?.setText(data.Nombre)
+
+            var disponibilidad = ""
+
+            if (data.Stock.toString().contains(".0")) {
+                disponibilidad = String.format(contextLocal?.getString(R.string.price_empty_signe)!!,
+                        data.Stock)
+            } else {
+                disponibilidad = data.Stock.toString()
             }
 
-            holder.ratingBar?.rating = 3.5f
+            ratingBar?.rating = 3.5f
 
-            holder.txtNombreProductor?.setText(data?.NombreProductor)
-            holder.txtDisponibilidad?.setText(String.format("%s: %s %s", data?.NombreCalidad,disponibilidad,data?.NombreUnidadMedidaCantidad))
-            holder.txtFechaDisponibilidad?.setText(data?.getFechaLimiteDisponibilidadFormat())
+            txtNombreProductor?.setText(data.NombreProductor)
+            txtDisponibilidad?.setText(String.format("%s: %s %s", data.NombreCalidad, disponibilidad, data.NombreUnidadMedidaCantidad))
+            txtFechaDisponibilidad?.setText(data.getFechaLimiteDisponibilidadFormat())
 
-            holder.txtPrecio?.setText(String.format(activity!!.getString(R.string.price_producto),
-                    data?.Precio,data?.PrecioUnidadMedida))
+            txtPrecio?.setText(String.format(contextLocal!!.getString(R.string.price_producto),
+                    data.Precio, data.PrecioUnidadMedida))
 
-            holder.txtUbicacion?.setText(String.format("%s / %s", data?.Ciudad, data?.Departamento))
-            holder.txtFechaDisponibilidad?.setText(data?.getFechaLimiteDisponibilidadFormat())
+            txtUbicacion?.setText(String.format("%s / %s", data.Ciudad, data.Departamento))
+            txtFechaDisponibilidad?.setText(data.getFechaLimiteDisponibilidadFormat())
 
 
-            val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(data?.EmailProductor)
+            val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(data.EmailProductor)
             query?.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
@@ -129,7 +165,7 @@ class ProductorMoreAdapter(recyclerView:RecyclerView, val products:ArrayList<Pro
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                             try {
                                 try {
-                                    Picasso.with(activity).load(user?.Imagen).placeholder(R.drawable.default_avata).into(holder.imgProductor)
+                                    Picasso.with(contextLocal).load(user?.Imagen).placeholder(R.drawable.default_avata).into(imgProductor)
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }
@@ -144,50 +180,36 @@ class ProductorMoreAdapter(recyclerView:RecyclerView, val products:ArrayList<Pro
 
                 }
             })
-        } else if (holder is LoadingViewHolder) {
-            holder.progressBar.isIndeterminate = true
+
+
+            itemView.setOnClickListener {
+                postEvento(RequestEventProductor.ITEM_EVENT, data)
+            }
         }
     }
 
-    override fun getItemCount(): Int {
-        return if (products == null) 0 else products.size
+
+    class LoadHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    fun setMoreDataAvailable(moreDataAvailable: Boolean) {
+        isMoreDataAvailable = moreDataAvailable
     }
 
-    fun setLoaded() {
+    /* notifyDataSetChanged is final method so we can't override it
+         call adapter.notifyDataChanged(); after update the list
+         */
+    fun notifyDataChanged() {
+        notifyDataSetChanged()
         isLoading = false
     }
 
-    private inner class LoadingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var progressBar: ProgressBar
 
-        init {
-            progressBar=view.findViewById(R.id.progressBar1)
-        }
+    interface OnLoadMoreListener {
+        fun onLoadMore()
     }
 
-    private inner class UserViewHolder(view: View?) : RecyclerView.ViewHolder(view) {
-        var txtNombreProductor: TextView? = null
-        var imgProductor: ImageView? = null
-
-        var ratingBar: RatingBar? = null
-        var txtProducto: TextView? = null
-        var txtUbicacion: TextView? = null
-        var txtFechaDisponibilidad: TextView? = null
-        var txtDisponibilidad: TextView? = null
-        var txtPrecio: TextView? = null
-
-        init {
-             txtNombreProductor = itemView.findViewById(R.id.txtNombreProductor)
-             imgProductor = itemView.findViewById(R.id.imgProductor)
-
-             ratingBar = itemView.findViewById(R.id.ratingBar)
-             txtProducto = itemView.findViewById(R.id.txtProducto)
-             txtUbicacion = itemView.findViewById(R.id.txtUbicacion)
-             txtFechaDisponibilidad = itemView.findViewById(R.id.txtFechaDisponibilidad)
-             txtDisponibilidad = itemView.findViewById(R.id.txtDisponibilidad)
-             txtPrecio = itemView.findViewById(R.id.txtPrecio)
-
-        }
+    fun setLoadMoreListener(loadMoreListeners: OnLoadMoreListener) {
+        loadMoreListener = loadMoreListeners
     }
 
 

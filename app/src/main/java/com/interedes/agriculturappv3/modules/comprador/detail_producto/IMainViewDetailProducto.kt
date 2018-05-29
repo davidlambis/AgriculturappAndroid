@@ -1,14 +1,14 @@
-package com.interedes.agriculturappv3.modules.comprador.productores
+package com.interedes.agriculturappv3.modules.comprador.detail_producto
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
+import com.interedes.agriculturappv3.modules.comprador.detail_producto.events.RequestEventDetalleProducto
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 
-interface IMainViewProductor {
+interface IMainViewDetailProducto {
 
     interface MainView {
         //Progress and progress Hud
@@ -17,10 +17,8 @@ interface IMainViewProductor {
         fun showProgressHud()
         fun hideProgressHud()
 
-        //Fun  CRUD
-        fun setListProducto(listTipoProducto: List<Producto>)
-        fun setListProductoFirts(listTipoProducto: List<Producto>)
-        fun setResults(productos:Int)
+        //Validaciones
+        fun validarListasAddOferta(): Boolean
 
         //Response Notify
         fun requestResponseOK()
@@ -30,9 +28,7 @@ interface IMainViewProductor {
 
         //Dialog
         fun verificateConnection(): AlertDialog?
-
-        //Navigate
-        fun navigateDetalleTipoProductoUser(poducto:Producto)
+        fun showAlertDialogOfertar(producto:Producto?)
 
 
         //Events
@@ -46,24 +42,32 @@ interface IMainViewProductor {
         fun onPause(context: Context)
 
         //Events
-        fun onEventMainThread(requestEvent: RequestEventProductor?)
+        fun onEventMainThread(requestEvent: RequestEventDetalleProducto?)
+
+        //validaciones
+        fun validarCamposAddOferta(): Boolean?
 
         //Methods
-        fun getListProducto(tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean)
-        fun getTipoProducto(tipoProducto:Long):TipoProducto?
+        fun getProducto(producto_id:Long):Producto?
+        fun getTipoProducto(tipo_producto_id:Long):TipoProducto?
+        fun verificateCantProducto(producto_id:Long?,catnidad:Double?):Boolean?
 
         //Conecttion
         fun checkConnection(): Boolean
     }
 
     interface Interactor {
-        fun getTipoProducto(tipoProducto:Long):TipoProducto?
-        fun execute(checkConection:Boolean,tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean)
+        fun getProducto(producto_id:Long):Producto?
+        fun getTipoProducto(tipo_producto_id:Long):TipoProducto?
+        fun verificateCantProducto(producto_id:Long?,catnidad:Double?):Boolean?
+
     }
 
     interface Repository {
-        fun getTipoProducto(tipoProducto:Long):TipoProducto?
-        fun getListTipoProductos(checkConection:Boolean,tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean)
+        fun getProducto(producto_id:Long):Producto?
+        fun getTipoProducto(tipo_producto_id:Long):TipoProducto?
+        fun verificateCantProducto(producto_id:Long?,catnidad:Double?):Boolean?
+
     }
 
 }

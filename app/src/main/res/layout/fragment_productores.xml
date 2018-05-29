@@ -11,25 +11,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_gravity="center"
-            android:gravity="center"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_10"
             android:orientation="horizontal">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/logoTipoProducto"
-                android:layout_width="40dp"
-                android:layout_marginRight="@dimen/margin_3"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_productos" />
-            <TextView
-                android:id="@+id/txtTipoProducto"
-                android:textColor="@color/grey_luiyi"
+
+            <ImageView
+                android:id="@+id/ivBackButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""/>
-        </LinearLayout>
+                android:src="@drawable/ic_back_button" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/logoTipoProducto"
+
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_productos"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/txtTipoProducto"
+                android:layout_marginLeft="@dimen/margin_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_toEndOf="@+id/logoTipoProducto"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="@color/grey_luiyi" />
+
+        </RelativeLayout>
 
 
         <View
@@ -42,15 +59,28 @@
 
 
 
-        <LinearLayout
-            android:orientation="horizontal"
+
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+           >
+            <TextView
+                android:id="@+id/txtResults"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:text="@string/results_global_search"
+                android:textColor="@color/black" />
 
-
-        </LinearLayout>
-
-        <include layout="@layout/content_recyclerview" />
+            <android.support.v7.widget.RecyclerView
+                android:layout_below="@+id/txtResults"
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white_solid">
+            </android.support.v7.widget.RecyclerView>
+        </RelativeLayout>
 
 
     </LinearLayout>

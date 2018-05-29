@@ -31,7 +31,7 @@ app:cardUseCompatPadding="true"
             android:layout_height="wrap_content">
 
             <ImageView
-                android:src="@drawable/ic_clientes_azul"
+                android:src="@drawable/default_avata"
                 android:id="@+id/imgProductor"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"

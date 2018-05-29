@@ -6,14 +6,11 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,20 +22,15 @@ import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
-import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_productores.*
 import kotlinx.android.synthetic.main.fragment_productos_comprador.*
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.Toast
-import com.interedes.agriculturappv3.util.EndlessRecyclerViewScrollListener
-import com.interedes.agriculturappv3.util.EndlessScrollListenerKotlin
-import com.interedes.agriculturappv3.R.id.recyclerView
+import com.interedes.agriculturappv3.modules.comprador.detail_producto.DetalleProductoFragment
 import com.interedes.agriculturappv3.modules.comprador.productores.adapter.*
-import com.interedes.agriculturappv3.util.PaginationScrollListener
 
 
-class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefreshLayout.OnRefreshListener {
+class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.MainView, SwipeRefreshLayout.OnRefreshListener {
 
 
     var tipoProductoIdGlobal:Long=0
@@ -46,32 +38,15 @@ class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefresh
     var adapter: ProductorMoreAdapter?=null
     var productosList:ArrayList<Producto>?=ArrayList<Producto>()
 
+
     //Progress
     private var hud: KProgressHUD?=null
 
 
     //Productos
-    private  val  TAG = "MainActivity";
-    //var paginationProductoAdapter:PaginationProductoAdapter?= null;
-    var linearLayoutManager:LinearLayoutManager?=null;
-
-    private val PAGE_START:Int = 1;
-
-    private var isLastPage = false;
-    // limiting to 5 for this tutorial, since total pages in actual API is very large. Feel free to modify.
-    private var TOTAL_PAGES = 5;
-    private var currentPage = PAGE_START;
-    var loadNext=false
-    var PAGE_SIZE=3
-    var isLoading:Boolean = false;
-
-
-
-
-    private var loading = true
+    var PAGE_SIZE=5
     var pastVisiblesItems: Int? = 0
-    var visibleItemCount:Int? = 0
-    var totalItemCount:Int? = 0
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,13 +71,14 @@ class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefresh
             tipoProductoIdGlobal = b.getLong("idtipoProducto")
         }
         (activity as MenuMainActivity).toolbar.title=getString(R.string.tittle_productos)
-        swipeRefreshLayout.setOnRefreshListener(this)
+       // swipeRefreshLayout.setOnRefreshListener(this)
         setupInjection()
+
+        ivBackButton.setOnClickListener(this)
     }
 
-
     private fun setupInjection() {
-        presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,0)
+        loadFirstPageProducts()
         var tipoProducto= presenter?.getTipoProducto(tipoProductoIdGlobal)
         if(tipoProducto!=null){
 
@@ -121,6 +97,8 @@ class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefresh
                 }
             }
         }
+
+
     }
 
 
@@ -130,235 +108,55 @@ class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefresh
     //region ADAPTER
     private fun initAdapter() {
 
-
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+       /*recyclerView.layoutManager = LinearLayoutManager(activity)
         adapter = ProductorMoreAdapter(recyclerView, productosList, activity!!)
-        recyclerView.adapter = adapter
+        recyclerView.adapter = adapter*/
 
-        //set load more listener for the RecyclerView adapter
-        adapter?.setOnLoadMoreListener(object : OnLoadMoreListener {
-            override  fun onLoadMore() {
-                if (productosList?.size!! <= 10) {
-
-
-                    //productosList?.add(null)
-                    adapter?.notifyItemInserted(productosList?.size!! - 1)
-                    Handler().postDelayed({
-                        productosList?.removeAt(productosList?.size!! - 1)
-                        adapter?.notifyItemRemoved(productosList?.size!!)
-
-                        //Generating more data
-                        val index = productosList?.size
-                        val end = index!! + 3
-                        presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,end)
-                    }, 1000)
-                } else {
-                    Toast.makeText(activity, "Loading data completed", Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
-
-       /* //recyclerView?.layoutManager = GridLayoutManager(activity,1)
-        //adapter = ProductorAdapter(ArrayList<Producto>())
-        //recyclerView?.adapter = adapter
-        adapter =  ProductorAdapter(ArrayList<Producto>());
-        //linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        linearLayoutManager = LinearLayoutManager(activity)
-        recyclerView.setLayoutManager(linearLayoutManager)
-
-        //recyclerView.setItemAnimator(DefaultItemAnimator());
-        recyclerView.adapter=adapter
-
-
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (dy > 0)
-                //check for scroll down
-                {
-                    visibleItemCount = linearLayoutManager?.getChildCount()!!
-                    totalItemCount = linearLayoutManager?.getItemCount()
-                    pastVisiblesItems = linearLayoutManager?.findFirstVisibleItemPosition()
-
-                    if (loading) {
-                        if (visibleItemCount!! + pastVisiblesItems!! >= totalItemCount!!) {
-                            loading = false
-                            Log.v("...", "Last Item Wow !")
-                            //Do pagination.. i.e. fetch new data
-                            currentPage += productosList?.size!!
-                            loadNext=true
-                            // mocking network delay for API call
-                            Handler().postDelayed({ presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,currentPage) }, 1000)
-                        }
-                    }
-                }
-            }
-        })
-
-
-        */
-
-        /*
-
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                val visibleItemCount = linearLayoutManager?.getChildCount()
-                val totalItemCount = linearLayoutManager?.getItemCount()
-                val firstVisibleItemPosition = linearLayoutManager?.findFirstVisibleItemPosition()
-
-                if(dx>0){
-                    Toast.makeText(activity,"dx > 0",Toast.LENGTH_SHORT).show()
-                }
-
-                if (!isLoading && !isLastPage) {
-                    if (visibleItemCount!! + firstVisibleItemPosition!! >= totalItemCount!!
-                            && firstVisibleItemPosition >= 0
-                            && totalItemCount >= PAGE_SIZE) {
-
-                        currentPage += productosList?.size!!
-                        loadNext=true
-                        // mocking network delay for API call
-                        Handler().postDelayed({ presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,currentPage) }, 1000)
-
-                        //loadMoreItems()
-                    }
-                }
-
-            }
-        })
-*/
-       /* recyclerView.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager) {
-            override fun loadMoreItems() {
-                this@ProductoresFragment.isLoading = true
-                currentPage += 1
-                loadNext=true
-                // mocking network delay for API call
-                Handler().postDelayed({ presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,currentPage) }, 1000)
-            }
-
-            override fun getTotalPageCount(): Int {
-                return TOTAL_PAGES;
-            }
-
-            override fun isLastPage(): Boolean {
-                return isLastPage;
-            }
-
-            override fun isLoading(): Boolean {
-                return isLoading;
-            }
-
-        })*/
-
-        /*
-        recyclerView?.layoutManager = LinearLayoutManager(activity)
-        adapter = ProductorAdapter(ArrayList<Producto>())
-        recyclerView?.adapter = adapter
-
-
-        recyclerView.setOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                //overallXScroll = overallXScroll + dx
-
-                if(dy>0){
-                    Toast.makeText(activity,"Scroll",Toast.LENGTH_SHORT).show()
-                }
-               // Log.i("check", "overall X  = $overallXScroll")
-
-            }
-        })
-*/
-
-        /*adapter?.setLoadMoreListener(object : ProductorAdapter.OnLoadMoreListener {
+       adapter = ProductorMoreAdapter(productosList, activity)
+        adapter?.setLoadMoreListener(object : ProductorMoreAdapter.OnLoadMoreListener {
             override fun onLoadMore() {
 
-                recyclerView.post {
-                    val index = productosList?.size!! - 1
-                   // loadMore(index)// a method which requests remote data
+
+                if(pastVisiblesItems!!>=PAGE_SIZE){
+                    recyclerView.post {
+
+
+
+                        //val index = productosList?.size!! - 1
+                        val index = productosList?.size!!
+                        loadMore(index)
+                    }
                 }
+
                 //Calling loadMore function in Runnable to fix the
                 // java.lang.IllegalStateException: Cannot call this method while RecyclerView is computing a layout or scrolling error
             }
         })
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.addItemDecoration(VerticalLineDecorator(2))
         recyclerView.adapter = adapter
-        */
-
-        /*
-        val linearLayoutManager = LinearLayoutManager(activity)
-        recyclerView?.setLayoutManager(linearLayoutManager)
-        // Retain an instance so that you can call `resetState()` for fresh searches
-        scrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                if(last==true){
-                    presenter?.getListProducto(tipoProductoIdGlobal,10,page)
-                }
-            }
-        }
-
-        recyclerView?.addOnScrollListener(scrollListener)*/
-
-
-        /*_-----------------------------------*/
-
-        /*
-        var loading = true
-        var pastVisiblesItems: Int
-        var visibleItemCount: Int
-        var totalItemCount: Int
-
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                if (dy > 0)
-                //check for scroll down
-                {
-                    visibleItemCount = linearLayoutManager.getChildCount()
-                    totalItemCount = linearLayoutManager.getItemCount()
-                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition()
-
-                    if (loading) {
-                        if (visibleItemCount + pastVisiblesItems >= totalItemCount) {
-                            loading = false
-
-                            presenter?.getListProducto(tipoProductoIdGlobal,totalItemCount,dx)
-
-                            ///Log.v("...", "Last Item Wow !")
-                            //Do pagination.. i.e. fetch new data
-                        }
-                    }
-                }
-            }
-        })
-        */
-
-        // Adds the scroll listener to RecyclerView
-
-
-
 
     }
 
-
-
-
-     fun loadFirstPage() {
-       presenter?.getListProducto(tipoProductoIdGlobal,10,0)
-
+    private fun loadMore(index: Int) {
+        productosList?.add(Producto(Enabled = false))
+        adapter?.notifyItemInserted(productosList?.size!! - 1)
+        presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,index,false)
     }
 
+    fun loadFirstPageProducts() {
+       presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,0,true)
+    }
 
     //region IMPLEMENTS METHODS INTERFACE
     override fun showProgress() {
-        swipeRefreshLayout.setRefreshing(true);
+        //  swipeRefreshLayout.setRefreshing(true);
     }
 
     override fun hideProgress() {
-        swipeRefreshLayout.setRefreshing(false);
+       // swipeRefreshLayout.setRefreshing(false);
     }
-
-
 
     override fun showProgressHud(){
         hud = KProgressHUD.create(activity)
@@ -372,30 +170,28 @@ class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefresh
         hud?.dismiss()
     }
 
-    override fun setListProducto(listTipoProducto: List<Producto>) {
 
+    override fun setListProductoFirts(listProducto: List<Producto>) {
+        productosList?.clear()
+        productosList?.addAll(listProducto)
+        adapter?.notifyDataChanged()
+        setResults(productosList?.size!!)
+    }
 
-        /*
-        productosList?.addAll(listTipoProducto)
-
-
-        if(loadNext==true){
-            adapter?.removeLoadingFooter();
-            isLoading = false;
+    override fun setListProducto(listProducto: List<Producto>) {
+        productosList?.removeAt(productosList?.size!! - 1)
+        if (listProducto.size > 0) {
+            //add loaded data
+            productosList?.addAll(listProducto!!)
+        } else {//result size 0 means there is no more data available at server
+            //adapter?.setMoreDataAvailable(false)
+            //telling adapter to stop calling load more as no more server data available
+            Toast.makeText(context, "No More Data Available", Toast.LENGTH_LONG).show()
         }
+        adapter?.notifyDataChanged()
 
-        if (currentPage <= TOTAL_PAGES) adapter?.addLoadingFooter();
-        else isLastPage = true
+        pastVisiblesItems=listProducto.size
 
-        adapter?.addAll(listTipoProducto);
-
-        */
-
-        //adapter?.clear()
-        //productosList?.clear()
-        productosList?.addAll(listTipoProducto)
-        adapter?.notifyDataSetChanged()
-        adapter?.setLoaded()
         setResults(productosList?.size!!)
     }
 
@@ -405,7 +201,6 @@ class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefresh
         txtResults.setText(results);
     }
 
-
     override fun requestResponseOK() {
         onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
     }
@@ -413,7 +208,6 @@ class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefresh
     override fun requestResponseError(error: String?) {
         onMessageError(R.color.grey_luiyi, error)
     }
-
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
         val color = Color.WHITE
@@ -451,21 +245,41 @@ class ProductoresFragment : Fragment(),IMainViewProductor.MainView, SwipeRefresh
             }
         }
     }
+    //endregion
+
+
+    //region EVENTS
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.ivBackButton -> {
+                ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
+                (activity as MenuMainActivity).onBackPressed()
+            }
+        }
+    }
+
+    override fun navigateDetalleTipoProductoUser(poducto: Producto) {
+        val bundle = Bundle()
+        bundle.putLong("ProductoId", poducto.ProductoId!!)
+        val detalleproductosFragment: DetalleProductoFragment
+        detalleproductosFragment = DetalleProductoFragment()
+        detalleproductosFragment.arguments = bundle
+        (activity as MenuMainActivity).replaceFragment(detalleproductosFragment)
+    }
 
 
     //endregion
 
-
-
     //region OVERRIDES METHODS
-
     override fun onRefresh() {
-        showProgress()
+        hideProgress()
+       // showProgress()
         //adapter?.clear()
-        productosList?.clear()
-        adapter?.notifyDataSetChanged()
-        adapter?.setLoaded()
-        presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,0)
+        //productosList?.clear()
+        //adapter?.notifyDataSetChanged()
+        //adapter?.setLoaded()
+        //presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,0)
     }
 
 

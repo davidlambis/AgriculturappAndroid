@@ -344,6 +344,9 @@ interface ApiInterface {
     @GET("odata/Agp2/ViewProductos")
     fun getProductosByTipoProductos( @Query("\$filter") filter: String,@Query("\$top") top: Int,@Query("\$skip") skip: Int): Call<GetProductosByTipoResponse>
 
+    @GET("odata/Agp2/ViewProductos")
+    fun getProductosByTipoOffPaginate( @Query("\$filter") filter: String): Call<GetProductosByTipoResponse>
+
 
 
 
