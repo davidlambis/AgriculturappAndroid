@@ -1,6 +1,5 @@
 package com.interedes.agriculturappv3.modules.models.producto
 
-import android.util.Log
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
@@ -130,6 +129,9 @@ data class Producto(@PrimaryKey
                     @Column(name = "EmailProductor")
                     var EmailProductor: String? = null,
 
+                    @Column(name = "TelefonoProductor")
+                    var TelefonoProductor: String? = null,
+
                     @Column(getterName = "getEstado_Sincronizacion")
                     var Estado_Sincronizacion: Boolean? = false,
 
@@ -145,7 +147,7 @@ data class Producto(@PrimaryKey
                     @SerializedName("Calidad")
                     var Calidad:CalidadProducto?=null
 
-                    ) {
+) {
 
     /*override fun toString(): String {
         return Nombre!!
@@ -168,7 +170,7 @@ data class Producto(@PrimaryKey
             val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             return sdf.format(convertedDate)
         }catch (ex:Exception){
-           // Log.println(ex.toString())
+            // Log.println(ex.toString())
             return  ""
         }
     }
@@ -216,4 +218,3 @@ data class Producto(@PrimaryKey
 
 
 }
-
