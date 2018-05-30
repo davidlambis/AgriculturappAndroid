@@ -410,10 +410,12 @@
     <string name="tittle_descripcion_total_oferta">El total de su oferta es</string>
 
     <string name="verifcate_cantidad_oferta">La cantidad supera el total ofertado</string>
+    <string name="oferta_sucess">! Tu oferta a sido enviada !</string>
+    <string name="content_oferta_success">En espera de aceptacion del productor</string>
 
-    <string name="content_oferta_tittle">Vas hacer una oferta al señor  <![CDATA[<b>%1$s</b>]]></string>
 
-    <string name="content_oferta_confirm"> <![CDATA[<b>Oferta</b>]]></string>
+    <string name="content_oferta_tittle">Vas a realizar una oferta al señor %1$s</string>
+    <string name="content_oferta_confirm">%1$s  %2$s de %3$s por</string>
 
     <!--Lista de productos-->
     <string name="tittle_ubicacion">Ubicacion</string>

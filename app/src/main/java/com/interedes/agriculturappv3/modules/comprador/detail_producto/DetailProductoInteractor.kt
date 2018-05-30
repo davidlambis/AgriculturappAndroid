@@ -25,4 +25,7 @@ class DetailProductoInteractor:IMainViewDetailProducto.Interactor {
        return repository?.verificateCantProducto(producto_id,catnidad)
     }
 
+    override fun getListas() {
+        repository?.getListas()
+    }
 }

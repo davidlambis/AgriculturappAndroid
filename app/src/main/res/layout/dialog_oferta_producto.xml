@@ -86,38 +86,82 @@
 
 
 
-                    <android.support.design.widget.TextInputLayout
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_weight="0.4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="@color/grey_luiyi"
+                            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                            <EditText
+                                android:id="@+id/edtCantidadOfertar"
+                                style="@style/editText"
+                                android:inputType="numberDecimal"
+                                android:drawableLeft="@drawable/ic_ic_ofertas_desplegable"
+                                android:drawableStart="@drawable/ic_ic_ofertas_desplegable"
+                                android:hint="@string/cantidad" />
+                        </android.support.design.widget.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/txtUnidadMedida"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:layout_gravity="center"
+                            android:textAlignment="center"
+                            android:textColor="@color/grey_luiyi"
+                            android:textSize="@dimen/text_size_15"
+                            android:textStyle="bold|italic" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColorHint="@color/grey_luiyi"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+                        android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/edtCantidadOfertar"
-                            style="@style/editText"
-                            android:drawableLeft="@drawable/ic_ic_ofertas_desplegable"
-                            android:drawableStart="@drawable/ic_ic_ofertas_desplegable"
-                            android:hint="@string/cantidad"
-                            android:inputType="textCapWords" />
-                    </android.support.design.widget.TextInputLayout>
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="@color/grey_luiyi"
+                            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                            <EditText
+                                android:id="@+id/edtPriceOferta"
+                                style="@style/editText"
+                                android:drawableLeft="@drawable/ic_metodo_pago"
+                                android:drawableStart="@drawable/ic_metodo_pago"
+                                android:hint="@string/tittle_price"
+                                android:inputType="numberDecimal"/>
+                        </android.support.design.widget.TextInputLayout>
+
+                        <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                            android:id="@+id/spinnerMonedaPrecio"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:drawableLeft="@drawable/ic_medicion"
+                            android:drawableStart="@drawable/ic_medicion"
+                            android:hint="@string/spinner_moneda"
+                            android:textAlignment="center"
+                            android:textColorHint="@color/grey_luiyi"
+                            android:textSize="@dimen/text_size_18"
+                            app:met_baseColor="@color/grey_luiyi"
+                            app:met_floatingLabel="normal"
+                            app:met_floatingLabelTextColor="@color/grey_luiyi"
+                            app:met_primaryColor="@color/grey_luiyi"
+                            app:met_textColor="@color/grey_luiyi"
+                            app:met_textColorHint="@color/black_alpha_40" />
+                    </LinearLayout>
 
 
-                    <android.support.design.widget.TextInputLayout
 
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColorHint="@color/grey_luiyi"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                        <EditText
-                            android:id="@+id/edtPriceOferta"
-                            style="@style/editText"
-                            android:drawableLeft="@drawable/ic_metodo_pago"
-                            android:drawableStart="@drawable/ic_metodo_pago"
-                            android:hint="@string/tittle_price"
-                            android:inputType="textCapWords" />
-                    </android.support.design.widget.TextInputLayout>
 
                     <RelativeLayout
                         android:layout_weight="1"
@@ -148,7 +192,8 @@
 
 
                     <TextView
-                        android:id="@+id/txtValortotal"
+
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -158,6 +203,18 @@
                         android:paddingStart="@dimen/margin_5"
                         android:textSize="@dimen/text_size_20"
                         android:textStyle="italic" />
+
+                    <TextView
+                        android:id="@+id/txtValortotal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text=""
+                        android:textColor="@color/grey_luiyi"
+                        android:paddingStart="@dimen/margin_5"
+                        android:textSize="@dimen/text_size_25"
+                        android:textStyle="bold|italic" />
 
 
 

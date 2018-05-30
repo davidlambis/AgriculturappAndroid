@@ -10,6 +10,7 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.comprador.detail_producto.events.RequestEventDetalleProducto
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
+import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -18,9 +19,11 @@ import java.util.ArrayList
 
 class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):IMainViewDetailProducto.Presenter {
 
+
+
     var interactor: IMainViewDetailProducto.Interactor? = null
     var eventBus: EventBus? = null
-
+    var listUnidadMedidaGlobalPrecios: List<Unidad_Medida>? = ArrayList<Unidad_Medida>()
 
     //GLOBALS
     var listTipoProducto:List<Producto>?= ArrayList<Producto>()
@@ -82,7 +85,9 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
             RequestEventDetalleProducto.PRODUCTO_EVENT -> {
                 var producto = event.objectMutable as Producto
             }
-
+            RequestEventDetalleProducto.LIST_EVENT_UNIDAD_MEDIDA_PRICE -> {
+                listUnidadMedidaGlobalPrecios = event.mutableList as List<Unidad_Medida>
+            }
 
 
         }
@@ -113,6 +118,17 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
     }
 
 
+    override fun getListas() {
+        interactor?.getListas()
+    }
+
+
+    //endregion
+
+    //region set DATA VIEW
+    override fun setListSpinnerMoneda() {
+        mainView?.setListMoneda(listUnidadMedidaGlobalPrecios)
+    }
 
     //endregion
 

@@ -17,6 +17,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 
@@ -34,11 +36,13 @@ import com.afollestad.materialdialogs.Theme
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.modules.comprador.productores.adapter.ProductorMoreAdapter
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
+import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.alert_success.view.*
+import kotlinx.android.synthetic.main.dialog_confirm.view.*
 
 
 class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View.OnClickListener {
-
 
 
     var productoIdGlobal:Long=0
@@ -54,6 +58,8 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
 
     var valorTotalGlobal:Double?=null
     var mUsersDBRef: DatabaseReference? = null
+
+    var unidadMedidaPrecioGlobal: Unidad_Medida? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -84,11 +90,13 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
         // swipeRefreshLayout.setOnRefreshListener(this)
         setupInjection()
         ivBackButton.setOnClickListener(this)
+        btnConatctProductor.setOnClickListener(this)
+        btnOfertar.setOnClickListener(this)
 
     }
 
     private fun setupInjection() {
-
+        presenter?.getListas()
         productoGlobal= presenter?.getProducto(productoIdGlobal)
         var tipoProducto= presenter?.getTipoProducto(productoGlobal?.TipoProductoId!!)
         if(tipoProducto!=null){
@@ -248,7 +256,12 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             focusView =viewDialog?.edtPriceOferta
             cancel = true
         }
-        else if (presenter?.verificateCantProducto(productoIdGlobal,viewDialog?.edtCantidadOfertar?.text.toString().toDoubleOrNull())!!) {
+        else if (viewDialog?.spinnerMonedaPrecio?.text.toString().isEmpty()) {
+            viewDialog?.spinnerMonedaPrecio?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.spinnerMonedaPrecio
+            cancel = true
+        }
+        else if (!presenter?.verificateCantProducto(productoIdGlobal,viewDialog?.edtCantidadOfertar?.text.toString().toDoubleOrNull())!!) {
             viewDialog?.edtCantidadOfertar?.setError(getString(R.string.verifcate_cantidad_oferta))
             focusView = viewDialog?.edtCantidadOfertar
             cancel = true
@@ -278,6 +291,21 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             }
         }
     }
+
+
+
+    override fun setListMoneda(listMoneda: List<Unidad_Medida>?) {
+        if (viewDialog != null) {
+            viewDialog?.spinnerMonedaPrecio?.setAdapter(null)
+            val monedaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listMoneda)
+            viewDialog?.spinnerMonedaPrecio?.setAdapter(monedaArrayAdapter)
+            viewDialog?.spinnerMonedaPrecio?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+                unidadMedidaPrecioGlobal = listMoneda!![position]
+            }
+        }
+    }
+
+
     override fun showAlertDialogOfertar(producto: Producto?) {
         val inflater = this.layoutInflater
         viewDialog = inflater.inflate(R.layout.dialog_oferta_producto, null)
@@ -285,6 +313,10 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
         viewDialog?.ivClosetDialogOferta?.setOnClickListener(this)
         viewDialog?.btnSendOferta?.setOnClickListener(this)
 
+
+        viewDialog?.txtUnidadMedida?.setText(producto?.NombreUnidadMedidaCantidad)
+
+        presenter?.setListSpinnerMoneda()
 
         viewDialog?.edtCantidadOfertar?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -295,9 +327,9 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
+
                 var cantidad=  viewDialog?.edtCantidadOfertar?.text.toString()?.toDoubleOrNull()
                 var precioOferta=  viewDialog?.edtPriceOferta?.text.toString()?.toDoubleOrNull()
-
 
                 if(!viewDialog?.edtCantidadOfertar?.text.toString().isEmpty()
                         && !viewDialog?.edtPriceOferta?.text.toString().isEmpty()){
@@ -313,11 +345,14 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                         viewDialog?.txtValortotal?.setText(costo_total_.replace(",", "."))
 
                     }else{
+                        var focusView:View? =null
                         viewDialog?.edtCantidadOfertar?.setError(getString(R.string.verifcate_cantidad_oferta))
+                        focusView=viewDialog?.edtCantidadOfertar
+                        focusView?.requestFocus()
                     }
                 }else{
                     viewDialog?.txtValorSubtotal?.text=""
-                    viewDialog?.edtCantidadOfertar?.setText("")
+                    viewDialog?.txtValortotal?.setText("")
                 }
             }
         })
@@ -332,12 +367,14 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
+
                 var cantidad=  viewDialog?.edtCantidadOfertar?.text.toString()?.toDoubleOrNull()
                 var precioOferta=  viewDialog?.edtPriceOferta?.text.toString()?.toDoubleOrNull()
 
-
                 if(!viewDialog?.edtCantidadOfertar?.text.toString().isEmpty()
                         && !viewDialog?.edtPriceOferta?.text.toString().isEmpty()){
+
+                    if(presenter?.verificateCantProducto(producto?.ProductoId,cantidad)!!){
 
                         var subtotal=cantidad!!*precioOferta!!
                         var costo_total_item = String.format(context!!.getString(R.string.price),
@@ -347,11 +384,19 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                         valorTotalGlobal=subtotal
                         viewDialog?.txtValorSubtotal?.text=costo_total_item
                         viewDialog?.txtValortotal?.setText(costo_total_.replace(",", "."))
+                    }else{
+                        var focusView:View? =null
+                        viewDialog?.edtCantidadOfertar?.setError(getString(R.string.verifcate_cantidad_oferta))
+                        focusView=viewDialog?.edtCantidadOfertar
+                        focusView?.requestFocus()
+                    }
 
                 }else{
                     viewDialog?.txtValorSubtotal?.text=""
-                    viewDialog?.edtPriceOferta?.setText("")
+                    viewDialog?.txtValortotal?.setText("")
                 }
+
+
             }
         })
 
@@ -372,10 +417,26 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
     }
 
 
-    fun showConfirmOferta() {
+    override fun showConfirmOferta() {
+
+        val inflater = this.layoutInflater
+        var viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
+
+
+
+        viewDialogConfirm?.txtTitleConfirm?.setText("")
+
+        var costo_total_ = String.format(context!!.getString(R.string.price),
+                valorTotalGlobal)
+        viewDialogConfirm?.txtTitleConfirm?.setText(costo_total_+" " + viewDialog?.spinnerMonedaPrecio?.text.toString())
+
+
+        var content =String.format(getString(R.string.content_oferta_confirm),viewDialog?.edtCantidadOfertar?.text.toString(),viewDialog?.txtUnidadMedida?.text.toString(),productoGlobal?.Nombre)
+        viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
+
         MaterialDialog.Builder(activity!!)
                 .title(String.format(getString(R.string.content_oferta_tittle),productoGlobal?.NombreProductor))
-                .content(R.string.content_oferta_confirm, true)
+                .customView(viewDialogConfirm!!, true)
                 .positiveText(R.string.confirm)
                 .negativeText(R.string.cancel)
                 .positiveColorRes(R.color.material_red_400)
@@ -392,11 +453,53 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                 .onPositive(
                         { dialog1, which ->
                             Toast.makeText(activity,"Enviar oferta",Toast.LENGTH_SHORT).show()
+                            _dialogOferta?.dismiss()
+                            sucessResponseOferta()
+
+
                         })
                 .onNegative({ dialog1, which ->
                     dialog1.dismiss()
                 })
                 .show()
+    }
+
+
+    override fun sucessResponseOferta() {
+
+        val inflater = this.layoutInflater
+        var viewDialogSuccessOferta = inflater.inflate(R.layout.alert_success, null)
+
+        viewDialogSuccessOferta?.tittle_sucess?.setText(getString(R.string.oferta_sucess))
+        viewDialogSuccessOferta?.content_sucess?.setText(getString(R.string.content_oferta_success))
+
+        val dialog = MaterialDialog.Builder(activity!!)
+                .customView(viewDialogSuccessOferta!!, true)
+                .positiveText(R.string.confirm)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.light_green_800)
+                .limitIconToDefaultSize()
+                .backgroundColorRes(R.color.white_solid)
+                // .negativeColorRes(R.color.material_red_400)
+                .iconRes(R.drawable.ic_registro)
+                .dividerColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                .positiveColor(Color.WHITE)
+                .autoDismiss(false)
+                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .onPositive(
+                        { dialog1, which ->
+                           dialog1.dismiss()
+                        })
+
+                .build()
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.show()
+        dialog.getWindow().setAttributes(lp)
     }
 
 
@@ -420,6 +523,13 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             R.id.btnConatctProductor->{
 
             }
+
+            R.id.ivClosetDialogOferta->{
+                _dialogOferta?.dismiss()
+            }
+
+
+
 
 
             R.id.btnSendOferta->{

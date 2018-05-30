@@ -7,7 +7,10 @@ import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto_Table
+import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.resources.CategoriaMediaResources
 import com.raizlabs.android.dbflow.sql.language.SQLite
 
 class DetailProductoRepository :IMainViewDetailProducto.Repository {
@@ -20,6 +23,13 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
     }
+
+    //region Métodos Interfaz
+    override fun getListas() {
+        val listUnidadMedidaPrecios = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(CategoriaMediaResources.Moneda)).queryList()
+        postEventListUnidadMedida(RequestEventDetalleProducto.LIST_EVENT_UNIDAD_MEDIDA_PRICE, listUnidadMedidaPrecios, null)
+    }
+
 
 
     override fun getProducto(producto_id: Long): Producto? {
@@ -43,6 +53,11 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
 
     //region Events
+
+    private fun postEventListUnidadMedida(type: Int, listUnidadMedida: List<Unidad_Medida>?, messageError: String?) {
+        val upMutable = listUnidadMedida as MutableList<Object>
+        postEvent(type, upMutable, null, messageError)
+    }
 
 
     private fun postEventOk(type: Int, listProducto: List<Producto>?, producto: Producto?) {

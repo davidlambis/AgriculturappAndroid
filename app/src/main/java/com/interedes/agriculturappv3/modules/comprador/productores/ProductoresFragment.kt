@@ -120,8 +120,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
                 if(pastVisiblesItems!!>=PAGE_SIZE){
                     recyclerView.post {
 
-
-
                         //val index = productosList?.size!! - 1
                         val index = productosList?.size!!
                         loadMore(index)
@@ -176,6 +174,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         productosList?.addAll(listProducto)
         adapter?.notifyDataChanged()
         setResults(productosList?.size!!)
+        pastVisiblesItems=listProducto.size
     }
 
     override fun setListProducto(listProducto: List<Producto>) {

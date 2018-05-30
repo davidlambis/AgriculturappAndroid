@@ -13,7 +13,7 @@ data class RequestEventDetalleProducto (var eventType: Int,
         val UPDATE_EVENT: Int = 2
         val DELETE_EVENT: Int = 3
         val ERROR_EVENT: Int = 4
-
+        val LIST_EVENT_UNIDAD_MEDIDA_PRICE: Int = 5
 
 
 

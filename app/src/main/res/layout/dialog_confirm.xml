@@ -6,31 +6,30 @@
     android:padding="@dimen/margin_5"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:src="@drawable/register_success" />
-    <TextView
-        android:id="@+id/tittle_sucess"
-        android:textStyle="bold"
-        android:textColor="@color/green"
-        android:textSize="@dimen/text_size_25"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tittle_register_success"/>
+
 
     <TextView
-        android:id="@+id/content_sucess"
-        android:textColor="@color/green"
+        android:id="@+id/txtDescripcionConfirm"
+        android:textColor="@color/white_solid"
         android:textSize="@dimen/text_size_18"
         android:layout_gravity="center"
         android:gravity="center"
         android:textAlignment="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/description_register_success"/>
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/txtTitleConfirm"
+        android:textStyle="bold"
+        android:textColor="@color/white_solid"
+        android:textSize="@dimen/text_size_25"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""/>
+
 
 </LinearLayout>
