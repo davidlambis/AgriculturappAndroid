@@ -45,6 +45,7 @@ import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.CategoriaP
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.EstadoTransaccionResponse
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.PostTercero
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.PostTransaccion
+import java.util.*
 
 
 interface ApiInterface {
@@ -75,6 +76,12 @@ interface ApiInterface {
     @Headers("Content-Type: application/json")
     @POST("auth/register")
     fun postRegistroUsers(@Body body: User): Call<UserResponse>
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @PATCH("odata/Agp2/Usuarios('{Id}')")
+    fun updateUsuario(@Body body: PostUsuario, @Path("Id") Id: UUID): Call<PostUsuario>
+
 
     //Get Usuarios
     @GET("odata/agriculturebd/Usuarios")
@@ -228,7 +235,7 @@ interface ApiInterface {
 
 
     //region Plagas y Enfermedades
-    @GET("odata/Agp2/Enfermedades?\$expand=TipoEnfermedad,TipoProducto,Fotos")
+    @GET("odata/Agp2/Enfermedades?\$expand=TipoEnfermedad,TipoProducto(\$select=Nombre),Fotos")
     fun getEnfermedades(): Call<EnfermedadResponseApi>
 
 

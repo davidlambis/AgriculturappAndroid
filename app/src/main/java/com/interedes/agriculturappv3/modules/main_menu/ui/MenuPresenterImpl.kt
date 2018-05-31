@@ -121,8 +121,15 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
 
 
     override fun getLastUserLogued(): Usuario? {
+        //mainView?.showProgressHud()
         return  interactor?.getLastUserLogued()
     }
+
+    override fun getListSyncEnfermedadesAndTratamiento() {
+        mainView?.showProgressBar()
+        interactor?.getListSyncEnfermedadesAndTratamiento()
+    }
+
     //endregion
 
     private fun onMessageOk() {

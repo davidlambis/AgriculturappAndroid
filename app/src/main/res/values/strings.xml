@@ -168,6 +168,10 @@
     <string name="title_selected_plaga">Selecciona la Plaga</string>
     <string name="title_selected_insumo">Selecciona el Insumo</string>
 
+
+    <string name="title_sync_data_enfermedades">Sincronizacion</string>
+    <string name="content_message_syn_data_enfermedades">Continuar con la actualizacion de datos, para enfermedades y tratamiento</string>
+
     <!-- Insumos -->
     <string name="ver_insumos">Ver Insumos</string>
     <string name="ver_tratamiento">Ver Tratamiento</string>
@@ -263,6 +267,10 @@
 
     <!--Cuenta-->
     <string name="tittle_account">Cuenta</string>
+
+    <string name="tittle_verificate_conection">Verifique su conexion a internet para actualizar su imagen de perfil</string>
+
+
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
     <string name="name">Nombre</string>

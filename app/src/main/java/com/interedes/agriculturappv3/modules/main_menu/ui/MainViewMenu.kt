@@ -35,6 +35,7 @@ interface MainViewMenu {
         fun  verificateSync(quantitySync: QuantitySync?): AlertDialog?
        // fun showAlertTypeChat(): AlertDialog?
         fun showAlertTypeChat()
+        fun showAlertDialogSyncDataConfirm()
 
         fun setQuantitySync(quantitySync: QuantitySync?)
 
@@ -56,7 +57,7 @@ interface MainViewMenu {
         //
         fun getListasIniciales()
         fun getLastUserLogued(): Usuario?
-
+        fun getListSyncEnfermedadesAndTratamiento()
 
 
     }
@@ -66,6 +67,7 @@ interface MainViewMenu {
         fun syncQuantityData()
         fun syncData()
         fun getLastUserLogued(): Usuario?
+        fun getListSyncEnfermedadesAndTratamiento()
     }
 
 
@@ -75,5 +77,6 @@ interface MainViewMenu {
         fun syncQuantityData()
         fun syncData()
         fun getLastUserLogued(): Usuario?
+        fun getListSyncEnfermedadesAndTratamiento()
     }
 }

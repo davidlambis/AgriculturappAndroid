@@ -33,6 +33,7 @@ import com.interedes.agriculturappv3.modules.models.ventas.*
 import com.interedes.agriculturappv3.modules.productor.accounting_module.transacciones.adapter.EstadoTransaccionAdapter
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.resources.CategoriaPukResources
+import com.interedes.agriculturappv3.services.resources.EstadoTransaccionResources
 import com.interedes.agriculturappv3.services.resources.NaturalezaTransaccionResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -465,9 +466,9 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         //radioGroup
        var list:List<Estado_Transaccion>?=ArrayList<Estado_Transaccion>()
         if(CategoriaPukResources.INGRESO== typeTransaccion){
-             list= SQLite.select().from(Estado_Transaccion::class.java).where(Estado_Transaccion_Table.Nombre.notEq("Por Pagar")).queryList()
+             list= SQLite.select().from(Estado_Transaccion::class.java).where(Estado_Transaccion_Table.Nombre.notEq(EstadoTransaccionResources.POR_PAGAR)).queryList()
         }else{
-             list= SQLite.select().from(Estado_Transaccion::class.java).where(Estado_Transaccion_Table.Nombre.notEq("Por Cobrar")).queryList()
+             list= SQLite.select().from(Estado_Transaccion::class.java).where(Estado_Transaccion_Table.Nombre.notEq(EstadoTransaccionResources.POR_COBRAR)).queryList()
         }
 
       //  var list= SQLite.select().from(Estado_Transaccion::class.java).queryList()

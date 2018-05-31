@@ -5,6 +5,7 @@ import com.interedes.agriculturappv3.config.DataSource
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
+import com.raizlabs.android.dbflow.data.Blob
 import java.util.*
 
 
@@ -90,6 +91,18 @@ data class Usuario(@PrimaryKey
                    var UsuarioRemembered: Boolean? = false,
 
                    @Column(name = "SessionId")
-                   var SessionId: Long? = 0) {}
+                   var SessionId: Long? = 0,
+
+                   @Column(name = "IdFirebase")
+                   var IdFirebase: String? = null,
+
+                   @Column(name = "blobImagen")
+                   var blobImagen: Blob? = null,
+
+                   @Column(getterName = "getEstado_SincronizacionUpdate")
+                   var Estado_SincronizacionUpdate: Boolean? = false
+
+
+) {}
 
 

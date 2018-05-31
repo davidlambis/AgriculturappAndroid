@@ -69,7 +69,7 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
                                             /***CREATE USER IN FIREBASE DB AND REDIRECT ON SUCCESS */
                                             /***CREATE USER IN FIREBASE DB AND REDIRECT ON SUCCESS */
                                             //createUserInDb(newUser.uid, newUser.displayName, newUser.email)
-                                            createUserInDb(newUser.uid,user)
+                                            createUserInDb(newUser.uid,user,response.body()?.id.toString())
 
                                         } else {
                                             //error
@@ -109,7 +109,7 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
 
 
 
-    private fun createUserInDb(user_id: String,user:User) {
+    private fun createUserInDb(user_id: String,user:User,user_id_response:String) {
         //val currentUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
         //val uid: String? = currentUser?.uid
        // val reference: DatabaseReference? = mDatabase?.child("Users")?.child(uid)
@@ -120,7 +120,7 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
         val rol: Rol? = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(user.Tipouser)).querySingle()
         val rolName = rol?.Nombre
         val reference: DatabaseReference?  = FirebaseDatabase.getInstance().reference.child("Users")
-        var userFirebase = UserFirebase(user_id, user.Nombre, user.Apellido, user.Identification, user.Email, rolName, user.PhoneNumber,Status_Chat.OFFLINE, 0, user.Password)
+        var userFirebase = UserFirebase(user_id, user.Nombre, user.Apellido, user.Identification, user.Email, rolName, user.PhoneNumber,Status_Chat.OFFLINE, 0, user.Password,user_id_response)
         reference?.child(user_id)?.setValue(userFirebase)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
             if (!task.isSuccessful) {
                 //error
@@ -203,7 +203,6 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
                     postEvent(RegisterEvent.onLoadInfoError, "No se pudieron cargar los bancos")
                 }
             }
-
             override fun onFailure(call: Call<DetalleMetodoPagoResponse>?, t: Throwable?) {
 
             }

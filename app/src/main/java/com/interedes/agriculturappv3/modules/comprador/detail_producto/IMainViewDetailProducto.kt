@@ -35,6 +35,7 @@ interface IMainViewDetailProducto {
         fun sucessResponseOferta()
 
 
+
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
     }

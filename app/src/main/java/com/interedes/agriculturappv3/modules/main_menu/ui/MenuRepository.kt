@@ -534,6 +534,135 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
 
+    override fun getListSyncEnfermedadesAndTratamiento() {
+        //Enfermedades
+        val callEnfermedades = apiService?.getEnfermedades()
+        callEnfermedades?.enqueue(object : Callback<EnfermedadResponseApi> {
+            override fun onResponse(call: Call<EnfermedadResponseApi>?, enfermedadResponse: Response<EnfermedadResponseApi>?) {
+                if (enfermedadResponse != null && enfermedadResponse.code() == 200) {
+                    val enfermedades = enfermedadResponse.body()?.value as MutableList<Enfermedad>
+                    for (item in enfermedades){
+                        item.NombreTipoEnfermedad=item.TipoEnfermedad?.Nombre
+                        item.NombreTipoProducto=item.TipoProducto?.Nombre
+                        item.NombreCientificoTipoEnfermedad=item.TipoEnfermedad?.NombreCientifico
+                        item.DescripcionTipoEnfermedad=item.TipoEnfermedad?.Descripcion
+
+                        item.save()
+                        if(item.Fotos!=null){
+                            for (itemFoto in item?.Fotos!!){
+
+                                try {
+                                    val base64String = itemFoto?.Ruta
+                                    val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                    val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                    itemFoto.blobImagen = Blob(byte)
+
+                                }catch (ex:Exception){
+                                    var ss= ex.toString()
+                                    Log.d("Convert Image", "defaultValue = " + ss);
+                                }
+
+                                itemFoto.save()
+                            }
+                        }
+
+
+
+                    }
+
+
+                    loadTratamientos()
+                } else {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<EnfermedadResponseApi>?, t: Throwable?) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+
+
+
+    }
+
+    private fun loadTratamientos() {
+        //Tratamientos, Calificaciones e Insumos
+        val callTrtamientos = apiService?.getTratamientos()
+        callTrtamientos?.enqueue(object : Callback<TratamientoResponse> {
+            override fun onResponse(call: Call<TratamientoResponse>?, tratamientoResponse: Response<TratamientoResponse>?) {
+                if (tratamientoResponse != null && tratamientoResponse.code() == 200) {
+                    val tratamientos = tratamientoResponse.body()?.value as MutableList<Tratamiento>
+                    //Update Informacion
+                    for (item in tratamientos){
+                        var sumacalificacion:Double?=0.0
+                        var promedioCalificacion:Double?=0.0
+                        if(item.Insumo!=null){
+
+                            item.Descripcion_Insumo=item.Insumo?.Descripcion
+                            item.Nombre_Insumo=item.Insumo?.Nombre
+
+                            if(item?.Insumo?.Imagen!=null || item?.Insumo?.Imagen!=""){
+                                try {
+                                    val base64String = item?.Insumo?.Imagen
+                                    val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                    val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                    item.Insumo?.blobImagen = Blob(byte)
+                                }catch (ex:Exception){
+                                    var ss= ex.toString()
+                                    Log.d("Convert Image", "defaultValue = " + ss);
+                                }
+                            }
+
+                            if(item.Insumo?.Laboratorio!=null){
+                                item.Insumo?.NombreLaboratorio=item.Insumo?.Laboratorio?.Nombre
+                                item.Insumo?.Laboratorio?.save()
+                            }
+
+                            if(item.Insumo?.TipoInsumo!=null){
+                                item.Insumo?.NombreTipoInsumo=item.Insumo?.TipoInsumo?.Nombre
+                                item.Insumo?.TipoInsumo?.save()
+                            }
+                            item.Insumo?.save()
+                        }
+
+                        if(item?.Calificacions!!.size==0){
+                            SQLite.delete<Calificacion_Tratamiento>(Calificacion_Tratamiento::class.java)
+                                    .where(Calificacion_Tratamiento_Table.TratamientoId.eq(item.Id))
+                                    .async()
+                                    .execute()
+                        }else{
+                            SQLite.delete<Calificacion_Tratamiento>(Calificacion_Tratamiento::class.java)
+                                    .where(Calificacion_Tratamiento_Table.TratamientoId.eq(item.Id))
+                                    .async()
+                                    .execute()
+
+                            for (calification in item?.Calificacions!!){
+                                calification.save()
+                                sumacalificacion=sumacalificacion!!+ calification.Valor!!
+                            }
+                            promedioCalificacion= sumacalificacion!! /item?.Calificacions!!.size
+                        }
+
+                        item.CalificacionPromedio=promedioCalificacion
+                        item.save()
+
+                    }
+
+
+                    postEventOk(RequestEventMainMenu.SYNC_EVENT)
+
+                } else {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<TratamientoResponse>?, t: Throwable?) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+
+    }
+
+
     //Listas Iniciales
     fun getLastUp(): Unidad_Productiva? {
         val lastUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).where().orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id, false).querySingle()
@@ -584,7 +713,6 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     override fun getListasIniciales() {
-
 
         var usuario= getLastUserLogued()
 
@@ -673,15 +801,11 @@ class MenuRepository: MainViewMenu.Repository {
                                         item.LocalizacionUpId=localizacion.Id
                                     }
                                 }
-
-
                                 item.save()
                             }
 
                             if(item.Lotes?.size!!>0){
-
                                 for (lote in item.Lotes!!){
-
                                     var loteVerficateSave= SQLite.select()
                                             .from(Lote::class.java)
                                             .where(Lote_Table.Id_Remote.eq(lote.Id_Remote))
@@ -914,124 +1038,13 @@ class MenuRepository: MainViewMenu.Repository {
                 }
             })
 
-            //Enfermedades
-            val callEnfermedades = apiService?.getEnfermedades()
-            callEnfermedades?.enqueue(object : Callback<EnfermedadResponseApi> {
-                override fun onResponse(call: Call<EnfermedadResponseApi>?, enfermedadResponse: Response<EnfermedadResponseApi>?) {
-                    if (enfermedadResponse != null && enfermedadResponse.code() == 200) {
-                        val enfermedades = enfermedadResponse.body()?.value as MutableList<Enfermedad>
-                        for (item in enfermedades){
-                            item.NombreTipoEnfermedad=item.TipoEnfermedad?.Nombre
-                            item.NombreTipoProducto=item.TipoProducto?.Nombre
-                            item.NombreCientificoTipoEnfermedad=item.TipoEnfermedad?.NombreCientifico
-                            item.DescripcionTipoEnfermedad=item.TipoEnfermedad?.Descripcion
-
-                            item.save()
-                            if(item.Fotos!=null){
-                                for (itemFoto in item?.Fotos!!){
-
-                                    try {
-                                        val base64String = itemFoto?.Ruta
-                                        val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
-                                        val byte = Base64.decode(base64Image, Base64.DEFAULT)
-                                        itemFoto.blobImagen = Blob(byte)
-
-                                    }catch (ex:Exception){
-                                        var ss= ex.toString()
-                                        Log.d("Convert Image", "defaultValue = " + ss);
-                                    }
-
-                                    itemFoto.save()
-                                }
-                            }
-                        }
-                    } else {
-                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                    }
-                }
-                override fun onFailure(call: Call<EnfermedadResponseApi>?, t: Throwable?) {
-                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                }
-            })
 
 
-            //Tratamientos, Calificaciones e Insumos
-            val callTrtamientos = apiService?.getTratamientos()
-            callTrtamientos?.enqueue(object : Callback<TratamientoResponse> {
-                override fun onResponse(call: Call<TratamientoResponse>?, tratamientoResponse: Response<TratamientoResponse>?) {
-                    if (tratamientoResponse != null && tratamientoResponse.code() == 200) {
-                        val tratamientos = tratamientoResponse.body()?.value as MutableList<Tratamiento>
-
-                        //Update Informacion
-
-                        for (item in tratamientos){
-
-                            var sumacalificacion:Double?=0.0
-                            var promedioCalificacion:Double?=0.0
-
-                            if(item.Insumo!=null){
-
-
-                                item.Descripcion_Insumo=item.Insumo?.Descripcion
-                                item.Nombre_Insumo=item.Insumo?.Nombre
-
-                                if(item?.Insumo?.Imagen!=null || item?.Insumo?.Imagen!=""){
-                                    try {
-                                        val base64String = item?.Insumo?.Imagen
-                                        val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
-                                        val byte = Base64.decode(base64Image, Base64.DEFAULT)
-                                        item.Insumo?.blobImagen = Blob(byte)
-                                    }catch (ex:Exception){
-                                        var ss= ex.toString()
-                                        Log.d("Convert Image", "defaultValue = " + ss);
-                                    }
-                                }
-
-                                if(item.Insumo?.Laboratorio!=null){
-                                    item.Insumo?.NombreLaboratorio=item.Insumo?.Laboratorio?.Nombre
-                                    item.Insumo?.Laboratorio?.save()
-                                }
-
-                                if(item.Insumo?.TipoInsumo!=null){
-                                    item.Insumo?.NombreTipoInsumo=item.Insumo?.TipoInsumo?.Nombre
-                                    item.Insumo?.TipoInsumo?.save()
-                                }
-
-                                item.Insumo?.save()
-                            }
-
-
-                            if(item?.Calificacions!!.size==0){
-                                SQLite.delete<Calificacion_Tratamiento>(Calificacion_Tratamiento::class.java)
-                                        .where(Calificacion_Tratamiento_Table.TratamientoId.eq(item.Id))
-                                        .async()
-                                        .execute()
-                            }else{
-                                SQLite.delete<Calificacion_Tratamiento>(Calificacion_Tratamiento::class.java)
-                                        .where(Calificacion_Tratamiento_Table.TratamientoId.eq(item.Id))
-                                        .async()
-                                        .execute()
-
-                                for (calification in item?.Calificacions!!){
-                                    calification.save()
-                                    sumacalificacion=sumacalificacion!!+ calification.Valor!!
-                                }
-                                promedioCalificacion= sumacalificacion!! /item?.Calificacions!!.size
-                            }
-
-                            item.CalificacionPromedio=promedioCalificacion
-                            item.save()
-                        }
-                    } else {
-                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                    }
-                }
-                override fun onFailure(call: Call<TratamientoResponse>?, t: Throwable?) {
-                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                }
-            })
-
-
+            ///ENFERMEDADES AND TRATAMIENTOS
+            val enfermedades = SQLite.select().from(Enfermedad::class.java).queryList()
+            if(enfermedades.size<=0){
+                getListSyncEnfermedadesAndTratamiento()
+            }
 
 
             //Categorias Puk
@@ -1056,22 +1069,29 @@ class MenuRepository: MainViewMenu.Repository {
             })
 
             //Estados de  transaccion
-            val estadosTransaccion = apiService?.getEstadosTransaccion()
-            estadosTransaccion?.enqueue(object : Callback<EstadoTransaccionResponse> {
-                override fun onResponse(call: Call<EstadoTransaccionResponse>?, response: Response<EstadoTransaccionResponse>?) {
-                    if (response != null && response.code() == 200) {
-                        val estadostransaccion: MutableList<Estado_Transaccion> = response.body()?.value!!
-                        for (item in estadostransaccion) {
-                            item.save()
+            val estadoTransaccion = SQLite.select().from(Estado_Transaccion::class.java).queryList()
+            if(estadoTransaccion.size>0){
+
+            }else{
+                val estadosTransaccion = apiService?.getEstadosTransaccion()
+                estadosTransaccion?.enqueue(object : Callback<EstadoTransaccionResponse> {
+                    override fun onResponse(call: Call<EstadoTransaccionResponse>?, response: Response<EstadoTransaccionResponse>?) {
+                        if (response != null && response.code() == 200) {
+                            val estadostransaccion: MutableList<Estado_Transaccion> = response.body()?.value!!
+                            for (item in estadostransaccion) {
+                                item.save()
+                            }
+                        } else {
+                            postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
                         }
-                    } else {
+                    }
+                    override fun onFailure(call: Call<EstadoTransaccionResponse>?, t: Throwable?) {
                         postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
                     }
-                }
-                override fun onFailure(call: Call<EstadoTransaccionResponse>?, t: Throwable?) {
-                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                }
-            })
+                })
+
+            }
+
 
         }
 
@@ -1117,6 +1137,11 @@ class MenuRepository: MainViewMenu.Repository {
         /*------------------------------------------------------------------------------------------------------------------*/
         //Tipos de Producto
         //val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
+
+        //val tipoProducto = SQLite.select().from(TipoProducto::class.java).queryList()
+
+
+
         val callTipoProducto = apiService?.getTipoAndDetalleTipoProducto()
         callTipoProducto?.enqueue(object : Callback<TipoProductoResponse> {
             override fun onResponse(call: Call<TipoProductoResponse>?, response: Response<TipoProductoResponse>?) {

@@ -108,7 +108,13 @@ class LoginRepositoryImpl : LoginRepository {
                                             mAuth = FirebaseAuth.getInstance()
                                             mAuth?.signInWithEmailAndPassword(login.username!!, login.password!!)?.addOnCompleteListener({ task ->
                                                 if (task.isSuccessful) {
+
+                                                    var mCurrentUserID =task.result.user.uid
+                                                    usuario.IdFirebase=mCurrentUserID
+                                                    usuario.update()
+
                                                     postEventUsuarioOk(LoginEvent.SAVE_EVENT, usuario)
+
                                                 } else {
                                                     try {
                                                         throw task.exception!!

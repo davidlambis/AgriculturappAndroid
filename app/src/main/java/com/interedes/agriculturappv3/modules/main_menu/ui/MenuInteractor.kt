@@ -5,7 +5,6 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 class MenuInteractor:MainViewMenu.Interactor {
 
 
-
     var repository: MainViewMenu.Repository? = null
 
     init {
@@ -27,6 +26,10 @@ class MenuInteractor:MainViewMenu.Interactor {
 
     override fun getLastUserLogued(): Usuario? {
        return  repository?.getLastUserLogued()
+    }
+
+    override fun getListSyncEnfermedadesAndTratamiento() {
+       repository?.getListSyncEnfermedadesAndTratamiento()
     }
 
 }

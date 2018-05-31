@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.modules.productor.ui.main_menu
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -91,13 +92,16 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_main)
 
-        if (getLastUserLogued() != null) {
-            usuario_logued = getLastUserLogued()
-        }
         //Presenter
         presenter = MenuPresenterImpl(this)
         (presenter as MenuPresenterImpl).onCreate()
         setToolbarInjection()
+
+
+        if (getLastUserLogued() != null) {
+            usuario_logued =  presenter?.getLastUserLogued()
+        }
+
         setNavDrawerInjection()
         setAdapterFragment()
         // this.coordsService = CoordsService(this)
@@ -109,7 +113,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
         mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
 
-        populateTheViews()
+
 
         //Status Chat
         makeUserOnline()
@@ -121,35 +125,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         presenter?.getListasIniciales()
     }
 
-    private fun populateTheViews() {
-        try {
-            if(mUserDBRef!=null){
-                mUserDBRef?.child(FirebaseAuth.getInstance().currentUser?.uid)?.addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val currentuser = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
-                        try {
-                            val userPhoto = currentuser?.Imagen
-                            val userName = currentuser?.Nombre
-                            val userLastName = currentuser?.Apellido
-                            val userIdentification = currentuser?.Cedula
-                            Picasso.with(applicationContext).load(userPhoto).placeholder(R.drawable.ic_logo_productor).into(circleImageView)
 
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                    override fun onCancelled(databaseError: DatabaseError) {
-
-                    }
-                })
-            }
-        }catch (ex: Exception){
-           // Log.println(ex)
-
-        }
-
-
-    }
 
     fun setAdapterFragment() {
         val fragmentManager = supportFragmentManager
@@ -187,8 +163,24 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         drawer_layout.addDrawerListener(mActionBarDrawerToggle)
         val header = navigationView.getHeaderView(0)
         val headerViewHolder = HeaderViewHolder(header)
+
+
         headerViewHolder.tvNombreUsuario.setText(String.format(getString(R.string.nombre_usuario_nav), usuario_logued?.Nombre, usuario_logued?.Apellidos))
         headerViewHolder.tvIdentificacion.setText(usuario_logued?.Email)
+
+        if(usuario_logued?.blobImagen!=null){
+            // val bitmap = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+            // imgTipoProducto.setImageBitmap(bitmap)
+            try {
+                val foto = usuario_logued?.blobImagen?.blob
+                var imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+                headerViewHolder.circleImageView.setImageBitmap(imageBitmapAccountGlobal)
+            }catch (ex:Exception){
+                var ss= ex.toString()
+                Log.d("Convert Image", "defaultValue = " + ss);
+            }
+        }
+
 
         headerViewHolder.tvNombreUsuario.setOnClickListener(this)
         headerViewHolder.circleImageView.setOnClickListener(this)
@@ -346,9 +338,13 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         }else if (id == R.id.nav_singout_session) {
             showExit()
-            showExit()
 
         }
+
+        else if (id == R.id.nav_sync_data) {
+            showAlertDialogSyncDataConfirm()
+        }
+
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
@@ -502,6 +498,26 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         onMessageError(R.color.red_900,error);
     }
 
+    override fun showAlertDialogSyncDataConfirm(){
+        MaterialDialog.Builder(this)
+                .title(R.string.title_sync_data_enfermedades)
+                .content(R.string.content_message_syn_data_enfermedades, true)
+                .positiveText(R.string.confirm)
+                .negativeText(R.string.cancel)
+                .titleColorRes(R.color.light_green_800)
+                .limitIconToDefaultSize()
+                .iconRes(R.drawable.ic_plagas)
+                .dividerColorRes(R.color.colorPrimary)
+                .onPositive(
+                        { dialog1, which ->
+                            dialog1.dismiss()
+                            presenter?.getListSyncEnfermedadesAndTratamiento()
+                        })
+                .onNegative({ dialog1, which ->
+                    dialog1.dismiss()
+                })
+                .show()
+    }
 
     override fun verificateSync(quantitySync: QuantitySync?): AlertDialog? {
         val inflater = this.layoutInflater
