@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -32,6 +33,7 @@ import com.interedes.agriculturappv3.modules.main_menu.ui.MainViewMenu
 import com.interedes.agriculturappv3.services.Const
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import android.view.MenuInflater
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
@@ -114,7 +116,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
 
 
-
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.navigationViewBotom)
         //Status Chat
         makeUserOnline()
         getListasIniciales()
@@ -185,6 +187,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         headerViewHolder.tvNombreUsuario.setOnClickListener(this)
         headerViewHolder.circleImageView.setOnClickListener(this)
 
+
+
+        headerViewHolder.itemSyncronizarDatos.setOnClickListener(this)
+        headerViewHolder.itemCerrarSesion.setOnClickListener(this)
+
         // val header = navigationView.getHeaderView(0)
         // val headerViewHolder = HeaderViewHolder(header)
         // headerViewHolder.tvNombreUsuario.setText(usuarioLogued.getNombre() + " " + usuarioLogued.getApellido())
@@ -201,6 +208,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val tvNombreUsuario: TextView = view.findViewById(R.id.tvNombreUsuario)
         val circleImageView: CircleImageView = view.findViewById(R.id.circleImageView)
         val tvIdentificacion: TextView = view.findViewById(R.id.tvIdentificacion)
+
+
+
+        val itemProveedores: LinearLayout = view.findViewById(R.id.itemProveedores)
+        val itemOfertas: LinearLayout = view.findViewById(R.id.itemOfertas)
+        val itemComprasRealizadas: LinearLayout = view.findViewById(R.id.itemComprasRealizadas)
+        val itemSyncronizarDatos: LinearLayout = view.findViewById(R.id.itemSyncronizarDatos)
+        val itemCerrarSesion: LinearLayout = view.findViewById(R.id.itemCerrarSesion)
     }
 
 
@@ -378,9 +393,20 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 drawer_layout.closeDrawer(GravityCompat.START)
                 replaceFragment(AccountFragment())
             }
+
             R.id.circleImageView -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
                 replaceFragment(AccountFragment())
+            }
+
+
+            R.id.itemCerrarSesion -> {
+                showExit()
+            }
+
+            R.id.itemSyncronizarDatos -> {
+                drawer_layout.closeDrawer(GravityCompat.START)
+                showAlertDialogSyncDataConfirm()
             }
 
 

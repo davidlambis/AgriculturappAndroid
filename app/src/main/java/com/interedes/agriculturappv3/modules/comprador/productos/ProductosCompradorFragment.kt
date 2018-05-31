@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -57,6 +58,8 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
         swipeRefreshLayout.setOnRefreshListener(this)
 
         setupInjection()
+
+
 
     }
 
@@ -132,7 +135,6 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
     }
 
     override fun onMessageError(colorPrimary: Int, message: String?) {
-
         onMessageOk(colorPrimary, message)
     }
 

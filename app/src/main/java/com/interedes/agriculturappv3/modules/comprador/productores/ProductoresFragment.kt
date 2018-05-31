@@ -38,9 +38,11 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     var adapter: ProductorMoreAdapter?=null
     var productosList:ArrayList<Producto>?=ArrayList<Producto>()
 
-
+    val TAG = ProductoresFragment::class.java!!.getSimpleName()
     //Progress
     private var hud: KProgressHUD?=null
+
+    private var loadedFragment:Boolean=false
 
 
     //Productos
@@ -71,14 +73,20 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             tipoProductoIdGlobal = b.getLong("idtipoProducto")
         }
         (activity as MenuMainActivity).toolbar.title=getString(R.string.tittle_productos)
+        ivBackButton.setOnClickListener(this)
        // swipeRefreshLayout.setOnRefreshListener(this)
         setupInjection()
-
-        ivBackButton.setOnClickListener(this)
     }
 
     private fun setupInjection() {
-        loadFirstPageProducts()
+        if(!loadedFragment){
+            loadFirstPageProducts()
+            loadedFragment=true
+        }else{
+            setResults(productosList?.size!!)
+        }
+
+
         var tipoProducto= presenter?.getTipoProducto(tipoProductoIdGlobal)
         if(tipoProducto!=null){
 
@@ -97,8 +105,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
                 }
             }
         }
-
-
     }
 
 
@@ -149,6 +155,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
     //region IMPLEMENTS METHODS INTERFACE
     override fun showProgress() {
+
         //  swipeRefreshLayout.setRefreshing(true);
     }
 
@@ -294,6 +301,9 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     }
 
     override fun onResume() {
+        // add this piece of code in onResume method
+        this.getView()?.setFocusableInTouchMode(true);
+        this.getView()?.requestFocus();
         presenter?.onResume(activity!!.applicationContext)
         super.onResume()
     }
