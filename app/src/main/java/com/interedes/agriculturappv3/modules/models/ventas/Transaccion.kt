@@ -102,6 +102,7 @@ data class Transaccion(@PrimaryKey
                        @Column(name = "Id_Remote")
                        var Id_Remote: Long? = 0,
 
+
                        @SerializedName("userId")
                        @Column(name = "UsuarioId")
                        var UsuarioId: UUID? = null,

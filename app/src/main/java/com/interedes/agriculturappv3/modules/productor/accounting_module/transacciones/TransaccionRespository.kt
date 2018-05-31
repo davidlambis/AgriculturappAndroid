@@ -66,9 +66,16 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
     override fun getTransaccion(cultivo_id: Long?,typeTransaccion:Long?): List<Transaccion> {
         var listResponse: List<Transaccion>?
         if(cultivo_id==null){
-            listResponse = SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.CategoriaPuk_Id.eq(typeTransaccion)).queryList()
+            listResponse = SQLite.select().from(Transaccion::class.java)
+                    .where(Transaccion_Table.CategoriaPuk_Id.eq(typeTransaccion))
+                    .and(Transaccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                    .queryList()
         }else{
-            listResponse = SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Cultivo_Id.eq(cultivo_id)).and(Transaccion_Table.CategoriaPuk_Id.eq(typeTransaccion)).queryList()
+            listResponse = SQLite.select().from(Transaccion::class.java)
+                    .where(Transaccion_Table.Cultivo_Id.eq(cultivo_id))
+                    .and(Transaccion_Table.CategoriaPuk_Id.eq(typeTransaccion))
+                    .and(Transaccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                    .queryList()
         }
         return listResponse;
     }

@@ -12,6 +12,8 @@ import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.produccion.PostProduccion
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
@@ -37,9 +39,14 @@ class ProduccionRepository :IMainProduccion.Repository {
     }
 
     //region METHODS
-
+    fun getLastUserLogued(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
 
     override fun saveProduccion(produccion: Produccion,cultivo_id:Long,checkConection:Boolean) {
+
+        produccion.UsuarioId= getLastUserLogued()?.Id
 
         //TODO si existe conexion a internet
         if(checkConection){
@@ -215,9 +222,14 @@ class ProduccionRepository :IMainProduccion.Repository {
     override fun getProductions(cultivo_id:Long?):List<Produccion> {
         var listResponse:List<Produccion>?=null
         if(cultivo_id==null){
-            listResponse = SQLite.select().from(Produccion::class.java!!).queryList()
+            listResponse = SQLite.select().from(Produccion::class.java!!)
+                    .where(Produccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                    .queryList()
         }else{
-            listResponse = SQLite.select().from(Produccion::class.java!!).where(Produccion_Table.CultivoId.eq(cultivo_id)).queryList()
+            listResponse = SQLite.select().from(Produccion::class.java!!)
+                    .where(Produccion_Table.CultivoId.eq(cultivo_id))
+                    .and(Produccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                    .queryList()
         }
         return listResponse;
     }

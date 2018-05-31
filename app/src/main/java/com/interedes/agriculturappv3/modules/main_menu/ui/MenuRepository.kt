@@ -72,13 +72,28 @@ class MenuRepository: MainViewMenu.Repository {
 
     override fun syncQuantityData() {
 
-        var counRegisterUnidadesProductivas=SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false)).count()
-        var counRegisterLotes=SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(false)).count()
-        var counRegisterCultivos=SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.EstadoSincronizacion.eq(false)).count()
-        var counRegisterControlPlagas=SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.Estado_Sincronizacion.eq(false)).count()
-        var counRegisterProducccion=SQLite.select().from(Produccion::class.java).where(Produccion_Table.Estado_Sincronizacion.eq(false)).count()
-        var counRegisterProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(false)).count()
-        var counRegisterTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(false)).count()
+        var counRegisterUnidadesProductivas=SQLite.select().from(Unidad_Productiva::class.java)
+                .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
+                .and(Unidad_Productiva_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .count()
+        var counRegisterLotes=SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(false))
+                .and(Lote_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .count()
+        var counRegisterCultivos=SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.EstadoSincronizacion.eq(false))
+                .and(Cultivo_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .count()
+        var counRegisterControlPlagas=SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
+                .and(ControlPlaga_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .count()
+        var counRegisterProducccion=SQLite.select().from(Produccion::class.java).where(Produccion_Table.Estado_Sincronizacion.eq(false))
+                .and(Produccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .count()
+        var counRegisterProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(false))
+                .and(Producto_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .count()
+        var counRegisterTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(false))
+                .and(Transaccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .count()
 
 
         var registerTotal= counRegisterUnidadesProductivas+
@@ -86,13 +101,27 @@ class MenuRepository: MainViewMenu.Repository {
                 counRegisterCultivos+
                 counRegisterLotes+counRegisterProducccion+counRegisterProductos+counRegisterTransacciones
 
-        var countUpdatesUnidadesProductivas=SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true)).and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesLotes=SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(true)).and(Lote_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesCultivos=SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.EstadoSincronizacion.eq(true)).and(Cultivo_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesControlPlagas=SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.Estado_Sincronizacion.eq(true)).and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesProducccion=SQLite.select().from(Produccion::class.java).where(Produccion_Table.Estado_Sincronizacion.eq(true)).and(Produccion_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(true)).and(Producto_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(true)).and(Transaccion_Table.Estado_SincronizacionUpdate.eq(false)).count()
+        var countUpdatesUnidadesProductivas=SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true))
+                .and(Unidad_Productiva_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(false)).count()
+        var countUpdatesLotes=SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(true))
+                .and(Lote_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .and(Lote_Table.Estado_SincronizacionUpdate.eq(false)).count()
+        var countUpdatesCultivos=SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.EstadoSincronizacion.eq(true))
+                .and(Cultivo_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(false)).count()
+        var countUpdatesControlPlagas=SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.Estado_Sincronizacion.eq(true))
+                .and(ControlPlaga_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(false)).count()
+        var countUpdatesProducccion=SQLite.select().from(Produccion::class.java).where(Produccion_Table.Estado_Sincronizacion.eq(true))
+                .and(Produccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .and(Produccion_Table.Estado_SincronizacionUpdate.eq(false)).count()
+        var countUpdatesProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(true))
+                .and(Producto_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .and(Producto_Table.Estado_SincronizacionUpdate.eq(false)).count()
+        var countUpdatesTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(true))
+                .and(Transaccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                .and(Transaccion_Table.Estado_SincronizacionUpdate.eq(false)).count()
 
         var updatesTotal= countUpdatesUnidadesProductivas+
                 countUpdatesLotes+
@@ -452,6 +481,7 @@ class MenuRepository: MainViewMenu.Repository {
                 .from(Transaccion::class.java)
                 .where(Transaccion_Table.Estado_Sincronizacion.eq(false))
                 .orderBy(Transaccion_Table.TransaccionId,false).querySingle()
+
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(transaccion?.Cultivo_Id)).querySingle()
         if(transaccion!=null && cultivo?.EstadoSincronizacion==true){
 
@@ -561,16 +591,10 @@ class MenuRepository: MainViewMenu.Repository {
                                     var ss= ex.toString()
                                     Log.d("Convert Image", "defaultValue = " + ss);
                                 }
-
                                 itemFoto.save()
                             }
                         }
-
-
-
                     }
-
-
                     loadTratamientos()
                 } else {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
@@ -647,8 +671,6 @@ class MenuRepository: MainViewMenu.Repository {
                         item.save()
 
                     }
-
-
                     postEventOk(RequestEventMainMenu.SYNC_EVENT)
 
                 } else {
@@ -659,7 +681,6 @@ class MenuRepository: MainViewMenu.Repository {
                 postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
         })
-
     }
 
 
@@ -718,7 +739,6 @@ class MenuRepository: MainViewMenu.Repository {
 
         //LISTAS ROL PRODUCTOR
         /*-----------------------------------------------------------------------------------------------------------------*/
-
         if(usuario?.RolNombre?.equals(RolResources.PRODUCTOR)!!){
 
             val query = Listas.queryGeneral("UsuarioId",usuario?.Id.toString())
@@ -734,12 +754,14 @@ class MenuRepository: MainViewMenu.Repository {
                         //TODO Delete information in local, add new remote
                         SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
                                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true))
+                                .and(Unidad_Productiva_Table.UsuarioId.eq(usuario.Id))
                                 .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
 
                         SQLite.delete<Lote>(Lote::class.java)
                                 .where(Lote_Table.EstadoSincronizacion.eq(true))
+                                .and(Lote_Table.UsuarioId.eq(usuario.Id))
                                 .and(Lote_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
@@ -747,21 +769,25 @@ class MenuRepository: MainViewMenu.Repository {
 
                         SQLite.delete<Cultivo>(Cultivo::class.java)
                                 .where(Cultivo_Table.EstadoSincronizacion.eq(true))
+                                .and(Cultivo_Table.UsuarioId.eq(usuario.Id))
                                 .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
 
                         SQLite.delete<Produccion>(Produccion::class.java)
                                 .where(Produccion_Table.Estado_Sincronizacion.eq(true))
+                                .and(Produccion_Table.UsuarioId.eq(usuario.Id))
                                 .and(Produccion_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
 
                         SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
                                 .where(ControlPlaga_Table.Estado_Sincronizacion.eq(true))
+                                .and(ControlPlaga_Table.UsuarioId.eq(usuario.Id))
                                 .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
+
 
                         //TODO Add information new remote
                         for (item in unidadesProductivas) {
@@ -833,7 +859,7 @@ class MenuRepository: MainViewMenu.Repository {
                                             lote.Longitud=longitud
                                             lote.Coordenadas=coordenadas
                                         }
-
+                                        lote.UsuarioId=usuario.Id
                                         lote.Unidad_Productiva_Id=item.Unidad_Productiva_Id
                                         lote.Nombre_Unidad_Medida= if (lote.UnidadMedida!=null) lote.UnidadMedida?.Descripcion else null
                                         lote.Nombre_Unidad_Productiva= item.nombre
@@ -866,7 +892,7 @@ class MenuRepository: MainViewMenu.Repository {
                                                 } else {
                                                     cultivo.CultivoId = last_cultivo.CultivoId!! + 1
                                                 }
-
+                                                cultivo.UsuarioId=usuario.Id
                                                 cultivo.LoteId=lote.LoteId
                                                 cultivo.NombreUnidadProductiva= item.nombre
                                                 cultivo.NombreLote= lote.Nombre
@@ -903,6 +929,8 @@ class MenuRepository: MainViewMenu.Repository {
                                                         } else {
                                                             produccion.ProduccionId = last_productions.ProduccionId!! + 1
                                                         }
+
+                                                        produccion.UsuarioId=usuario.Id
                                                         produccion.CultivoId=cultivo.CultivoId
                                                         produccion.Estado_Sincronizacion=true
                                                         produccion.Estado_SincronizacionUpdate=true
@@ -938,6 +966,8 @@ class MenuRepository: MainViewMenu.Repository {
                                                         } else {
                                                             controlplaga.ControlPlagaId = last_controlplaga.ControlPlagaId!! + 1
                                                         }
+
+                                                        controlplaga.UsuarioId=usuario.Id
                                                         controlplaga.CultivoId=cultivo.CultivoId
                                                         controlplaga.Estado_Sincronizacion=true
                                                         controlplaga.Estado_SincronizacionUpdate=true
@@ -1127,8 +1157,6 @@ class MenuRepository: MainViewMenu.Repository {
                     .async()
                     .execute()
 
-
-
         }
 
 
@@ -1295,6 +1323,7 @@ class MenuRepository: MainViewMenu.Repository {
                                 item.TransaccionId = lastTransaccion.TransaccionId!! + 1
                             }
 
+
                             item.UsuarioId=usuario?.Id
                             item.Nombre_Tercero= if (item.Tercero!=null) item.Tercero?.Nombre else null
                             item.Nombre_Estado_Transaccion= if (item.EstadoTransaccion!=null) item.EstadoTransaccion?.Nombre else null
@@ -1306,8 +1335,6 @@ class MenuRepository: MainViewMenu.Repository {
                             item.Estado_SincronizacionUpdate=true
                             var fechaDate=item.getFechaDate(item.FechaString)
                             item.Fecha_Transaccion=fechaDate
-
-
 
                             val dateFechaFromatMMddyyy =item.getFechaTransacccionFormatMMddyyyy()
                             item.FechaString=dateFechaFromatMMddyyy
@@ -1326,10 +1353,7 @@ class MenuRepository: MainViewMenu.Repository {
                                 item.Tercero?.TerceroId = lastTercero.TerceroId!! + 1
                             }
                             item.Tercero?.save()
-
-
                             item.save()
-
                         }
                     }
                 } else {
@@ -1341,10 +1365,6 @@ class MenuRepository: MainViewMenu.Repository {
             }
         })
     }
-
-
-
-
 
 
     //region Events
@@ -1359,8 +1379,6 @@ class MenuRepository: MainViewMenu.Repository {
         }
         postEvent(type, null,QuantitySyncMutable,null)
     }
-
-
 
     private fun postEventError(type: Int,messageError:String?) {
         postEvent(type, null,null,messageError)

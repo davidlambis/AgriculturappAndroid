@@ -95,6 +95,9 @@ data class Cultivo(@PrimaryKey
                    @Column(name = "Id_Remote")
                    var Id_Remote: Long? = 0,
 
+                   @Column(name = "UsuarioId")
+                   var UsuarioId: UUID? = null,
+
                    @SerializedName("UnidadMedida")
                    var unidadMedida: Unidad_Medida?= null,
 

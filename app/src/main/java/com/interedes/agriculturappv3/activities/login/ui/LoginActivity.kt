@@ -200,8 +200,6 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     }
 
     override fun showProgress() {
-
-
         var imageView = ImageView(this);
         imageView.setBackgroundResource(R.drawable.spin_animation_login);
         var drawable = imageView.getBackground() as AnimationDrawable;

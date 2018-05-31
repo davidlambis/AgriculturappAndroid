@@ -16,6 +16,8 @@ import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.resources.CategoriaMediaResources
 import com.raizlabs.android.dbflow.kotlinextensions.delete
@@ -70,6 +72,10 @@ class CultivoRepository : ICultivo.Repository {
         postEventListDetalleTipoProducto(CultivoEvent.LIST_EVENT_DETALLE_TIPO_PRODUCTO, listDetalleTipoProducto, null)
     }
 
+    fun getLastUserLogued(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
 
     override fun getListCultivos(lote_id: Long?) {
         var cultivos = getCultivos(lote_id)
@@ -88,15 +94,23 @@ class CultivoRepository : ICultivo.Repository {
     override fun getCultivos(loteId: Long?): List<Cultivo> {
         var listResponse: List<Cultivo>? = null
         if (loteId == null || loteId == 0.toLong()) {
-            listResponse = SQLite.select().from(Cultivo::class.java).queryList()
+            listResponse = SQLite.select().from(Cultivo::class.java)
+                    .where(Cultivo_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                    .queryList()
         } else {
-            listResponse = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(loteId)).queryList()
+            listResponse = SQLite.select().from(Cultivo::class.java)
+                    .where(Cultivo_Table.LoteId.eq(loteId))
+                    .and(Cultivo_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                    .queryList()
         }
 
         return listResponse;
     }
 
     override fun saveCultivo(mCultivo: Cultivo, loteId: Long?,checkConection:Boolean) {
+
+        mCultivo.UsuarioId=getLastUserLogued()?.Id
+
         //TODO si existe conexion a internet
         if(checkConection){
             //TODO Ciudad Id de la tabla del backend

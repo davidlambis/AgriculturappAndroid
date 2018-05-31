@@ -46,9 +46,14 @@ class TratamientoRepository : ITratamiento.Repository {
         apiService = ApiInterface.create()
     }
 
-
+    fun getLastUserLogued(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
     //Controlde plagas
     override fun registerControlPlaga(controlPlaga: ControlPlaga, cultivo_id: Long?,checkConection:Boolean) {
+        controlPlaga.UsuarioId=getLastUserLogued()?.Id
+
         //TODO si existe conexion a internet
         if(checkConection){
             //TODO Ciudad Id de la tabla del backend

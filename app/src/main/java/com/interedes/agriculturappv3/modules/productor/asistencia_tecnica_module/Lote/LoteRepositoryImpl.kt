@@ -34,8 +34,7 @@ class LoteRepositoryImpl : MainViewLote.Repository {
 
     //region METHODS
     override fun saveLotes(mLote: Lote, unidad_productiva_id: Long?,checkConection:Boolean) {
-
-
+        mLote.UsuarioId= getLastUserLogued()?.Id
 
         //TODO si existe conexion a internet
         if(checkConection){
@@ -155,9 +154,12 @@ class LoteRepositoryImpl : MainViewLote.Repository {
         var listResponse: List<Lote>? = null
 
         if (unidad_productiva_id == null) {
-            listResponse = SQLite.select().from(Lote::class.java).queryList()
+            listResponse = SQLite.select().from(Lote::class.java)
+                    .where(Lote_Table.UsuarioId.eq(getLastUserLogued()?.Id)).queryList()
         } else {
-            listResponse = SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).queryList()
+            listResponse = SQLite.select().from(Lote::class.java)
+                    .where(Lote_Table.Unidad_Productiva_Id.eq(unidad_productiva_id))
+                    .and(Lote_Table.UsuarioId.eq(getLastUserLogued()?.Id)).queryList()
         }
         return listResponse;
     }

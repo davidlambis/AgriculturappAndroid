@@ -38,7 +38,7 @@ ext {
     minSdkVersion = 17
     targetSdkVersion = 27
     compileSdkVersion = 27
-    supportLibraryVersion = '27.1.0'
+    supportLibraryVersion = '27.0.2'
 
     //Spinner
     library_material_spinner = "1.1.0"

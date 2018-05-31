@@ -439,13 +439,13 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                 .customView(viewDialogConfirm!!, true)
                 .positiveText(R.string.confirm)
                 .negativeText(R.string.cancel)
-                .positiveColorRes(R.color.material_red_400)
-                .negativeColorRes(R.color.material_red_400)
+                .positiveColorRes(R.color.light_green_800)
+                .negativeColorRes(R.color.light_green_800)
                 .titleGravity(GravityEnum.CENTER)
-                .titleColorRes(R.color.material_red_400)
+                .titleColorRes(R.color.light_green_800)
                 .contentColorRes(android.R.color.white)
                 .backgroundColorRes(R.color.material_blue_grey_800)
-                .dividerColorRes(R.color.accent)
+                .dividerColorRes(R.color.light_green_800)
                 .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
                 .positiveColor(Color.WHITE)
                 .negativeColorAttr(android.R.attr.textColorSecondaryInverse)
@@ -455,8 +455,6 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                             Toast.makeText(activity,"Enviar oferta",Toast.LENGTH_SHORT).show()
                             _dialogOferta?.dismiss()
                             sucessResponseOferta()
-
-
                         })
                 .onNegative({ dialog1, which ->
                     dialog1.dismiss()

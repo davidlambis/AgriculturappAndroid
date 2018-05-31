@@ -9,7 +9,7 @@ import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
 import com.raizlabs.android.dbflow.structure.BaseModel
-import java.util.ArrayList
+import java.util.*
 
 
 @Table(name = "Lote", database = DataSource::class)
@@ -78,6 +78,9 @@ class Lote : BaseModel() {
     @SerializedName("Id")
     @Column(name = "Id_Remote")
     var Id_Remote: Long? = 0
+
+    @Column(name = "UsuarioId")
+    var UsuarioId: UUID? = null
 
     @Column(getterName = "getEstadoSincronizacion")
     var EstadoSincronizacion: Boolean? = false

@@ -62,7 +62,10 @@ data class ControlPlaga(@PrimaryKey
 
                         @SerializedName("Id")
                         @Column(name = "Id_Remote")
-                        var Id_Remote: Long? = 0
+                        var Id_Remote: Long? = 0,
+
+                        @Column(name = "UsuarioId")
+                        var UsuarioId: UUID? = null
 
                         ) {
 

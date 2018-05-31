@@ -10,6 +10,8 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPlaga
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.update
@@ -26,6 +28,11 @@ class ControlPlagasRepository : IControlPlagas.Repository {
     init {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
+    }
+
+     fun getLastUserLogued(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
     }
 
     //region Métodos Interfaz
@@ -47,9 +54,13 @@ class ControlPlagasRepository : IControlPlagas.Repository {
     override fun getControlPlagas(cultivo_id: Long?): List<ControlPlaga> {
         val listResponse: List<ControlPlaga>
         if (cultivo_id == null) {
-            listResponse = SQLite.select().from(ControlPlaga::class.java).queryList()
+            listResponse = SQLite.select().from(ControlPlaga::class.java)
+                    .where(ControlPlaga_Table.UsuarioId.eq(getLastUserLogued()?.Id)).queryList()
         } else {
-            listResponse = SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.CultivoId.eq(cultivo_id)).queryList()
+            listResponse = SQLite.select().from(ControlPlaga::class.java)
+                    .where(ControlPlaga_Table.CultivoId.eq(cultivo_id))
+                    .and(ControlPlaga_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+                    .queryList()
         }
         return listResponse
     }

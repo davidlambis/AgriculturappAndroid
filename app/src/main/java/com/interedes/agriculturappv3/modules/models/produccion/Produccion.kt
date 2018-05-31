@@ -65,6 +65,8 @@ data class Produccion(@PrimaryKey
                       @Column(name = "Id_Remote")
                       var Id_Remote: Long? = 0,
 
+                      @Column(name = "UsuarioId")
+                      var UsuarioId: UUID? = null,
 
 
                       @Column(getterName = "getEstado_Sincronizacion")

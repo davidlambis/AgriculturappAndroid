@@ -635,7 +635,6 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
                             // Create the AlertDialog object and return it
                             builder.show()
 
-
                         }
                     }
                 }

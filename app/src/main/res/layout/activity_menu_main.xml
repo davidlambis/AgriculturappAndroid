@@ -61,16 +61,58 @@
                 android:indeterminate="true"
                 />
 
-            <FrameLayout
-                android:id="@+id/container"
+
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/fondo_general"
-                 />
+                >
+
+                <FrameLayout
+                    app:layout_constraintBottom_toTopOf="@+id/navigationViewBotom"
+                    android:id="@+id/container"
+                    android:background="@drawable/fondo_general"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+                <android.support.design.widget.BottomNavigationView
+                    android:id="@+id/navigationViewBotom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/windowBackground"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:itemBackground="@color/colorPrimary"
+                    app:itemIconTint="@color/white_solid"
+                    app:itemTextColor="@color/white"
+                    app:menu="@menu/menu_navigation_bottom"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <!--<RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:id="@+id/container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:background="@drawable/fondo_general" />
+
+                <android.support.design.widget.BottomNavigationView
+                    android:id="@+id/navigationViewBotom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="?android:attr/windowBackground"
+                    app:itemBackground="@color/colorPrimary"
+                    app:itemIconTint="@color/white"
+                    app:itemTextColor="@color/white"
+                    app:menu="@menu/menu_navigation_bottom" />
+
+            </RelativeLayout>-->
 
         </LinearLayout>
-
-
 
     </android.support.design.widget.CoordinatorLayout>
 
@@ -112,7 +154,7 @@
         app:itemTextColor="@color/white_solid"
         />
 
-
+<!--
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigationViewBotom"
         android:layout_width="0dp"
@@ -128,5 +170,26 @@
         app:itemTextColor="@color/white"
         app:menu="@menu/menu_navigation_bottom"/>
 
+
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:menu="@menu/menu_navigation_bottom" />-->
+
+
+    <com.nightonke.boommenu.BoomMenuButton
+        android:id="@+id/boom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        app:boom_inActionBar="false"
+        />
 
 </android.support.v4.widget.DrawerLayout>

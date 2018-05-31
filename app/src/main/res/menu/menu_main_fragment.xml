@@ -5,12 +5,25 @@
         android:id="@+id/action_menu_icon"
         android:title=""
         app:showAsAction="always" />
+<!--
+    <item android:title="" android:id="@+id/ss">
+        <com.nightonke.boommenu.BoomMenuButton
+            android:id="@+id/boomdd"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            app:boom_inActionBar="true"
+            />
+    </item>-->
 
-    <item
+
+   <!-- <item
         android:id="@+id/action_menu_sync"
         android:title=""
         android:icon="@drawable/ic_action_backup"
-        app:showAsAction="always" />
+        app:showAsAction="always" />-->
 
     <!--<item
         android:id="@+id/action_menu_email"
@@ -18,9 +31,30 @@
         android:icon="@drawable/ic_stat_email"
         app:showAsAction="always" />-->
 
-    <item
+    <!--<item
         android:id="@+id/action_menu_icon_chat"
         android:title=""
         android:icon="@drawable/ic_stat_chat"
-        app:showAsAction="always" />
+        app:showAsAction="always" />-->
+<!--
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="Opciones"
+        android:icon="@drawable/ic_action_more_vert"
+        app:showAsAction="always" >
+        <menu>
+            <item android:id="@+id/action_exportar"
+                android:icon="@drawable/ic_action_backup_tinted"
+                android:title="Exportar">
+            </item>
+            <item android:id="@+id/action_importar"
+                android:icon="@drawable/ic_action_restore_tinted"
+                android:title="Importar">
+            </item>
+
+
+        </menu>
+    </item>-->
+
 </menu>
