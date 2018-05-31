@@ -15,49 +15,51 @@
 
     <item android:title="Menu" >
         <menu>
-            <item
+            <group android:checkableBehavior="single">
+                <item
 
-                android:id="@+id/nav_proveedores"
-                android:icon="@drawable/ic_ic_proveedores"
-                android:title="Mis Proveedores" />
+                    android:id="@+id/nav_proveedores"
+                    android:icon="@drawable/ic_ic_proveedores"
+                    android:title="Mis Proveedores" />
 
-            <item
-                android:id="@+id/nav_ofertas"
-                android:icon="@drawable/ic_ic_ofertas_desplegable"
-                android:iconTint="@color/white"
-                android:title="Ofertas" />
+                <item
+                    android:id="@+id/nav_ofertas"
+                    android:icon="@drawable/ic_ic_ofertas_desplegable"
+                    android:iconTint="@color/white"
+                    android:title="Ofertas" />
 
-            <item
-                android:id="@+id/nav_compras_realizadas"
-                android:icon="@drawable/ic_ic_compras_realizadas_desplegable"
-                android:iconTint="@color/white"
-                android:title="Compras Realizadas" />
-            <item
-                app:showAsAction="ifRoom"
-                android:id="@+id/nav_productos"
-                android:icon="@drawable/ic_ic_productos_interes_desplegable"
-                android:iconTint="@color/white"
-                android:title="Productos Interes" />
-            <item
-                app:showAsAction="ifRoom"
-                android:id="@+id/nav_preguntas"
-                android:icon="@drawable/ic_ic_pregunas_desplegable"
-                android:iconTint="@color/white"
-                android:title="Preguntas" />
+                <item
+                    android:id="@+id/nav_compras_realizadas"
+                    android:icon="@drawable/ic_ic_compras_realizadas_desplegable"
+                    android:iconTint="@color/white"
+                    android:title="Compras Realizadas" />
+               <!-- <item
+                    android:id="@+id/nav_productos"
+                    android:icon="@drawable/ic_ic_productos_interes_desplegable"
+                    android:iconTint="@color/white"
+                    android:title="Productos Interes" />-->
+                <!--<item
+                    android:id="@+id/nav_preguntas"
+                    android:icon="@drawable/ic_ic_pregunas_desplegable"
+                    android:iconTint="@color/white"
+                    android:title="Preguntas" />-->
 
-            <item
-                app:showAsAction="ifRoom"
-                android:id="@+id/nav_sync_data"
-                android:icon="@drawable/ic_refresh_black_24dp"
-                android:iconTint="@color/white"
-                android:title="Actualizar Informacion" />
+                <item
+                    android:id="@+id/nav_sync_data"
+                    android:icon="@drawable/ic_refresh_black_24dp"
+                    android:iconTint="@color/white"
+                    android:title="Actualizar Informacion" />
 
-            <item
-                app:showAsAction="ifRoom"
-                android:id="@+id/nav_singout_session"
-                android:icon="@drawable/ic_back_button"
-                android:iconTint="@color/white"
-                android:title="Cerrar Sesion" />
+                <item
+                    android:id="@+id/nav_singout_session"
+                    android:icon="@drawable/ic_back_button"
+                    android:iconTint="@color/white"
+                    android:title="Cerrar Sesion" />
+
+            </group>
+
+
+
 
         </menu>
     </item>

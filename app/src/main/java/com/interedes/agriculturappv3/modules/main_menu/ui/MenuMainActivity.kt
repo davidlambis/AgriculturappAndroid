@@ -321,6 +321,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         // Handle navigation view item clicks here.
         val id = item.itemId
 
+        /*
         if (id == R.id.nav_proveedores) {
             // Handle the camera action
             // val i = Intent(this, SettingsActivity::class.java)
@@ -330,13 +331,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         } else if (id == R.id.nav_compras_realizadas) {
 
 
-        } else if (id == R.id.nav_productos) {
-
-
-        } else if (id == R.id.nav_preguntas) {
-
-
-        }else if (id == R.id.nav_singout_session) {
+        } else if (id == R.id.nav_singout_session) {
             showExit()
 
         }
@@ -344,6 +339,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         else if (id == R.id.nav_sync_data) {
             showAlertDialogSyncDataConfirm()
         }
+
+        */
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true

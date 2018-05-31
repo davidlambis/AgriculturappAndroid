@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
@@ -15,6 +16,8 @@
         app:civ_border_width="2dp" />
 
     <TextView
+        android:layout_marginRight="@dimen/margin_50"
+        android:layout_marginLeft="@dimen/margin_30"
         android:id="@+id/tvNombreUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,6 +30,8 @@
         android:textSize="20sp" />
 
     <TextView
+        android:layout_marginRight="@dimen/margin_50"
+        android:layout_marginLeft="@dimen/margin_30"
         android:id="@+id/tvIdentificacion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,9 +41,144 @@
         android:textColor="@color/white_solid"
         android:padding="@dimen/margin_3"
         android:layout_marginTop="@dimen/margin_3"
-
         android:background="@color/black_alpha_40"
         android:textStyle="bold" />
+
+
+    <LinearLayout
+        android:background="@color/black_alpha_40"
+        android:layout_marginRight="@dimen/margin_50"
+        android:layout_marginLeft="@dimen/margin_30"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="@dimen/margin_5"
+            android:background="@color/grey_luiyi" />
+
+        <LinearLayout
+            android:padding="@dimen/margin_5"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center|left"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:tint="@color/white_solid"
+                android:src="@drawable/ic_ic_proveedores"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+            <TextView
+                android:textColor="@color/white_solid"
+                android:paddingStart="@dimen/margin_5"
+                android:textAlignment="textStart"
+                android:text="Mis Proveedores"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:padding="@dimen/margin_5"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center|left"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+
+                android:tint="@color/white_solid"
+                android:src="@drawable/ic_ic_ofertas_desplegable"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+            <TextView
+                android:textColor="@color/white_solid"
+                android:paddingStart="@dimen/margin_5"
+                android:textAlignment="textStart"
+                android:text="Ofertas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:padding="@dimen/margin_5"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center|left"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:tint="@color/white_solid"
+                android:src="@drawable/ic_ic_compras_realizadas_desplegable"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+            <TextView
+                android:textColor="@color/white_solid"
+                android:paddingStart="@dimen/margin_5"
+                android:textAlignment="textStart"
+                android:text="Compras Realizadas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:padding="@dimen/margin_5"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center|left"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:tint="@color/white_solid"
+                app:srcCompat="@drawable/ic_refresh_black_24dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+            <TextView
+                android:textColor="@color/white_solid"
+                android:paddingStart="@dimen/margin_5"
+                android:textAlignment="center"
+                android:text="Actualizar Informacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:padding="@dimen/margin_5"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center|left"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:tint="@color/white_solid"
+                android:src="@drawable/ic_back_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+            <TextView
+                android:textColor="@color/white_solid"
+                android:paddingStart="@dimen/margin_5"
+                android:textAlignment="center"
+                android:text="Cerrar Sesion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
 
 
 </LinearLayout>
