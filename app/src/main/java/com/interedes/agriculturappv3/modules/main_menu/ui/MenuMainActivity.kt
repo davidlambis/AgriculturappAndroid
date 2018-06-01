@@ -445,6 +445,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         }
     }
 
+    @SuppressLint("WrongConstant")
     fun restart(context: Context, delay: Int) {
         var delay = delay
         if (delay == 0) {

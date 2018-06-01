@@ -192,10 +192,45 @@
                             style="@style/editText"
                             android:drawableLeft="@drawable/ic_apuntador"
                             android:drawableStart="@drawable/ic_apuntador"
-                            android:enabled="true"
+                            android:enabled="false"
                             android:hint="@string/coordenadas"
                             android:inputType="textEmailAddress" />
                     </android.support.design.widget.TextInputLayout>
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtLatitud"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_localizacion_finca"
+                            android:drawableStart="@drawable/ic_localizacion_finca"
+                            android:enabled="true"
+                            android:hint="@string/edit_text_latitud_finca"
+                            android:inputType="phone" />
+                    </android.support.design.widget.TextInputLayout>
+
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                        <EditText
+                            android:id="@+id/edtLongitud"
+                            style="@style/editText"
+                            android:drawableLeft="@drawable/ic_localizacion_finca"
+                            android:drawableStart="@drawable/ic_localizacion_finca"
+                            android:enabled="true"
+                            android:hint="@string/edit_text_longitud_finca"
+                            android:inputType="phone" />
+                    </android.support.design.widget.TextInputLayout>
+
 
                 </LinearLayout>
 

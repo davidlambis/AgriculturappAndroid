@@ -5,6 +5,7 @@ import com.interedes.agriculturappv3.config.DataSource
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
+import java.util.*
 
 
 @Table(database = DataSource::class)
@@ -37,7 +38,10 @@ data class Tercero(@PrimaryKey
 
                    @SerializedName("Id")
                    @Column(name = "Id_Remote")
-                   var Id_Remote: Long? = 0
+                   var Id_Remote: Long? = 0,
+
+                   @Column(name = "Usuario_Id")
+                   var Usuario_Id: UUID? = null
 
 
 ) {

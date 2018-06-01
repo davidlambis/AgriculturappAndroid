@@ -19,6 +19,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -76,8 +78,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     var viewDialog: View? = null;
 
     //Coords
-    private var latitud: Double = 0.0
-    private var longitud: Double = 0.0
+    private var latitud: Double? = 0.0
+    private var longitud: Double? = 0.0
 
     //Progress
     /** These can be lateinit as they are set in onCreate */
@@ -85,6 +87,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
     //UbicationLote
     private var UBICATION_MANUAL: Boolean = false
+    private var UBICATION_MAPA: Boolean = false
     private var UBICATION_GPS: Boolean = false
     private var DIALOG_SET_TYPE_UBICATION: Int = -1
 
@@ -214,7 +217,11 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             DIALOG_SET_TYPE_UBICATION = 1
         } else if (UBICATION_GPS == true) {
             DIALOG_SET_TYPE_UBICATION = 0
-        } else {
+        }
+        else if (UBICATION_MAPA == true) {
+            DIALOG_SET_TYPE_UBICATION = 2
+        }
+        else {
             DIALOG_SET_TYPE_UBICATION = -1
         }
     }
@@ -223,7 +230,13 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         if (imgOffConection.visibility == View.GONE) imgOffConection.visibility = View.VISIBLE
         if (UBICATION_GPS == true) {
             DIALOG_SET_TYPE_UBICATION = 0
-        } else {
+        }
+
+        else if (UBICATION_MANUAL == true) {
+            DIALOG_SET_TYPE_UBICATION = 1
+        }
+
+        else {
             DIALOG_SET_TYPE_UBICATION = -1
         }
     }
@@ -428,7 +441,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         if (LastMarkerDrawingLote != null) {
             LastMarkerDrawingLote?.remove()
         }
-        if (UBICATION_MANUAL == true) {
+        if (UBICATION_MAPA == true) {
             // Creating a marker
             LastMarkerDrawingLote = drawMarker(latLng, latLng.latitude.toString() + " / " + latLng.longitude, getString(R.string.location_gps), BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             txtCoordsLote.setText(String.format(getString(R.string.coords), latLng.latitude, latLng.longitude))
@@ -534,7 +547,27 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             viewDialog?.coordenadas_lote?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.coordenadas_lote
             cancel = true
-        } /* else if (!edtCorreo.text.toString().trim().matches(email_pattern.toRegex())) {
+        }else if (viewDialog?.edtLatitud?.text.toString().isEmpty()) {
+            viewDialog?.edtLatitud?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.edtLatitud
+            cancel = true
+        }else if (viewDialog?.edtLongitud?.text.toString().isEmpty()) {
+            viewDialog?.edtLongitud?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.edtLongitud
+            cancel = true
+        }else if(!isParceableDouble(viewDialog?.edtLatitud?.text.toString())){
+            viewDialog?.edtLatitud?.setError(getString(R.string.verifcate_coord))
+            focusView = viewDialog?.edtLatitud
+            cancel = true
+        }
+        else if(!isParceableDouble(viewDialog?.edtLongitud?.text.toString())){
+            viewDialog?.edtLongitud?.setError(getString(R.string.verifcate_coord))
+            focusView = viewDialog?.edtLongitud
+            cancel = true
+        }
+
+
+        /* else if (!edtCorreo.text.toString().trim().matches(email_pattern.toRegex())) {
             edtCorreo?.setError(getString(R.string.edit_text_error_correo))
             focusView = edtCorreo
             cancel = true
@@ -581,6 +614,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     override fun setPropertiesTypeLocationGps() {
         UBICATION_GPS = true
         UBICATION_MANUAL = false
+        UBICATION_MAPA=false
         if (LastMarkerDrawingLote != null) {
             LastMarkerDrawingLote?.remove()
         }
@@ -590,14 +624,28 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         txtCoordsLote.setText("")
     }
 
+
+
     override fun setPropertiesTypeLocationManual() {
+        presenter?.closeServiceGps()
+        UBICATION_GPS = false
+        UBICATION_MANUAL = true
+        UBICATION_MAPA=false
+        if (LastMarkerDrawingLote != null) {
+            LastMarkerDrawingLote?.remove()
+        }
+        if (LastMarkerDrawingLote != null) LastMarkerDrawingLote?.remove()
+        LastMarkerDrawingLote = null
+        _dialogTypeLocation?.dismiss()
+        txtCoordsLote.setText("")
+    }
+
+    override fun setPropertiesTypeLocationMapa() {
         presenter?.closeServiceGps()
         if (markerLocation != null) markerLocation?.remove()
         UBICATION_GPS = false
-        UBICATION_MANUAL = true
-        if (fabAddLote.getVisibility() == View.GONE) {
-            fabAddLote.visibility = View.VISIBLE
-        }
+        UBICATION_MANUAL = false
+        UBICATION_MAPA=true
         _dialogTypeLocation?.dismiss()
         Toast.makeText(activity, "Ubicacion Manual", Toast.LENGTH_SHORT).show()
         txtCoordsLote.setText("")
@@ -748,13 +796,21 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
             viewDialog?.txtTitle?.setText(getString(R.string.add_lote))
 
-            if (UBICATION_MANUAL == true) {
+            if (UBICATION_MAPA == true) {
                 if (LastMarkerDrawingLote != null) {
                     locationLote.latitude = LastMarkerDrawingLote!!.getPosition().latitude
                     locationLote.longitude = LastMarkerDrawingLote!!.getPosition().longitude
                     coordsLote?.setText(LastMarkerDrawingLote!!.getPosition().latitude.toString() + " / " + LastMarkerDrawingLote!!.getPosition().longitude)
                 }
-            } else {
+            } else if(UBICATION_MANUAL==true){
+                latitud=0.0
+                longitud=0.0
+                locationLote.latitude = latitud!!
+                locationLote.longitude = longitud!!
+                coordsLote?.setText(latitud.toString() + " / " + longitud.toString())
+            }
+
+            else {
                 locationLote.latitude = latitud!!
                 locationLote.longitude = longitud!!
                 coordsLote?.setText(latitud.toString() + " / " + longitud.toString())
@@ -780,6 +836,32 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             }else{
                 viewDialog?.area_lote?.setText(lote.Area.toString())
             }
+
+
+            val coordenadas =lote.Localizacion
+            if(coordenadas!=null || coordenadas!=""){
+                val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
+                if(isParceableDouble( separated!![0].toString())==true && isParceableDouble( separated!![1].toString())){
+
+                    var latitudL= separated!![0].toDoubleOrNull() // this will contain "Fruit"
+                    var longitudL=separated!![1].toDoubleOrNull() // this will contain " they taste good"
+                    lote.Latitud=latitudL
+                    lote.Longitud=longitudL
+                    lote.Coordenadas=coordenadas
+
+                    latitud=latitudL
+                    latitud=longitudL
+
+                }else{
+                    latitud=0.0
+                    latitud=0.0
+
+                }
+            }
+
+
+            viewDialog?.edtLatitud?.setText(latitud.toString())
+            viewDialog?.edtLongitud?.setText(longitud.toString())
 
             //viewDialog?.spinnerUnidadProductiva?.visibility = View.GONE
         }
@@ -815,6 +897,64 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 .theme(Theme.LIGHT)
                 .build()*/
 
+        viewDialog?.edtLatitud?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                if(!viewDialog?.edtLatitud?.text.toString().isEmpty()){
+                    if(isParceableDouble(viewDialog?.edtLatitud?.text.toString())){
+                        latitud=  viewDialog?.edtLatitud?.text.toString()?.toDoubleOrNull()
+                        viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
+                    }else{
+                        var focusView:View? =null
+                        viewDialog?.edtLatitud?.setError(getString(R.string.verifcate_coord))
+                        focusView=viewDialog?.edtLatitud
+                        focusView?.requestFocus()
+                    }
+                }else{
+                    //viewDialog?.edtLatitud?.setText("0.0")
+                    latitud=0.0
+                    viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
+                }
+            }
+        })
+
+
+        viewDialog?.edtLongitud?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+
+                if(!viewDialog?.edtLongitud?.text.toString().isEmpty()){
+                    if(isParceableDouble(viewDialog?.edtLongitud?.text.toString())){
+                        longitud=  viewDialog?.edtLongitud?.text.toString()?.toDoubleOrNull()
+                        viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
+
+                    }else{
+                        var focusView:View? =null
+                        viewDialog?.edtLongitud?.setError(getString(R.string.verifcate_coord))
+                        focusView=viewDialog?.edtLongitud
+                        focusView?.requestFocus()
+                    }
+                }else{
+                    //viewDialog?.edtLongitud?.setText("0.0")
+                    longitud=0.0
+                    viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
+                }
+
+
+            }
+        })
+
+
         val dialog = AlertDialog.Builder(context!!, android.R.style.Theme_Light_NoTitleBar)
                 .setView(viewDialog)
                 .create()
@@ -829,6 +969,17 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         dialog.getWindow().setAttributes(lp)
         _dialogRegisterUpdate = dialog
 
+
+    }
+
+
+    private fun isParceableDouble(cadena: String): Boolean {
+        try {
+            java.lang.Double.parseDouble(cadena)
+            return true
+        } catch (nfe: NumberFormatException) {
+            return false
+        }
 
     }
 
@@ -860,9 +1011,16 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                     //scheduleDismiss();
                 }
             //Position State Location Manual
+                1 -> {
+                    _dialogTypeLocation = dialog as AlertDialog?
+                    showAlertDialogAddLote(null)
+                    setPropertiesTypeLocationManual()
+                    //scheduleDismiss();
+                }
+            //Position State Location Mapa
                 else -> {
                     _dialogTypeLocation = dialog as AlertDialog?
-                    setPropertiesTypeLocationManual()
+                    setPropertiesTypeLocationMapa()
                     //showAlertDialogSelectUp()
                 }
             }
@@ -963,9 +1121,9 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fabAddLote -> {
-                if (UBICATION_MANUAL == false && UBICATION_GPS == false) {
+                if (UBICATION_MANUAL == false && UBICATION_GPS == false && UBICATION_MAPA==false) {
                     showAlertTypeLocationLote()
-                } else if (UBICATION_MANUAL == true) {
+                } else if (UBICATION_MAPA == true) {
                     contentButtonsDrawingLoteMapa.visibility = View.VISIBLE
                     app_bar.layoutParams.width = AppBarLayout.LayoutParams.MATCH_PARENT
                     //app_bar.layoutParams.height = container_fragment.height
@@ -979,6 +1137,10 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 } else if (UBICATION_GPS == true) {
                     showAlertDialogAddLote(null)
                 }
+
+                else if (UBICATION_MANUAL == true) {
+                    showAlertDialogAddLote(null)
+                }
             }
             R.id.ivClosetDialogLote -> _dialogRegisterUpdate?.dismiss()
             R.id.fabLocationLote -> showAlertTypeLocationLote()
@@ -989,7 +1151,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             }
 
             R.id.checkDoneMapView -> {
-                if (UBICATION_MANUAL == true && LastMarkerDrawingLote == null) {
+                if (UBICATION_MAPA == true && LastMarkerDrawingLote == null) {
                     Toast.makeText(activity, getString(R.string.message_location_lote_marker), Toast.LENGTH_LONG).show()
                 } else {
                     showAlertDialogAddLote(null)
@@ -1026,16 +1188,21 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 }
             }
             if (extras.containsKey("latitud") && extras.containsKey("longitud")) {
-                latitud = intent.extras!!.getDouble("latitud")
-                longitud = intent.extras!!.getDouble("longitud")
 
-                if (fabAddLote.getVisibility() == View.GONE) {
-                    fabAddLote.visibility = View.VISIBLE
-                }
-                addMarkerLocation(latitud, longitud)
-                hideProgressHud()
-                txtCoordsLote.setText(String.format(getString(R.string.coords), latitud, longitud))
                 if (viewDialog != null && UBICATION_GPS == true) {
+
+
+                    latitud = intent.extras!!.getDouble("latitud")
+                    longitud = intent.extras!!.getDouble("longitud")
+
+
+                    addMarkerLocation(latitud!!, longitud!!)
+                    hideProgressHud()
+                    txtCoordsLote.setText(String.format(getString(R.string.coords), latitud, longitud))
+
+
+                    viewDialog?.edtLatitud?.setText(latitud.toString())
+                    viewDialog?.edtLongitud?.setText(longitud.toString())
                     viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
                 }
                 //Toast.makeText(activity,"Broadcast: "+longitud.toString(), Toast.LENGTH_SHORT).show()

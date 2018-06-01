@@ -44,6 +44,7 @@ import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_menu_main.*
+import kotlinx.android.synthetic.main.dialog_form_unidad_productiva.*
 import kotlinx.android.synthetic.main.fragment_account.*
 import kotlinx.android.synthetic.main.navigation_drawer_header.*
 import java.io.ByteArrayOutputStream
@@ -316,6 +317,8 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     }
 
     override fun requestResponseOK() {
+        userLogued=presenter?.getUserLogued()
+        (activity as MenuMainActivity).tvNombreUsuario.setText(String.format(getString(R.string.nombre_usuario_nav), userLogued?.Nombre, userLogued?.Apellidos))
         onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
     }
 

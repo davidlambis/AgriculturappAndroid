@@ -72,56 +72,84 @@ class MenuRepository: MainViewMenu.Repository {
 
     override fun syncQuantityData() {
 
+        var usuarioLogued=getLastUserLogued()
+
+
+        var counRegisterUnidadesProductivaslist=SQLite.select().from(Unidad_Productiva::class.java)
+                .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
+                .and(Unidad_Productiva_Table.UsuarioId.eq(usuarioLogued?.Id)).queryList().count()
+
+
         var counRegisterUnidadesProductivas=SQLite.select().from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
-                .and(Unidad_Productiva_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .count()
-        var counRegisterLotes=SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(false))
-                .and(Lote_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .count()
-        var counRegisterCultivos=SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.EstadoSincronizacion.eq(false))
-                .and(Cultivo_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .count()
-        var counRegisterControlPlagas=SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
-                .and(ControlPlaga_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .count()
-        var counRegisterProducccion=SQLite.select().from(Produccion::class.java).where(Produccion_Table.Estado_Sincronizacion.eq(false))
-                .and(Produccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .count()
-        var counRegisterProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(false))
-                .and(Producto_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .count()
-        var counRegisterTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(false))
-                .and(Transaccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .count()
+                .and(Unidad_Productiva_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .queryList().count()
 
+
+
+
+        var counRegisterLotes=SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(false))
+                .and(Lote_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .queryList().count()
+        var counRegisterCultivos=SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.EstadoSincronizacion.eq(false))
+                .and(Cultivo_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .queryList().count()
+        var counRegisterControlPlagas=SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
+                .and(ControlPlaga_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .queryList().count()
+        var counRegisterProducccion=SQLite.select().from(Produccion::class.java).where(Produccion_Table.Estado_Sincronizacion.eq(false))
+                .and(Produccion_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .queryList().count()
+        var counRegisterProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(false))
+                .and(Producto_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .queryList().count()
+        var counRegisterTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(false))
+                .and(Transaccion_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .queryList().count()
 
         var registerTotal= counRegisterUnidadesProductivas+
                 counRegisterControlPlagas+
                 counRegisterCultivos+
                 counRegisterLotes+counRegisterProducccion+counRegisterProductos+counRegisterTransacciones
 
-        var countUpdatesUnidadesProductivas=SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true))
-                .and(Unidad_Productiva_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesLotes=SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(true))
-                .and(Lote_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .and(Lote_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesCultivos=SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.EstadoSincronizacion.eq(true))
-                .and(Cultivo_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesControlPlagas=SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.Estado_Sincronizacion.eq(true))
-                .and(ControlPlaga_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesProducccion=SQLite.select().from(Produccion::class.java).where(Produccion_Table.Estado_Sincronizacion.eq(true))
-                .and(Produccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .and(Produccion_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(true))
-                .and(Producto_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .and(Producto_Table.Estado_SincronizacionUpdate.eq(false)).count()
-        var countUpdatesTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(true))
-                .and(Transaccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
-                .and(Transaccion_Table.Estado_SincronizacionUpdate.eq(false)).count()
+        var countUpdatesUnidadesProductivas=SQLite.select()
+                .from(Unidad_Productiva::class.java)
+                .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true))
+                .and(Unidad_Productiva_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
+
+
+        var countUpdatesLotes=SQLite.select().from(Lote::class.java)
+                .where(Lote_Table.EstadoSincronizacion.eq(true))
+                .and(Lote_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .and(Lote_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
+
+
+        var countUpdatesCultivos=SQLite.select().from(Cultivo::class.java)
+                .where(Cultivo_Table.EstadoSincronizacion.eq(true))
+                .and(Cultivo_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
+
+
+        var countUpdatesControlPlagas=SQLite.select().from(ControlPlaga::class.java)
+                .where(ControlPlaga_Table.Estado_Sincronizacion.eq(true))
+                .and(ControlPlaga_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
+
+        var countUpdatesProducccion=SQLite.select().from(Produccion::class.java)
+                .where(Produccion_Table.Estado_Sincronizacion.eq(true))
+                .and(Produccion_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .and(Produccion_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
+
+        var countUpdatesProductos=SQLite.select().from(Producto::class.java)
+                .where(Producto_Table.Estado_Sincronizacion.eq(true))
+                .and(Producto_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .and(Producto_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
+
+        var countUpdatesTransacciones=SQLite.select().from(Transaccion::class.java)
+                .where(Transaccion_Table.Estado_Sincronizacion.eq(true))
+                .and(Transaccion_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .and(Transaccion_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
         var updatesTotal= countUpdatesUnidadesProductivas+
                 countUpdatesLotes+
@@ -129,7 +157,7 @@ class MenuRepository: MainViewMenu.Repository {
                 countUpdatesControlPlagas+countUpdatesProducccion+countUpdatesProductos+countUpdatesTransacciones
 
 
-        var quantitySync= QuantitySync(registerTotal,updatesTotal)
+        var quantitySync= QuantitySync(registerTotal.toLong(),updatesTotal.toLong())
         postEventOkQuntitySync(RequestEventMainMenu.SYNC_RESUME,quantitySync)
     }
 
@@ -685,44 +713,142 @@ class MenuRepository: MainViewMenu.Repository {
 
 
     //Listas Iniciales
-    fun getLastUp(): Unidad_Productiva? {
-        val lastUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).where().orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id, false).querySingle()
-        return lastUnidadProductiva
+    fun getLastUp(usuario:Usuario?): Unidad_Productiva? {
+
+        if(usuario!=null){
+
+            val lastUnidadProductiva = SQLite.select()
+                    .from(Unidad_Productiva::class.java)
+                    .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id)).orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id, false)
+                    .querySingle()
+            return lastUnidadProductiva
+        }else{
+            val lastUnidadProductiva = SQLite.select()
+                    .from(Unidad_Productiva::class.java)
+                    .orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id, false)
+                    .querySingle()
+            return lastUnidadProductiva
+
+        }
     }
 
-    fun getLastLote(): Lote? {
-        val lastLote = SQLite.select().from(Lote::class.java).where().orderBy(Lote_Table.LoteId, false).querySingle()
-        return lastLote
+    fun getLastLote(usuario:Usuario?): Lote? {
+
+
+        if(usuario!=null){
+            val lastLote = SQLite.select().from(Lote::class.java)
+                    .where(Lote_Table.UsuarioId.eq(usuario?.Id))
+                    .orderBy(Lote_Table.LoteId, false).querySingle()
+            return lastLote
+
+
+        }else{
+            val lastLote = SQLite.select().from(Lote::class.java)
+                    .orderBy(Lote_Table.LoteId, false).querySingle()
+            return lastLote
+
+        }
+
     }
 
-    fun getLastCultivo(): Cultivo? {
-        val lastCultivo = SQLite.select().from(Cultivo::class.java).where().orderBy(Cultivo_Table.CultivoId, false).querySingle()
-        return lastCultivo
+    fun getLastCultivo(usuario:Usuario?): Cultivo? {
+
+
+        if(usuario!=null){
+            val lastCultivo = SQLite.select().from(Cultivo::class.java)
+                    .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
+                    .orderBy(Cultivo_Table.CultivoId, false).querySingle()
+            return lastCultivo
+
+        }else{
+            val lastCultivo = SQLite.select().from(Cultivo::class.java)
+                    .orderBy(Cultivo_Table.CultivoId, false).querySingle()
+            return lastCultivo
+        }
+
+
     }
 
-    fun getLastProduccion(): Produccion? {
-        val lastProduccion = SQLite.select().from(Produccion::class.java).where().orderBy(Produccion_Table.ProduccionId, false).querySingle()
-        return lastProduccion
+    fun getLastProduccion(usuario:Usuario?): Produccion? {
+        if(usuario!=null){
+            val lastProduccion = SQLite.select().from(Produccion::class.java)
+                    .where(Produccion_Table.UsuarioId.eq(usuario?.Id))
+                    .orderBy(Produccion_Table.ProduccionId, false).querySingle()
+            return lastProduccion
+
+        }else{
+            val lastProduccion = SQLite.select().from(Produccion::class.java)
+                    .orderBy(Produccion_Table.ProduccionId, false).querySingle()
+            return lastProduccion
+        }
     }
 
-    fun getLastControlPlaga(): ControlPlaga? {
-        val lastControlPlaga = SQLite.select().from(ControlPlaga::class.java).where().orderBy(ControlPlaga_Table.ControlPlagaId, false).querySingle()
-        return lastControlPlaga
+    fun getLastControlPlaga(usuario:Usuario?): ControlPlaga? {
+
+        if(usuario!=null){
+            val lastControlPlaga = SQLite.select().from(ControlPlaga::class.java)
+                    .where(ControlPlaga_Table.UsuarioId.eq(usuario?.Id)).orderBy(ControlPlaga_Table.ControlPlagaId, false).querySingle()
+            return lastControlPlaga
+
+        }else{
+            val lastControlPlaga = SQLite.select().from(ControlPlaga::class.java)
+                    .orderBy(ControlPlaga_Table.ControlPlagaId, false).querySingle()
+            return lastControlPlaga
+        }
+
+
+
     }
 
-    fun getLastTransaccion(): Transaccion? {
-        val lastTransaccion = SQLite.select().from(Transaccion::class.java).where().orderBy(Transaccion_Table.TransaccionId, false).querySingle()
-        return lastTransaccion
+    fun getLastTransaccion(usuario:Usuario?): Transaccion? {
+
+
+
+        if(usuario!=null){
+            val lastTransaccion = SQLite.select().from(Transaccion::class.java)
+                    .where(Transaccion_Table.UsuarioId.eq(usuario?.Id)).orderBy(Transaccion_Table.TransaccionId, false).querySingle()
+            return lastTransaccion
+
+        }else{
+            val lastTransaccion = SQLite.select().from(Transaccion::class.java)
+                    .orderBy(Transaccion_Table.TransaccionId, false).querySingle()
+            return lastTransaccion
+        }
+
+
+
     }
 
-    fun getLastTercero(): Tercero? {
-        val lastTercero = SQLite.select().from(Tercero::class.java).where().orderBy(Tercero_Table.TerceroId, false).querySingle()
-        return lastTercero
+    fun getLastTercero(usuario:Usuario?): Tercero? {
+
+        if(usuario!=null){
+            val lastTercero = SQLite.select().from(Tercero::class.java).where().orderBy(Tercero_Table.TerceroId, false).querySingle()
+            return lastTercero
+
+        }else{
+            val lastTercero = SQLite.select().from(Tercero::class.java).where().orderBy(Tercero_Table.TerceroId, false).querySingle()
+            return lastTercero
+        }
+
+
     }
 
-    fun getLastProducto(): Producto? {
-        val lastProducto = SQLite.select().from(Producto::class.java).where().orderBy(Producto_Table.ProductoId, false).querySingle()
-        return lastProducto
+    fun getLastProducto(usuario:Usuario?): Producto? {
+
+
+        if(usuario!=null){
+            val lastProducto = SQLite.select().from(Producto::class.java)
+                    .where(Produccion_Table.UsuarioId.eq(usuario?.Id)).orderBy(Producto_Table.ProductoId, false).querySingle()
+            return lastProducto
+
+        }else{
+            val lastProducto = SQLite.select().from(Producto::class.java)
+                    .orderBy(Producto_Table.ProductoId, false).querySingle()
+            return lastProducto
+        }
+
+
+
     }
 
 
@@ -800,7 +926,7 @@ class MenuRepository: MainViewMenu.Repository {
                             if (unidadProductivaVerficateSave !=null){
                                 item.Unidad_Productiva_Id=unidadProductivaVerficateSave?.Unidad_Productiva_Id
                             }else{
-                                val last_up = getLastUp()
+                                val last_up = getLastUp(null)
                                 if (last_up == null) {
                                     item.Unidad_Productiva_Id = 1
                                 } else {
@@ -843,7 +969,7 @@ class MenuRepository: MainViewMenu.Repository {
                                         lote.LoteId=loteVerficateSave.LoteId
                                     }else{
 
-                                        val last_lote = getLastLote()
+                                        val last_lote = getLastLote(null)
                                         if (last_lote == null) {
                                             lote.LoteId = 1
                                         } else {
@@ -886,7 +1012,7 @@ class MenuRepository: MainViewMenu.Repository {
                                             if (cultivoVerficateSave!=null){
                                                 cultivo.CultivoId=cultivoVerficateSave.CultivoId
                                             }else{
-                                                val last_cultivo = getLastCultivo()
+                                                val last_cultivo = getLastCultivo(null)
                                                 if (last_cultivo == null) {
                                                     cultivo.CultivoId = 1
                                                 } else {
@@ -923,7 +1049,7 @@ class MenuRepository: MainViewMenu.Repository {
                                                     if (produccionVerficateSave!=null){
                                                         produccion.ProduccionId=produccionVerficateSave.ProduccionId
                                                     }else{
-                                                        val last_productions = getLastProduccion()
+                                                        val last_productions = getLastProduccion(null)
                                                         if (last_productions == null) {
                                                             produccion.ProduccionId = 1
                                                         } else {
@@ -960,7 +1086,7 @@ class MenuRepository: MainViewMenu.Repository {
                                                     if (controlPlagasVerficateSave!=null){
                                                         controlplaga.ControlPlagaId=controlPlagasVerficateSave.ControlPlagaId
                                                     }else{
-                                                        val last_controlplaga = getLastControlPlaga()
+                                                        val last_controlplaga = getLastControlPlaga(null)
                                                         if (last_controlplaga == null) {
                                                             controlplaga.ControlPlagaId = 1
                                                         } else {
@@ -1027,7 +1153,7 @@ class MenuRepository: MainViewMenu.Repository {
                                 producto.ProductoId=productoVerficateSave.ProductoId
                             }else{
 
-                                val last_producto = getLastProducto()
+                                val last_producto = getLastProducto(null)
                                 if (last_producto == null) {
                                     producto.ProductoId = 1
                                 } else {
@@ -1316,7 +1442,7 @@ class MenuRepository: MainViewMenu.Repository {
                         if (transaccionVerficateSave!=null){
                             item.TransaccionId=transaccionVerficateSave.TransaccionId
                         }else{
-                            val lastTransaccion = getLastTransaccion()
+                            val lastTransaccion = getLastTransaccion(null)
                             if (lastTransaccion == null) {
                                 item.TransaccionId = 1
                             } else {
@@ -1346,7 +1472,7 @@ class MenuRepository: MainViewMenu.Repository {
                             item.Nombre_Detalle_Producto_Cultivo=cultivo?.Nombre_Detalle_Tipo_Producto
                             item.Cultivo_Id=cultivo?.CultivoId
 
-                            val lastTercero = getLastTercero()
+                            val lastTercero = getLastTercero(null)
                             if (lastTercero == null) {
                                 item.Tercero?.TerceroId = 1
                             } else {

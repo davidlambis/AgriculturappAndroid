@@ -20,6 +20,8 @@ import android.support.v4.content.ContextCompat.checkSelfPermission
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import com.interedes.agriculturappv3.R
@@ -63,8 +65,8 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     var unidadMedidaGlobal: Unidad_Medida? = null
     var listUnidadMedidaGlobal: List<Unidad_Medida>? = java.util.ArrayList<Unidad_Medida>()
     var listMunicipios: List<Ciudad>? = java.util.ArrayList<Ciudad>()
-    private var latitud: Double = 0.0
-    private var longitud: Double = 0.0
+    private var latitud: Double? = 0.0
+    private var longitud: Double? = 0.0
 
 
 
@@ -167,7 +169,27 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             viewDialog?.edtLocalizacionUnidadProductiva?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.edtLocalizacionUnidadProductiva
             cancel = true
+        }else if (viewDialog?.edtLatitud?.text.toString().isEmpty()) {
+            viewDialog?.edtLatitud?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.edtLatitud
+            cancel = true
+        }else if (viewDialog?.edtLongitud?.text.toString().isEmpty()) {
+            viewDialog?.edtLongitud?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.edtLongitud
+            cancel = true
+        }else if(!isParceableDouble(viewDialog?.edtLatitud?.text.toString())){
+            viewDialog?.edtLatitud?.setError(getString(R.string.verifcate_coord))
+            focusView = viewDialog?.edtLatitud
+            cancel = true
         }
+        else if(!isParceableDouble(viewDialog?.edtLongitud?.text.toString())){
+            viewDialog?.edtLongitud?.setError(getString(R.string.verifcate_coord))
+            focusView = viewDialog?.edtLongitud
+            cancel = true
+        }
+
+
+
         if (cancel) {
             focusView?.requestFocus()
         } else {
@@ -282,7 +304,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             unidadProductiva.Configuration_Poligon = false
             unidadProductiva.Latitud = latitud
             unidadProductiva.Longitud = longitud
-            unidadProductiva.DireccionAproximadaGps=getAddressGps(latitud,longitud)
+            unidadProductiva.DireccionAproximadaGps=getAddressGps(latitud!!,longitud!!)
             presenter?.registerUP(unidadProductiva)
         }
     }
@@ -306,7 +328,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             unidadProductiva?.Configuration_Poligon = unidadProductivaGlobal!!.Configuration_Poligon
             unidadProductiva?.Latitud = latitud
             unidadProductiva?.Longitud = longitud
-            unidadProductiva?.DireccionAproximadaGps=getAddressGps(latitud,longitud)
+            unidadProductiva?.DireccionAproximadaGps=getAddressGps(latitud!!,longitud!!)
             presenter?.updateUP(unidadProductiva)
         }
     }
@@ -421,8 +443,15 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         unidadProductivaGlobal = unidadProductiva
 
 
+
+
+
+
+
         //REGISTER
         if (unidadProductiva == null) {
+            latitud=0.0
+            longitud=0.0
             viewDialog?.txtTitle?.setText(getString(R.string.tittle_add_unidadproductiva))
         }
         //UPDATE
@@ -443,6 +472,9 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
 
             viewDialog?.spinnerDepartamento?.setDropDownHeight(0)
             viewDialog?.spinnerMunicipio?.setDropDownHeight(0)
+
+            viewDialog?.edtLatitud?.setText(latitud.toString())
+            viewDialog?.edtLongitud?.setText(longitud.toString())
 
             if(unidadProductiva.Area.toString().contains(".0")){
                 viewDialog?.edtAreaUnidadProductiva?.setText(String.format(context!!.getString(R.string.price_empty_signe),
@@ -472,6 +504,71 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         YoYo.with(Techniques.Pulse)
                 .repeat(5)
                 .playOn(imageViewLocalizarUnidadProductiva)
+
+
+
+
+        viewDialog?.edtLatitud?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                if(!viewDialog?.edtLatitud?.text.toString().isEmpty()){
+                    if(isParceableDouble(viewDialog?.edtLatitud?.text.toString())){
+                        latitud=  viewDialog?.edtLatitud?.text.toString()?.toDoubleOrNull()
+                        viewDialog?.edtLocalizacionUnidadProductiva?.setText(String.format(getString(R.string.coords), latitud, longitud))
+
+                    }else{
+                        var focusView:View? =null
+                        viewDialog?.edtLatitud?.setError(getString(R.string.verifcate_coord))
+                        focusView=viewDialog?.edtLatitud
+                        focusView?.requestFocus()
+                    }
+                }else{
+                    //viewDialog?.edtLatitud?.setText("0.0")
+                    latitud=0.0
+                    viewDialog?.edtLocalizacionUnidadProductiva?.setText(String.format(getString(R.string.coords), latitud, longitud))
+                }
+
+
+            }
+        })
+
+
+        viewDialog?.edtLongitud?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                if(!viewDialog?.edtLongitud?.text.toString().isEmpty()){
+
+                    if(isParceableDouble(viewDialog?.edtLongitud?.text.toString())){
+                        longitud=  viewDialog?.edtLongitud?.text.toString()?.toDoubleOrNull()
+                        viewDialog?.edtLocalizacionUnidadProductiva?.setText(String.format(getString(R.string.coords), latitud, longitud))
+
+                    }else{
+                        var focusView:View? =null
+                        viewDialog?.edtLongitud?.setError(getString(R.string.verifcate_coord))
+                        focusView=viewDialog?.edtLongitud
+                        focusView?.requestFocus()
+                    }
+
+                }else{
+
+                    //viewDialog?.edtLongitud?.setText("0.0")
+                    longitud=0.0
+                    viewDialog?.edtLocalizacionUnidadProductiva?.setText(String.format(getString(R.string.coords), latitud, longitud))
+                }
+
+
+            }
+        })
 
 
         val dialog = AlertDialog.Builder(context!!, android.R.style.Theme_Light_NoTitleBar)
@@ -517,6 +614,17 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         //return  _dialogRegisterUpdate
     }
 
+
+
+    private fun isParceableDouble(cadena: String): Boolean {
+        try {
+            java.lang.Double.parseDouble(cadena)
+            return true
+        } catch (nfe: NumberFormatException) {
+            return false
+        }
+
+    }
 
     override fun verificateConnection(): AlertDialog? {
         var builder = AlertDialog.Builder(context!!)
@@ -572,6 +680,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
                 presenter?.closeServiceGps()
                 presenter?.setStatusServiceCoords(false)
                 viewDialog?.imageViewStopLocalizarUnidadProductiva?.visibility=View.GONE
+
             }
 
             R.id.ivBackButton -> {
@@ -715,6 +824,9 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
                             // Either gone or invisible
                             /// imageViewStopLocalizarUnidadProductiva.visibility=View.GONE
                         }
+
+                        viewDialog?.edtLatitud?.setText(latitud.toString())
+                        viewDialog?.edtLongitud?.setText(longitud.toString())
                         viewDialog?.edtLocalizacionUnidadProductiva?.setText(String.format(getString(R.string.coords), latitud, longitud))
                     }
                 }

@@ -32,6 +32,7 @@ interface MainViewLote {
 
         //Set Properties
         fun setPropertiesTypeLocationGps()
+        fun setPropertiesTypeLocationMapa()
         fun setPropertiesTypeLocationManual()
 
         //Fun Lote CRUD

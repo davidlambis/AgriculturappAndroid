@@ -261,7 +261,7 @@ class UpRepository() : IUnidadProductiva.Repo {
 
     override fun getLastUp(): Unidad_Productiva? {
         val lastUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java)
-                .where(Unidad_Productiva_Table.UsuarioId.eq(getLastUserLogued()?.Id))
+               // .where(Unidad_Productiva_Table.UsuarioId.eq(getLastUserLogued()?.Id))
                 .orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id, false).querySingle()
         return lastUnidadProductiva
     }

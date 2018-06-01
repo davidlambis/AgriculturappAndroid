@@ -83,7 +83,7 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
     override fun saveTransaccion(transaccion: Transaccion, cultivo_id: Long?,checkConection:Boolean) {
 
         transaccion.UsuarioId= getLastUserLogued()?.Id
-        var terceroLocal=Tercero(TerceroId = transaccion.TerceroId,Nombre = transaccion.Nombre_Tercero,Apellido = "",NitRut = transaccion.Identificacion_Tercero)
+        var terceroLocal=Tercero(TerceroId = transaccion.TerceroId,Nombre = transaccion.Nombre_Tercero,Apellido = "",NitRut = transaccion.Identificacion_Tercero,Usuario_Id = transaccion.UsuarioId)
 
         if(checkConection){
             val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
@@ -208,7 +208,7 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
 
     override fun updateTransaccion(transaccion: Transaccion, cultivo_id: Long?,checkConection:Boolean) {
         transaccion.UsuarioId= getLastUserLogued()?.Id
-        var terceroLocal=Tercero(TerceroId = transaccion.TerceroId,Nombre = transaccion.Nombre_Tercero,Apellido = "",NitRut = transaccion.Identificacion_Tercero)
+        var terceroLocal=Tercero(TerceroId = transaccion.TerceroId,Nombre = transaccion.Nombre_Tercero,Apellido = "",NitRut = transaccion.Identificacion_Tercero,Usuario_Id = transaccion.UsuarioId)
         //TODO si existe coneccion a internet
         if(checkConection){
             //TODO se valida estado de sincronizacion  para actualizar,actualizacion remota

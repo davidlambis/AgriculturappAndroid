@@ -16,7 +16,7 @@
     <string name="nombre_usuario_nav">%1s %2s</string>
     <string name="order_dates">Error en el orden de las fechas</string>
 
-    <string name="coords">%f  /  %f</string>
+    <string name="coords">%1s  /  %2s</string>
 
 
     <!-- HOME -->
@@ -53,6 +53,8 @@
     <string name="edit_text_description">Breve descripción</string>
     <string name="edit_text_nombre_finca">Nombre</string>
     <string name="edit_text_localizacion_finca">Localización</string>
+    <string name="edit_text_latitud_finca">Latitud</string>
+    <string name="edit_text_longitud_finca">Longitud</string>
     <string name="btn_registrar_productor">Registrar</string>
     <string name="edit_text_numero_hectareas">Número de Hectáreas</string>
     <string name="edit_text_mes_siembra">Mes de Siembra</string>
@@ -100,6 +102,8 @@
     <string name="enable_permissions_gps_settings">Por favor habilita el permiso de ubicación</string>
     <string name="location_gps">Ubicacion Actual</string>
 
+    <string name="verifcate_coord">El valor no se puede asignar a una coordenada, contiene caracteres invalidos</string>
+
     <!--NAMES LOTE-->
     <string name="add_lote">Agregar Lote</string>
     <string name="edit_lote">Editar Lote</string>
@@ -115,6 +119,8 @@
 
     <string name="title_list_unidad_productiva">Lista de unidades productivas</string>
     <string name="title_filter_unidad_productiva">Filtrar lote por unidad productiva</string>
+
+
 
 
     <!--Unidad Prodductiva-->
@@ -360,10 +366,12 @@
     <string-array name="array_type_get_location_with_conection">
         <item>Ubicación GPS</item>
         <item>Ubicación Manual</item>
+        <item>Ubicación Mapa</item>
     </string-array>
 
     <string-array name="array_type_get_location_empty_conection">
         <item>Ubicación GPS</item>
+        <item>Ubicación Manual</item>
     </string-array>
 
     <!--CALIFICACION TRATAMIENTO-->

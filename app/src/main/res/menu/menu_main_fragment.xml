@@ -5,6 +5,14 @@
         android:id="@+id/action_menu_icon"
         android:title=""
         app:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/action_cart"
+        android:icon="@drawable/ic_action_notifications"
+        android:title="Cart"
+        app:actionLayout="@layout/custom_action_item_layout_notification"
+        app:showAsAction="always"/>
 <!--
     <item android:title="" android:id="@+id/ss">
         <com.nightonke.boommenu.BoomMenuButton
