@@ -81,10 +81,16 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
 
     //region Métodos
     private fun goToMainActivity() {
-        if (getLastUserLogued() != null) {
-            val i = Intent(this, MenuMainActivity::class.java)
-            i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(i)
+
+        var list = SQLite.select().from(Usuario::class.java).queryList()
+
+        var usuario= getLastUserLogued()
+        if (usuario != null) {
+            if(usuario?.Id!=null){
+                val i = Intent(this, MenuMainActivity::class.java)
+                i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(i)
+            }
         }
     }
 
@@ -214,7 +220,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
     }
 
     private fun getLastUserLogued(): Usuario? {
-        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered?.eq(true)).querySingle()
+        val usuarioLogued = SQLite.select().from(Usuario::class.java)
+                .where(Usuario_Table.UsuarioRemembered?.eq(true)).querySingle()
         return usuarioLogued
     }
 

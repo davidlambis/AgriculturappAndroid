@@ -1,6 +1,9 @@
 package com.interedes.agriculturappv3.modules.account
 
+import android.util.Log
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -29,19 +32,106 @@ class AccountRepository:IMainViewAccount.Repository {
     //FIREBASE
     private var mUserDBRef: DatabaseReference? = null
     private var mStorageRef: StorageReference? = null
-    private var mCurrentUserID: String? = null
+    var mAuth: FirebaseAuth? = null
+    private var  mCurrentUserID: String? = null
 
     init {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
-        mCurrentUserID = FirebaseAuth.getInstance().currentUser!!.uid
+        mCurrentUserID = FirebaseAuth.getInstance().currentUser?.uid
+
+        if(mCurrentUserID==null){
+            mCurrentUserID=getUserLogued()?.IdFirebase
+        }
+        mAuth= FirebaseAuth.getInstance()
         mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
         mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
+    }
+
+    override fun verificateUserLoguedFirebaseFirebase(): FirebaseUser?
+    {
+       return  FirebaseAuth.getInstance().currentUser
     }
 
     override fun getUserLogued():Usuario?{
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
         return usuarioLogued
+    }
+
+
+    override fun changeFotoUserAccount(checkConction:Boolean){
+        var usuarioLogued= getUserLogued()
+        if(checkConction){
+            if(verificateUserLoguedFirebaseFirebase()!=null){
+                postEvent(RequestEventAccount.UPDATE_FOTO_ACCOUNT_EVENT, null,null,null)
+            }else{
+                loginFirebase(usuarioLogued,true)
+            }
+        }else{
+            postEventError(RequestEventAccount.ERROR_VERIFICATE_CONECTION,null)
+        }
+    }
+
+
+    override fun loginFirebase(usuario:Usuario?,isUpdatePhotoAccount:Boolean)
+    {
+        mAuth?.signInWithEmailAndPassword(usuario?.Email!!, usuario?.Contrasena!!)?.addOnCompleteListener({ task ->
+            if (task.isSuccessful) {
+                var mCurrentUserID =task.result.user.uid
+                usuario.IdFirebase=mCurrentUserID
+                usuario.update()
+
+                if(isUpdatePhotoAccount){
+                    postEvent(RequestEventAccount.UPDATE_FOTO_ACCOUNT_EVENT, null,null,null)
+                }else{
+                    updateUserRemote(usuario)
+                }
+            } else {
+                try {
+                    throw task.exception!!
+                } catch (firebaseException: FirebaseException) {
+                    postEventError(RequestEventAccount.ERROR_EVENT, firebaseException.toString())
+                    Log.e("Error Post", firebaseException.toString())
+                }
+            }
+        })
+    }
+
+
+    fun updateUserRemote(usuario: Usuario?){
+        val postUsuario = PostUsuario(usuario?.Id,
+                usuario?.Apellidos,
+                usuario?.Nombre,
+                usuario?.DetalleMetodoPagoId,
+                usuario?.Email,
+                usuario?.EmailConfirmed,
+                usuario?.Estado,
+                usuario?.FechaRegistro,
+                usuario?.Fotopefil,
+                usuario?.Identificacion,
+                usuario?.Nro_movil,
+                usuario?.NumeroCuenta,
+                usuario?.PhoneNumber,
+                usuario?.PhoneNumberConfirmed,
+                usuario?.RolId,
+                usuario?.UserName)
+        val call = apiService?.updateUsuario(postUsuario, usuario?.Id!!)
+        call?.enqueue(object : Callback<PostUsuario> {
+            override fun onResponse(call: Call<PostUsuario>?, response: Response<PostUsuario>?) {
+                if (response != null && response.code() == 200) {
+                    usuario?.Estado_SincronizacionUpdate=true
+                    usuario?.update()
+                    updateUserFirebase(usuario?.Nombre,usuario?.Apellidos,usuario?.Identificacion,usuario?.PhoneNumber)
+                    postEventOk(RequestEventAccount.UPDATE_EVENT,null,null)
+                } else {
+                    postEventError(RequestEventAccount.ERROR_EVENT, "Comprueba tu conexión")
+                }
+            }
+            override fun onFailure(call: Call<PostUsuario>?, t: Throwable?) {
+                postEventError(RequestEventAccount.ERROR_EVENT, "Comprueba tu conexión")
+            }
+        })
+
     }
 
     override fun updateUserLogued(usuario:Usuario?,checkConection:Boolean)
@@ -50,79 +140,26 @@ class AccountRepository:IMainViewAccount.Repository {
         /*------------------------------------------------------------------------------------------------------------*/
         if(usuario?.RolNombre.equals(RolResources.COMPRADOR)){
             if(checkConection){
-                val postUsuario = PostUsuario(usuario?.Id,
-                        usuario?.Apellidos,
-                        usuario?.Nombre,
-                        usuario?.DetalleMetodoPagoId,
-                        usuario?.Email,
-                        usuario?.EmailConfirmed,
-                        usuario?.Estado,
-                        usuario?.FechaRegistro,
-                        usuario?.Fotopefil,
-                        usuario?.Identificacion,
-                        usuario?.Nro_movil,
-                        usuario?.NumeroCuenta,
-                        usuario?.PhoneNumber,
-                        usuario?.PhoneNumberConfirmed,
-                        usuario?.RolId,
-                        usuario?.UserName)
-                val call = apiService?.updateUsuario(postUsuario, usuario?.Id!!)
-                call?.enqueue(object : Callback<PostUsuario> {
-                    override fun onResponse(call: Call<PostUsuario>?, response: Response<PostUsuario>?) {
-                        if (response != null && response.code() == 200) {
-                            usuario?.Estado_SincronizacionUpdate=true
-                            usuario?.update()
-                            updateUser(usuario?.Nombre,usuario?.Apellidos,usuario?.Identificacion,usuario?.PhoneNumber)
-                            postEventOk(RequestEventAccount.UPDATE_EVENT,null,null)
-                        } else {
-                            postEventError(RequestEventAccount.ERROR_EVENT, "Comprueba tu conexión")
-                        }
-                    }
-                    override fun onFailure(call: Call<PostUsuario>?, t: Throwable?) {
-                        postEventError(RequestEventAccount.ERROR_EVENT, "Comprueba tu conexión")
-                    }
-                })
+                if(verificateUserLoguedFirebaseFirebase()!=null){
+                    updateUserRemote(usuario)
+                }else{
+                    loginFirebase(usuario,false)
+                }
             }else{
                 postEventError(RequestEventAccount.ERROR_VERIFICATE_CONECTION,null)
             }
         }
 
+
         ///ACCOUNT PRODUCTOR
         /*------------------------------------------------------------------------------------------------------------*/
         else{
             if(checkConection){
-                val postUsuario = PostUsuario(usuario?.Id,
-                        usuario?.Apellidos,
-                        usuario?.Nombre,
-                        usuario?.DetalleMetodoPagoId,
-                        usuario?.Email,
-                        usuario?.EmailConfirmed,
-                        usuario?.Estado,
-                        usuario?.FechaRegistro,
-                        usuario?.Fotopefil,
-                        usuario?.Identificacion,
-                        usuario?.Nro_movil,
-                        usuario?.NumeroCuenta,
-                        usuario?.PhoneNumber,
-                        usuario?.PhoneNumberConfirmed,
-                        usuario?.RolId,
-                        usuario?.UserName)
-                val call = apiService?.updateUsuario(postUsuario, usuario?.Id!!)
-                call?.enqueue(object : Callback<PostUsuario> {
-                    override fun onResponse(call: Call<PostUsuario>?, response: Response<PostUsuario>?) {
-                        if (response != null && response.code() == 200) {
-                            usuario?.Estado_SincronizacionUpdate=true
-                            usuario?.update()
-                            updateUser(usuario?.Nombre,usuario?.Apellidos,usuario?.Identificacion,usuario?.PhoneNumber)
-                            postEventOk(RequestEventAccount.UPDATE_EVENT,null,null)
-                        } else {
-                            postEventError(RequestEventAccount.ERROR_EVENT, "Comprueba tu conexión")
-                        }
-                    }
-                    override fun onFailure(call: Call<PostUsuario>?, t: Throwable?) {
-                        postEventError(RequestEventAccount.ERROR_EVENT, "Comprueba tu conexión")
-                    }
-                })
+                if(verificateUserLoguedFirebaseFirebase()!=null){
+                    updateUserRemote(usuario)
+                }else{
+                    loginFirebase(usuario,false)
+                }
             }else{
                 usuario?.Estado_SincronizacionUpdate=false
                 usuario?.update()
@@ -131,7 +168,7 @@ class AccountRepository:IMainViewAccount.Repository {
         }
     }
 
-    private fun updateUser(newDisplayName: String?, newLastName: String?,newIdentificacion: String?,phone:String?) {
+    private fun updateUserFirebase(newDisplayName: String?, newLastName: String?,newIdentificacion: String?,phone:String?) {
         val childUpdates = HashMap<String?, Any?>()
         childUpdates["nombre"] = newDisplayName
         childUpdates["apellido"] = newLastName

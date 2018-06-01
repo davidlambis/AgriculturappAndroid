@@ -49,16 +49,6 @@ class MainMenuFragmentPresenterImpl(var view: MainMenuFragmentView?) : MainMenuF
         }
     }
 
-
-
-    //Cerrar Sesión
-    override fun logOut(usuario: Usuario?) {
-        if (checkConnection()) {
-            interactor?.logOut(usuario)
-        } else {
-            interactor?.offlineLogOut(usuario)
-        }
-    }
     //endregion
 
     //region Conectividad

@@ -1,7 +1,18 @@
 package com.interedes.agriculturappv3.modules.main_menu.ui
 
+import android.content.Intent
+import android.support.v4.content.ContextCompat.startActivity
 import android.util.Base64
 import android.util.Log
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
@@ -51,6 +62,7 @@ import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.RolResources
+import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
@@ -63,30 +75,113 @@ import java.text.SimpleDateFormat
 class MenuRepository: MainViewMenu.Repository {
 
 
+
     var eventBus: EventBus? = null
     var apiService: ApiInterface? = null
+
+    //FIREBASE
+    private var mUserDBRef: DatabaseReference? = null
+    private var mStorageRef: StorageReference? = null
+    var mAuth: FirebaseAuth? = null
+    private var  mCurrentUserID: String? = null
+
     init {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
+
+        mCurrentUserID = FirebaseAuth.getInstance().currentUser?.uid
+
+        if(mCurrentUserID==null){
+            mCurrentUserID=getLastUserLogued()?.IdFirebase
+        }
+
+
+        mAuth= FirebaseAuth.getInstance()
+        mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
+        mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
     }
+
+
+    override fun verificateUserLoguedFirebaseFirebase(): FirebaseUser?
+    {
+        return  FirebaseAuth.getInstance().currentUser
+    }
+
+    override fun makeUserOnline(checkConection:Boolean) {
+        var userLogued=getLastUserLogued()
+        var verficateLoguedFirebase=verificateUserLoguedFirebaseFirebase()
+       if(checkConection){
+           if(verficateLoguedFirebase==null){
+               loginFirebase(userLogued)
+           }else{
+               makeUserOnlineSet()
+           }
+       }
+    }
+
+    private fun makeUserOnlineSet() {
+        var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
+        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
+        userStatus?.setValue(Status_Chat.ONLINE)
+        userStatus?.onDisconnect()?.setValue(Status_Chat.OFFLINE)
+        userLastOnlineRef?.onDisconnect()?.setValue(ServerValue.TIMESTAMP);
+    }
+
+    override fun makeUserOffline(checkConection:Boolean) {
+        var verficateLoguedFirebase=verificateUserLoguedFirebaseFirebase()
+        if(verficateLoguedFirebase!=null){
+                makeUserOfflineSet()
+        }
+    }
+
+    private fun makeUserOfflineSet() {
+        var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
+        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
+        userStatus?.setValue(Status_Chat.OFFLINE)
+        userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
+    }
+
+    override fun loginFirebase(usuario:Usuario?)
+    {
+        mAuth?.signInWithEmailAndPassword(usuario?.Email!!, usuario?.Contrasena!!)?.addOnCompleteListener({ task ->
+            if (task.isSuccessful) {
+                makeUserOnlineSet()
+            } else {
+                try {
+                    throw task.exception!!
+                } catch (firebaseException: FirebaseException) {
+                   // postEventError(RequestEventAccount.ERROR_EVENT, firebaseException.toString())
+                    Log.e("Error Post", firebaseException.toString())
+                }
+            }
+        })
+    }
+
+
+    override fun logOut(usuario: Usuario?) {
+        try {
+            mAuth = FirebaseAuth.getInstance()
+            if (mAuth?.currentUser != null) {
+                mAuth?.signOut()
+            }
+            usuario?.UsuarioRemembered = false
+            usuario?.AccessToken = null
+            usuario?.save()
+        } catch (e: Exception) {
+           // postEvent(RequestEvent.ERROR_EVENT, e.message.toString())
+        }
+    }
+
+
 
     override fun syncQuantityData() {
 
         var usuarioLogued=getLastUserLogued()
 
-
-        var counRegisterUnidadesProductivaslist=SQLite.select().from(Unidad_Productiva::class.java)
-                .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
-                .and(Unidad_Productiva_Table.UsuarioId.eq(usuarioLogued?.Id)).queryList().count()
-
-
         var counRegisterUnidadesProductivas=SQLite.select().from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
                 .and(Unidad_Productiva_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
-
-
-
 
         var counRegisterLotes=SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(false))
                 .and(Lote_Table.UsuarioId.eq(usuarioLogued?.Id))

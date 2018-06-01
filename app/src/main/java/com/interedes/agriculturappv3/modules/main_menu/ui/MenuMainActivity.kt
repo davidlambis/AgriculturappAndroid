@@ -50,6 +50,7 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -168,6 +169,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         //Firebase
         mCurrentUserID = FirebaseAuth.getInstance()?.currentUser?.uid
+        if(mCurrentUserID==null){
+            mCurrentUserID=getLastUserLogued()?.IdFirebase
+        }
+
+
         //init firebase
         mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
         mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
@@ -177,12 +183,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         //Status Chat
-        makeUserOnline()
+        presenter?.makeUserOnline()
         getListasIniciales()
 
         setupMenuFloating()
-
-
     }
 
     private fun setupMenuFloating() {
@@ -209,7 +213,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         var placeType:PlaceType?=null
 
 
-        if (getLastUserLogued()?.RolNombre.equals(RolResources.PRODUCTOR)) {
+        var usuarioLogued=getLastUserLogued()
+
+        if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
             placeType=PlaceType.CIRCLE_4_1
              drawablesResource = MenuBoomResources.drawablesResourceProductor
             circleSubButtonDrawables = arrayOfNulls<Drawable>(4)
@@ -222,7 +228,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 subButtonColors[i][0] = Util.getInstance().getPressedColor(subButtonColors[i][1])
             }
 
-        } else if (getLastUserLogued()?.RolNombre.equals(RolResources.COMPRADOR)) {
+        } else if (usuarioLogued?.RolNombre.equals(RolResources.COMPRADOR)) {
             placeType=PlaceType.CIRCLE_1_1
             circleSubButtonDrawables = arrayOfNulls<Drawable>(1)
             drawablesResource = MenuBoomResources.drawablesResourceComprador
@@ -715,15 +721,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         builder.setPositiveButton("Aceptar") { dialog, which ->
 
             var userLogued=getLastUserLogued()
-            mAuth = FirebaseAuth.getInstance()
-            if (mAuth?.currentUser != null) {
-                mAuth?.signOut()
-            }
             userLogued?.UsuarioRemembered = false
-            userLogued?.AccessToken = null
             userLogued?.save()
+            presenter?.makeUserOffline()
+            presenter?.logOut(userLogued)
 
-            makeUserOffline()
             startActivity(Intent(this, LoginActivity::class.java)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
             finish()
@@ -964,7 +966,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         retIntent.putExtra("state_conectivity", true)
         this?.sendBroadcast(retIntent)
         onMessageOk(R.color.colorPrimary, getString(R.string.on_connectividad))
-        makeUserOnline()
+        presenter?.makeUserOnline()
     }
 
     override fun offConnectivity() {
@@ -973,7 +975,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             viewDialogSync?.viewEstateConect?.setBackgroundResource(R.drawable.is_offline_user);
             viewDialogSync?.txtconectividad?.setText(getString(R.string.off_connectividad));
         }
-
 
       /*  var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
         var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
@@ -985,42 +986,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         retIntent.putExtra("state_conectivity", false)
         this?.sendBroadcast(retIntent)
         onMessageError(R.color.grey_luiyi, getString(R.string.off_connectividad))
-        makeUserOffline()
-    }
+        presenter?.makeUserOffline()
 
-
-
-
-    fun makeUserOnline()
-    {
-        /*
-        // Firebase Status
-        var fbquery = FirebaseDatabase.getInstance().getReference("status/" + user.userId).setValue("online")
-
-
-        // Adding on disconnect hook
-        FirebaseDatabase.getInstance().getReference("/status/" + user.userId)
-                .onDisconnect()     // Set up the disconnect hook
-                .setValue("offline");
-
-                */
-        var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
-        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
-        userStatus?.setValue(Status_Chat.ONLINE)
-        userStatus?.onDisconnect()?.setValue(Status_Chat.OFFLINE)
-        userLastOnlineRef?.onDisconnect()?.setValue(ServerValue.TIMESTAMP);
-
-    }
-
-    fun makeUserOffline()
-    {
-        var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
-        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
-        userStatus?.setValue(Status_Chat.OFFLINE)
-        userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
-        // Firebase
-        //var fbquery = FirebaseDatabase.getInstance().getReference("status/" + mCurrentUserID).setValue(Status_Chat.OFFLINE)
-        //var fbquery2 = FirebaseDatabase.getInstance().getReference("last_Online/" + mCurrentUserID).setValue(ServerValue.TIMESTAMP)
     }
 
 
@@ -1038,7 +1005,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     override fun onMessageError(colorPrimary: Int, message: String?) {
-
         onMessageOk(colorPrimary, message)
     }
 
@@ -1046,7 +1012,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
     //endregion
-
 
     //region OVERRIDES METHODS
     override fun onResume() {
@@ -1145,8 +1110,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val response = true
         return response
     }
-
-
 
     //endregion
 }

@@ -9,6 +9,7 @@ data class RequestEventAccount (var eventType: Int,
 ) {
     companion object {
         val SAVE_EVENT: Int = 1
+
         val UPDATE_EVENT: Int = 2
         val DELETE_EVENT: Int = 3
         val ERROR_EVENT: Int = 4
@@ -16,8 +17,10 @@ data class RequestEventAccount (var eventType: Int,
         val LIST_EVENT_METODO_PAGO: Int = 5
         val LIST_EVENT_DETALLE_METODO_PAGO: Int = 6
 
+
         //Error Connection
         val ERROR_VERIFICATE_CONECTION: Int = 7
+        val UPDATE_FOTO_ACCOUNT_EVENT: Int = 8
 
     }
 }

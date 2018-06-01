@@ -123,7 +123,8 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
                 (activity as MenuMainActivity).replaceFragment(AccountingFragment())
             } else if (lista[position].Identificador.equals("salir")) {
                 // presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
-                showExit()
+                ((activity as MenuMainActivity).showExit())
+
             }
         }
         recyclerView?.adapter = adapter
@@ -167,7 +168,6 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
     override fun navigateToLogin() {
        // showExit()
         //(activity as MenuMainActivity).mUserDBRef?.database?.goOffline()
-        (activity as MenuMainActivity).makeUserOffline()
         startActivity(Intent(activity, LoginActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
         activity!!.finish()
@@ -206,17 +206,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
     //endregion
 
     //region Métodos
-    fun showExit(): Dialog {
-        val builder = AlertDialog.Builder(activity!!)
-        builder.setTitle("Confirmación")
-        builder.setNegativeButton("Cancelar") { dialog, which -> Log.i("Dialogos", "Confirmacion Cancelada.") }
-        builder.setMessage("¿Cerrar Sesión?")
-        builder.setPositiveButton("Aceptar") { dialog, which ->
-            presenter?.logOut((activity as MenuMainActivity).getLastUserLogued())
-        }
-        builder.setIcon(R.mipmap.ic_launcher)
-        return builder.show()
-    }
+
 
 
     //endregion

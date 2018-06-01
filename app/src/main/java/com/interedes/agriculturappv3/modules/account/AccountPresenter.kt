@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.account.events.RequestEventAccount
@@ -92,6 +94,12 @@ class AccountPresenter (var mainView: IMainViewAccount.MainView?):IMainViewAccou
             RequestEventAccount.ERROR_VERIFICATE_CONECTION -> {
                 onMessageConectionError()
             }
+
+
+            RequestEventAccount.UPDATE_FOTO_ACCOUNT_EVENT -> {
+                mainView?.hideProgressHud()
+                mainView?.uplodateFotoUserAccount()
+            }
         }
     }
     //endregion
@@ -131,6 +139,15 @@ class AccountPresenter (var mainView: IMainViewAccount.MainView?):IMainViewAccou
        interactor?.getListas()
     }
 
+    override fun changeFotoUserAccount() {
+        mainView?.showProgressHud()
+        interactor?.changeFotoUserAccount(checkConnection())
+    }
+
+    override fun verificateUserLoguedFirebaseFirebase(): FirebaseUser?
+    {
+        return  FirebaseAuth.getInstance().currentUser
+    }
 
     //endregion
 
@@ -142,7 +159,7 @@ class AccountPresenter (var mainView: IMainViewAccount.MainView?):IMainViewAccou
 
     private fun onMessageError(error: String?) {
         mainView?.hideProgress()
-        mainView?.showProgressHud()
+        mainView?.hideProgressHud()
         mainView?.requestResponseError(error)
     }
 

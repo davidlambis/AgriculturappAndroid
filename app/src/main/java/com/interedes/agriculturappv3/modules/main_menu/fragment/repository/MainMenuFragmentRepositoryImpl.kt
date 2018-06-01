@@ -64,22 +64,17 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
 
     var eventBus: EventBus? = null
     var apiService: ApiInterface? = null
-    //Firebase
-    val mDatabase: DatabaseReference?
-    var mUserDatabase: DatabaseReference? = null
-    var mAuth: FirebaseAuth? = null
-    var mUserReference: DatabaseReference? = null
+
 
     init {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
-        mDatabase = FirebaseDatabase.getInstance().reference
         //mUserDatabase = mDatabase.child("Users")
         //mAuth = FirebaseAuth.getInstance()
         //mUserReference = mUserDatabase?.child(mAuth?.currentUser?.uid)
+
+
     }
-
-
 
 
     fun getLastUserLogued(): Usuario? {
@@ -102,32 +97,9 @@ class MainMenuFragmentRepositoryImpl : MainMenuFragmentRepository {
         return list
     }
 
-    override fun logOut(usuario: Usuario?) {
-        try {
-            mAuth = FirebaseAuth.getInstance()
-            if (mAuth?.currentUser != null) {
-                mAuth?.signOut()
-            }
-            usuario?.UsuarioRemembered = false
-            usuario?.AccessToken = null
-            usuario?.save()
-            postEvent(RequestEvent.UPDATE_EVENT)
-        } catch (e: Exception) {
-            postEvent(RequestEvent.ERROR_EVENT, e.message.toString())
-        }
 
-    }
 
-    override fun offlineLogOut(usuario: Usuario?) {
-        try {
-            usuario?.UsuarioRemembered = false
-            usuario?.AccessToken = null
-            usuario?.save()
-            postEvent(RequestEvent.UPDATE_EVENT)
-        } catch (e: Exception) {
-            postEvent(RequestEvent.ERROR_EVENT, e.message.toString())
-        }
-    }
+
     //endregion
 
 

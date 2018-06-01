@@ -13,5 +13,8 @@ data class RequestEventMainMenu (var eventType: Int,
         val ERROR_EVENT: Int = 1
         val ERROR_VERIFICATE_CONECTION=2
         val SYNC_RESUME=3
+
+
+
     }
 }

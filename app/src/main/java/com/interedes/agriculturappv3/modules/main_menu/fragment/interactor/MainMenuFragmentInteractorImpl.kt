@@ -12,14 +12,7 @@ class MainMenuFragmentInteractorImpl : MainMenuFragmentInteractor {
         repository = MainMenuFragmentRepositoryImpl()
     }
 
-    //Online
-    override fun logOut(usuario: Usuario?) {
-        repository?.logOut(usuario)
-    }
 
-    override fun offlineLogOut(usuario: Usuario?) {
-        repository?.offlineLogOut(usuario)
-    }
 
 
 

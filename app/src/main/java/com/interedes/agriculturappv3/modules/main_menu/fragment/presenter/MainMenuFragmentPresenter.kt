@@ -11,7 +11,7 @@ interface MainMenuFragmentPresenter {
     fun onResume(context: Context)
     fun onPause(context: Context)
     fun onEventMainThread(event: RequestEvent?)
-    fun logOut(usuario: Usuario?)
+
 
     //Conecttion
     fun checkConnection(): Boolean

@@ -164,7 +164,7 @@ class LoginRepositoryImpl : LoginRepository {
             }
         })
     }
-    
+
     override fun getSqliteUsuario(login: Login) {
         val usuario_sqlite = getUsuario(login)
         if (usuario_sqlite != null) {

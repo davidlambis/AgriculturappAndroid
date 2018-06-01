@@ -9,7 +9,9 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
@@ -25,6 +27,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
@@ -49,7 +52,11 @@ import kotlinx.android.synthetic.main.fragment_account.*
 import kotlinx.android.synthetic.main.navigation_drawer_header.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.HashMap
+import id.zelory.compressor.Compressor;
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainView {
 
@@ -66,6 +73,8 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     private var mStorageRef: StorageReference? = null
     private var mCurrentUserID: String? = null
 
+    private var userFirebaseVerificate:FirebaseUser?=null
+
 
     var presenter: IMainViewAccount.Presenter? = null
 
@@ -79,6 +88,9 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
     var imageAccountGlobal: ByteArray? = null
     var imageBitmapAccountGlobal: Bitmap? = null
+
+    private var mCurrentPhotoPath: String? = null
+    private var mCurrentPhotoFile: File? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +115,14 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         user_take_picture_gallery.setOnClickListener(this)
         user_image_cancel.setOnClickListener(this)
 
-        mCurrentUserID = FirebaseAuth.getInstance().currentUser!!.uid
+       userFirebaseVerificate=presenter?.verificateUserLoguedFirebaseFirebase()
+        if(userFirebaseVerificate==null){
+            mCurrentUserID=presenter?.getUserLogued()?.IdFirebase
+        }else{
+            mCurrentUserID=userFirebaseVerificate?.uid
+        }
+
+
 
         //init firebase
         mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
@@ -118,7 +137,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         presenter?.getListas()
 
         userLogued= presenter?.getUserLogued()
-
         if(userLogued!=null){
 
             edtNombres.setText(userLogued?.Nombre)
@@ -135,8 +153,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                     imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
                     user_image.setImageBitmap(imageBitmapAccountGlobal)
-
-
 
                     //Picasso.with(activity).load(userPhoto).placeholder(R.drawable.ic_foto_producto_square).into(user_image)
                 }catch (ex:Exception){
@@ -159,7 +175,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     presenter?.setListSpinnerDetalleMetodoPago(metodoPagoGlobal?.Id)
                     spinnerDetalleMetodoPago.setText(detalleMetodoPagoGlobal?.Nombre)
                 }
-
 
             }else{
                 detalleMetodoPagoGlobal= SQLite.select().from(DetalleMetodoPago::class.java).where(DetalleMetodoPago_Table.Id.eq(userLogued?.DetalleMetodoPagoId)).querySingle()
@@ -271,15 +286,8 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                 cancel = true
             }
         }
-
-
-
-
         //Validation COMPRADOR
         //-------------------------------------------------------------------------------
-
-
-
         /* else if (!edtCorreo.text.toString().trim().matches(email_pattern.toRegex())) {
             edtCorreo?.setError(getString(R.string.edit_text_error_correo))
             focusView = edtCorreo
@@ -323,7 +331,26 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     }
 
     override fun requestResponseError(error: String?) {
+        errorUpdatePhotoAccount()
         onMessageError(R.color.grey_luiyi, error)
+    }
+
+
+    fun errorUpdatePhotoAccount(){
+        if(userLogued?.blobImagen!=null){
+            try {
+                val foto = userLogued?.blobImagen?.blob
+                imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+                imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
+                user_image.setImageBitmap(imageBitmapAccountGlobal)
+            }catch (ex:Exception){
+                var ss= ex.toString()
+                Log.d("Convert Image", "defaultValue = " + ss);
+            }
+        }else{
+            imageBitmapAccountGlobal=null
+            imageAccountGlobal=null
+        }
     }
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
@@ -349,22 +376,13 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.verificate_conexion));
         builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            errorUpdatePhotoAccount()
             dialog.dismiss()
+
         })
         builder.setIcon(R.drawable.ic_produccion_cultivo);
         return builder.show();
 
-    }
-
-    fun verificateConnectionChangeFoto(): AlertDialog? {
-        var builder = AlertDialog.Builder(context!!)
-        builder.setTitle(getString(R.string.alert));
-        builder.setMessage(getString(R.string.tittle_verificate_conection));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
-            dialog.dismiss()
-        })
-        builder.setIcon(R.drawable.ic_asistencia_tecnica_color_500);
-        return builder.show();
     }
 
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
@@ -413,14 +431,16 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
             R.id.user_take_picture_camera -> {
                 if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 1000)
+                    ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE), 1000)
                     return
                 }
                 takePictureWithCamera(this)
             }
             R.id.user_take_picture_gallery -> {
                 if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 1000)
+                    ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE), 1000)
                     return
                 }
                 choosePhotoFromGallery(this)
@@ -475,10 +495,57 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     //region METHODS CAMERA
      fun takePictureWithCamera(fragment: AccountFragment) {
         //EasyImage.openCamera(fragment, 0)
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(intent, REQUEST_CAMERA)
+
+       /* val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+
+
+        if (intent.resolveActivity(activity?.getPackageManager()) != null) {
+            // Create the File where the photo should go
+            var photoFile: File? = null
+            try {
+                photoFile = createImageFile()
+                mCurrentPhotoFile=photoFile
+            } catch (ex: IOException) {
+                // Error occurred while creating the File
+                //Log.i(TAG, "IOException")
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile))
+                startActivityForResult(intent, REQUEST_CAMERA)
+                //startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
+            }
+        }*/
     }
+
+
+    fun  createImageFile():File? {
+
+        var image:File? =null
+
+        try {
+            // Create an image file name
+            var timeStamp =  SimpleDateFormat("yyyyMMdd_HHmmss").format( Date())
+            var imageFileName = "JPEG_" + timeStamp + "_"
+            var storageDir = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES);
+            image = File.createTempFile(
+                    imageFileName,  // prefix
+                    ".jpg",         // suffix
+                    storageDir      // directory
+            );
+            // Save a file: path for use with ACTION_VIEW intents
+            mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        }catch (ex:Exception){
+            image=null
+        }
+        return image;
+    }
+
 
      fun choosePhotoFromGallery(fragment: AccountFragment) {
         val galleryIntent = Intent(Intent.ACTION_PICK,
@@ -497,16 +564,19 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     val contentURI = data.data
                     try {
                         isFoto = true
-                        imageBitmapAccountGlobal = MediaStore.Images.Media.getBitmap(context?.contentResolver, contentURI)
-                        imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
 
-                        if(presenter?.checkConnection()!!){
-                            updateUserPhoto(imageAccountGlobal)
-                        }else{
-                            imageBitmapAccountGlobal=null
-                            imageAccountGlobal=null
-                            verificateConnectionChangeFoto()
-                        }
+                        var rutaGaleria=getRealPathFromURI(contentURI)
+                        var file=getFileRuta(rutaGaleria)
+                        val compressedImage = Compressor(activity)
+                                .setMaxHeight(500)
+                                .setQuality(100)
+                                .compressToBitmap(file)
+
+                        imageBitmapAccountGlobal =compressedImage
+                        ///imageBitmapAccountGlobal = MediaStore.Images.Media.getBitmap(context?.contentResolver, contentURI)
+
+                        imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
+                        presenter?.changeFotoUserAccount()
                         //imageGlobalRutaFoto = saveImage(bitmap)
                         //Toast.makeText(context, "Image Saved!", Toast.LENGTH_SHORT).show()
                         //user_image?.setImageBitmap(bitmap)
@@ -518,19 +588,28 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
             } else if (requestCode == REQUEST_CAMERA) {
                 if (data != null) {
+
+                    val contentURI = data.data
+                    var rutaGaleria=getRealPathFromURI(contentURI)
+                    var file=getFileRuta(rutaGaleria)
+                    val compressedImage = Compressor(activity)
+                            .setMaxHeight(500)
+                            .setQuality(100)
+                            .compressToBitmap(file)
+
+
                     isFoto = true
-                    imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
+                    imageBitmapAccountGlobal = compressedImage
+                    ///imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
+                    //imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
+                   /* val compressedImage = Compressor(activity)
+                            .setMaxHeight(400)
+                            .setQuality(100)
+                            .compressToBitmap(mCurrentPhotoFile)
+                    imageBitmapAccountGlobal=compressedImage*/
                     imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
-
                     //user_image?.setImageBitmap(thumbnail)
-                    if(presenter?.checkConnection()!!){
-                        updateUserPhoto(imageAccountGlobal)
-                    }else{
-                        imageBitmapAccountGlobal=null
-                        imageAccountGlobal=null
-                        verificateConnectionChangeFoto()
-                    }
-
+                    presenter?.changeFotoUserAccount()
                     //imageGlobalRutaFoto = saveImage(thumbnail)
                     // Toast.makeText(context, thumbnail.toString(), Toast.LENGTH_SHORT).show()
                 }
@@ -538,9 +617,34 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         }
     }
 
+    private fun getFileRuta(path: String): File? {
+        var file: File? = null
+        file = File(path)
+        return file
+    }
+
+    private fun getRealPathFromURI(contentURI: Uri): String {
+        val result: String
+        val cursor = activity?.getContentResolver()?.query(contentURI, null, null, null, null)
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.path
+        } else {
+            cursor!!.moveToFirst()
+            val idx = cursor!!.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+            result = cursor!!.getString(idx)
+            cursor!!.close()
+        }
+        return result
+    }
+
+    override fun uplodateFotoUserAccount(){
+        mCurrentUserID=presenter?.verificateUserLoguedFirebaseFirebase()?.uid
+        updateUserPhoto(imageAccountGlobal)
+    }
+
     fun convertBitmapToByte(bitmapCompressed: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()
-        bitmapCompressed.compress(Bitmap.CompressFormat.PNG, 90, stream)
+        bitmapCompressed.compress(Bitmap.CompressFormat.PNG, 100, stream)
         return stream.toByteArray()
         //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }

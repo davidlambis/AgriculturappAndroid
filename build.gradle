@@ -71,6 +71,10 @@ ext {
     kprogresshudVersion='1.1.0'
 
 
+    //Compress Image
+    compressedImageVersion = '2.1.0'
+
+
     /*
     //Extenciones Kotlin
     krealmextensionsVersion='2.1.3'
