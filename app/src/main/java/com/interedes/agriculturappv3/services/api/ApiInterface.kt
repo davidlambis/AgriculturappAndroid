@@ -106,6 +106,12 @@ interface ApiInterface {
 
 
 
+
+    @GET("odata/Agp2/Usuarios('{Id}')?\$expand=Rol(\$select=Nombre,Id)")
+    fun getUsuarioLogued( @Path("Id")  filter: String): Call<Usuario>
+
+
+
     @GET("auth/ApplicationUsers")
     fun getAuthUserByCorreo(@Header("Authorization") token: String, @Query("\$filter") filter: String): Call<GetUserResponse>
 

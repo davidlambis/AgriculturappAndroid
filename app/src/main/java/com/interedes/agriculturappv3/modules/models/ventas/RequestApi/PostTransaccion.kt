@@ -1,6 +1,8 @@
 package com.interedes.agriculturappv3.modules.models.ventas.RequestApi
 
+import android.renderscript.Double4
 import com.google.gson.annotations.SerializedName
+import java.math.BigDecimal
 import java.util.*
 
 data class PostTransaccion(
@@ -28,11 +30,11 @@ data class PostTransaccion(
 
 
         @SerializedName("Valor")
-        var Valor: Double? = 0.0,
+        var Valor: BigDecimal? = null,
 
 
         @SerializedName("Cantidad")
-        var Cantidad: Double? = 0.0,
+        var Cantidad: BigDecimal? = null,
 
 
         @SerializedName("CultivoId")

@@ -305,93 +305,102 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
 
     private fun animateLocationMap(lotes: List<Lote>) {
-        mMap?.clear()
-        //Si existe poligono se dibuja
-        if (DIALOG_SELECT_ALL_UP == false && unidadProductivaGlobalDialog?.Configuration_Poligon == true && unidadProductivaGlobalDialog?.Configuration_Point == true) {
-            var locations = ArrayList<LatLng>()
-            locations.add(LatLng(2.930625, -75.271928))
-            locations.add(LatLng(2.930534, -75.271674))
-            locations.add(LatLng(2.930248, -75.271566))
-            locations.add(LatLng(2.930063, -75.271644))
-            locations.add(LatLng(2.930288, -75.272092))
-            locations.add(LatLng(2.930625, -75.271928))
-            polygon = addPoligonUp(locations, ContextCompat.getColor(activity!!, android.R.color.holo_orange_dark), ContextCompat.getColor(activity!!, android.R.color.holo_orange_light))
-        }
 
-        //si se selecciona la opcion todos, y no se encontraron lotes regiostrados y existen up registradas
-        if (DIALOG_SELECT_ALL_UP == true && lotes.size <= 0 && listUnidadProductivaGlobal?.size!! > 0) {
-            var builder = LatLngBounds.Builder()
-            for (up in listUnidadProductivaGlobal!!) {
-                var latlngUp = LatLng(up.Latitud!!, up.Longitud!!);
+        try{
+            mMap?.clear()
+            //Si existe poligono se dibuja
+            if (DIALOG_SELECT_ALL_UP == false && unidadProductivaGlobalDialog?.Configuration_Poligon == true && unidadProductivaGlobalDialog?.Configuration_Point == true) {
+                var locations = ArrayList<LatLng>()
+                locations.add(LatLng(2.930625, -75.271928))
+                locations.add(LatLng(2.930534, -75.271674))
+                locations.add(LatLng(2.930248, -75.271566))
+                locations.add(LatLng(2.930063, -75.271644))
+                locations.add(LatLng(2.930288, -75.272092))
+                locations.add(LatLng(2.930625, -75.271928))
+                polygon = addPoligonUp(locations, ContextCompat.getColor(activity!!, android.R.color.holo_orange_dark), ContextCompat.getColor(activity!!, android.R.color.holo_orange_light))
+            }
 
-                //var markerUP = addMarker(latlngUp, up.Nombre!!, up.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                var markerUP = addMarker(latlngUp, up.nombre!!, up.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
+            //si se selecciona la opcion todos, y no se encontraron lotes regiostrados y existen up registradas
+            if (DIALOG_SELECT_ALL_UP == true && lotes.size <= 0 && listUnidadProductivaGlobal?.size!! > 0) {
+                var builder = LatLngBounds.Builder()
+                for (up in listUnidadProductivaGlobal!!) {
+                    var latlngUp = LatLng(up.Latitud!!, up.Longitud!!);
+
+                    //var markerUP = addMarker(latlngUp, up.Nombre!!, up.Descripcion!!, BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    var markerUP = addMarker(latlngUp, up.nombre!!, up.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
+                    listMarkerUp.add(markerUP!!)
+                    builder.include(latlngUp)
+                }
+                var bounds = builder.build()
+                var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
+                mMap?.animateCamera(cu)
+            }
+            //si se selecciona una up, y  no se encontraron lotes registrados
+            else if (DIALOG_SELECT_ALL_UP == false && lotes.size <= 0) {
+                var builder = LatLngBounds.Builder()
+                var latlngUp = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
+                var markerUP = addMarker(latlngUp, unidadProductivaGlobalDialog?.nombre!!, unidadProductivaGlobalDialog?.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
                 listMarkerUp.add(markerUP!!)
                 builder.include(latlngUp)
+                var bounds = builder.build()
+                var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
+                mMap?.animateCamera(cu)
             }
-            var bounds = builder.build()
-            var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
-            mMap?.animateCamera(cu)
-        }
-        //si se selecciona una up, y  no se encontraron lotes registrados
-        else if (DIALOG_SELECT_ALL_UP == false && lotes.size <= 0) {
-            var builder = LatLngBounds.Builder()
-            var latlngUp = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
-            var markerUP = addMarker(latlngUp, unidadProductivaGlobalDialog?.nombre!!, unidadProductivaGlobalDialog?.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
-            listMarkerUp.add(markerUP!!)
-            builder.include(latlngUp)
-            var bounds = builder.build()
-            var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
-            mMap?.animateCamera(cu)
-        }
-        //si se selecciona una up, y  se encontraron lotes regiostrados
-        else if (DIALOG_SELECT_ALL_UP == false && lotes.size > 0 || DIALOG_SELECT_ALL_UP == true && lotes.size > 0) {
-            var locations = ArrayList<LatLng>()
-            val area = SphericalUtil.computeArea(locations)
-            //Ajustar camara mostrando todos los marcadores
-            var builder = LatLngBounds.Builder();
-            for (l in lotes) {
-                var centerLatLng: LatLng? = LatLng(l.Latitud!!, l.Longitud!!)
-                builder.include(centerLatLng)
-            }
-
-
-            //mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
-            //mMap?.setPadding(0, getResources().getDrawable(R.drawable.logo_agr_app).getIntrinsicHeight(), 0, 0);
-            for (lote in lotes) {
-                var latlngLote = LatLng(lote.Latitud!!, lote.Longitud!!);
-                var markerLote = addMarker(latlngLote, lote.Nombre!!, lote.Descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_lote))
-                listMarkerLote.add(markerLote!!)
-            }
-
-            //Add Marker UP
-            if (DIALOG_SELECT_ALL_UP == true) {
-                for (unidadPro in this!!.listUnidadProductivaGlobal!!) {
-                    var centerLatLng: LatLng? = LatLng(unidadPro?.Latitud!!, unidadPro?.Longitud!!)
-                    addMarker(centerLatLng!!, unidadPro?.nombre!!, unidadPro?.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
+            //si se selecciona una up, y  se encontraron lotes regiostrados
+            else if (DIALOG_SELECT_ALL_UP == false && lotes.size > 0 || DIALOG_SELECT_ALL_UP == true && lotes.size > 0) {
+                var locations = ArrayList<LatLng>()
+                val area = SphericalUtil.computeArea(locations)
+                //Ajustar camara mostrando todos los marcadores
+                var builder = LatLngBounds.Builder();
+                for (l in lotes) {
+                    var centerLatLng: LatLng? = LatLng(l.Latitud!!, l.Longitud!!)
                     builder.include(centerLatLng)
                 }
-            } else {
-                if (unidadProductivaGlobalDialog != null) {
-                    var centerLatLng: LatLng? = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
-                    addMarker(centerLatLng!!, unidadProductivaGlobalDialog?.nombre!!, unidadProductivaGlobalDialog?.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
-                    builder.include(centerLatLng)
+
+
+                //mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+                //mMap?.setPadding(0, getResources().getDrawable(R.drawable.logo_agr_app).getIntrinsicHeight(), 0, 0);
+                for (lote in lotes) {
+                    var latlngLote = LatLng(lote.Latitud!!, lote.Longitud!!);
+                    var markerLote = addMarker(latlngLote, lote.Nombre!!, lote.Descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_lote))
+                    listMarkerLote.add(markerLote!!)
                 }
+
+                //Add Marker UP
+                if (DIALOG_SELECT_ALL_UP == true) {
+                    for (unidadPro in this!!.listUnidadProductivaGlobal!!) {
+                        var centerLatLng: LatLng? = LatLng(unidadPro?.Latitud!!, unidadPro?.Longitud!!)
+                        addMarker(centerLatLng!!, unidadPro?.nombre!!, unidadPro?.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
+                        builder.include(centerLatLng)
+                    }
+                } else {
+                    if (unidadProductivaGlobalDialog != null) {
+                        var centerLatLng: LatLng? = LatLng(unidadProductivaGlobalDialog?.Latitud!!, unidadProductivaGlobalDialog?.Longitud!!)
+                        addMarker(centerLatLng!!, unidadProductivaGlobalDialog?.nombre!!, unidadProductivaGlobalDialog?.descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_unidad_productiva))
+                        builder.include(centerLatLng)
+                    }
+                }
+
+
+                var bounds = builder.build()
+                var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
+                mMap?.animateCamera(cu)
+
+                // double area= calculateAreaOfGPSPolygonOnEarthInSquareMeters(locationsGlobals);
+                //Toast.makeText(activity, "AREA: " + String.format("%.0f mts", area), Toast.LENGTH_LONG).show()
+            }
+            //si no enontaron   up registradas, y  no se encontraron lotes regiostrados
+            else {
+                val positionInitial = LatLng(4.565473550710278, -74.058837890625)
+                mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(positionInitial, 6f))
             }
 
+        }catch (ex:Exception){
 
-            var bounds = builder.build()
-            var cu = CameraUpdateFactory.newLatLngBounds(bounds, 70)
-            mMap?.animateCamera(cu)
+        }
 
-            // double area= calculateAreaOfGPSPolygonOnEarthInSquareMeters(locationsGlobals);
-            //Toast.makeText(activity, "AREA: " + String.format("%.0f mts", area), Toast.LENGTH_LONG).show()
-        }
-        //si no enontaron   up registradas, y  no se encontraron lotes regiostrados
-        else {
-            val positionInitial = LatLng(4.565473550710278, -74.058837890625)
-            mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(positionInitial, 6f))
-        }
+
+
     }
 
     override fun onMarkerDragEnd(p0: Marker?) {
@@ -444,7 +453,9 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         if (UBICATION_MAPA == true) {
             // Creating a marker
             LastMarkerDrawingLote = drawMarker(latLng, latLng.latitude.toString() + " / " + latLng.longitude, getString(R.string.location_gps), BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+
             txtCoordsLote.setText(String.format(getString(R.string.coords), latLng.latitude, latLng.longitude))
+
         }
     }
 
@@ -815,6 +826,10 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 locationLote.longitude = longitud!!
                 coordsLote?.setText(latitud.toString() + " / " + longitud.toString())
             }
+
+            viewDialog?.edtLatitud?.setText(latitud.toString())
+            viewDialog?.edtLongitud?.setText(longitud.toString())
+
         }
         //UPDATE
         else {

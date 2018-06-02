@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.modules.models.usuario
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.modules.models.rol.Rol
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
@@ -100,7 +101,10 @@ data class Usuario(@PrimaryKey
                    var blobImagen: Blob? = null,
 
                    @Column(getterName = "getEstado_SincronizacionUpdate")
-                   var Estado_SincronizacionUpdate: Boolean? = false
+                   var Estado_SincronizacionUpdate: Boolean? = false,
+
+                   @SerializedName("Rol")
+                   var Rol: Rol?=null
 
 
 ) {}

@@ -14,6 +14,7 @@ import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPla
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.insumos.Insumo
 import com.interedes.agriculturappv3.modules.models.insumos.Insumo_Table
+import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.tratamiento.Tratamiento_Table
 import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento
 import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento_Table
@@ -21,6 +22,7 @@ import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Pos
 import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.ResponseCalificacion
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
@@ -248,9 +250,21 @@ class TratamientoRepository : ITratamiento.Repository {
     }
 
     override fun getListas() {
-        val listUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).queryList()
-        val listLotes = SQLite.select().from(Lote::class.java).queryList()
-        val listCultivos = SQLite.select().from(Cultivo::class.java).queryList()
+        var usuario= getLastUserLogued()
+
+        val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
+                .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+        val listLotes = SQLite.select().from(Lote::class.java)
+                .where(Lote_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+
+        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+                .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
         val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(4)).queryList()
         postEventListUnidadProductiva(TratamientoEvent.LIST_EVENT_UP, listUnidadProductiva, null)
         postEventListLotes(TratamientoEvent.LIST_EVENT_LOTE, listLotes, null)

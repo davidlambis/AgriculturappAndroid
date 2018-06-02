@@ -20,7 +20,6 @@ import java.util.*
 
 @Table(database = DataSource::class)
 data class Cultivo(@PrimaryKey
-
                    @Column(name = "CultivoId")
                    var CultivoId: Long? = 0,
 
@@ -156,16 +155,13 @@ data class Cultivo(@PrimaryKey
             e.printStackTrace()
         }
 
-
         try {
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             return sdf.format(convertedDate)
         }catch (ex:Exception){
             // Log.println(ex.toString())
-
             return  ""
         }
-
     }
 
     fun getFechaFormat(date:Date?): String {

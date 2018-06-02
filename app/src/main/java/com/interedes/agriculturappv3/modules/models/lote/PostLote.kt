@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.modules.models.lote
 
 import com.google.gson.annotations.SerializedName
 import com.raizlabs.android.dbflow.annotation.Column
+import java.math.BigDecimal
 import java.util.*
 
 
@@ -9,7 +10,7 @@ data class PostLote(@SerializedName("Id")
                     var Id: Long? = 0,
 
                     @SerializedName("Area")
-                    var Area: Double? = null,
+                    var Area: BigDecimal? = null,
 
                     @SerializedName("Codigo")
                     var Codigo: String? = null,

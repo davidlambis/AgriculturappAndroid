@@ -6,8 +6,8 @@ class EstadoTransaccionResources {
     companion object {
 
         var PAGO:String?="Pagado"
-        var POR_PAGAR:String?="Por Cobrar"
-        var POR_COBRAR:String?="Por Pagar"
+        var POR_PAGAR:String?="Por Pagar"
+        var POR_COBRAR:String?="Por Cobrar"
 
     }
 }

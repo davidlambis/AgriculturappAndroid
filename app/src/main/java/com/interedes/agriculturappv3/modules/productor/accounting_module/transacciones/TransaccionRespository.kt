@@ -6,8 +6,10 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.lote.Lote
+import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.models.ventas.*
@@ -21,6 +23,11 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.math.BigDecimal
+import java.math.MathContext
+import java.math.MathContext.DECIMAL64
+
+
 
 class TransaccionRespository: IMainViewTransacciones.Repository {
 
@@ -33,9 +40,20 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
     }
 
     override fun getListas() {
-        var listUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).queryList()
-        var listLotes = SQLite.select().from(Lote::class.java).queryList()
-        var listCultivos = SQLite.select().from(Cultivo::class.java).queryList()
+        var usuario= getLastUserLogued()
+
+        val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
+                .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+        val listLotes = SQLite.select().from(Lote::class.java)
+                .where(Lote_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+
+        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+                .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
 
 
         //var listCategoriasPuk= Listas.listCategoriaPuk()
@@ -113,6 +131,12 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
 
 
                             terceroLocal.save()
+
+                            ///val decimal = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
+
+                            val valorBig = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
+                            val cantidadBig = BigDecimal(transaccion.Cantidad!!, MathContext.DECIMAL64)
+
                             val postTransaccion = PostTransaccion(
                                     0,
                                     transaccion.Concepto,
@@ -121,8 +145,8 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                                     transaccion.NaturalezaId,
                                     transaccion.PucId,
                                     terceroLocal.Id_Remote,
-                                    transaccion.Valor_Total,
-                                    transaccion.Cantidad,
+                                    valorBig,
+                                    cantidadBig,
                                     cultivo.Id_Remote,
                                     transaccion.UsuarioId
                             )
@@ -232,6 +256,9 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
 
                             terceroLocal.update()
 
+                            val decimalBig = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
+                            val cantidadBig = BigDecimal(transaccion.Cantidad!!, MathContext.DECIMAL64)
+
                             val postTransaccion = PostTransaccion(
                                     transaccion.Id_Remote,
                                     transaccion.Concepto,
@@ -240,8 +267,8 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                                     transaccion.NaturalezaId,
                                     transaccion.PucId,
                                     terceroLocal.Id_Remote,
-                                    transaccion.Valor_Total,
-                                    transaccion.Cantidad,
+                                    decimalBig,
+                                    cantidadBig,
                                     cultivo?.Id_Remote,
                                     getLastUserLogued()?.Id
                             )

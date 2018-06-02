@@ -452,6 +452,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
             R.id.btnSaveAccount -> {
                 if(presenter?.validarUpdateUser()!!){
+                    userLogued=presenter?.getUserLogued()
                     saveDataUserLogued(userLogued)
                 }
                 /*val userDisplayName = edtNombres.getText().toString().trim()
@@ -568,7 +569,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                         var rutaGaleria=getRealPathFromURI(contentURI)
                         var file=getFileRuta(rutaGaleria)
                         val compressedImage = Compressor(activity)
-                                .setMaxHeight(500)
+                                .setMaxHeight(400)
                                 .setQuality(100)
                                 .compressToBitmap(file)
 
@@ -593,7 +594,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     var rutaGaleria=getRealPathFromURI(contentURI)
                     var file=getFileRuta(rutaGaleria)
                     val compressedImage = Compressor(activity)
-                            .setMaxHeight(500)
+                            .setMaxHeight(400)
                             .setQuality(100)
                             .compressToBitmap(file)
 

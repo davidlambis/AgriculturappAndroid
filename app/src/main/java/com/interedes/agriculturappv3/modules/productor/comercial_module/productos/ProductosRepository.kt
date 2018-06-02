@@ -6,6 +6,7 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.lote.Lote
+import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.modules.models.producto.PostProducto
 import com.interedes.agriculturappv3.modules.models.producto.Producto
@@ -13,6 +14,7 @@ import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.events.ProductosEvent
@@ -38,9 +40,20 @@ class ProductosRepository : IProductos.Repository {
 
     //region Métodos Interfaz
     override fun getListas() {
-        val listUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).queryList()
-        val listLotes = SQLite.select().from(Lote::class.java).queryList()
-        val listCultivos = SQLite.select().from(Cultivo::class.java).queryList()
+        var usuario= getLastUserLogued()
+
+        val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
+                .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+        val listLotes = SQLite.select().from(Lote::class.java)
+                .where(Lote_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+
+        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+                .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
         //val listUnidadMedida = Listas.listaUnidadMedida()
         val listUnidadMedidaCantidades = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(CategoriaMediaResources.Cosecha)).queryList()
         val listUnidadMedidaPrecios = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(CategoriaMediaResources.Moneda)).queryList()

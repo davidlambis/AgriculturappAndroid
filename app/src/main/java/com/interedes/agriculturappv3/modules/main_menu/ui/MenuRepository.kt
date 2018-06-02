@@ -70,6 +70,8 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.math.BigDecimal
+import java.math.MathContext
 import java.text.SimpleDateFormat
 
 class MenuRepository: MainViewMenu.Repository {
@@ -257,12 +259,20 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     override fun syncData() {
+
+        var usuario= getLastUserLogued()
+
         var mUnidadProductiva= SQLite.select()
                 .from(Unidad_Productiva::class.java)
-                .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false)).orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id,false).querySingle()
+                .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
+                .and(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
+                .orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id,false).querySingle()
         if(mUnidadProductiva!=null){
+
+
+            val areaBig = BigDecimal(mUnidadProductiva.Area!!, MathContext.DECIMAL64)
             val postUnidadProductiva = PostUnidadProductiva(0,
-                    mUnidadProductiva?.Area,
+                    areaBig,
                     mUnidadProductiva?.CiudadId,
                     mUnidadProductiva?.Codigo,
                     mUnidadProductiva?.UnidadMedidaId,
@@ -273,19 +283,32 @@ class MenuRepository: MainViewMenu.Repository {
             // mUnidadProductiva?.CiudadId = 1
             val call = apiService?.postUnidadProductiva(postUnidadProductiva)
             call?.enqueue(object : Callback<Unidad_Productiva> {
+
+
+
                 override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
                     if (response != null && response.code() == 201) {
+
+                        //Thread.sleep(100)
+
+
                         val idUP = response.body()?.Id_Remote
                         mUnidadProductiva?.Id_Remote = idUP
                         //mUnidadProductiva?.save()
                         //postLocalizacionUnidadProductiva
+
+                        val latitudBig = BigDecimal(mUnidadProductiva.Latitud!!, MathContext.DECIMAL64)
+                        val longitudBig = BigDecimal(mUnidadProductiva.Longitud!!, MathContext.DECIMAL64)
+
+
+
                         val postLocalizacionUnidadProductiva = LocalizacionUp(0,
                                 "",
                                 mUnidadProductiva?.Coordenadas,
                                 if (mUnidadProductiva?.Direccion!=null) mUnidadProductiva.Direccion else "",
                                 mUnidadProductiva?.DireccionAproximadaGps,
-                                mUnidadProductiva?.Latitud,
-                                mUnidadProductiva?.Longitud,
+                                latitudBig,
+                                longitudBig,
                                 "",
                                 "",
                                 "",
@@ -334,14 +357,20 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     fun syncDataLotes() {
+
+        var usuario=getLastUserLogued()
+
         var mLote= SQLite.select()
                 .from(Lote::class.java)
                 .where(Lote_Table.EstadoSincronizacion.eq(false))
+                .and(Lote_Table.UsuarioId.eq(usuario?.Id))
                 .orderBy(Lote_Table.LoteId,false).querySingle()
         val unidad_productiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(mLote?.Unidad_Productiva_Id)).querySingle()
         if(mLote!=null && unidad_productiva?.Estado_Sincronizacion==true){
+
+            val areaBig = BigDecimal(mLote.Area!!, MathContext.DECIMAL64)
             val postLote = PostLote(0,
-                    mLote.Area,
+                    areaBig,
                     mLote.Codigo,
                     mLote.Nombre,
                     mLote.Descripcion,
@@ -382,9 +411,11 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     private fun syncDataCultivos() {
+        var usuario=getLastUserLogued()
         var mCultivo= SQLite.select()
                 .from(Cultivo::class.java)
                 .where(Cultivo_Table.EstadoSincronizacion.eq(false))
+                .and(Cultivo_Table.UsuarioId.eq(usuario?.Id))
                 .orderBy(Cultivo_Table.CultivoId,false).querySingle()
         val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.LoteId.eq(mCultivo?.LoteId)).querySingle()
         if(mCultivo!=null && lote?.EstadoSincronizacion==true){
@@ -436,9 +467,13 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     private fun syncDataControlPlagas() {
+
+        var usuario= getLastUserLogued()
+
         var controlPlaga= SQLite.select()
                 .from(ControlPlaga::class.java)
                 .where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
+                .and(ControlPlaga_Table.UsuarioId.eq(usuario?.Id))
                 .orderBy(ControlPlaga_Table.ControlPlagaId,false).querySingle()
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(controlPlaga?.CultivoId)).querySingle()
         if(controlPlaga!=null && cultivo?.EstadoSincronizacion==true){
@@ -486,9 +521,13 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     private fun syncDataProduccion() {
+
+        var usuario=getLastUserLogued()
+
         var produccion= SQLite.select()
                 .from(Produccion::class.java)
                 .where(Produccion_Table.Estado_Sincronizacion.eq(false))
+                .and(Produccion_Table.UsuarioId.eq(usuario?.Id))
                 .orderBy(Produccion_Table.ProduccionId,false).querySingle()
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(produccion?.CultivoId)).querySingle()
         if(produccion!=null && cultivo?.EstadoSincronizacion==true){
@@ -539,9 +578,12 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     private fun syncDataProductos() {
+        var usuario=getLastUserLogued()
+
         var mProducto= SQLite.select()
                 .from(Producto::class.java)
                 .where(Producto_Table.Estado_Sincronizacion.eq(false))
+                .and(Produccion_Table.UsuarioId.eq(usuario?.Id))
                 .orderBy(Producto_Table.ProductoId,false).querySingle()
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(mProducto?.cultivoId)).querySingle()
 
@@ -600,9 +642,13 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     private fun syncDataTransacciones() {
+
+        var usuario=getLastUserLogued()
+
         var transaccion= SQLite.select()
                 .from(Transaccion::class.java)
                 .where(Transaccion_Table.Estado_Sincronizacion.eq(false))
+                .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
                 .orderBy(Transaccion_Table.TransaccionId,false).querySingle()
 
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(transaccion?.Cultivo_Id)).querySingle()
@@ -625,6 +671,9 @@ class MenuRepository: MainViewMenu.Repository {
                         transaccion?.Estado_SincronizacionUpdate = true
                         terceroLocal?.save()
 
+                        val decimal = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
+                        val cantidad = BigDecimal(transaccion.Cantidad!!, MathContext.DECIMAL64)
+
                         val postTransaccion = PostTransaccion(
                                 0,
                                 transaccion.Concepto,
@@ -633,15 +682,14 @@ class MenuRepository: MainViewMenu.Repository {
                                 transaccion.NaturalezaId,
                                 transaccion.PucId,
                                 terceroLocal?.Id_Remote,
-                                transaccion.Valor_Total,
-                                transaccion.Cantidad,
+                                decimal,
+                                cantidad,
                                 cultivo.Id_Remote,
                                 transaccion.UsuarioId
                         )
 
                         val call = apiService?.postTransaccion(postTransaccion)
                         call?.enqueue(object : Callback<PostTransaccion> {
-
 
                             override fun onResponse(call: Call<PostTransaccion>?, response: Response<PostTransaccion>?) {
                                 if (response != null && response.code() == 201 || response?.code() == 200) {
@@ -664,13 +712,10 @@ class MenuRepository: MainViewMenu.Repository {
                                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión")
                                 }
                             }
-
                             override fun onFailure(call: Call<PostTransaccion>?, t: Throwable?) {
                                 postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión")
                             }
-
                         })
-
                         //postEventOk(RequestEventTransaccion.SAVE_EVENT, getProductions(cultivo_id), produccion)
                     } else {
                         postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión")
@@ -681,7 +726,6 @@ class MenuRepository: MainViewMenu.Repository {
                 }
             })
         }else{
-
             postEventOk(RequestEventMainMenu.SYNC_EVENT)
         }
     }
@@ -917,11 +961,11 @@ class MenuRepository: MainViewMenu.Repository {
     fun getLastTercero(usuario:Usuario?): Tercero? {
 
         if(usuario!=null){
-            val lastTercero = SQLite.select().from(Tercero::class.java).where().orderBy(Tercero_Table.TerceroId, false).querySingle()
+            val lastTercero = SQLite.select().from(Tercero::class.java).where(Tercero_Table.Usuario_Id.eq(usuario.Id)).orderBy(Tercero_Table.TerceroId, false).querySingle()
             return lastTercero
 
         }else{
-            val lastTercero = SQLite.select().from(Tercero::class.java).where().orderBy(Tercero_Table.TerceroId, false).querySingle()
+            val lastTercero = SQLite.select().from(Tercero::class.java).orderBy(Tercero_Table.TerceroId, false).querySingle()
             return lastTercero
         }
 
@@ -1036,11 +1080,16 @@ class MenuRepository: MainViewMenu.Repository {
                                 item.Estado_SincronizacionUpdate=true
 
 
+
+
                                 if(item.LocalizacionUps?.size!!>0){
                                     for (localizacion in item.LocalizacionUps!!){
+
+
+
                                         item.DireccionAproximadaGps=localizacion.DireccionAproximadaGps
-                                        item.Latitud=localizacion.Latitud
-                                        item.Longitud=localizacion.Longitud
+                                        item.Latitud=localizacion.Latitud?.toDouble()
+                                        item.Longitud=localizacion.Longitud?.toDouble()
                                         item.Coordenadas=localizacion.Coordenadas
                                         item.Direccion=localizacion.Direccion
                                         item.Configuration_Point=true
@@ -1567,13 +1616,33 @@ class MenuRepository: MainViewMenu.Repository {
                             item.Nombre_Detalle_Producto_Cultivo=cultivo?.Nombre_Detalle_Tipo_Producto
                             item.Cultivo_Id=cultivo?.CultivoId
 
-                            val lastTercero = getLastTercero(null)
-                            if (lastTercero == null) {
-                                item.Tercero?.TerceroId = 1
-                            } else {
-                                item.Tercero?.TerceroId = lastTercero.TerceroId!! + 1
+
+
+
+                            var terceroVerificateSave= SQLite.select()
+                                    .from(Tercero::class.java)
+                                    .where(Tercero_Table.Id_Remote.eq(item.TerceroId))
+                                    .and(Tercero_Table.Estado_SincronizacionUpdate.eq(false))
+                                    .querySingle()
+
+                            if (terceroVerificateSave!=null){
+                                item.Tercero?.TerceroId=terceroVerificateSave?.TerceroId
+                                item.TerceroId=terceroVerificateSave?.TerceroId
+                            }else{
+                                val lastTercero = getLastTercero(null)
+                                if (lastTercero == null) {
+                                    item.Tercero?.TerceroId = 1
+                                } else {
+                                    item.Tercero?.TerceroId = lastTercero.TerceroId!! + 1
+                                }
+
+                                item.Tercero?.Estado_Sincronizacion=true
+                                item.Tercero?.Estado_SincronizacionUpdate=true
+                                item.TerceroId=item.Tercero?.TerceroId
+                                item.Tercero?.save()
+
                             }
-                            item.Tercero?.save()
+
                             item.save()
                         }
                     }

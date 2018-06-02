@@ -165,7 +165,7 @@ class AccountPresenter (var mainView: IMainViewAccount.MainView?):IMainViewAccou
 
     private fun onMessageConectionError() {
         mainView?.hideProgress()
-        mainView?.showProgressHud()
+        mainView?.hideProgress()
         mainView?.verificateConnection()
     }
 

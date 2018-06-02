@@ -20,6 +20,8 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.math.BigDecimal
+import java.math.MathContext
 
 
 class LoteRepositoryImpl : MainViewLote.Repository {
@@ -41,8 +43,11 @@ class LoteRepositoryImpl : MainViewLote.Repository {
             //TODO Ciudad Id de la tabla del backend
             val unidad_productiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()
             if (unidad_productiva?.Estado_Sincronizacion == true) {
+
+                val areaBig = BigDecimal(mLote.Area!!, MathContext.DECIMAL64)
+
                 val postLote = PostLote(0,
-                        mLote.Area,
+                        areaBig,
                         mLote.Codigo,
                         mLote.Nombre,
                         mLote.Descripcion,
@@ -171,11 +176,13 @@ class LoteRepositoryImpl : MainViewLote.Repository {
 
             val unidad_productiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()
 
+            val areaBig = BigDecimal(mLote.Area!!, MathContext.DECIMAL64)
+
 
             //TODO se valida estado de sincronizacion  para actualizar,actualizacion remota
             if (mLote.EstadoSincronizacion == true) {
                 val postLote = PostLote(mLote.Id_Remote,
-                        mLote.Area,
+                        areaBig,
                         mLote.Codigo,
                         mLote.Nombre,
                         mLote.Descripcion,

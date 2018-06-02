@@ -16,6 +16,7 @@ import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
@@ -27,6 +28,8 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.math.BigDecimal
+import java.math.MathContext
 
 class CultivoRepository : ICultivo.Repository {
 
@@ -41,16 +44,28 @@ class CultivoRepository : ICultivo.Repository {
 
     //region Métodos Interfaz
     override fun getListas() {
+        var usuario= getLastUserLogued()
+
+
         //get Unidades Productivas
-        val listUnidadesProductivas: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java).queryList()
+        val listUnidadesProductivas: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
+                .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+        val listLotes = SQLite.select().from(Lote::class.java)
+                .where(Lote_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+
+        postEventListLotes(CultivoEvent.LIST_EVENT_LOTES, listLotes, null);
+
         if (listUnidadesProductivas.size > 0) {
             postEventListUnidadProductiva(CultivoEvent.LIST_EVENT_UNIDAD_PRODUCTIVA, listUnidadesProductivas, null)
         } else {
             postEventError(CultivoEvent.ERROR_DIALOG_EVENT, "No hay Unidades productivas registradas")
         }
 
-        val listLotes = SQLite.select().from(Lote::class.java).queryList()
-        postEventListLotes(CultivoEvent.LIST_EVENT_LOTES, listLotes, null);
+
 
         /*val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
         for (item in listTipoProducto) {
@@ -115,6 +130,11 @@ class CultivoRepository : ICultivo.Repository {
         if(checkConection){
             //TODO Ciudad Id de la tabla del backend
             val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.LoteId.eq(loteId)).querySingle()
+
+            //val areaBig = BigDecimal(mCultivo!!, MathContext.DECIMAL64)
+
+
+
             if (lote?.EstadoSincronizacion == true) {
                 val postCultivo = PostCultivo(0,
                         mCultivo?.Descripcion,

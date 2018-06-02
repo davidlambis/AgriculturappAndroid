@@ -23,6 +23,8 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.math.BigDecimal
+import java.math.MathContext
 
 
 class UpRepository() : IUnidadProductiva.Repo {
@@ -43,9 +45,12 @@ class UpRepository() : IUnidadProductiva.Repo {
 
         //TODO si existe conexion a internet
         if(checkConection){
+
+            val cantidadBig = BigDecimal(mUnidadProductiva.Area!!, MathContext.DECIMAL64)
+
             //TODO Ciudad Id de la tabla del backend
             val postUnidadProductiva = PostUnidadProductiva(0,
-                    mUnidadProductiva?.Area,
+                    cantidadBig,
                     mUnidadProductiva?.CiudadId,
                     mUnidadProductiva?.Codigo,
                     mUnidadProductiva?.UnidadMedidaId,
@@ -72,14 +77,21 @@ class UpRepository() : IUnidadProductiva.Repo {
 
                         //mUnidadProductiva?.save()
 
+
+
+                        val latitudBig = BigDecimal(mUnidadProductiva.Latitud!!, MathContext.DECIMAL64)
+                        val longitudBig = BigDecimal(mUnidadProductiva.Longitud!!, MathContext.DECIMAL64)
+
+
+
                         //postLocalizacionUnidadProductiva
                         val postLocalizacionUnidadProductiva = LocalizacionUp(0,
                                 "",
                                 mUnidadProductiva?.Coordenadas,
                                 if (mUnidadProductiva?.Direccion!=null) mUnidadProductiva.Direccion else "",
                                 mUnidadProductiva?.DireccionAproximadaGps,
-                                mUnidadProductiva?.Latitud,
-                                mUnidadProductiva?.Longitud,
+                                latitudBig,
+                                longitudBig,
                                 "",
                                 "",
                                 "",
@@ -143,8 +155,13 @@ class UpRepository() : IUnidadProductiva.Repo {
         if(checkConection){
             //TODO se valida estado de sincronizacion  para actualizar
             if (mUnidadProductiva?.Estado_Sincronizacion == true) {
+
+
+                val areaBig = BigDecimal(mUnidadProductiva.Area!!, MathContext.DECIMAL64)
+
+
                 val updateUnidadProductiva = PostUnidadProductiva(mUnidadProductiva.Id_Remote,
-                        mUnidadProductiva.Area,
+                        areaBig,
                         mUnidadProductiva.CiudadId,
                         mUnidadProductiva.Codigo,
                         mUnidadProductiva.UnidadMedidaId,
@@ -156,13 +173,18 @@ class UpRepository() : IUnidadProductiva.Repo {
                 call?.enqueue(object : Callback<Unidad_Productiva> {
                     override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
                         if (response != null && response.code() == 200) {
+
+                            val latitudBig = BigDecimal(mUnidadProductiva.Latitud!!, MathContext.DECIMAL64)
+                            val longitudBig = BigDecimal(mUnidadProductiva.Longitud!!, MathContext.DECIMAL64)
+
+
                             val postLocalizacionUnidadProductiva = LocalizacionUp(mUnidadProductiva.LocalizacionUpId,
                                     "",
                                     mUnidadProductiva?.Coordenadas,
                                     if (mUnidadProductiva?.Direccion!=null) mUnidadProductiva.Direccion else "",
                                     mUnidadProductiva?.DireccionAproximadaGps,
-                                    mUnidadProductiva?.Latitud,
-                                    mUnidadProductiva?.Longitud,
+                                    latitudBig,
+                                    longitudBig,
                                     "",
                                     "",
                                     "",

@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.modules.models.unidad_productiva.localizacion
 
 import com.google.gson.annotations.SerializedName
+import java.math.BigDecimal
 
 
 data class LocalizacionUp(@SerializedName("Id")
@@ -19,10 +20,10 @@ data class LocalizacionUp(@SerializedName("Id")
                                 var DireccionAproximadaGps: String? = null,
 
                           @SerializedName("Latitud")
-                                var Latitud: Double? = null,
+                                var Latitud: BigDecimal? = null,
 
                           @SerializedName("Longitud")
-                                var Longitud: Double? = null,
+                                var Longitud: BigDecimal? = null,
 
                           @SerializedName("ReferenciaLocalizacion")
                                 var ReferenciaLocalizacion: String? = null,

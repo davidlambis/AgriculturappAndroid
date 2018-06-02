@@ -9,9 +9,11 @@ import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
+import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.produccion.PostProduccion
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
@@ -208,9 +210,23 @@ class ProduccionRepository :IMainProduccion.Repository {
     }
 
     override fun getListas() {
-        var listUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java!!).queryList()
-        var listLotes = SQLite.select().from(Lote::class.java!!).queryList()
-        var listCultivos = SQLite.select().from(Cultivo::class.java!!).queryList()
+        var usuario=getLastUserLogued()
+
+        val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
+                .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+        val listLotes = SQLite.select().from(Lote::class.java)
+                .where(Lote_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+
+        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+                .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+
+
         val listUnidadMedida = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.CategoriaMedidaId.eq(3)).queryList()
 
         postEventListUnidadMedida(RequestEventProduccion.LIST_EVENT_UNIDAD_MEDIDA,listUnidadMedida,null);

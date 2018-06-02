@@ -9,7 +9,9 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPlaga
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
+import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
@@ -37,9 +39,20 @@ class ControlPlagasRepository : IControlPlagas.Repository {
 
     //region Métodos Interfaz
     override fun getListas() {
-        val listUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).queryList()
-        val listLotes = SQLite.select().from(Lote::class.java).queryList()
-        val listCultivos = SQLite.select().from(Cultivo::class.java).queryList()
+        var usuario= getLastUserLogued()
+
+        val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
+                .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+        val listLotes = SQLite.select().from(Lote::class.java)
+                .where(Lote_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+
+        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+                .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
 
         postEventListUnidadProductiva(ControlPlagasEvent.LIST_EVENT_UP, listUnidadProductiva, null)
         postEventListLotes(ControlPlagasEvent.LIST_EVENT_LOTE, listLotes, null)

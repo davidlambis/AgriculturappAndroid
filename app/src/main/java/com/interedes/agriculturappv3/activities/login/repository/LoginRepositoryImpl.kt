@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.activities.login.repository
 
+import android.util.Base64
 import android.util.Log
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -18,6 +19,7 @@ import com.interedes.agriculturappv3.modules.models.rol.Rol_Table
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.events.ProductosEvent
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -89,21 +91,36 @@ class LoginRepositoryImpl : LoginRepository {
 
 
                                 //Verificate Rol User
-                                val call_usuario = apiService?.getRolUsuarioLogued(usuario?.RolId.toString())
-                                call_usuario?.enqueue(object : Callback<RolUserLogued> {
-                                    override fun onResponse(call: Call<RolUserLogued>?, response: Response<RolUserLogued>?) {
+                                val call_usuario = apiService?.getUsuarioLogued(usuario?.Id.toString())
+                                call_usuario?.enqueue(object : Callback<Usuario> {
+                                    override fun onResponse(call: Call<Usuario>?, response: Response<Usuario>?) {
                                         if (response != null && response.code() == 200) {
-                                            val roluser: RolUserLogued? = response.body()
+
+
+                                            val user: Usuario? = response.body()
                                             val rol = Rol()
-                                            rol.Id=roluser?.Id
-                                            rol.Nombre=roluser?.Nombre
-                                            rol.Icono=roluser?.Icono
+                                            rol.Id=user?.Rol?.Id
+                                            rol.Nombre=user?.Rol?.Nombre
                                             rol.save()
 
 
-                                            usuario.RolNombre = roluser?.Nombre
-                                            usuario.update()
+                                            if(user?.Fotopefil!=null){
+                                                try {
+                                                    val base64String = user?.Fotopefil
+                                                    val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                                    val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                                    usuario.blobImagen = Blob(byte)
+                                                }catch (ex:Exception){
+                                                    var ss= ex.toString()
+                                                    Log.d("Convert Image", "defaultValue = " + ss);
+                                                }
+                                            }
 
+
+
+
+                                            usuario.RolNombre = user?.Rol?.Nombre
+                                            usuario.update()
 
                                             mAuth = FirebaseAuth.getInstance()
                                             mAuth?.signInWithEmailAndPassword(login.username!!, login.password!!)?.addOnCompleteListener({ task ->
@@ -130,7 +147,7 @@ class LoginRepositoryImpl : LoginRepository {
                                             Log.e("Get Login User Response", response?.body().toString())
                                         }
                                     }
-                                    override fun onFailure(call: Call<RolUserLogued>?, t: Throwable?) {
+                                    override fun onFailure(call: Call<Usuario>?, t: Throwable?) {
                                         postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                                         Log.e("Failure Get Login User", t?.message.toString())
                                     }
