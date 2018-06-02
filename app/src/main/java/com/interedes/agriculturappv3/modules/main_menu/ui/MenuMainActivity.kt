@@ -232,11 +232,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             placeType=PlaceType.CIRCLE_1_1
             circleSubButtonDrawables = arrayOfNulls<Drawable>(1)
             drawablesResource = MenuBoomResources.drawablesResourceComprador
-            for (i in 0..1)
+            for (i in 0..0)
                 circleSubButtonDrawables[i] = ContextCompat.getDrawable(this, drawablesResource[i])
             circleSubButtonTexts =MenuBoomResources.circleSubButtonTextsComprador
             subButtonColors = Array(1) { IntArray(2) }
-            for (i in 0..1) {
+            for (i in 0..0) {
                 subButtonColors[i][1] = MenuBoomResources.GetRandomColor()
                 subButtonColors[i][0] = Util.getInstance().getPressedColor(subButtonColors[i][1])
             }
