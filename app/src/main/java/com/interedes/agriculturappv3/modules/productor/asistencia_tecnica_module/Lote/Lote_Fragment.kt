@@ -452,7 +452,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         }
         if (UBICATION_MAPA == true) {
             // Creating a marker
-            LastMarkerDrawingLote = drawMarker(latLng, latLng.latitude.toString() + " / " + latLng.longitude, getString(R.string.location_gps), BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+            LastMarkerDrawingLote = drawMarker(latLng, latLng.latitude.toString() + " / " + latLng.longitude.toString(), getString(R.string.location_gps), BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
 
             txtCoordsLote.setText(String.format(getString(R.string.coords), latLng.latitude, latLng.longitude))
 
@@ -809,9 +809,17 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
             if (UBICATION_MAPA == true) {
                 if (LastMarkerDrawingLote != null) {
+
+
+
                     locationLote.latitude = LastMarkerDrawingLote!!.getPosition().latitude
                     locationLote.longitude = LastMarkerDrawingLote!!.getPosition().longitude
-                    coordsLote?.setText(LastMarkerDrawingLote!!.getPosition().latitude.toString() + " / " + LastMarkerDrawingLote!!.getPosition().longitude)
+
+
+                    latitud=LastMarkerDrawingLote!!.getPosition().latitude
+                    longitud=LastMarkerDrawingLote!!.getPosition().longitude
+
+                    coordsLote?.setText(latitud.toString() + " / " + longitud.toString())
                 }
             } else if(UBICATION_MANUAL==true){
                 latitud=0.0
