@@ -18,6 +18,7 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.resources.RolResources
+import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
@@ -79,7 +80,7 @@ class AccountRepository:IMainViewAccount.Repository {
             if (task.isSuccessful) {
                 var mCurrentUserID =task.result.user.uid
                 usuario.IdFirebase=mCurrentUserID
-                usuario.update()
+                usuario.save()
 
                 if(isUpdatePhotoAccount){
                     postEvent(RequestEventAccount.UPDATE_FOTO_ACCOUNT_EVENT, null,null,null)
@@ -119,8 +120,22 @@ class AccountRepository:IMainViewAccount.Repository {
         call?.enqueue(object : Callback<PostUsuario> {
             override fun onResponse(call: Call<PostUsuario>?, response: Response<PostUsuario>?) {
                 if (response != null && response.code() == 200) {
-                    usuario?.Estado_SincronizacionUpdate=true
-                    usuario?.update()
+                    //usuario?.Estado_SincronizacionUpdate=true
+
+                    var userResponse:PostUsuario? = response.body()
+
+                    var lasLogued:Usuario?= getUserLogued()
+                    lasLogued?.Estado_SincronizacionUpdate=true
+                    lasLogued?.Nombre=userResponse?.Nombre
+                    lasLogued?.Apellidos=userResponse?.Apellidos
+                    lasLogued?.Identificacion=userResponse?.Identificacion
+                   // lasLogued?.blobImagen=usuario?.blobImagen
+                    lasLogued?.save()
+
+
+                    //usuario?.save()
+
+                    var lisLogued= SQLite.select().from(Usuario::class.java).queryList()
                     updateUserFirebase(usuario?.Nombre,usuario?.Apellidos,usuario?.Identificacion,usuario?.PhoneNumber)
                     postEventOk(RequestEventAccount.UPDATE_EVENT,null,null)
                 } else {
@@ -212,7 +227,6 @@ class AccountRepository:IMainViewAccount.Repository {
 
         postEvent(type, usuarioListMutable, usuarioMutable, null)
     }
-
 
     private fun postEventError(type: Int,messageError:String?) {
         postEvent(type, null,null,messageError)

@@ -941,8 +941,6 @@ class MenuRepository: MainViewMenu.Repository {
 
     fun getLastTransaccion(usuario:Usuario?): Transaccion? {
 
-
-
         if(usuario!=null){
             val lastTransaccion = SQLite.select().from(Transaccion::class.java)
                     .where(Transaccion_Table.UsuarioId.eq(usuario?.Id)).orderBy(Transaccion_Table.TransaccionId, false).querySingle()
@@ -974,7 +972,6 @@ class MenuRepository: MainViewMenu.Repository {
 
     fun getLastProducto(usuario:Usuario?): Producto? {
 
-
         if(usuario!=null){
             val lastProducto = SQLite.select().from(Producto::class.java)
                     .where(Produccion_Table.UsuarioId.eq(usuario?.Id)).orderBy(Producto_Table.ProductoId, false).querySingle()
@@ -994,6 +991,7 @@ class MenuRepository: MainViewMenu.Repository {
     //region Métodos Interfaz
 
     override fun getLastUserLogued(): Usuario? {
+
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
         return usuarioLogued
     }
@@ -1079,24 +1077,19 @@ class MenuRepository: MainViewMenu.Repository {
                                 item.Estado_Sincronizacion=true
                                 item.Estado_SincronizacionUpdate=true
 
-
-
-
                                 if(item.LocalizacionUps?.size!!>0){
                                     for (localizacion in item.LocalizacionUps!!){
-
-
-
                                         item.DireccionAproximadaGps=localizacion.DireccionAproximadaGps
                                         item.Latitud=localizacion.Latitud?.toDouble()
                                         item.Longitud=localizacion.Longitud?.toDouble()
                                         item.Coordenadas=localizacion.Coordenadas
                                         item.Direccion=localizacion.Direccion
-                                        item.Configuration_Point=true
-                                        item.Configuration_Poligon=false
                                         item.LocalizacionUpId=localizacion.Id
                                     }
                                 }
+
+                                item.Configuration_Point=true
+                                item.Configuration_Poligon=false
                                 item.save()
                             }
 

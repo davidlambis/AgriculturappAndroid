@@ -54,7 +54,8 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     var unidadProductivaList: ArrayList<Unidad_Productiva>? = ArrayList<Unidad_Productiva>()
     var unidadProductivaGlobal: Unidad_Productiva? = null
     //Progress
-    private var hud: KProgressHUD? = null
+    private var hudCoords: KProgressHUD? = null
+    private var hudUp: KProgressHUD? = null
     //Dialog
     var viewDialog: View? = null;
     var _dialogRegisterUpdate: AlertDialog? = null
@@ -405,11 +406,11 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
 
 
     override fun showProgressHud() {
-        hud = KProgressHUD.create(activity)
+        hudUp = KProgressHUD.create(activity)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setWindowColor(getResources().getColor(R.color.colorPrimary))
                 .setLabel("Cargando...", resources.getColor(R.color.white));
-        hud?.show()
+        hudUp?.show()
     }
 
     override fun showProgressHudCoords(){
@@ -417,17 +418,22 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         imageView.setBackgroundResource(R.drawable.spin_animation);
         var drawable = imageView.getBackground() as AnimationDrawable;
         drawable.start();
-        hud = KProgressHUD.create(activity)
+        hudCoords = KProgressHUD.create(activity)
                 .setCustomView(imageView)
                 .setWindowColor(resources.getColor(R.color.white))
                 .setLabel("Cargando...", resources.getColor(R.color.grey_luiyi));
-        hud?.show()
+        hudCoords?.show()
 
     }
 
 
     override fun hideProgressHud() {
-        hud?.dismiss()
+        hudUp?.dismiss()
+    }
+
+    override fun hideProgressHudCoords() {
+
+        hudCoords?.dismiss()
     }
 
 
@@ -811,7 +817,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             if (extras.containsKey("latitud") && extras.containsKey("longitud")) {
                 latitud = intent.extras!!.getDouble("latitud")
                 longitud = intent.extras!!.getDouble("longitud")
-                hideProgressHud()
+                hideProgressHudCoords()
                 if (viewDialog != null) {
                     if (presenter?.getStatusServiceCoords() == true) {
                         if (viewDialog?.imageViewStopLocalizarUnidadProductiva?.getVisibility() == View.GONE) {

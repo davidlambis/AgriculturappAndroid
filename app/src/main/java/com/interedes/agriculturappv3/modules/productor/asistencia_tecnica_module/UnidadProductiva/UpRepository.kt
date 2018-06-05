@@ -77,12 +77,8 @@ class UpRepository() : IUnidadProductiva.Repo {
 
                         //mUnidadProductiva?.save()
 
-
-
                         val latitudBig = BigDecimal(mUnidadProductiva.Latitud!!, MathContext.DECIMAL64)
                         val longitudBig = BigDecimal(mUnidadProductiva.Longitud!!, MathContext.DECIMAL64)
-
-
 
                         //postLocalizacionUnidadProductiva
                         val postLocalizacionUnidadProductiva = LocalizacionUp(0,

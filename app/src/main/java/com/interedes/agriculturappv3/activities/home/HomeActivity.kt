@@ -88,7 +88,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
             val i = Intent(this, MenuMainActivity::class.java)
             i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(i)
-
         }
     }
 
@@ -218,10 +217,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
     }
 
     private fun getLastUserLogued(): Usuario? {
-        val usuarioLogued = SQLite.select().from(Usuario::class.java)
+        var usuarioLoguedHome = SQLite.select().from(Usuario::class.java)
                 .where(Usuario_Table.UsuarioRemembered.eq(true))
                 .querySingle()
-        return usuarioLogued
+        return usuarioLoguedHome
     }
 
     private fun ingresar() {

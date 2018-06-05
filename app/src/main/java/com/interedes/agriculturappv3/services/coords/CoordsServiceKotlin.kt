@@ -84,8 +84,8 @@ class CoordsServiceKotlin(var context_: Context): Service(), LocationListener {
         }
 
 
-        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0f, this)
-        locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 0f, this)
+        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
+        locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0f, this)
 
         /*
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER

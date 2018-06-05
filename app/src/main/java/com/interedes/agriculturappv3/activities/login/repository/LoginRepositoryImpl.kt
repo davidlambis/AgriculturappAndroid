@@ -57,7 +57,11 @@ class LoginRepositoryImpl : LoginRepository {
                             if (response != null && response.code() == 200) {
 
                                 val user_login: MutableList<UserLoginResponse>? = response.body()?.value!!
-                                val usuario = Usuario()
+
+
+                                var usuario:Usuario?= Usuario()
+
+
                                 for (item in user_login!!) {
                                     val ultimo_usuario = getLastUser()
                                     var session_id: Long?
@@ -68,67 +72,67 @@ class LoginRepositoryImpl : LoginRepository {
                                     }
                                     val rol = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(item.tipouser)).querySingle()
                                     val rolNombre = rol?.Nombre
-                                    usuario.DetalleMetodoPagoId = item.detalleMetodopagoId
-                                    usuario.RolId = item.tipouser
-                                    usuario.Apellidos = item.apellido
-                                    usuario.Nombre = item.nombre
-                                    usuario.NumeroCuenta = item.nroCuenta
-                                    usuario.Identificacion = item.identification
-                                    usuario.Id = item.id
-                                    usuario.UserName = item.userName
+                                    usuario?.DetalleMetodoPagoId = item.detalleMetodopagoId
+                                    usuario?.RolId = item.tipouser
+                                    usuario?.Apellidos = item.apellido
+                                    usuario?.Nombre = item.nombre
+                                    usuario?.NumeroCuenta = item.nroCuenta
+                                    usuario?.Identificacion = item.identification
+                                    usuario?.Id = item.id
+                                    usuario?.UserName = item.userName
                                     //TODO Encriptar contraseña
-                                    usuario.Contrasena = login.password
-                                    usuario.Email = item.email
-                                    usuario.EmailConfirmed = item.emailConfirmed
-                                    usuario.PhoneNumber = item.phoneNumber
-                                    usuario.PhoneNumberConfirmed = item.phoneNumberConfirmed
-                                    usuario.UsuarioRemembered = true
-                                    usuario.AccessToken = access_token
-                                    usuario.RolNombre = rolNombre
-                                    usuario.SessionId = session_id
-                                    usuario.save()
+                                    usuario?.Contrasena = login.password
+                                    usuario?.Email = item.email
+                                    usuario?.EmailConfirmed = item.emailConfirmed
+                                    usuario?.PhoneNumber = item.phoneNumber
+                                    usuario?.PhoneNumberConfirmed = item.phoneNumberConfirmed
+                                    usuario?.UsuarioRemembered = true
+                                    usuario?.AccessToken = access_token
+                                    usuario?.RolNombre = rolNombre
+                                    usuario?.SessionId = session_id
+                                    usuario?.save()
                                 }
 
 
                                 //Verificate Rol User
-                                val call_usuario = apiService?.getUsuarioLogued(usuario?.Id.toString())
-                                call_usuario?.enqueue(object : Callback<Usuario> {
-                                    override fun onResponse(call: Call<Usuario>?, response: Response<Usuario>?) {
+                                val call_usuario = apiService?.getRolUsuarioLogued(usuario?.RolId.toString())
+                                call_usuario?.enqueue(object : Callback<RolUserLogued> {
+                                    override fun onResponse(call: Call<RolUserLogued>?, response: Response<RolUserLogued>?) {
                                         if (response != null && response.code() == 200) {
 
-
-                                            val user: Usuario? = response.body()
+                                            val rolUserLogued: RolUserLogued? = response.body()
                                             val rol = Rol()
-                                            rol.Id=user?.Rol?.Id
-                                            rol.Nombre=user?.Rol?.Nombre
-                                            rol.save()
+                                            rol?.Id=rolUserLogued?.Id
+                                            rol?.Nombre=rolUserLogued?.Nombre
+                                            rol?.save()
 
-
-                                            if(user?.Fotopefil!=null){
+                                            /*if(user?.Fotopefil!=null){
                                                 try {
                                                     val base64String = user?.Fotopefil
                                                     val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
                                                     val byte = Base64.decode(base64Image, Base64.DEFAULT)
-                                                    usuario.blobImagen = Blob(byte)
+                                                    usuario?.blobImagen = Blob(byte)
                                                 }catch (ex:Exception){
                                                     var ss= ex.toString()
                                                     Log.d("Convert Image", "defaultValue = " + ss);
                                                 }
-                                            }
+                                            }*/
 
-
-
-
-                                            usuario.RolNombre = user?.Rol?.Nombre
-                                            usuario.update()
+                                            usuario?.RolNombre = rol?.Nombre
+                                            usuario?.save()
 
                                             mAuth = FirebaseAuth.getInstance()
                                             mAuth?.signInWithEmailAndPassword(login.username!!, login.password!!)?.addOnCompleteListener({ task ->
                                                 if (task.isSuccessful) {
 
                                                     var mCurrentUserID =task.result.user.uid
-                                                    usuario.IdFirebase=mCurrentUserID
-                                                    usuario.update()
+                                                    usuario?.IdFirebase=mCurrentUserID
+                                                    usuario?.save()
+
+
+                                                    val usuarioLoguedList = SQLite.select().from(Usuario::class.java).queryList()
+
+                                                    val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
 
                                                     postEventUsuarioOk(LoginEvent.SAVE_EVENT, usuario)
 
@@ -147,11 +151,10 @@ class LoginRepositoryImpl : LoginRepository {
                                             Log.e("Get Login User Response", response?.body().toString())
                                         }
                                     }
-                                    override fun onFailure(call: Call<Usuario>?, t: Throwable?) {
+                                    override fun onFailure(call: Call<RolUserLogued>?, t: Throwable?) {
                                         postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                                         Log.e("Failure Get Login User", t?.message.toString())
                                     }
-
                                 })
                             } else {
                                 postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
@@ -212,19 +215,15 @@ class LoginRepositoryImpl : LoginRepository {
     }
     //region Querys Sqlite
 
-    private fun getLastUserLogued(): Usuario? {
-        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
-        return usuarioLogued
-    }
+
 
     private fun getLastUser(): Usuario? {
         if (SQLite.select().from(Usuario::class.java).queryList().size > 0) {
-            val usuarioLogued = SQLite.select().from(Usuario::class.java).where().orderBy(Usuario_Table.SessionId, false).querySingle()
-            return usuarioLogued
+            val usuarioLoguedSession = SQLite.select().from(Usuario::class.java).where().orderBy(Usuario_Table.SessionId, false).querySingle()
+            return usuarioLoguedSession
         }
         return null
     }
-
 
     private fun getUsuario(login: Login): Usuario? {
         val sqlite_usuario = SQLite.select().from(Usuario::class.java).where(Usuario_Table.Email.eq(login.username)).and(Usuario_Table.Contrasena.eq(login.password)).querySingle()

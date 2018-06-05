@@ -58,6 +58,7 @@ interface MainViewLote {
         fun showProgressHud()
         fun showProgressHudCoords()
         fun hideProgressHud()
+        fun hideProgressHudCoords()
 
         //Response Notify
         fun requestResponseOk()

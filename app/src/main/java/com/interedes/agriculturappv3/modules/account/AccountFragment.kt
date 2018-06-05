@@ -453,7 +453,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
             R.id.btnSaveAccount -> {
                 if(presenter?.validarUpdateUser()!!){
                     userLogued=presenter?.getUserLogued()
-                    saveDataUserLogued(userLogued)
+                    saveDataUserLogued()
                 }
                 /*val userDisplayName = edtNombres.getText().toString().trim()
                 val userLastName = edtApellidos.getText().toString().trim()
@@ -472,7 +472,9 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         }
     }
 
-    private fun saveDataUserLogued(userLogued: Usuario?) {
+    private fun saveDataUserLogued() {
+
+        userLogued=presenter?.getUserLogued()
         var userLoguedLocal=userLogued
         if(imageAccountGlobal!=null){
             val stringBuilder = StringBuilder()
@@ -489,8 +491,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         userLoguedLocal?.Identificacion=edtCedula.text.toString()
         presenter?.updateUserLogued(userLoguedLocal)
     }
-
-
     //endregion
 
     //region METHODS CAMERA
@@ -703,7 +703,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                       user_image?.setImageBitmap(imageBitmapAccountGlobal)
                       (activity as MenuMainActivity).circleImageView.setImageBitmap(imageBitmapAccountGlobal)
                       progressDialog.dismiss();
-                      saveDataUserLogued(userLogued)
+                      saveDataUserLogued()
                       Toast.makeText(activity, "Foto Actualizada", Toast.LENGTH_LONG).show()
                   }
               }?.addOnFailureListener{

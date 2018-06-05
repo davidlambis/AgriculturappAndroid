@@ -84,6 +84,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     //Progress
     /** These can be lateinit as they are set in onCreate */
     private var hud: KProgressHUD? = null
+    private var hudCoords: KProgressHUD? = null
 
     //UbicationLote
     private var UBICATION_MANUAL: Boolean = false
@@ -1066,11 +1067,16 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         imageView.setBackgroundResource(R.drawable.spin_animation);
         var drawable = imageView.getBackground() as AnimationDrawable;
         drawable.start();
-        hud = KProgressHUD.create(activity)
+        hudCoords = KProgressHUD.create(activity)
                 .setCustomView(imageView)
                 .setWindowColor(resources.getColor(R.color.white))
                 .setLabel("Cargando...", resources.getColor(R.color.grey_luiyi));
-        hud?.show()
+        hudCoords?.show()
+
+    }
+
+    override fun hideProgressHudCoords(){
+        hudCoords?.dismiss()
 
     }
 
@@ -1212,21 +1218,22 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             }
             if (extras.containsKey("latitud") && extras.containsKey("longitud")) {
 
-                if (viewDialog != null && UBICATION_GPS == true) {
-
+                if (UBICATION_GPS == true) {
 
                     latitud = intent.extras!!.getDouble("latitud")
                     longitud = intent.extras!!.getDouble("longitud")
 
 
                     addMarkerLocation(latitud!!, longitud!!)
-                    hideProgressHud()
+                    hideProgressHudCoords()
                     txtCoordsLote.setText(String.format(getString(R.string.coords), latitud, longitud))
 
 
-                    viewDialog?.edtLatitud?.setText(latitud.toString())
-                    viewDialog?.edtLongitud?.setText(longitud.toString())
-                    viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
+                    if(viewDialog != null){
+                        viewDialog?.edtLatitud?.setText(latitud.toString())
+                        viewDialog?.edtLongitud?.setText(longitud.toString())
+                        viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
+                    }
                 }
                 //Toast.makeText(activity,"Broadcast: "+longitud.toString(), Toast.LENGTH_SHORT).show()
                 // tvCoords.setText(String.valueOf(location.getLatitude()) + " , " + String.valueOf(location.getLongitude()));

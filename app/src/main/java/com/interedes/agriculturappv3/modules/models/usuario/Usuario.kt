@@ -11,7 +11,13 @@ import java.util.*
 
 
 @Table(database = DataSource::class)
-data class Usuario(@PrimaryKey
+data class Usuario(
+        @PrimaryKey(autoincrement = true)
+        @SerializedName("UsuarioId")
+        @Column(name = "UsuarioId")
+        var Usuario_Id: Long? = null,
+
+
                    @SerializedName("Id")
                    @Column(name = "Id")
                    var Id: UUID? = null,

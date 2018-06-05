@@ -7,6 +7,13 @@
     android:id="@+id/container_fragment"
     tools:context="com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.Lote_Fragment">
 
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
 <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"

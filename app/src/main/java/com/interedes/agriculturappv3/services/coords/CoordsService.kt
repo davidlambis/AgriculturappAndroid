@@ -35,8 +35,8 @@ data class CoordsService constructor(var context_:Context): Service(), LocationL
 
     private var context: Context?=null
 
-    var latitud: Double = 0.toDouble()
-    var longitud: Double = 0.toDouble()
+    var latitud: Double = 0.0
+    var longitud: Double = 0.0
     // var localizacion = Coords(latitud,longitud,""
     var serviceLocalizacionRunBool:Boolean? = false
 
@@ -100,8 +100,8 @@ data class CoordsService constructor(var context_:Context): Service(), LocationL
 
 
 
-        locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 0F, this)
-        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0F, this)
+        locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0F, this)
+        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0F, this)
 
         /*
         locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER

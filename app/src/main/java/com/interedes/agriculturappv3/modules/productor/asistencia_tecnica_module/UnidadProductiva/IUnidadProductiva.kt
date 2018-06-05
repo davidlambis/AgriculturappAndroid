@@ -30,6 +30,7 @@ interface IUnidadProductiva {
         //ProgresHud
         fun showProgressHud()
         fun showProgressHudCoords()
+        fun hideProgressHudCoords()
         fun hideProgressHud()
 
         //Fun Lote CRUD
