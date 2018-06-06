@@ -39,6 +39,8 @@ import kotlinx.android.synthetic.main.fragment_unidad_productiva.*
 import android.widget.*
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
+import com.google.android.gms.cast.CastRemoteDisplayLocalService
+import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 import java.io.IOException
 import java.util.*
 
@@ -683,13 +685,19 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             }
 
             R.id.imageViewStopLocalizarUnidadProductiva -> {
+                var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+                activity!!.stopService(intent)
+
                 presenter?.closeServiceGps()
                 presenter?.setStatusServiceCoords(false)
                 viewDialog?.imageViewStopLocalizarUnidadProductiva?.visibility=View.GONE
-
             }
 
             R.id.ivBackButton -> {
+
+                var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+                activity!!.stopService(intent)
+
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).onBackPressed()
             }
@@ -843,6 +851,8 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
 
     //region Overrides Methods
 //call this method in your onCreateMethod
+
+
     override fun onDestroy() {
         super.onDestroy()
         presenter?.onDestroy()

@@ -54,6 +54,7 @@ class CoordsServiceKotlin(var context_: Context): Service(), LocationListener {
     }
 
     fun closeService() {
+
         this.stopSelf()
         if (locationManager != null) {
             locationManager!!.removeUpdates(this)

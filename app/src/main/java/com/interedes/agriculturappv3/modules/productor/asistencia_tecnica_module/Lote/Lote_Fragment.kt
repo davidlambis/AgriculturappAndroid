@@ -42,6 +42,7 @@ import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.adapter.LoteAdapter
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_menu_main.*
@@ -639,6 +640,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
 
     override fun setPropertiesTypeLocationManual() {
+        var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+        activity!!.stopService(intent)
         presenter?.closeServiceGps()
         UBICATION_GPS = false
         UBICATION_MANUAL = true
@@ -653,6 +656,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     }
 
     override fun setPropertiesTypeLocationMapa() {
+        var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+        activity!!.stopService(intent)
         presenter?.closeServiceGps()
         if (markerLocation != null) markerLocation?.remove()
         UBICATION_GPS = false
@@ -1028,7 +1033,6 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 0 -> {
                     _dialogTypeLocation = dialog as AlertDialog?
                     setPropertiesTypeLocationGps()
-
                     if (LotePresenterImpl.instance?.coordsService == null) {
                         presenter?.startGps(activity as MenuMainActivity)
                     }
@@ -1036,9 +1040,11 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 }
             //Position State Location Manual
                 1 -> {
+
                     _dialogTypeLocation = dialog as AlertDialog?
-                    showAlertDialogAddLote(null)
                     setPropertiesTypeLocationManual()
+                    showAlertDialogAddLote(null)
+
                     //scheduleDismiss();
                 }
             //Position State Location Mapa
@@ -1173,6 +1179,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             R.id.fabLocationLote -> showAlertTypeLocationLote()
             R.id.fabUnidadProductiva -> showAlertDialogSelectUp()
             R.id.ivBackButton -> {
+                var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+                activity!!.stopService(intent)
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).onBackPressed()
             }

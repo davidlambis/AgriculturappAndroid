@@ -430,7 +430,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
             metodoPagoGlobal = listMetodoPago!![position]
             spinnerDetalleMetodoPago?.setText("")
 
-            textInputLayoutNumeroCuenta?.visibility = View.VISIBLE
+            textInputLayoutNumeroCuenta?.visibility = View.GONE
             edtNumeroCuenta?.setText("")
 
             presenter?.setListSpinnerDetalleMetodoPago(metodoPagoGlobal?.Id)
@@ -444,7 +444,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         spinnerDetalleMetodoPago!!.setAdapter(uMedidaArrayAdapter);
         spinnerDetalleMetodoPago!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             detalleMetodoPagoGlobal = listDetalleMetodoPago!![position]
-
 
             if (metodoPagoGlobal?.Nombre.equals(MetodoPagoResources.TRANFERENCIA_BANCARIA)) {
                 textInputLayoutNumeroCuenta?.visibility = View.VISIBLE
@@ -935,20 +934,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                 Toast.makeText(activity,
                         "Permiso denegado", Toast.LENGTH_LONG).show()
 
-            }/* else if ((Build.VERSION.SDK_INT >= 23 && !shouldShowRequestPermissionRationale(permissions[0])) ||
-                        (Build.VERSION.SDK_INT >= 23 && !shouldShowRequestPermissionRationale(permissions[1]))) {
-                    //Toast.makeText(MainActivity.this, "Go to Settings and Grant the permission to use this feature.", Toast.LENGTH_SHORT).show();
-                    // User selected the Never Ask Again Option
-                    Intent i = new Intent();
-                    i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    i.addCategory(Intent.CATEGORY_DEFAULT);
-                    i.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                    getApplicationContext().startActivity(i);
-
-                } */
+            }
         }
     }
 
