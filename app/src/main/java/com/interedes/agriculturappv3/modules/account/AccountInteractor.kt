@@ -17,7 +17,7 @@ class AccountInteractor :IMainViewAccount.Interactor {
       return repository?.getUserLogued()
     }
 
-    override fun  updateUserLogued(usuario:Usuario?,checkConction:Boolean)
+    override fun  updateUserLogued(usuario:Usuario,checkConction:Boolean)
     {
         repository?.updateUserLogued(usuario,checkConction)
     }

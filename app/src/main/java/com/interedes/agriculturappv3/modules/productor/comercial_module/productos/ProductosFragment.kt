@@ -801,8 +801,6 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             mProducto.PrecioUnidadMedida = viewDialog?.spinnerMonedaPrecio?.text.toString()
             mProducto.Unidad_Medida_Id=unidadMedidaCantidadGlobal?.Id
             presenter?.updateProducto(mProducto, Cultivo_Id!!)
-
-
         }
     }
 

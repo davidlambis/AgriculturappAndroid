@@ -330,7 +330,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             unidadProductiva?.Latitud = latitud
             unidadProductiva?.Longitud = longitud
             unidadProductiva?.DireccionAproximadaGps=getAddressGps(latitud!!,longitud!!)
-            presenter?.updateUP(unidadProductiva)
+            presenter?.updateUP(unidadProductiva!!)
         }
     }
 

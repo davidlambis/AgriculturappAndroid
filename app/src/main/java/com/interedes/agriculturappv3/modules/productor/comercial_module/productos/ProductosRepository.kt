@@ -78,7 +78,7 @@ class ProductosRepository : IProductos.Repository {
         if (cultivo_id == null) {
             var usuarioLogued= getLastUserLogued()
             listResponse = SQLite.select().from(Producto::class.java)
-                    .where(Producto_Table.UsuarioId.eq(usuarioLogued?.Id))
+                    .where(Producto_Table.userId.eq(usuarioLogued?.Id))
                     .queryList()
         } else {
             listResponse = SQLite.select().from(Producto::class.java).where(Producto_Table.cultivoId.eq(cultivo_id)).queryList()

@@ -16,11 +16,11 @@ class UpInteractor : IUnidadProductiva.Interactor {
     override fun registerUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean) {
         upRepo!!.saveUp(unidadProductivaModel!!,checkConection)
     }
-    override fun updateUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean) {
+    override fun updateUP(unidadProductivaModel: Unidad_Productiva,checkConection:Boolean) {
         upRepo!!.updateUp(unidadProductivaModel!!,checkConection)
     }
 
-    override fun deleteUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean) {
+    override fun deleteUP(unidadProductivaModel: Unidad_Productiva,checkConection:Boolean) {
         upRepo!!.deleteUp(unidadProductivaModel!!,checkConection)
     }
 

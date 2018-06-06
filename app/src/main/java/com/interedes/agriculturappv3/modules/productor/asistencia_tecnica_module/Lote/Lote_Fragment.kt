@@ -1077,9 +1077,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
     override fun hideProgressHudCoords(){
         hudCoords?.dismiss()
-
     }
-
 
     override fun hideProgressHud() {
         hud?.dismiss()

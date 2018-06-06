@@ -14,6 +14,8 @@ import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
+import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import org.greenrobot.eventbus.Subscribe
 import java.util.ArrayList
 
@@ -129,7 +131,7 @@ class AccountPresenter (var mainView: IMainViewAccount.MainView?):IMainViewAccou
        return  interactor?.getUserLogued()
     }
 
-    override fun updateUserLogued(usuario: Usuario?) {
+    override fun updateUserLogued(usuario: Usuario) {
         mainView?.showProgressHud()
         interactor?.updateUserLogued(usuario,checkConnection())
 
@@ -165,7 +167,7 @@ class AccountPresenter (var mainView: IMainViewAccount.MainView?):IMainViewAccou
 
     private fun onMessageConectionError() {
         mainView?.hideProgress()
-        mainView?.hideProgress()
+        mainView?.hideProgressHud()
         mainView?.verificateConnection()
     }
 

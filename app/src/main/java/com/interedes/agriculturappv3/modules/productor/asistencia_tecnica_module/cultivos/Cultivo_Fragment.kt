@@ -346,7 +346,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo?.Nombre_Detalle_Tipo_Producto = viewDialog?.spinnerDetalleTipoProducto?.text?.toString()
             cultivo?.Id_Tipo_Producto = tipoProductoGlobal?.Id
             cultivo?.siembraTotal=viewDialog?.edtSiembraTotal?.text?.toString()?.toLongOrNull()
-            presenter?.updateCultivo(cultivo, cultivo?.LoteId)
+            presenter?.updateCultivo(cultivo!!, cultivo?.LoteId)
         }
     }
 

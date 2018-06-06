@@ -61,7 +61,7 @@ interface IMainViewAccount {
 
         //Methods
         fun getUserLogued():Usuario?
-        fun updateUserLogued(usuario:Usuario?)
+        fun updateUserLogued(usuario:Usuario)
 
         //Conecttion
         fun checkConnection(): Boolean
@@ -69,13 +69,12 @@ interface IMainViewAccount {
 
 
         fun verificateUserLoguedFirebaseFirebase(): FirebaseUser?
-
         fun changeFotoUserAccount()
     }
 
     interface Interactor {
         fun getUserLogued():Usuario?
-        fun updateUserLogued(usuario:Usuario?,checkConction:Boolean)
+        fun updateUserLogued(usuario:Usuario,checkConction:Boolean)
         fun verificateUserLoguedFirebaseFirebase(): FirebaseUser?
         fun changeFotoUserAccount(checkConction:Boolean)
         fun getListas()
@@ -84,11 +83,11 @@ interface IMainViewAccount {
     interface Repository {
 
         fun changeFotoUserAccount(checkConction:Boolean)
-        fun loginFirebase(usuario:Usuario?,isUpdatePhotoAccount:Boolean)
+        fun loginFirebase(usuario:Usuario,isUpdatePhotoAccount:Boolean)
         fun verificateUserLoguedFirebaseFirebase(): FirebaseUser?
 
         fun getUserLogued():Usuario?
-        fun updateUserLogued(usuario:Usuario?,checkConction:Boolean)
+        fun updateUserLogued(usuario:Usuario,checkConction:Boolean)
 
         fun getListas()
     }

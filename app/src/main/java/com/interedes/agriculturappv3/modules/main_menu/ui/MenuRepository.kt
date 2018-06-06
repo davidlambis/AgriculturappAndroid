@@ -198,7 +198,7 @@ class MenuRepository: MainViewMenu.Repository {
                 .and(Produccion_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
         var counRegisterProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(false))
-                .and(Producto_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .and(Producto_Table.userId.eq(usuarioLogued?.Id))
                 .queryList().count()
         var counRegisterTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(false))
                 .and(Transaccion_Table.UsuarioId.eq(usuarioLogued?.Id))
@@ -240,7 +240,7 @@ class MenuRepository: MainViewMenu.Repository {
 
         var countUpdatesProductos=SQLite.select().from(Producto::class.java)
                 .where(Producto_Table.Estado_Sincronizacion.eq(true))
-                .and(Producto_Table.UsuarioId.eq(usuarioLogued?.Id))
+                .and(Producto_Table.userId.eq(usuarioLogued?.Id))
                 .and(Producto_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
         var countUpdatesTransacciones=SQLite.select().from(Transaccion::class.java)
@@ -1012,7 +1012,6 @@ class MenuRepository: MainViewMenu.Repository {
 
 
                         val unidadesProductivas = response.body()?.value as MutableList<Unidad_Productiva>
-
 
                         //TODO Delete information in local, add new remote
                         SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)

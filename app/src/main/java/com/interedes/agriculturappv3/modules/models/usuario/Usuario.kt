@@ -12,12 +12,12 @@ import java.util.*
 
 @Table(database = DataSource::class)
 data class Usuario(
-        @PrimaryKey(autoincrement = true)
+
+       /* @PrimaryKey(autoincrement = true)
         @SerializedName("UsuarioId")
         @Column(name = "UsuarioId")
-        var Usuario_Id: Long? = null,
-
-
+        var Usuario_Id: Long? = null,*/
+                   @PrimaryKey
                    @SerializedName("Id")
                    @Column(name = "Id")
                    var Id: UUID? = null,
@@ -103,8 +103,8 @@ data class Usuario(
                    @Column(name = "IdFirebase")
                    var IdFirebase: String? = null,
 
-                   @Column(name = "blobImagen")
-                   var blobImagen: Blob? = null,
+                   @Column(name = "blobImagenUser")
+                   var blobImagenUser: Blob? = null,
 
                    @Column(getterName = "getEstado_SincronizacionUpdate")
                    var Estado_SincronizacionUpdate: Boolean? = false,

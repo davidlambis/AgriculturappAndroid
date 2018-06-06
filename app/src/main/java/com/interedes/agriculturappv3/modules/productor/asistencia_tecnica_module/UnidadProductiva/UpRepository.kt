@@ -146,16 +146,13 @@ class UpRepository() : IUnidadProductiva.Repo {
     }
 
 
-    override fun updateUp(mUnidadProductiva: Unidad_Productiva?,checkConection:Boolean) {
+    override fun updateUp(mUnidadProductiva: Unidad_Productiva,checkConection:Boolean) {
         //TODO si existe coneccion a internet
         if(checkConection){
             //TODO se valida estado de sincronizacion  para actualizar
-            if (mUnidadProductiva?.Estado_Sincronizacion == true) {
-
+            if (mUnidadProductiva.Estado_Sincronizacion == true) {
 
                 val areaBig = BigDecimal(mUnidadProductiva.Area!!, MathContext.DECIMAL64)
-
-
                 val updateUnidadProductiva = PostUnidadProductiva(mUnidadProductiva.Id_Remote,
                         areaBig,
                         mUnidadProductiva.CiudadId,
@@ -172,7 +169,6 @@ class UpRepository() : IUnidadProductiva.Repo {
 
                             val latitudBig = BigDecimal(mUnidadProductiva.Latitud!!, MathContext.DECIMAL64)
                             val longitudBig = BigDecimal(mUnidadProductiva.Longitud!!, MathContext.DECIMAL64)
-
 
                             val postLocalizacionUnidadProductiva = LocalizacionUp(mUnidadProductiva.LocalizacionUpId,
                                     "",
@@ -191,7 +187,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                             call?.enqueue(object : Callback<LocalizacionUp> {
                                 override fun onResponse(call: Call<LocalizacionUp>?, response: Response<LocalizacionUp>?) {
                                     if (response != null && response.code() == 200) {
-                                        mUnidadProductiva?.Estado_SincronizacionUpdate=true
+                                        mUnidadProductiva.Estado_SincronizacionUpdate=true
                                         mUnidadProductiva.update()
                                         postEventOk(RequestEventUP.UPDATE_EVENT, getUPs(), mUnidadProductiva)
 
@@ -214,24 +210,19 @@ class UpRepository() : IUnidadProductiva.Repo {
             }
             //TODO con  conexion a internet, pero no se ha sincronizado
             else {
-                mUnidadProductiva?.Estado_SincronizacionUpdate=false
-                mUnidadProductiva?.update()
+                mUnidadProductiva.Estado_SincronizacionUpdate=false
+                mUnidadProductiva.update()
                 postEventOk(RequestEventUP.UPDATE_EVENT, getUPs(), mUnidadProductiva)
                 //postEventError(RequestEventUP.ERROR_EVENT, "Error!. La Unidad Productiva no se ha subido")
             }
         }
         //TODO sin conexion a internet, actualizacion local
         else{
-            mUnidadProductiva?.Estado_SincronizacionUpdate=false
-            mUnidadProductiva?.update()
+            mUnidadProductiva.Estado_SincronizacionUpdate=false
+            mUnidadProductiva.update()
             postEventOk(RequestEventUP.UPDATE_EVENT, getUPs(), mUnidadProductiva)
         }
     }
-
-
-
-
-
 
     override fun deleteUp(mUnidadProductiva: Unidad_Productiva,checkConection:Boolean) {
         //TODO se valida estado de sincronizacion  para eliminar
@@ -265,8 +256,6 @@ class UpRepository() : IUnidadProductiva.Repo {
                 mUnidadProductiva.delete()
                 postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
             }
-
-
             //mUnidadProductiva.delete()
             //postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
         }

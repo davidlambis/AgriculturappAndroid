@@ -172,19 +172,19 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
         }
     }
 
-    override fun registerCultivo(cultivo: Cultivo?, loteId: Long?) {
+    override fun registerCultivo(cultivo: Cultivo, loteId: Long?) {
         view?.showProgressHud()
         view?.disableInputs()
         interactor?.registerCultivo(cultivo, loteId,checkConnection())
     }
 
-    override fun updateCultivo(cultivo: Cultivo?, loteId: Long?) {
+    override fun updateCultivo(cultivo: Cultivo, loteId: Long?) {
         view?.showProgressHud()
         view?.disableInputs()
         interactor?.updateCultivo(cultivo, loteId,checkConnection())
     }
 
-    override fun deleteCultivo(cultivo: Cultivo?, loteId: Long?) {
+    override fun deleteCultivo(cultivo: Cultivo, loteId: Long?) {
         view?.showProgressHud()
         interactor?.deleteCultivo(cultivo, loteId,checkConnection())
 

@@ -72,11 +72,21 @@ android:orientation="vertical">
                 android:src="@drawable/ic_gallery" />
 
             <ImageButton
+                android:visibility="gone"
                 android:id="@+id/user_image_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"
+                android:layout_marginEnd="@dimen/margin_global"
                 android:src="@drawable/ic_cancel" />
+
+            <ImageButton
+                android:visibility="gone"
+                android:id="@+id/user_image_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:src="@drawable/ic_check_circle" />
 
         </LinearLayout>
 
@@ -221,6 +231,25 @@ android:orientation="vertical">
             app:met_primaryColor="@color/grey_luiyi"
             app:met_textColor="@color/grey_luiyi"
             app:met_textColorHint="@color/grey_luiyi" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayoutNumeroCuenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/grey_luiyi"
+            android:visibility="gone"
+            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+            <EditText
+                android:id="@+id/edtNumeroCuenta"
+                style="@style/editText"
+                android:drawableLeft="@drawable/ic_cuenta"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_cuenta"
+                android:hint="@string/edit_text_numero_cuenta"
+                android:inputType="number"
+                android:textAlignment="textStart" />
+        </android.support.design.widget.TextInputLayout>
 
 
         <ProgressBar

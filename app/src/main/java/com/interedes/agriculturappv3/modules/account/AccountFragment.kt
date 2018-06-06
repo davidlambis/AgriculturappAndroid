@@ -28,6 +28,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -43,6 +45,7 @@ import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPago_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.services.resources.MetodoPagoResources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.data.Blob
@@ -130,6 +133,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         user_take_picture_camera.setOnClickListener(this)
         user_take_picture_gallery.setOnClickListener(this)
         user_image_cancel.setOnClickListener(this)
+        user_image_check.setOnClickListener(this)
 
        userFirebaseVerificate=presenter?.verificateUserLoguedFirebaseFirebase()
         if(userFirebaseVerificate==null){
@@ -137,7 +141,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         }else{
             mCurrentUserID=userFirebaseVerificate?.uid
         }
-
 
 
         //init firebase
@@ -161,11 +164,11 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
             edtCelular.setText(userLogued?.PhoneNumber)
             edtCorreo.setText(userLogued?.Email)
 
-            if(userLogued?.blobImagen!=null){
+            if(userLogued?.blobImagenUser!=null){
                 // val bitmap = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                 // imgTipoProducto.setImageBitmap(bitmap)
                 try {
-                    val foto = userLogued?.blobImagen?.blob
+                    val foto = userLogued?.blobImagenUser?.blob
                     imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                     imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
                     user_image.setImageBitmap(imageBitmapAccountGlobal)
@@ -186,6 +189,10 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
                 if(metodoPagoGlobal!=null){
                     spinnerMetodoPago.setText(metodoPagoGlobal?.Nombre)
+                    if (metodoPagoGlobal?.Nombre.equals(MetodoPagoResources.TRANFERENCIA_BANCARIA)) {
+                        textInputLayoutNumeroCuenta?.visibility = View.VISIBLE
+                        edtNumeroCuenta?.setText(userLogued?.NumeroCuenta)
+                    }
                 }
                 if(detalleMetodoPagoGlobal!=null){
                     presenter?.setListSpinnerDetalleMetodoPago(metodoPagoGlobal?.Id)
@@ -263,7 +270,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                 cancel = true
             }
 
-
         }else if(userLogued?.RolNombre?.equals(RolResources.PRODUCTOR)!!){
 
             if (edtNombres?.text.toString().isEmpty()) {
@@ -299,6 +305,12 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
             else if (spinnerDetalleMetodoPago?.text.toString().isEmpty()) {
                 spinnerDetalleMetodoPago?.setError(getString(R.string.error_field_required))
                 focusView = spinnerDetalleMetodoPago
+                cancel = true
+            }
+
+            else if(textInputLayoutNumeroCuenta.visibility==View.VISIBLE && edtNumeroCuenta?.text.toString().isEmpty()){
+                textInputLayoutNumeroCuenta?.setError(getString(R.string.error_field_required))
+                focusView = textInputLayoutNumeroCuenta
                 cancel = true
             }
         }
@@ -353,9 +365,9 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
 
     fun errorUpdatePhotoAccount(){
-        if(userLogued?.blobImagen!=null){
+        if(userLogued?.blobImagenUser!=null){
             try {
-                val foto = userLogued?.blobImagen?.blob
+                val foto = userLogued?.blobImagenUser?.blob
                 imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                 imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
                 user_image.setImageBitmap(imageBitmapAccountGlobal)
@@ -417,6 +429,10 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         spinnerMetodoPago!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             metodoPagoGlobal = listMetodoPago!![position]
             spinnerDetalleMetodoPago?.setText("")
+
+            textInputLayoutNumeroCuenta?.visibility = View.VISIBLE
+            edtNumeroCuenta?.setText("")
+
             presenter?.setListSpinnerDetalleMetodoPago(metodoPagoGlobal?.Id)
         }
     }
@@ -428,6 +444,15 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         spinnerDetalleMetodoPago!!.setAdapter(uMedidaArrayAdapter);
         spinnerDetalleMetodoPago!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             detalleMetodoPagoGlobal = listDetalleMetodoPago!![position]
+
+
+            if (metodoPagoGlobal?.Nombre.equals(MetodoPagoResources.TRANFERENCIA_BANCARIA)) {
+                textInputLayoutNumeroCuenta?.visibility = View.VISIBLE
+                edtNumeroCuenta?.setText("")
+            } else {
+                textInputLayoutNumeroCuenta?.visibility = View.GONE
+                edtNumeroCuenta?.setText("")
+            }
         }
     }
 
@@ -447,14 +472,11 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
             R.id.user_take_picture_camera -> {
 
-
                 /*if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE), 1000)
                     return
                 }*/
-
-
 
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (!hasPermissions(activity, *PERMISSIONS)) {
@@ -473,10 +495,8 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                         //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                     }
                 }
-
             }
             R.id.user_take_picture_gallery -> {
-
 
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (!hasPermissions(activity, *PERMISSIONS)) {
@@ -496,7 +516,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     }
                 }
 
-
                 /*if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE), 1000)
@@ -504,9 +523,34 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                 }
                 choosePhotoFromGallery(this)*/
             }
+
+
             R.id.user_image_cancel -> {
                 isFoto = false
                 user_image?.setImageResource(R.drawable.ic_foto_producto_square)
+                showButtonsImageUser()
+                if(userLogued?.blobImagenUser!=null){
+                    // val bitmap = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+                    // imgTipoProducto.setImageBitmap(bitmap)
+                    try {
+                        val foto = userLogued?.blobImagenUser?.blob
+                        imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+                        imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
+                        user_image.setImageBitmap(imageBitmapAccountGlobal)
+
+                        //Picasso.with(activity).load(userPhoto).placeholder(R.drawable.ic_foto_producto_square).into(user_image)
+                    }catch (ex:Exception){
+                        var ss= ex.toString()
+                        Log.d("Convert Image", "defaultValue = " + ss);
+                    }
+                }
+
+
+            }
+
+            R.id.user_image_check->{
+                showButtonsImageUser()
+                presenter?.changeFotoUserAccount()
             }
 
             R.id.btnSaveAccount -> {
@@ -532,23 +576,31 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     }
 
     private fun saveDataUserLogued() {
-
-        userLogued=presenter?.getUserLogued()
-        var userLoguedLocal=userLogued
+        var usuario=presenter?.getUserLogued()
         if(imageAccountGlobal!=null){
+            /*
+            userLogued?.blobImagenUser = Blob(imageAccountGlobal)
             val stringBuilder = StringBuilder()
             stringBuilder.append("data:image/jpeg;base64,")
             stringBuilder.append(android.util.Base64.encodeToString(imageAccountGlobal, android.util.Base64.DEFAULT))
-            userLoguedLocal?.blobImagen = Blob(imageAccountGlobal)
-            userLoguedLocal?.Fotopefil = stringBuilder.toString()
+            userLogued?.Fotopefil = stringBuilder.toString()*/
+            user_image?.isDrawingCacheEnabled = true
+            val bitmap = user_image?.getDrawingCache()
+            val byte = convertBitmapToByte(bitmap!!)
+            usuario?.blobImagenUser = Blob(byte)
+            val stringBuilder = StringBuilder()
+            stringBuilder.append("data:image/jpeg;base64,")
+            stringBuilder.append(android.util.Base64.encodeToString(byte, android.util.Base64.DEFAULT))
+            usuario?.Fotopefil = stringBuilder.toString()
         }
 
-        userLoguedLocal?.Nombre=edtNombres.text.toString()
-        userLoguedLocal?.Apellidos=edtApellidos.text.toString()
-        userLoguedLocal?.PhoneNumber=edtCelular.text.toString()
-        userLoguedLocal?.DetalleMetodoPagoId=detalleMetodoPagoGlobal?.Id
-        userLoguedLocal?.Identificacion=edtCedula.text.toString()
-        presenter?.updateUserLogued(userLoguedLocal)
+        usuario?.Nombre=edtNombres.text.toString()
+        usuario?.Apellidos=edtApellidos.text.toString()
+        usuario?.PhoneNumber=edtCelular.text.toString()
+        usuario?.DetalleMetodoPagoId=detalleMetodoPagoGlobal?.Id
+        usuario?.Identificacion=edtCedula.text.toString()
+        usuario?.NumeroCuenta=edtNumeroCuenta.text.toString()
+        presenter?.updateUserLogued(usuario!!)
     }
     //endregion
 
@@ -560,7 +612,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         if (!mCurrentPhotoFile?.exists()!!) {
             mCurrentPhotoFile?.mkdirs();
         }
-
         destFile = File(mCurrentPhotoFile, "img_"
                 + dateFormatter?.format(Date()).toString() + ".png")
         imageCaptureUri = Uri.fromFile(destFile)
@@ -568,21 +619,10 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         val intentCamera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, imageCaptureUri)
         startActivityForResult(intentCamera, REQUEST_CAMERA)*/
-
-
-
-
-
-
-
-
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(intent, REQUEST_CAMERA)
 
        /* val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-
-
         if (intent.resolveActivity(activity?.getPackageManager()) != null) {
             // Create the File where the photo should go
             var photoFile: File? = null
@@ -656,10 +696,17 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                         ///imageBitmapAccountGlobal = MediaStore.Images.Media.getBitmap(context?.contentResolver, contentURI)
 
                         imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
-                        presenter?.changeFotoUserAccount()
+
+                        hideButtonsImageUser()
+
+                        YoYo.with(Techniques.Pulse)
+                                .repeat(5)
+                                .playOn(user_image_check)
+
+
                         //imageGlobalRutaFoto = saveImage(bitmap)
                         //Toast.makeText(context, "Image Saved!", Toast.LENGTH_SHORT).show()
-                        //user_image?.setImageBitmap(bitmap)
+                        user_image?.setImageBitmap(imageBitmapAccountGlobal)
                     } catch (e: IOException) {
                         e.printStackTrace()
                         Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show()
@@ -669,7 +716,8 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
             } else if (requestCode == REQUEST_CAMERA) {
                 if (data != null) {
 
-                 /*   val contentURI = data.data
+                    try{
+                        /*   val contentURI = data.data
                     var rutaGaleria=getRealPathFromURI(contentURI)
                     var file=getFileRuta(rutaGaleria)
                     val compressedImage = Compressor(activity)
@@ -678,27 +726,56 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                             .compressToBitmap(file)*/
 
 
-                    //isFoto = true
-                    ////imageBitmapAccountGlobal = compressedImage
-                    imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
+                        //isFoto = true
+                        ////imageBitmapAccountGlobal = compressedImage
+                        imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
+                        Toast.makeText(context, imageCaptureUri.toString(), Toast.LENGTH_SHORT).show()
+
+                        //imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
+                        /* val compressedImage = Compressor(activity)
+                                 .setMaxHeight(400)
+                                 .setQuality(100)
+                                 .compressToBitmap(mCurrentPhotoFile)
+                         imageBitmapAccountGlobal=compressedImage*/
+                        imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
+                        //user_image?.setImageBitmap(imageBitmapAccountGlobal)
+
+                        hideButtonsImageUser()
+
+                        YoYo.with(Techniques.Pulse)
+                                .repeat(5)
+                                .playOn(user_image_check)
 
 
-                    Toast.makeText(context, imageCaptureUri.toString(), Toast.LENGTH_SHORT).show()
+                        user_image?.setImageBitmap(imageBitmapAccountGlobal)
+                        //imageGlobalRutaFoto = saveImage(thumbnail)
+                        // Toast.makeText(context, thumbnail.toString(), Toast.LENGTH_SHORT).show()
 
-                    //imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
-                   /* val compressedImage = Compressor(activity)
-                            .setMaxHeight(400)
-                            .setQuality(100)
-                            .compressToBitmap(mCurrentPhotoFile)
-                    imageBitmapAccountGlobal=compressedImage*/
-                    imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
-                    //user_image?.setImageBitmap(imageBitmapAccountGlobal)
-                    presenter?.changeFotoUserAccount()
-                    //imageGlobalRutaFoto = saveImage(thumbnail)
-                    // Toast.makeText(context, thumbnail.toString(), Toast.LENGTH_SHORT).show()
+
+                    } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show()
+                    }
+
                 }
             }
         }
+    }
+
+
+    private fun showButtonsImageUser(){
+        user_image_check.visibility=View.GONE
+        user_image_cancel.visibility=View.GONE
+        user_take_picture_camera.visibility=View.VISIBLE
+        user_take_picture_gallery.visibility=View.VISIBLE
+
+    }
+
+    private fun hideButtonsImageUser(){
+        user_image_check.visibility=View.VISIBLE
+        user_image_cancel.visibility=View.VISIBLE
+        user_take_picture_camera.visibility=View.GONE
+        user_take_picture_gallery.visibility=View.GONE
     }
 
     private fun getFileRuta(path: String): File? {

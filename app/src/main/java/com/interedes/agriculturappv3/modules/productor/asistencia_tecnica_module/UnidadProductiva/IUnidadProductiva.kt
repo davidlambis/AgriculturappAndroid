@@ -80,8 +80,8 @@ interface IUnidadProductiva {
         fun validarCampos(): Boolean
 
         fun registerUP(unidadProductivaModel: Unidad_Productiva?)
-        fun updateUP(unidadProductivaModel: Unidad_Productiva?)
-        fun deleteUP(unidadProductivaModel: Unidad_Productiva?)
+        fun updateUP(unidadProductivaModel: Unidad_Productiva)
+        fun deleteUP(unidadProductivaModel: Unidad_Productiva)
         fun getUps()
 
 
@@ -104,8 +104,8 @@ interface IUnidadProductiva {
 
     interface Interactor {
         fun registerUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean)
-        fun updateUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean)
-        fun deleteUP(unidadProductivaModel: Unidad_Productiva?,checkConection:Boolean)
+        fun updateUP(unidadProductivaModel: Unidad_Productiva,checkConection:Boolean)
+        fun deleteUP(unidadProductivaModel: Unidad_Productiva,checkConection:Boolean)
         fun execute()
         fun getListas()
     }
@@ -118,7 +118,7 @@ interface IUnidadProductiva {
         fun getUPs(): List<Unidad_Productiva>
         fun saveUpLocal(mUnidadProductiva: Unidad_Productiva)
         fun saveUp(mUnidadProductiva: Unidad_Productiva,checkConection:Boolean)
-        fun updateUp(mUnidadProductiva: Unidad_Productiva?,checkConection:Boolean)
+        fun updateUp(mUnidadProductiva: Unidad_Productiva,checkConection:Boolean)
         fun deleteUp(mUnidadProductiva: Unidad_Productiva,checkConection:Boolean)
         fun getLastUserLogued(): Usuario?
         fun getLastUp(): Unidad_Productiva?

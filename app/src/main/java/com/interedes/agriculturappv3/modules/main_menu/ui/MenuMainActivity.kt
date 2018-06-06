@@ -216,7 +216,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         var usuarioLogued=getLastUserLogued()
 
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
-            placeType=PlaceType.CIRCLE_4_1
+
+            placeType=PlaceType.HAM_4_1
+            //placeType=PlaceType.CIRCLE_4_1
              drawablesResource = MenuBoomResources.drawablesResourceProductor
             circleSubButtonDrawables = arrayOfNulls<Drawable>(4)
             for (i in 0..3)
@@ -229,7 +231,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             }
 
         } else if (usuarioLogued?.RolNombre.equals(RolResources.COMPRADOR)) {
-            placeType=PlaceType.CIRCLE_1_1
+            //placeType=PlaceType.CIRCLE_1_1
+            placeType=PlaceType.HAM_1_1
             circleSubButtonDrawables = arrayOfNulls<Drawable>(1)
             drawablesResource = MenuBoomResources.drawablesResourceComprador
             for (i in 0..0)
@@ -269,8 +272,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     //.addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_action_backup), subButtonColors[1], "1")
                     ///.addSubButton(ContextCompat.getDrawable(this, R.drawable.ic_icon_database_backup), subButtonColors[2], "2")
                     .subButtons(circleSubButtonDrawables, subButtonColors, circleSubButtonTexts)
-                    .button(ButtonType.CIRCLE)
-                    .boom(BoomType.PARABOLA)
+                    .button(ButtonType.HAM)
+                    .boom(getBoomType())
                     .place(placeType)
                     .subButtonTextColor(ContextCompat.getColor(this, R.color.black))
                     .subButtonsShadow(Util.getInstance().dp2px(2F), Util.getInstance().dp2px(2F))
@@ -337,6 +340,23 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         }, 1)
 
 
+    }
+
+    private fun getBoomType(): BoomType {
+        var random= Random().nextInt(5);  // [0...4] [min = 0, max = 4] Equivalente a BoomType.HORIZONTAL_THROW_2
+
+        if (random==0) {
+            return BoomType.LINE
+        } else if (random==1) {
+            return BoomType.PARABOLA
+        } else if (random==2) {
+            return BoomType.HORIZONTAL_THROW
+        } else if (random==3) {
+            return BoomType.PARABOLA_2
+        } else if (random==4) {
+            return BoomType.HORIZONTAL_THROW_2
+        }
+        return BoomType.PARABOLA
     }
 
     //region IMPORTING AND EXPORTEING DB
@@ -520,11 +540,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         headerViewHolder.tvNombreUsuario.setText(String.format(getString(R.string.nombre_usuario_nav), usuario_logued?.Nombre, usuario_logued?.Apellidos))
         headerViewHolder.tvIdentificacion.setText(usuario_logued?.Email)
 
-        if(usuario_logued?.blobImagen!=null){
+        if(usuario_logued?.blobImagenUser!=null){
             // val bitmap = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
             // imgTipoProducto.setImageBitmap(bitmap)
             try {
-                val foto = usuario_logued?.blobImagen?.blob
+                val foto = usuario_logued?.blobImagenUser?.blob
                 var imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                 headerViewHolder.circleImageView.setImageBitmap(imageBitmapAccountGlobal)
             }catch (ex:Exception){
@@ -613,8 +633,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             else -> return super.onOptionsItemSelected(item)
         }
     }
-
-
     /*
     override fun showAlertTypeChat(): AlertDialog? {
         var builder = AlertDialog.Builder(this)
@@ -746,7 +764,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 replaceFragment(AccountFragment())
             }
 
-
             R.id.itemCerrarSesion -> {
                 showExit()
             }
@@ -755,23 +772,18 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 drawer_layout.closeDrawer(GravityCompat.START)
                 showAlertDialogSyncDataConfirm()
             }
-
-
         }
     }
 
     override fun onBackPressed() {
-
         val count = supportFragmentManager.backStackEntryCount
         if (count == 1) {
             super.onBackPressed()
-
             if (getLastUserLogued()?.RolNombre.equals(RolResources.PRODUCTOR)) {
                 replaceCleanFragment(MainMenuFragment())
             } else if (getLastUserLogued()?.RolNombre.equals(RolResources.COMPRADOR)) {
                 replaceCleanFragment(ProductosCompradorFragment())
             }
-
         } else {
             supportFragmentManager.popBackStack()
         }
@@ -990,7 +1002,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     }
 
-
     override fun onMessageOk(colorPrimary: Int, message: String?) {
         val color = Color.WHITE
         val snackbar = Snackbar
@@ -1007,10 +1018,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onMessageError(colorPrimary: Int, message: String?) {
         onMessageOk(colorPrimary, message)
     }
-
-
-
-
     //endregion
 
     //region OVERRIDES METHODS
@@ -1053,7 +1060,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     }else{
                         return
                     }
-                }
+                }else{
+
+                     return
+                 }
             }
         }
     }

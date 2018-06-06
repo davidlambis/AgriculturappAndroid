@@ -75,9 +75,9 @@ class Listas {
             val lista_comercial_productor = ArrayList<ItemLista>()
             lista_comercial_productor.add(ItemLista("Mis Productos", Imagen = R.drawable.ic_productos_blue, Identificador = "mis_productos"))
             lista_comercial_productor.add(ItemLista("Ofertas", Imagen = R.drawable.ic_ofertas, Identificador = "ofertas"))
-            lista_comercial_productor.add(ItemLista("Ventas Realizadas", Imagen = R.drawable.ic_ventas, Identificador = "ventas_realizadas"))
-            lista_comercial_productor.add(ItemLista("Clientes", Imagen = R.drawable.ic_clientes_azul, Identificador = "clientes"))
-            lista_comercial_productor.add(ItemLista("Preguntas", Imagen = R.drawable.ic_preguntas_frecuentas_azul, Identificador = "preguntas"))
+            //lista_comercial_productor.add(ItemLista("Ventas Realizadas", Imagen = R.drawable.ic_ventas, Identificador = "ventas_realizadas"))
+           // lista_comercial_productor.add(ItemLista("Clientes", Imagen = R.drawable.ic_clientes_azul, Identificador = "clientes"))
+           // lista_comercial_productor.add(ItemLista("Preguntas", Imagen = R.drawable.ic_preguntas_frecuentas_azul, Identificador = "preguntas"))
             return lista_comercial_productor
         }
 

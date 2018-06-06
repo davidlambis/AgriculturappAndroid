@@ -189,18 +189,16 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
         IUpInteractor?.registerUP(unidadProductivaModel,checkConnection())
     }
 
-    override fun updateUP(unidadProductivaModel: Unidad_Productiva?) {
+    override fun updateUP(unidadProductivaModel: Unidad_Productiva) {
 
         IUpView?.showProgress()
         IUpInteractor?.updateUP(unidadProductivaModel,checkConnection())
 
     }
 
-    override fun deleteUP(unidadProductivaModel: Unidad_Productiva?) {
-
+    override fun deleteUP(unidadProductivaModel: Unidad_Productiva) {
         IUpView?.showProgress()
         IUpInteractor?.deleteUP(unidadProductivaModel,checkConnection())
-
 
         /*
         if(unidadProductivaModel?.Estado_Sincronizacion==true){

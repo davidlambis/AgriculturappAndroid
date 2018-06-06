@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.modules.account
 
+import android.util.Base64
 import android.util.Log
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -25,6 +26,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.HashMap
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table.Nombre_Departamento
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table.Nombre_Ciudad
+
+import com.interedes.agriculturappv3.modules.models.ventas.Tercero_Table.Apellido
+import com.raizlabs.android.dbflow.data.Blob
+
 
 class AccountRepository:IMainViewAccount.Repository {
 
@@ -66,7 +73,7 @@ class AccountRepository:IMainViewAccount.Repository {
             if(verificateUserLoguedFirebaseFirebase()!=null){
                 postEvent(RequestEventAccount.UPDATE_FOTO_ACCOUNT_EVENT, null,null,null)
             }else{
-                loginFirebase(usuarioLogued,true)
+                loginFirebase(usuarioLogued!!,true)
             }
         }else{
             postEventError(RequestEventAccount.ERROR_VERIFICATE_CONECTION,null)
@@ -74,7 +81,7 @@ class AccountRepository:IMainViewAccount.Repository {
     }
 
 
-    override fun loginFirebase(usuario:Usuario?,isUpdatePhotoAccount:Boolean)
+    override fun loginFirebase(usuario:Usuario,isUpdatePhotoAccount:Boolean)
     {
         mAuth?.signInWithEmailAndPassword(usuario?.Email!!, usuario?.Contrasena!!)?.addOnCompleteListener({ task ->
             if (task.isSuccessful) {
@@ -99,45 +106,35 @@ class AccountRepository:IMainViewAccount.Repository {
     }
 
 
-    fun updateUserRemote(usuario: Usuario?){
+    fun updateUserRemote(usuario: Usuario){
+
         val postUsuario = PostUsuario(usuario?.Id,
-                usuario?.Apellidos,
-                usuario?.Nombre,
-                usuario?.DetalleMetodoPagoId,
-                usuario?.Email,
-                usuario?.EmailConfirmed,
-                usuario?.Estado,
-                usuario?.FechaRegistro,
-                usuario?.Fotopefil,
-                usuario?.Identificacion,
-                usuario?.Nro_movil,
-                usuario?.NumeroCuenta,
-                usuario?.PhoneNumber,
-                usuario?.PhoneNumberConfirmed,
-                usuario?.RolId,
-                usuario?.UserName)
-        val call = apiService?.updateUsuario(postUsuario, usuario?.Id!!)
+                usuario.Apellidos,
+                usuario.Nombre,
+                usuario.DetalleMetodoPagoId,
+                usuario.Email,
+                usuario.EmailConfirmed,
+                usuario.Estado,
+                usuario.FechaRegistro,
+                usuario.Fotopefil,
+                usuario.Identificacion,
+                usuario.Nro_movil,
+                usuario.NumeroCuenta,
+                usuario.PhoneNumber,
+                usuario.PhoneNumberConfirmed,
+                usuario.RolId,
+                usuario.UserName)
+
+        val call = apiService?.updateUsuario(postUsuario, usuario.Id!!)
         call?.enqueue(object : Callback<PostUsuario> {
             override fun onResponse(call: Call<PostUsuario>?, response: Response<PostUsuario>?) {
                 if (response != null && response.code() == 200) {
                     //usuario?.Estado_SincronizacionUpdate=true
-
-                    var userResponse:PostUsuario? = response.body()
-
-                    var lasLogued:Usuario?= getUserLogued()
-                    lasLogued?.Estado_SincronizacionUpdate=true
-                    lasLogued?.Nombre=userResponse?.Nombre
-                    lasLogued?.Apellidos=userResponse?.Apellidos
-                    lasLogued?.Identificacion=userResponse?.Identificacion
-                    lasLogued?.blobImagen=usuario?.blobImagen
-                    lasLogued?.save()
-
-
-                    //usuario?.save()
-
-                    var lisLogued= SQLite.select().from(Usuario::class.java).queryList()
-                    updateUserFirebase(usuario?.Nombre,usuario?.Apellidos,usuario?.Identificacion,usuario?.PhoneNumber)
-                    postEventOk(RequestEventAccount.UPDATE_EVENT,null,null)
+                   var userResponse:PostUsuario? = response.body()
+                    usuario.Estado_SincronizacionUpdate=true
+                    usuario.save()
+                    updateUserFirebase(usuario.Nombre,usuario.Apellidos,usuario.Identificacion,usuario.PhoneNumber)
+                    postEventOk(RequestEventAccount.UPDATE_EVENT,null,usuario)
                 } else {
                     postEventError(RequestEventAccount.ERROR_EVENT, "Comprueba tu conexión")
                 }
@@ -149,11 +146,11 @@ class AccountRepository:IMainViewAccount.Repository {
 
     }
 
-    override fun updateUserLogued(usuario:Usuario?,checkConection:Boolean)
+    override fun updateUserLogued(usuario:Usuario,checkConection:Boolean)
     {
         //ACCOUNT COMPRADOR
         /*------------------------------------------------------------------------------------------------------------*/
-        if(usuario?.RolNombre.equals(RolResources.COMPRADOR)){
+        if(usuario.RolNombre.equals(RolResources.COMPRADOR)){
             if(checkConection){
                 if(verificateUserLoguedFirebaseFirebase()!=null){
                     updateUserRemote(usuario)
@@ -176,8 +173,8 @@ class AccountRepository:IMainViewAccount.Repository {
                     loginFirebase(usuario,false)
                 }
             }else{
-                usuario?.Estado_SincronizacionUpdate=false
-                usuario?.update()
+                usuario.Estado_SincronizacionUpdate=false
+                usuario.update()
                 postEventOk(RequestEventAccount.UPDATE_EVENT,null,null)
             }
         }

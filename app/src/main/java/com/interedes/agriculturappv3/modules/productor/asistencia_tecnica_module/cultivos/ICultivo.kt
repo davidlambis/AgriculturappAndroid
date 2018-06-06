@@ -90,9 +90,9 @@ interface ICultivo {
         fun validarListasFilterLote(): Boolean
 
         //Methods Repository
-        fun registerCultivo(cultivo: Cultivo?, loteId: Long?)
-        fun updateCultivo(cultivo: Cultivo?, loteId: Long?)
-        fun deleteCultivo(cultivo: Cultivo?, loteId: Long?)
+        fun registerCultivo(cultivo: Cultivo, loteId: Long?)
+        fun updateCultivo(cultivo: Cultivo, loteId: Long?)
+        fun deleteCultivo(cultivo: Cultivo, loteId: Long?)
         fun getListas()
         fun getListCultivos(lote_id: Long?)
 
@@ -111,9 +111,9 @@ interface ICultivo {
     }
 
     interface Interactor {
-        fun registerCultivo(cultivo: Cultivo?, loteId: Long?,checkConection:Boolean)
-        fun updateCultivo(cultivo: Cultivo?, loteId: Long?,checkConection:Boolean)
-        fun deleteCultivo(cultivo: Cultivo?, loteId: Long?,checkConection:Boolean)
+        fun registerCultivo(cultivo: Cultivo, loteId: Long?,checkConection:Boolean)
+        fun updateCultivo(cultivo: Cultivo, loteId: Long?,checkConection:Boolean)
+        fun deleteCultivo(cultivo: Cultivo, loteId: Long?,checkConection:Boolean)
         fun getListas()
         fun execute(lote_id: Long?)
         fun getLote(loteId: Long?)
