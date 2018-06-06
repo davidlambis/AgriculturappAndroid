@@ -865,7 +865,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             val coordenadas =lote.Localizacion
             if(coordenadas!=null || coordenadas!=""){
                 val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
-                if(isParceableDouble( separated!![0].toString())==true && isParceableDouble( separated!![1].toString())){
+                if(isParceableDouble( separated!![0].toString())==true && isParceableDouble( separated!![1].toString())==true){
 
                     var latitudL= separated!![0].toDoubleOrNull() // this will contain "Fruit"
                     var longitudL=separated!![1].toDoubleOrNull() // this will contain " they taste good"
@@ -874,11 +874,11 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                     lote.Coordenadas=coordenadas
 
                     latitud=latitudL
-                    latitud=longitudL
+                    longitud=longitudL
 
                 }else{
                     latitud=0.0
-                    latitud=0.0
+                    longitud=0.0
 
                 }
             }

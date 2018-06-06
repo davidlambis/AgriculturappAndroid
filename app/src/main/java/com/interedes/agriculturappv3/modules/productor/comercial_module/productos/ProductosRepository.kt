@@ -76,7 +76,10 @@ class ProductosRepository : IProductos.Repository {
     override fun getProductos(cultivo_id: Long?): List<Producto> {
         var listResponse: List<Producto>? = null
         if (cultivo_id == null) {
-            listResponse = SQLite.select().from(Producto::class.java).queryList()
+            var usuarioLogued= getLastUserLogued()
+            listResponse = SQLite.select().from(Producto::class.java)
+                    .where(Producto_Table.UsuarioId.eq(usuarioLogued?.Id))
+                    .queryList()
         } else {
             listResponse = SQLite.select().from(Producto::class.java).where(Producto_Table.cultivoId.eq(cultivo_id)).queryList()
         }

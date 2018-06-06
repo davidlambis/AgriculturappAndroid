@@ -126,7 +126,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private val Directori_Backup_DataBase = "BackupDatatake"
     private val Directori_Restore_DataBase = "RestoreDatatake"
 
-    private val READ_REQUEST_CODE = 42
+    private val READ_REQUEST_CODE_BACKUP = 10
 
 
     private var IS_IMPORT = false
@@ -291,14 +291,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                                 } else {
                                     val response = doPermissionGrantedStuffs()
                                     if (response) {
-                                        startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+                                        startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE_BACKUP)
                                     }
 
                                 }
                             } else {
                                 val response = doPermissionGrantedStuffs()
                                 if (response) {
-                                    startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+                                    startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE_BACKUP)
                                 }
                             }
 
@@ -356,7 +356,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         // To search for all documents available via installed storage providers,
         // it would be "*/*".
         intent.type = "*/*"
-        startActivityForResult(intent, READ_REQUEST_CODE)
+        startActivityForResult(intent, READ_REQUEST_CODE_BACKUP)
     }
 
 
@@ -1028,29 +1028,36 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-            // The ACTION_OPEN_DOCUMENT intent was sent with the request code
-            // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
-            // response to some other intent, and the code below shouldn't run at all.
-            if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-                // The document selected by the user won't be returned in the intent.
-                // Instead, a URI to that document will be contained in the return intent
-                // provided to this method as a parameter.
-                // Pull that URI using resultData.getData().
-                var uri: Uri? = null
-                if (data != null) {
+        // The ACTION_OPEN_DOCUMENT intent was sent with the request code
+        // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
+        // response to some other intent, and the code below shouldn't run at all.
+
+        if (resultCode == Activity.RESULT_CANCELED) {
+            return
+        }
+
+        if(resultCode== Activity.RESULT_OK){
+             var uri: Uri? = null
+             if (data != null) {
+
+                 if(requestCode==READ_REQUEST_CODE_BACKUP){
+
                     uri = data.data
                     //Log.i(TAG, "Uri: " + uri!!.toString())
                     val file = File(uri.path)
                     val path = file.absolutePath
-                    if (IS_EXPORT) {
+                    if (IS_EXPORT==true) {
                         exportDB(path)
-                    } else {
+                    } else if(IS_IMPORT==true) {
                         importDB(path)
+                    }else{
+                        return
                     }
-                    //  Toast.makeText(this,"Uri: "+directory,Toast.LENGTH_LONG).show();
-                    //showImage(uri);
                 }
             }
+        }
+
+
     }
 
 

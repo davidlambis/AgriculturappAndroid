@@ -129,7 +129,7 @@ class AccountRepository:IMainViewAccount.Repository {
                     lasLogued?.Nombre=userResponse?.Nombre
                     lasLogued?.Apellidos=userResponse?.Apellidos
                     lasLogued?.Identificacion=userResponse?.Identificacion
-                   // lasLogued?.blobImagen=usuario?.blobImagen
+                    lasLogued?.blobImagen=usuario?.blobImagen
                     lasLogued?.save()
 
 

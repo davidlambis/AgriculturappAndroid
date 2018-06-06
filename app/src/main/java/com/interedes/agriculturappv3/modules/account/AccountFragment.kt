@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.modules.account
 import android.Manifest
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,6 +11,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -90,7 +92,21 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     var imageBitmapAccountGlobal: Bitmap? = null
 
     private var mCurrentPhotoPath: String? = null
+
+
+
     private var mCurrentPhotoFile: File? = null
+    private var dateFormatter: SimpleDateFormat? = null
+    private var destFile: File? = null
+    private var imageCaptureUri: Uri? = null
+
+
+
+    private val PERMISSION_REQUEST_CODE = 1
+     var PERMISSION_ALL = 3
+     var PERMISSIONS = arrayOf(Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -430,20 +446,63 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
             }
 
             R.id.user_take_picture_camera -> {
-                if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+
+                /*if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE), 1000)
                     return
+                }*/
+
+
+
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (!hasPermissions(activity, *PERMISSIONS)) {
+                        requestPermission()
+                    } else {
+                        val response = doPermissionGrantedStuffs()
+                        if (response) {
+                            takePictureWithCamera(this)
+                            //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+                        }
+                    }
+                } else {
+                    val response = doPermissionGrantedStuffs()
+                    if (response) {
+                        takePictureWithCamera(this)
+                        //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+                    }
                 }
-                takePictureWithCamera(this)
+
             }
             R.id.user_take_picture_gallery -> {
-                if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (!hasPermissions(activity, *PERMISSIONS)) {
+                        requestPermission()
+                    } else {
+                        val response = doPermissionGrantedStuffs()
+                        if (response) {
+                            choosePhotoFromGallery(this)
+                            //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+                        }
+                    }
+                } else {
+                    val response = doPermissionGrantedStuffs()
+                    if (response) {
+                        choosePhotoFromGallery(this)
+                        //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+                    }
+                }
+
+
+                /*if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE), 1000)
                     return
                 }
-                choosePhotoFromGallery(this)
+                choosePhotoFromGallery(this)*/
             }
             R.id.user_image_cancel -> {
                 isFoto = false
@@ -496,6 +555,26 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     //region METHODS CAMERA
      fun takePictureWithCamera(fragment: AccountFragment) {
         //EasyImage.openCamera(fragment, 0)
+
+       /* mCurrentPhotoFile =  File(Environment.getExternalStorageDirectory().path+"/" + IMAGE_DIRECTORY);
+        if (!mCurrentPhotoFile?.exists()!!) {
+            mCurrentPhotoFile?.mkdirs();
+        }
+
+        destFile = File(mCurrentPhotoFile, "img_"
+                + dateFormatter?.format(Date()).toString() + ".png")
+        imageCaptureUri = Uri.fromFile(destFile)
+
+        val intentCamera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, imageCaptureUri)
+        startActivityForResult(intentCamera, REQUEST_CAMERA)*/
+
+
+
+
+
+
+
 
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(intent, REQUEST_CAMERA)
@@ -590,18 +669,22 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
             } else if (requestCode == REQUEST_CAMERA) {
                 if (data != null) {
 
-                    val contentURI = data.data
+                 /*   val contentURI = data.data
                     var rutaGaleria=getRealPathFromURI(contentURI)
                     var file=getFileRuta(rutaGaleria)
                     val compressedImage = Compressor(activity)
                             .setMaxHeight(400)
                             .setQuality(100)
-                            .compressToBitmap(file)
+                            .compressToBitmap(file)*/
 
 
-                    isFoto = true
-                    imageBitmapAccountGlobal = compressedImage
-                    ///imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
+                    //isFoto = true
+                    ////imageBitmapAccountGlobal = compressedImage
+                    imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
+
+
+                    Toast.makeText(context, imageCaptureUri.toString(), Toast.LENGTH_SHORT).show()
+
                     //imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
                    /* val compressedImage = Compressor(activity)
                             .setMaxHeight(400)
@@ -609,7 +692,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                             .compressToBitmap(mCurrentPhotoFile)
                     imageBitmapAccountGlobal=compressedImage*/
                     imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
-                    //user_image?.setImageBitmap(thumbnail)
+                    //user_image?.setImageBitmap(imageBitmapAccountGlobal)
                     presenter?.changeFotoUserAccount()
                     //imageGlobalRutaFoto = saveImage(thumbnail)
                     // Toast.makeText(context, thumbnail.toString(), Toast.LENGTH_SHORT).show()
@@ -742,6 +825,67 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     override fun onResume() {
         presenter?.onResume(activity!!.applicationContext)
         super.onResume()
+    }
+
+    //endregion
+
+
+    //region PERMISSIONS
+
+    fun hasPermissions(context: Context?, vararg permissions: String): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (permission in permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun requestPermission() {
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        ActivityCompat.requestPermissions(activity!!, PERMISSIONS, PERMISSION_ALL)
+    }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_CODE -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                doPermissionGrantedStuffs()
+            } else {
+                Toast.makeText(activity,
+                        "Permiso denegado", Toast.LENGTH_LONG).show()
+
+            }/* else if ((Build.VERSION.SDK_INT >= 23 && !shouldShowRequestPermissionRationale(permissions[0])) ||
+                        (Build.VERSION.SDK_INT >= 23 && !shouldShowRequestPermissionRationale(permissions[1]))) {
+                    //Toast.makeText(MainActivity.this, "Go to Settings and Grant the permission to use this feature.", Toast.LENGTH_SHORT).show();
+                    // User selected the Never Ask Again Option
+                    Intent i = new Intent();
+                    i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    i.addCategory(Intent.CATEGORY_DEFAULT);
+                    i.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    getApplicationContext().startActivity(i);
+
+                } */
+        }
+    }
+
+
+    fun doPermissionGrantedStuffs(): Boolean {
+        /// String SIMSerialNumber=tm.getSimSerialNumber();
+        for (permission in PERMISSIONS) {
+            if (ActivityCompat.checkSelfPermission(activity!!, permission) != PackageManager.PERMISSION_GRANTED) {
+                val response = false
+                return response
+            }
+        }
+        val response = true
+        return response
     }
 
     //endregion
