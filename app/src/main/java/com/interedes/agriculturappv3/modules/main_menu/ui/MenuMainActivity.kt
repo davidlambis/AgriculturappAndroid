@@ -1056,8 +1056,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 }
             }
         }
-
-
     }
 
 
