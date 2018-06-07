@@ -1058,11 +1058,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     } else if(IS_IMPORT==true) {
                         importDB(path)
                     }else{
-                        return
+                        //return
                     }
                 }else{
 
-                     return
+                     //return
                  }
             }
         }

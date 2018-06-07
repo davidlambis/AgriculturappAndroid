@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.location.LocationManager
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
@@ -14,19 +15,26 @@ import com.interedes.agriculturappv3.modules.models.departments.Ciudad
 import com.interedes.agriculturappv3.modules.models.departments.Departamento
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
+import com.interedes.agriculturappv3.services.coords.CoordsServicePrueba
+import com.interedes.agriculturappv3.services.coords.HelloSeervice
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 import java.util.ArrayList
+import com.google.android.gms.cast.CastRemoteDisplayLocalService.startService
+
+
 
 class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Presenter {
 
 
-    var coordsService: CoordsServiceKotlin? = null
     var IUpInteractor: IUnidadProductiva.Interactor? = null
     var eventBus: EventBus? = null
     var listDepartamentoGlobal: List<Departamento>? = ArrayList<Departamento>()
     var listMunicipiosGlobal: List<Ciudad>? = ArrayList<Ciudad>()
     private var serviceCoordsIsRunning:Boolean?=false;
+
+
+    var locationManager: LocationManager? = null
 
     init {
         IUpInteractor = UpInteractor()
@@ -70,12 +78,6 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
     //endregion
 
     //region Coords Service
-    override fun startGps(activity: Activity) {
-        coordsService = CoordsServiceKotlin(activity)
-        if (CoordsServiceKotlin.instance!!.isLocationEnabled()) {
-            IUpView?.showProgressHudCoords()
-        }
-    }
 
     override fun getStatusServiceCoords(): Boolean? {
        return serviceCoordsIsRunning
@@ -85,12 +87,42 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
         serviceCoordsIsRunning=status
     }
 
-    override fun closeServiceGps() {
-        if (coordsService != null) {
+    override fun closeServiceGps(activity: Activity) {
+        var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+        activity!!.stopService(intent)
+       // IUpView?.showProgressHudCoords()
+       /*  if (coordsService != null) {
             //CoordsService.instance?.closeService()
-            CoordsServiceKotlin.instance?.closeService()
+            var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+            activity!!.stopService(intent)
+
+           // CoordsServiceKotlin.instance?.closeService()
             //coordsService!!.closeService()
+        }*/
+    }
+
+    override fun startGps(activity: Activity) {
+        locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (!isLocationEnabled()) {
+            IUpView?.showGpsDisabledDialog()
+        }else{
+            IUpView?.showProgressHudCoords()
+            startLocationGps(activity)
         }
+        // IUpView?.showProgressHudCoords()
+        /*coordsService = CoordsServiceKotlin(activity)
+        if (CoordsServiceKotlin.instance!!.isLocationEnabled()) {
+            IUpView?.showProgressHudCoords()
+        }*/
+    }
+    override  fun isLocationEnabled(): Boolean {
+        return locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+    fun startLocationGps(activity: Activity) {
+        setStatusServiceCoords(true)
+        var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+        activity!!.startService(intent)
     }
     //endregion
 
@@ -102,7 +134,8 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
             }
             RequestEventUP.SAVE_EVENT -> {
                 IUpView?.setListUps(requestEvent.mutableList as List<Unidad_Productiva>)
-                closeServiceGps()
+                IUpView?.closeServiceGps()
+                //closeServiceGps()
                 onUPsaveOk()
             }
             RequestEventUP.UPDATE_EVENT -> {
@@ -122,6 +155,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
                 IUpView?.requestResponseOK()
             }
             RequestEventUP.ADD_POLIGON_EVENT -> {
+
                 IUpView?.requestResponseOK()
             }
 

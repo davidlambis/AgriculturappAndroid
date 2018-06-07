@@ -2,14 +2,21 @@ package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_modul
 
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.location.Location
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
@@ -43,10 +50,12 @@ import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Pro
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.adapter.LoteAdapter
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
+import com.interedes.agriculturappv3.services.resources.RequestAccessPhoneResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
+import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_form_lote.view.*
 import kotlinx.android.synthetic.main.fragment_lote.*
 import java.util.ArrayList
@@ -113,6 +122,11 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
 
     var INI_TASK_HANDLER: Boolean? = false
+
+    //PERMISOS
+    private val PERMISSION_REQUEST_CODE = 1
+    internal var PERMISSION_ALL = 1
+    internal var PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
     companion object {
         var instance: Lote_Fragment? = null
@@ -273,6 +287,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
     //region MAPA
     //On Map Reding
+   // @SuppressLint("MissingPermission")
     override fun onMapReady(map: GoogleMap?) {
         mMap = map
         mMap?.setOnMarkerDragListener(this);
@@ -280,24 +295,21 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         /// mMap.addMarker(new MarkerOptions().position(positionInitial).title("Ecuador"));
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(positionInitial, 6f))
 
-        if (ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
-        } else {
-            mMap?.setMyLocationEnabled(true)
-            mMap?.getUiSettings()?.isZoomControlsEnabled = true
-            mMap?.getUiSettings()?.isZoomGesturesEnabled = true
-            mMap?.setOnMapClickListener(this)
-            mMap?.setOnMyLocationButtonClickListener(this);
+
+
+        //mMap?.setMyLocationEnabled(true)
+        mMap?.getUiSettings()?.isZoomControlsEnabled = true
+        mMap?.getUiSettings()?.isZoomGesturesEnabled = true
+        mMap?.setOnMapClickListener(this)
+        mMap?.setOnMyLocationButtonClickListener(this);
             // Setting a click event handler for the map
-            mMap?.setOnMapLoadedCallback(GoogleMap.OnMapLoadedCallback {
-                LOADED_MAPA = true
-                hideElementsAndSetPropertiesOnConectionInternet()
-            })
+        mMap?.setOnMapLoadedCallback(GoogleMap.OnMapLoadedCallback {
+            LOADED_MAPA = true
+            hideElementsAndSetPropertiesOnConectionInternet()
+        })
 
             animateLocationMap(lotesList!!)
 
-
-        }
     }
 
     override fun onMyLocationButtonClick(): Boolean {
@@ -625,6 +637,9 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
 
     override fun setPropertiesTypeLocationGps() {
+        //var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+        //activity!!.startService(intent)
+        presenter?.startGps(activity!!)
         UBICATION_GPS = true
         UBICATION_MANUAL = false
         UBICATION_MAPA=false
@@ -637,28 +652,32 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         txtCoordsLote.setText("")
     }
 
-
+    fun setPropertiesDisabledGps() {
+        //var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+        //activity!!.startService(intent)
+        //UBICATION_GPS = false
+        if (markerLocation != null) markerLocation?.remove()
+        LastMarkerDrawingLote = null
+        txtCoordsLote.setText("")
+    }
 
     override fun setPropertiesTypeLocationManual() {
-        var intent =  Intent(activity, CoordsServiceKotlin::class.java);
-        activity!!.stopService(intent)
-        presenter?.closeServiceGps()
+        //var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+        //activity!!.stopService(intent)
+        presenter?.closeServiceGps(activity!!)
         UBICATION_GPS = false
         UBICATION_MANUAL = true
         UBICATION_MAPA=false
-        if (LastMarkerDrawingLote != null) {
-            LastMarkerDrawingLote?.remove()
-        }
-        if (LastMarkerDrawingLote != null) LastMarkerDrawingLote?.remove()
+        if (markerLocation != null) markerLocation?.remove()
         LastMarkerDrawingLote = null
         _dialogTypeLocation?.dismiss()
         txtCoordsLote.setText("")
     }
 
     override fun setPropertiesTypeLocationMapa() {
-        var intent =  Intent(activity, CoordsServiceKotlin::class.java);
-        activity!!.stopService(intent)
-        presenter?.closeServiceGps()
+        //var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+        //activity!!.stopService(intent)
+        presenter?.closeServiceGps(activity!!)
         if (markerLocation != null) markerLocation?.remove()
         UBICATION_GPS = false
         UBICATION_MANUAL = false
@@ -702,6 +721,18 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
     override fun onMessageError(colorPrimary: Int, message: String?) {
         onMessageOk(colorPrimary, message)
+    }
+
+    override fun onMessageDisabledGps(){
+        val inflater = this.layoutInflater
+        var viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        viewToast.txtMessageToastCustom.setText(getString(R.string.disabledGPS))
+        viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(activity!!.applicationContext, R.color.red_900))
+        var mytoast =  Toast(activity);
+        mytoast.setView(viewToast);
+        mytoast.setDuration(Toast.LENGTH_LONG);
+        mytoast.show();
+        ///onMessageError(R.color.red_900, getString(R.string.disabledGPS))
     }
 
     override fun setListUP(listUnidadProductiva: List<Unidad_Productiva>) {
@@ -801,8 +832,6 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         val coordsLote = viewDialog?.coordenadas_lote
         val btnClosetDialogLote = viewDialog?.ivClosetDialogLote
 
-
-
         setListUPAdapterSpinner()
         setListUnidadMedidaAdapterSpinner()
         btnClosetDialogLote?.setOnClickListener(this)
@@ -815,8 +844,6 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
             if (UBICATION_MAPA == true) {
                 if (LastMarkerDrawingLote != null) {
-
-
 
                     locationLote.latitude = LastMarkerDrawingLote!!.getPosition().latitude
                     locationLote.longitude = LastMarkerDrawingLote!!.getPosition().longitude
@@ -866,7 +893,6 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 viewDialog?.area_lote?.setText(lote.Area.toString())
             }
 
-
             val coordenadas =lote.Localizacion
             if(coordenadas!=null || coordenadas!=""){
                 val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
@@ -888,10 +914,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 }
             }
 
-
             viewDialog?.edtLatitud?.setText(latitud.toString())
             viewDialog?.edtLongitud?.setText(longitud.toString())
-
             //viewDialog?.spinnerUnidadProductiva?.visibility = View.GONE
         }
 
@@ -1001,6 +1025,24 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
     }
 
+    override fun showGpsDisabledDialog(): Dialog {
+        // Use the Builder class for convenient dialog construction
+        val builder = android.app.AlertDialog.Builder(activity)
+        builder.setMessage(R.string.please_enable_gps)
+                .setPositiveButton(R.string.confirm) { dialog, id ->
+                    val settingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    startActivityForResult(settingsIntent, RequestAccessPhoneResources.ENABLED_REQUEST_GPS)
+                    // showProgressHudCoords()
+                }
+        builder.setTitle(R.string.gps_disabled)
+        builder.setIcon(R.drawable.logo_agr_app)
+        // Create the AlertDialog object and return it
+        return builder.show()
+    }
+
+    override fun closeServiceGps(){
+        presenter?.closeServiceGps(activity!!)
+    }
 
     private fun isParceableDouble(cadena: String): Boolean {
         try {
@@ -1032,19 +1074,31 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             //Position State Location GPS
                 0 -> {
                     _dialogTypeLocation = dialog as AlertDialog?
-                    setPropertiesTypeLocationGps()
-                    if (LotePresenterImpl.instance?.coordsService == null) {
-                        presenter?.startGps(activity as MenuMainActivity)
+
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        if (!hasPermissions(context, *PERMISSIONS)) {
+                            requestPermission()
+                        } else {
+                            setPropertiesTypeLocationGps()
+                        }
+                    } else {
+                        setPropertiesTypeLocationGps()
                     }
+
+                    /*if (LotePresenterImpl.instance?.coordsService == null) {
+                        presenter?.startGps(activity as MenuMainActivity)
+                    }else{
+                        if(!isMyServiceRunning(CoordsServiceKotlin::class.java)){
+                            presenter?.startGps(activity as MenuMainActivity)
+                        }
+                    }*/
                     //scheduleDismiss();
                 }
             //Position State Location Manual
                 1 -> {
-
                     _dialogTypeLocation = dialog as AlertDialog?
                     setPropertiesTypeLocationManual()
                     showAlertDialogAddLote(null)
-
                     //scheduleDismiss();
                 }
             //Position State Location Mapa
@@ -1058,6 +1112,19 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         builder.setIcon(R.drawable.ic_localizacion_finca);
         return builder.show();
     }
+
+
+
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = activity!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
+
 
 
     override fun showProgressHud() {
@@ -1175,12 +1242,19 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                     showAlertDialogAddLote(null)
                 }
             }
-            R.id.ivClosetDialogLote -> _dialogRegisterUpdate?.dismiss()
+            R.id.ivClosetDialogLote ->{
+                /*if(UBICATION_GPS){
+                    closeServiceGps()
+                }*/
+                _dialogRegisterUpdate?.dismiss()
+            }
             R.id.fabLocationLote -> showAlertTypeLocationLote()
             R.id.fabUnidadProductiva -> showAlertDialogSelectUp()
             R.id.ivBackButton -> {
-                var intent =  Intent(activity, CoordsServiceKotlin::class.java);
-                activity!!.stopService(intent)
+
+                if(UBICATION_GPS){
+                    closeServiceGps()
+                }
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).onBackPressed()
             }
@@ -1222,6 +1296,15 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                     hideElementsAndSetPropertiesOnConectionInternet()
                 }
             }
+
+            if (extras.containsKey("is_enabled_gps")) {
+                var state_gps = intent.extras!!.getBoolean("is_enabled_gps")
+                if(!state_gps){
+                    setPropertiesDisabledGps()
+                }
+            }
+
+
             if (extras.containsKey("latitud") && extras.containsKey("longitud")) {
 
                 if (UBICATION_GPS == true) {
@@ -1244,6 +1327,73 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 //Toast.makeText(activity,"Broadcast: "+longitud.toString(), Toast.LENGTH_SHORT).show()
                 // tvCoords.setText(String.valueOf(location.getLatitude()) + " , " + String.valueOf(location.getLongitude()));
             }
+        }
+    }
+    //endregion
+
+
+    //region PERMISSIONS
+    fun hasPermissions(context: Context?, vararg permissions: String): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (permission in permissions) {
+                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        //RESPONSE GPS
+        if (requestCode == RequestAccessPhoneResources.ENABLED_REQUEST_GPS) {
+            if(presenter?.isLocationEnabled()!!){
+                presenter?.startGps(activity!!)
+            }else{
+                UBICATION_GPS=false
+                onMessageDisabledGps()
+            }
+        }
+    }
+
+    private fun requestPermission() {
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        //ContextCompat.requestPermissions(activity!!, PERMISSIONS, PERMISSION_ALL)
+        requestPermissions(PERMISSIONS, PERMISSION_ALL)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_CODE ->
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //showAlertDialogAddUnidadProductiva(null)
+                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        Toast.makeText(activity,
+                                "Permiso denegado", Toast.LENGTH_LONG).show()
+                    } else {
+                        if (hasPermissions(context, *PERMISSIONS)) {
+                            setPropertiesTypeLocationGps()
+                        } else {
+                            val builder = AlertDialog.Builder(context!!)
+                            builder.setMessage(R.string.enable_permissions_gps_settings)
+                                    .setPositiveButton(R.string.confirm) { dialog, id ->
+                                        val intent = Intent()
+                                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                        val uri = Uri.fromParts("package", "com.interedes.agriculturappv3", null)
+                                        intent.setData(uri)
+                                        startActivity(intent)
+                                    }
+                            builder.setTitle(R.string.gps_disabled)
+                            builder.setIcon(R.drawable.logo_agr_app)
+                            // Create the AlertDialog object and return it
+                            builder.show()
+
+                        }
+                    }
+                }
         }
     }
     //endregion

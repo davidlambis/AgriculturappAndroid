@@ -46,6 +46,7 @@ import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPago_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.resources.MetodoPagoResources
+import com.interedes.agriculturappv3.services.resources.RequestAccessPhoneResources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.data.Blob
@@ -67,8 +68,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
     //CÁMARA
     val IMAGE_DIRECTORY = "/Productos"
-    val REQUEST_GALLERY = 1
-    val REQUEST_CAMERA = 2
+
 
     // var imageGlobalRutaFoto: String? = null
     var isFoto: Boolean? = false
@@ -619,7 +619,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, imageCaptureUri)
         startActivityForResult(intentCamera, REQUEST_CAMERA)*/
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, REQUEST_CAMERA)
+        startActivityForResult(intent, RequestAccessPhoneResources.ACCESS_REQUEST_CAMERA)
 
        /* val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (intent.resolveActivity(activity?.getPackageManager()) != null) {
@@ -670,7 +670,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         val galleryIntent = Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
          galleryIntent.setType("image/*")
-        startActivityForResult(galleryIntent, REQUEST_GALLERY)
+        startActivityForResult(galleryIntent, RequestAccessPhoneResources.ACCESS_REQUEST_GALLERY)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -678,7 +678,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         if (resultCode == Activity.RESULT_CANCELED) {
             return
         } else if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_GALLERY) {
+            if (requestCode == RequestAccessPhoneResources.ACCESS_REQUEST_GALLERY) {
                 if (data != null) {
                     val contentURI = data.data
                     try {
@@ -712,7 +712,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     }
                 }
 
-            } else if (requestCode == REQUEST_CAMERA) {
+            } else if (requestCode == RequestAccessPhoneResources.ACCESS_REQUEST_CAMERA) {
                 if (data != null) {
 
                     try{

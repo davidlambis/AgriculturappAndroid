@@ -2,6 +2,8 @@ package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_modul
 
 
 import android.Manifest
+import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -14,6 +16,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.ContextCompat.checkSelfPermission
@@ -40,7 +43,11 @@ import android.widget.*
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 import com.google.android.gms.cast.CastRemoteDisplayLocalService
+import com.google.android.gms.cast.CastRemoteDisplayLocalService.startService
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
+import com.interedes.agriculturappv3.services.coords.HelloSeervice
+import com.interedes.agriculturappv3.services.resources.RequestAccessPhoneResources
+import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import java.io.IOException
 import java.util.*
 
@@ -79,7 +86,6 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     private val PERMISSION_REQUEST_CODE = 1
     internal var PERMISSION_ALL = 1
     internal var PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-
 
     companion object {
         var instance: UnidadProductiva_Fragment? = null
@@ -262,6 +268,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         if (_dialogRegisterUpdate != null) {
             _dialogRegisterUpdate?.dismiss()
         }
+
         onMessageOk(R.color.colorPrimary, getString(R.string.request_ok));
     }
 
@@ -270,6 +277,18 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             _dialogRegisterUpdate?.dismiss()
         }
         onMessageError(R.color.grey_luiyi, error)
+    }
+
+    override fun onMessageDisabledGps(){
+        val inflater = this.layoutInflater
+        var viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        viewToast.txtMessageToastCustom.setText(getString(R.string.disabledGPS))
+        viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(activity!!.applicationContext, R.color.red_900))
+        var mytoast =  Toast(activity);
+        mytoast.setView(viewToast);
+        mytoast.setDuration(Toast.LENGTH_LONG);
+        mytoast.show();
+        ///onMessageError(R.color.red_900, getString(R.string.disabledGPS))
     }
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
@@ -407,6 +426,10 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     }
 
 
+
+
+
+
     override fun showProgressHud() {
         hudUp = KProgressHUD.create(activity)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
@@ -434,9 +457,9 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     }
 
     override fun hideProgressHudCoords() {
-
         hudCoords?.dismiss()
     }
+
 
 
     override fun showAlertDialogAddUnidadProductiva(unidadProductiva: Unidad_Productiva?) {
@@ -449,12 +472,6 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         val imageViewLocalizarUnidadProductiva = viewDialog?.imageViewLocalizarUnidadProductiva
         val btnCloseDialog = viewDialog?.ivClosetDialogUp
         unidadProductivaGlobal = unidadProductiva
-
-
-
-
-
-
 
         //REGISTER
         if (unidadProductiva == null) {
@@ -490,9 +507,9 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             }else{
                 viewDialog?.edtAreaUnidadProductiva?.setText(unidadProductivaGlobal?.Area.toString())
             }
-
         }
 
+        /*
         if(presenter?.getStatusServiceCoords()==true && viewDialog?.imageViewStopLocalizarUnidadProductiva?.visibility==View.GONE){
             viewDialog?.imageViewStopLocalizarUnidadProductiva?.visibility=View.VISIBLE
             YoYo.with(Techniques.Pulse)
@@ -500,7 +517,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
                     .playOn(viewDialog?.imageViewStopLocalizarUnidadProductiva)
         }else{
             viewDialog?.imageViewStopLocalizarUnidadProductiva?.visibility=View.GONE
-        }
+        }*/
 
 
         //Set Events
@@ -512,8 +529,6 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         YoYo.with(Techniques.Pulse)
                 .repeat(5)
                 .playOn(imageViewLocalizarUnidadProductiva)
-
-
 
 
         viewDialog?.edtLatitud?.addTextChangedListener(object : TextWatcher {
@@ -623,7 +638,6 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     }
 
 
-
     private fun isParceableDouble(cadena: String): Boolean {
         try {
             java.lang.Double.parseDouble(cadena)
@@ -632,6 +646,10 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             return false
         }
 
+    }
+
+    override fun closeServiceGps(){
+        presenter?.closeServiceGps(activity!!)
     }
 
     override fun verificateConnection(): AlertDialog? {
@@ -645,14 +663,29 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         return builder.show();
     }
 
+    override fun showGpsDisabledDialog(): Dialog {
+        // Use the Builder class for convenient dialog construction
+        val builder = android.app.AlertDialog.Builder(activity)
+        builder.setMessage(R.string.please_enable_gps)
+                .setPositiveButton(R.string.confirm) { dialog, id ->
+                    val settingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    startActivityForResult(settingsIntent, RequestAccessPhoneResources.ENABLED_REQUEST_GPS)
+                    // showProgressHudCoords()
+                }
+        builder.setTitle(R.string.gps_disabled)
+        builder.setIcon(R.drawable.logo_agr_app)
+        // Create the AlertDialog object and return it
+        return builder.show()
+    }
 
     fun alertDialogInitServiceCoords(): AlertDialog? {
         var builder = AlertDialog.Builder(context!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.init_service_coords));
         builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
-            presenter?.startGps(activity as MenuMainActivity)
-            presenter?.setStatusServiceCoords(true)
+            presenter?.startGps(activity!!)
+         //   var intent =  Intent((activity as MenuMainActivity).baseContext, HelloSeervice::class.java);
+         //   (activity as MenuMainActivity).startService(intent)
             dialog.dismiss()
         })
         builder.setIcon(R.drawable.ic_unidad_productiva);
@@ -678,25 +711,29 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
 
 
             }
-            R.id.ivClosetDialogUp -> _dialogRegisterUpdate?.dismiss()
+            R.id.ivClosetDialogUp -> {
+                _dialogRegisterUpdate?.dismiss()
+                presenter?.closeServiceGps(activity!!)
+            }
 
             R.id.imageViewLocalizarUnidadProductiva -> {
                 alertDialogInitServiceCoords()
             }
 
             R.id.imageViewStopLocalizarUnidadProductiva -> {
-                var intent =  Intent(activity, CoordsServiceKotlin::class.java);
-                activity!!.stopService(intent)
 
-                presenter?.closeServiceGps()
+                /*var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+                activity!!.stopService(intent)*/
+
+                presenter?.closeServiceGps(activity!!)
                 presenter?.setStatusServiceCoords(false)
                 viewDialog?.imageViewStopLocalizarUnidadProductiva?.visibility=View.GONE
             }
 
             R.id.ivBackButton -> {
 
-                var intent =  Intent(activity, CoordsServiceKotlin::class.java);
-                activity!!.stopService(intent)
+                /*var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+                activity!!.stopService(intent)*/
 
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).onBackPressed()
@@ -712,115 +749,24 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         }
     }
 
-    //PERMISOS
-    fun hasPermissions(context: Context?, vararg permissions: String): Boolean {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-            for (permission in permissions) {
-                if (checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false
-                }
-            }
-        }
-        return true
-    }
-
-    private fun requestPermission() {
-        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-        //ContextCompat.requestPermissions(activity!!, PERMISSIONS, PERMISSION_ALL)
-        requestPermissions(PERMISSIONS, PERMISSION_ALL)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            PERMISSION_REQUEST_CODE ->
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    showAlertDialogAddUnidadProductiva(null)
-                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        Toast.makeText(activity,
-                                "Permiso denegado", Toast.LENGTH_LONG).show()
-                    } else {
-                        if (hasPermissions(context, *PERMISSIONS)) {
-                            showAlertDialogAddUnidadProductiva(null)
-                        } else {
-                            val builder = AlertDialog.Builder(context!!)
-                            builder.setMessage(R.string.enable_permissions_gps_settings)
-                                    .setPositiveButton(R.string.confirm) { dialog, id ->
-                                        val intent = Intent()
-                                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                        val uri = Uri.fromParts("package", "com.interedes.agriculturappv3", null)
-                                        intent.setData(uri)
-                                        startActivity(intent)
-                                    }
-                            builder.setTitle(R.string.gps_disabled)
-                            builder.setIcon(R.drawable.logo_agr_app)
-                            // Create the AlertDialog object and return it
-                            builder.show()
-
-                        }
-                    }
-                }
 
 
-        /*for (permission in permissions) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(activity!!, permission)) {
-                Toast.makeText(activity,
-                        "Permiso denegado", Toast.LENGTH_LONG).show()
-            } else {
-                if (ActivityCompat.checkSelfPermission(context!!, permission) == PackageManager.PERMISSION_GRANTED) {
-                    showAlertDialogAddUnidadProductiva(null)
-                } else {
-                    val builder = AlertDialog.Builder(context!!)
-                    builder.setMessage(R.string.please_enable_gps)
-                            .setPositiveButton(R.string.confirm) { dialog, id ->
-                                val settingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                                context!!.startActivity(settingsIntent)
-                            }
-                    builder.setTitle(R.string.gps_disabled)
-                    builder.setIcon(R.drawable.logo_agr_app)
-                }
-            }
-        }*/
-
-        /*if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            showAlertDialogAddUnidadProductiva(null)
-        } else if (!ActivityCompat.checkSelfPermission(context!!, permission) == PackageManager.PERMISSION_GRANTED) {
-            val builder = AlertDialog.Builder(context!!)
-            builder.setMessage(R.string.please_enable_gps)
-                    .setPositiveButton(R.string.confirm) { dialog, id ->
-                        val settingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                        context!!.startActivity(settingsIntent)
-                    }
-            builder.setTitle(R.string.gps_disabled)
-            builder.setIcon(R.drawable.logo_agr_app)
-
-        } else {
-            Toast.makeText(activity,
-                    "Permiso denegado", Toast.LENGTH_LONG).show()
-
-        }*//* else if ((Build.VERSION.SDK_INT >= 23 && !shouldShowRequestPermissionRationale(permissions[0])) ||
-                        (Build.VERSION.SDK_INT >= 23 && !shouldShowRequestPermissionRationale(permissions[1]))) {
-                    //Toast.makeText(MainActivity.this, "Go to Settings and Grant the permission to use this feature.", Toast.LENGTH_SHORT).show();
-                    // User selected the Never Ask Again Option
-                    Intent i = new Intent();
-                    i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    i.addCategory(Intent.CATEGORY_DEFAULT);
-                    i.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                    getApplicationContext().startActivity(i);
-
-                } */
-        }
-    }
 
     //Escuchador de eventos
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
         if (extras != null) {
             if (extras.containsKey("state_conectivity")) {
                 var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
+            }
+
+            if (extras.containsKey("is_enabled_gps")) {
+                var state_gps = intent.extras!!.getBoolean("is_enabled_gps")
+                if(!state_gps){
+                    if (viewDialog?.imageViewStopLocalizarUnidadProductiva?.getVisibility() == View.VISIBLE) {
+                        // Its visible
+                        viewDialog?.imageViewStopLocalizarUnidadProductiva?.visibility = View.GONE
+                    }
+                }
             }
             if (extras.containsKey("latitud") && extras.containsKey("longitud")) {
                 latitud = intent.extras!!.getDouble("latitud")
@@ -873,5 +819,76 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         presenter?.onResume(activity!!.applicationContext)
         super.onResume()
     }
+
+
+
+
+    //region PERMISSIONS
+
+    fun hasPermissions(context: Context?, vararg permissions: String): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (permission in permissions) {
+                if (checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun requestPermission() {
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        //ContextCompat.requestPermissions(activity!!, PERMISSIONS, PERMISSION_ALL)
+        requestPermissions(PERMISSIONS, PERMISSION_ALL)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        //RESPONSE GPS
+        if (requestCode == RequestAccessPhoneResources.ENABLED_REQUEST_GPS) {
+            if(presenter?.isLocationEnabled()!!){
+                presenter?.startGps(activity!!)
+            }else{
+                onMessageDisabledGps()
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_CODE ->
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    showAlertDialogAddUnidadProductiva(null)
+                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        Toast.makeText(activity,
+                                "Permiso denegado", Toast.LENGTH_LONG).show()
+                    } else {
+                        if (hasPermissions(context, *PERMISSIONS)) {
+                            showAlertDialogAddUnidadProductiva(null)
+                        } else {
+                            val builder = AlertDialog.Builder(context!!)
+                            builder.setMessage(R.string.enable_permissions_gps_settings)
+                                    .setPositiveButton(R.string.confirm) { dialog, id ->
+                                        val intent = Intent()
+                                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                        val uri = Uri.fromParts("package", "com.interedes.agriculturappv3", null)
+                                        intent.setData(uri)
+                                        startActivity(intent)
+                                    }
+                            builder.setTitle(R.string.gps_disabled)
+                            builder.setIcon(R.drawable.logo_agr_app)
+                            // Create the AlertDialog object and return it
+                            builder.show()
+
+                        }
+                    }
+                }
+        }
+    }
+    //endregion
+
+
 //endregion
 }

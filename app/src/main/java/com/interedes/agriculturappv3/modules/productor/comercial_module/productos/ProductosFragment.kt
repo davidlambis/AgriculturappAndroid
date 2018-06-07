@@ -4,6 +4,7 @@ package com.interedes.agriculturappv3.modules.productor.comercial_module.product
 import android.Manifest
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,6 +13,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.media.MediaScannerConnection
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -49,6 +51,7 @@ import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.adapters.ProductosAdapter
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.services.resources.RequestAccessPhoneResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -95,10 +98,9 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
     //CÁMARA
     val IMAGE_DIRECTORY = "/Productos"
-    val REQUEST_GALLERY = 1
-    val REQUEST_CAMERA = 2
 
-    var PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+
+
 
     var imageGlobal: ByteArray? = null
     // var imageGlobalRutaFoto: String? = null
@@ -108,6 +110,12 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     //Progress
     /** These can be lateinit as they are set in onCreate */
     private var hud: KProgressHUD? = null
+
+
+    //Permission
+    private val PERMISSION_REQUEST_CODE = 1
+    var PERMISSION_ALL = 3
+    var PERMISSIONS = arrayOf(Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
 
     companion object {
         var instance: ProductosFragment? = null
@@ -178,18 +186,43 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
             }
             R.id.product_camera -> {
-                if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 1000)
-                    return
+
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (!hasPermissions(activity, *PERMISSIONS)) {
+                        requestPermission()
+                    } else {
+                        val response = doPermissionGrantedStuffs()
+                        if (response) {
+                            takePictureWithCamera(this)
+                            //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+                        }
+                    }
+                } else {
+                    val response = doPermissionGrantedStuffs()
+                    if (response) {
+                        takePictureWithCamera(this)
+                        //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+                    }
                 }
-                takePictureWithCamera(this)
             }
             R.id.product_gallery -> {
-                if (ActivityCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 1000)
-                    return
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (!hasPermissions(activity, *PERMISSIONS)) {
+                        requestPermission()
+                    } else {
+                        val response = doPermissionGrantedStuffs()
+                        if (response) {
+                            choosePhotoFromGallery(this)
+                            //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+                        }
+                    }
+                } else {
+                    val response = doPermissionGrantedStuffs()
+                    if (response) {
+                        choosePhotoFromGallery(this)
+                        //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+                    }
                 }
-                choosePhotoFromGallery(this)
             }
             R.id.product_cancel -> {
                 isFoto = false
@@ -209,7 +242,6 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         }
     }
     //endregion
-
 
     //region Métodos Interfaz
     override fun showAlertDialogFilterProducto(isFilter: Boolean?) {
@@ -646,14 +678,14 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     override fun takePictureWithCamera(fragment: ProductosFragment) {
         //EasyImage.openCamera(fragment, 0)
         val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, REQUEST_CAMERA)
+        startActivityForResult(intent, RequestAccessPhoneResources.ACCESS_REQUEST_CAMERA)
     }
 
     override fun choosePhotoFromGallery(fragment: ProductosFragment) {
         val galleryIntent = Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
-        startActivityForResult(galleryIntent, REQUEST_GALLERY)
+        startActivityForResult(galleryIntent, RequestAccessPhoneResources.ACCESS_REQUEST_GALLERY)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -661,7 +693,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         if (resultCode == Activity.RESULT_CANCELED) {
             return
         } else if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_GALLERY) {
+            if (requestCode == RequestAccessPhoneResources.ACCESS_REQUEST_GALLERY) {
                 if (data != null) {
                     val contentURI = data.data
                     try {
@@ -679,7 +711,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
                 }
 
-            } else if (requestCode == REQUEST_CAMERA) {
+            } else if (requestCode == RequestAccessPhoneResources.ACCESS_REQUEST_CAMERA) {
                 if (data != null) {
                     isFoto = true
                     val thumbnail = data.extras?.get("data") as Bitmap
@@ -906,6 +938,55 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
     //endregion
 
+
+    //region PERMISSIONS
+
+    fun hasPermissions(context: Context?, vararg permissions: String): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (permission in permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun requestPermission() {
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        ActivityCompat.requestPermissions(activity!!, PERMISSIONS, PERMISSION_ALL)
+    }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_CODE -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                doPermissionGrantedStuffs()
+            } else {
+                Toast.makeText(activity,
+                        "Permiso denegado", Toast.LENGTH_LONG).show()
+
+            }
+        }
+    }
+
+
+    fun doPermissionGrantedStuffs(): Boolean {
+        /// String SIMSerialNumber=tm.getSimSerialNumber();
+        for (permission in PERMISSIONS) {
+            if (ActivityCompat.checkSelfPermission(activity!!, permission) != PackageManager.PERMISSION_GRANTED) {
+                val response = false
+                return response
+            }
+        }
+        val response = true
+        return response
+    }
+
+    //endregion
+
+    //region OVERRIDE METHODS
     override fun onRefresh() {
         showProgress()
         presenter?.getListProductos(Cultivo_Id)
@@ -926,4 +1007,6 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         presenter?.onResume(activity!!.applicationContext)
         super.onResume()
     }
+
+    //endregion
 }

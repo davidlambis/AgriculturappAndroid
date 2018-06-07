@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.UnidadProductiva
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -49,6 +50,7 @@ interface IUnidadProductiva {
         fun requestResponseOK()
         fun requestResponseError(error: String?)
 
+        fun onMessageDisabledGps()
         fun onMessageOk(colorPrimary: Int, msg: String?)
         fun onMessageError(colorPrimary: Int, msg: String?)
 
@@ -66,6 +68,10 @@ interface IUnidadProductiva {
 
         fun setListSpinnerDepartamentos(listDepartamentos: List<Departamento>)
         fun setListSpinnerMunicipios(listMunicipios: List<Ciudad>)
+
+        //services
+        fun closeServiceGps()
+        fun showGpsDisabledDialog(): Dialog
     }
 
     interface Presenter {
@@ -91,8 +97,9 @@ interface IUnidadProductiva {
 
 
         //Coords Service
+        fun isLocationEnabled(): Boolean
         fun startGps(activity: Activity)
-        fun closeServiceGps()
+        fun closeServiceGps(activity: Activity)
         fun getStatusServiceCoords():Boolean?
         fun setStatusServiceCoords(status:Boolean?)
 

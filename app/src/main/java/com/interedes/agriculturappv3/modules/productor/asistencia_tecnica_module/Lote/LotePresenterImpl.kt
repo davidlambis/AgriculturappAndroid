@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.location.LocationManager
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
@@ -26,7 +27,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote.View?) : MainViewLote.Pre
     var coordsService: CoordsServiceKotlin? = null
     var loteInteractor: MainViewLote.Interactor? = null
     var eventBus: EventBus? = null
-
+    var locationManager: LocationManager? = null
 
     companion object {
         var instance: LotePresenterImpl? = null
@@ -47,20 +48,58 @@ class LotePresenterImpl(var loteMainView: MainViewLote.View?) : MainViewLote.Pre
 
     override fun onDestroy() {
         loteMainView = null
-        if (coordsService != null) {
+       /* if (coordsService != null) {
             CoordsServiceKotlin.instance?.closeService()
             //coordsService!!.closeService()
-        }
+        }*/
         eventBus?.unregister(this)
     }
 
-    override fun closeServiceGps() {
-        if (coordsService != null) {
-            //CoordsService.instance?.closeService()
-            CoordsServiceKotlin.instance?.closeService()
-            //coordsService!!.closeService()
-        }
+
+    override fun closeServiceGps(activity: Activity) {
+        var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+        activity!!.stopService(intent)
+        // IUpView?.showProgressHudCoords()
+        /*if (coordsService != null) {
+           //CoordsService.instance?.closeService()
+           CoordsServiceKotlin.instance?.closeService()
+           //coordsService!!.closeService()
+       }*/
     }
+
+
+
+
+
+    //region GPS
+    override fun startGps(activity: Activity) {
+        locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (!isLocationEnabled()) {
+            loteMainView?.showGpsDisabledDialog()
+        }else{
+            loteMainView?.showProgressHudCoords()
+            startLocationGps(activity)
+        }
+        // IUpView?.showProgressHudCoords()
+        /*coordsService = CoordsServiceKotlin(activity)
+        if (CoordsServiceKotlin.instance!!.isLocationEnabled()) {
+            IUpView?.showProgressHudCoords()
+        }*/
+    }
+    override  fun isLocationEnabled(): Boolean {
+        return locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+    fun startLocationGps(activity: Activity) {
+        var intent =  Intent(activity, CoordsServiceKotlin::class.java);
+        activity!!.startService(intent)
+    }
+
+
+    //endregion
+
+
+
 
     override fun getLotes(unidad_productiva_id: Long?) {
         loteInteractor?.execute(unidad_productiva_id)
@@ -91,12 +130,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote.View?) : MainViewLote.Pre
         context.unregisterReceiver(this.mNotificationReceiver);
     }
 
-    override fun startGps(activity: Activity) {
-        coordsService = CoordsServiceKotlin(activity)
-        if (CoordsServiceKotlin.instance!!.isLocationEnabled()) {
-            loteMainView?.showProgressHudCoords()
-        }
-    }
+
 
     //region Suscribe Events
     @Subscribe

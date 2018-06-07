@@ -90,6 +90,8 @@
     <string name="alert">Alerta</string>
     <string name="msgAlertConn">No tienes conexión a Internet, verifica tu conexión!</string>
     <string name="infoGPS">El sistema GPS está desactivado, ¿Desea activarlo?</string>
+    <string name="disabledGPS">El sistema GPS está desactivado, Necesitas habilitar el GPS</string>
+
     <string name="GpsOutService">Proveedor fuera de servicio de localización, intenta más
     tarde.</string>
     <string name="GpsTempUnavailable">Temporalmente no disponible el servicio de GPS.</string>

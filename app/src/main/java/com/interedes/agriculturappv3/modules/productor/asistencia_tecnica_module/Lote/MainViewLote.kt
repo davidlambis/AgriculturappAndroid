@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -64,6 +65,7 @@ interface MainViewLote {
         fun requestResponseOk()
         fun requestResponseError(error : String?)
 
+        fun onMessageDisabledGps()
         fun onMessageOk(colorPrimary: Int, message: String?)
         fun onMessageError(colorPrimary: Int, message: String?)
 
@@ -78,6 +80,9 @@ interface MainViewLote {
         //Events
         fun onEventBroadcastReceiver(extras: Bundle,intent: Intent)
 
+        //Coords
+        fun closeServiceGps()
+        fun showGpsDisabledDialog(): Dialog
 
     }
 
@@ -105,7 +110,11 @@ interface MainViewLote {
 
         //Coords Service
         fun startGps(activity: Activity)
-        fun closeServiceGps()
+        fun closeServiceGps(activity: Activity)
+        fun isLocationEnabled(): Boolean
+
+
+
         //Conecttion
         fun checkConnection(): Boolean
 
