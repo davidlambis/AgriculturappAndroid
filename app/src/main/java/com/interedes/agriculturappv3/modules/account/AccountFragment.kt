@@ -106,10 +106,9 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
 
     private val PERMISSION_REQUEST_CODE = 1
-     var PERMISSION_ALL = 3
-     var PERMISSIONS = arrayOf(Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-
-
+    var PERMISSION_ALL = 3
+    var PERMISSIONS = arrayOf(Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+    var IS_ACCESS_CAMERA=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -477,6 +476,8 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     return
                 }*/
 
+                IS_ACCESS_CAMERA=true
+
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (!hasPermissions(activity, *PERMISSIONS)) {
                         requestPermission()
@@ -496,6 +497,8 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                 }
             }
             R.id.user_take_picture_gallery -> {
+
+                IS_ACCESS_CAMERA=false
 
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (!hasPermissions(activity, *PERMISSIONS)) {
@@ -929,7 +932,13 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PERMISSION_REQUEST_CODE -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                doPermissionGrantedStuffs()
+                if(doPermissionGrantedStuffs()){
+                    if(IS_ACCESS_CAMERA){
+                        takePictureWithCamera(this)
+                    }else{
+                        choosePhotoFromGallery(this)
+                    }
+                }
             } else {
                 Toast.makeText(activity,
                         "Permiso denegado", Toast.LENGTH_LONG).show()

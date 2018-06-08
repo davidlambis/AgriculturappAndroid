@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.Subscribe
 class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityReceiver.connectivityReceiverListener, MainViewMenu.Presenter {
 
 
+    private var INSTANCE_CONECTION: Boolean = false
 
     var eventBus: EventBus? = null
     var connectivityReceiver: ConnectivityReceiver? = null
@@ -34,6 +35,8 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
     override fun onCreate() {
         eventBus?.register(this)
         connectivityReceiver = ConnectivityReceiver()
+
+
     }
 
     override fun onDestroy(context:Context) {
@@ -49,8 +52,12 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
         val connectivityReceiver = ConnectivityReceiver()
         context.registerReceiver(connectivityReceiver, intentFilter)*/
         /*register connection status listener*/
-        context.registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-        AgriculturApplication.instance.setConnectivityListener(this)
+
+        if(!INSTANCE_CONECTION){
+            context.registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+            AgriculturApplication.instance.setConnectivityListener(this)
+            INSTANCE_CONECTION=true
+        }
     }
 
 

@@ -87,7 +87,6 @@ class CoordsServiceKotlin(): Service(), LocationListener {
             LocationProvider.AVAILABLE ->  Log.i("GPS", "Disponible")
             LocationProvider.OUT_OF_SERVICE -> showStatusGPS("Proveedor fuera de servicio de localización")
             LocationProvider.TEMPORARILY_UNAVAILABLE -> {
-
                 //showStatusGPS("Temporalmente no disponible el servicio de GPS")
             }
         }
@@ -95,18 +94,21 @@ class CoordsServiceKotlin(): Service(), LocationListener {
 
     override fun onProviderEnabled(s: String) {
         Toast.makeText(applicationContext, "GPS Activado", Toast.LENGTH_SHORT).show()
+        val is_enabled_gps=true
         val retIntent = Intent(Const.SERVICE_LOCATION)
         retIntent.setPackage(PACKAGE_NAME)
-        retIntent.putExtra("is_enabled_gps", true)
+        retIntent.putExtra("is_enabled_gps", is_enabled_gps)
         applicationContext?.sendBroadcast(retIntent)
 
     }
 
     override fun onProviderDisabled(s: String) {
         Toast.makeText(applicationContext,"GPS Desactivado",Toast.LENGTH_SHORT).show();
+
+        val is_enabled_gps=false
         val retIntent = Intent(Const.SERVICE_LOCATION)
         retIntent.setPackage(PACKAGE_NAME)
-        retIntent.putExtra("is_enabled_gps", false)
+        retIntent.putExtra("is_enabled_gps", is_enabled_gps)
         applicationContext?.sendBroadcast(retIntent)
 
     }

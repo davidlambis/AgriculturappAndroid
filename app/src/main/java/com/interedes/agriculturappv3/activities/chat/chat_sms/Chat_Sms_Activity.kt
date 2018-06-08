@@ -124,14 +124,12 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
     }
 
     fun refreshSmsInbox() {
+
         for (permission in PERMISSIONS) {
             if (ActivityCompat.checkSelfPermission(applicationContext, permission) != PackageManager.PERMISSION_GRANTED) {
                 return
             }
         }
-
-
-
 
         val qStr = arrayOf(contactNumber)
 

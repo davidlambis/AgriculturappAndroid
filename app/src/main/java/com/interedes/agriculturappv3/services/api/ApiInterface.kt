@@ -54,7 +54,7 @@ interface ApiInterface {
 
 
     //Get Roles
-    @GET("odata/Agp2/Rols")
+    @GET("odata/Agp2/Rols?\$select=Nombre,Id")
     fun getRoles(): Call<RolResponse>
 
     //Get Métodos Pago

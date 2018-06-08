@@ -78,7 +78,6 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
                                 lista = Select().from(Rol::class.java).where(Rol_Table.Nombre.eq("Comprador")).or(Rol_Table.Nombre.eq("Productor")).queryList()
 
                             }
-
                             loadRecyclerView()
                         }
                     }
@@ -91,11 +90,8 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
             } else {
                 lista = Select().from(Rol::class.java).where(Rol_Table.Nombre.eq("Comprador")).or(Rol_Table.Nombre.eq("Productor")).queryList()
                 loadRecyclerView()
-
                 onMessageOk(R.color.grey_luiyi, getString(R.string.not_internet_connected))
             }
-
-
     }
 
     override fun navigateToParentActivity() {

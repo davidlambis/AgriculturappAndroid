@@ -281,7 +281,7 @@
                     android:drawableLeft="@drawable/ic_metodo_pago"
                     android:drawableStart="@drawable/ic_metodo_pago"
                     android:hint="@string/spinner_metodo_pago"
-                    android:textAlignment="center"
+                    android:textAlignment="textStart"
                     android:textColorHint="@color/grey_luiyi"
                     android:textSize="@dimen/text_size"
                     app:met_baseColor="@color/grey_luiyi"
@@ -302,7 +302,7 @@
                     android:drawableLeft="@drawable/ic_banco"
                     android:drawableStart="@drawable/ic_banco"
                     android:hint="@string/spinner_banco"
-                    android:textAlignment="center"
+                    android:textAlignment="textStart"
                     android:textColorHint="@color/grey_luiyi"
                     android:textSize="@dimen/text_size"
                     android:visibility="gone"
@@ -329,7 +329,7 @@
                         android:drawableStart="@drawable/ic_cuenta"
                         android:hint="@string/edit_text_numero_cuenta"
                         android:inputType="number"
-                        android:textAlignment="center" />
+                        android:textAlignment="textStart" />
                 </android.support.design.widget.TextInputLayout>
 
                 <ProgressBar

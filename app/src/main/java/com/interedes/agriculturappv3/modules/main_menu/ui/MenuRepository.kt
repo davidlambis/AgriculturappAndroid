@@ -111,14 +111,16 @@ class MenuRepository: MainViewMenu.Repository {
 
     override fun makeUserOnline(checkConection:Boolean) {
         var userLogued=getLastUserLogued()
-        var verficateLoguedFirebase=verificateUserLoguedFirebaseFirebase()
-       if(checkConection){
-           if(verficateLoguedFirebase==null){
-               loginFirebase(userLogued)
-           }else{
-               makeUserOnlineSet()
-           }
-       }
+        if(userLogued!=null){
+            var verficateLoguedFirebase=verificateUserLoguedFirebaseFirebase()
+            if(checkConection){
+                if(verficateLoguedFirebase==null){
+                    loginFirebase(userLogued)
+                }else{
+                    makeUserOnlineSet()
+                }
+            }
+        }
     }
 
     private fun makeUserOnlineSet() {

@@ -46,50 +46,12 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
 
     //Registro de user en backend, firebase y sqlite
     override fun registerUsuario(user: User) {
-
         //BACKEND
         val call = apiService?.postRegistroUsers(user)
         call?.enqueue(object : Callback<UserResponse> {
             override fun onResponse(call: Call<UserResponse>?, response: Response<UserResponse>?) {
                 if (response != null && response.code() == 201) {
-                    //FIREBASE
-                    FirebaseAuth.getInstance()?.createUserWithEmailAndPassword(user.Email!!, user.Password!!)?.addOnCompleteListener { task: Task<AuthResult> ->
-                        if (task.isSuccessful) {
-
-                            val newUser = task.result.user
-                            //success creating user, now set display name as name
-                            val profileUpdates = UserProfileChangeRequest.Builder()
-                                    .setDisplayName(user.Nombre+" "+user.Apellido)
-                                    .build()
-
-                            newUser.updateProfile(profileUpdates)
-                                    .addOnCompleteListener { task ->
-                                        if (task.isSuccessful) {
-
-                                            /***CREATE USER IN FIREBASE DB AND REDIRECT ON SUCCESS */
-                                            /***CREATE USER IN FIREBASE DB AND REDIRECT ON SUCCESS */
-                                            //createUserInDb(newUser.uid, newUser.displayName, newUser.email)
-                                            createUserInDb(newUser.uid,user,response.body()?.id.toString())
-
-                                        } else {
-                                            //error
-                                            //Toast.makeText(this@SignUpActivity, "Error " + task.exception!!.localizedMessage, Toast.LENGTH_SHORT).show()
-                                        }
-                                    }
-
-                        } else {
-                            try {
-                                throw task.exception!!
-                            } catch (existEmail: FirebaseAuthUserCollisionException) {
-                                postEvent(RegisterEvent.onErrorRegistro, "Correo ya Registrado")
-                            } catch (malformedEmail: FirebaseAuthInvalidCredentialsException) {
-                                postEvent(RegisterEvent.onErrorRegistro, "Mal formato de correo")
-                            } catch (firebaseException: FirebaseException) {
-                                postEvent(RegisterEvent.onErrorRegistro, task.exception.toString())
-                            }
-                        }
-                    }
-
+                    postEvent(RegisterEvent.onRegistroExitoso)
                 } else if (response?.code() == 400) {
                         postEvent(RegisterEvent.onErrorRegistro, "Correo ya Registrado")
                     Log.e("correo_registrado", response.errorBody()?.string())
@@ -98,67 +60,13 @@ class RegisterUserRepositoryImpl : RegisterUserRepository {
                     Log.e("error", response?.message().toString())
                 }
             }
-
             override fun onFailure(call: Call<UserResponse>?, t: Throwable?) {
                 postEvent(RegisterEvent.onErrorRegistro, t?.message.toString())
                 Log.e("error_connection", "No se puede registrar, compruebe su conexión")
             }
-
         })
     }
 
-
-
-    private fun createUserInDb(user_id: String,user:User,user_id_response:String) {
-        //val currentUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
-        //val uid: String? = currentUser?.uid
-       // val reference: DatabaseReference? = mDatabase?.child("Users")?.child(uid)
-        /*---------------*/
-        //val token: String? = FirebaseInstanceId.getInstance()?.token
-        //val uuid_tipo_user = user.Tipouser as UUID?
-
-        val rol: Rol? = SQLite.select().from(Rol::class.java).where(Rol_Table.Id.eq(user.Tipouser)).querySingle()
-        val rolName = rol?.Nombre
-        val reference: DatabaseReference?  = FirebaseDatabase.getInstance().reference.child("Users")
-        var userFirebase = UserFirebase(user_id, user.Nombre, user.Apellido, user.Identification, user.Email, rolName, user.PhoneNumber,Status_Chat.OFFLINE, 0, user.Password,user_id_response)
-        reference?.child(user_id)?.setValue(userFirebase)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
-            if (!task.isSuccessful) {
-                //error
-                postEvent(RegisterEvent.onErrorRegistro, task.exception.toString())
-                Log.e("Error Firebase", task.exception.toString())
-            } else {
-                //success adding user to db as well
-                //go to users chat list
-                var userLastOnlineRef= reference?.child(user_id+"/last_Online")
-                userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
-                postEvent(RegisterEvent.onRegistroExitoso)
-            }
-        })
-       /*
-        val userMap = HashMap<String?, String?>()
-        userMap.put("Rol", rolName)
-        userMap.put("Nombres", response.body()?.nombre)
-        userMap.put("Apellidos", response.body()?.apellido)
-        userMap.put("Cedula", response.body()?.identification)
-        userMap.put("Correo", response.body()?.email)
-        userMap.put("Celular", response.body()?.phoneNumber)
-        //userMap.put("FotoEnfermedad", "")
-        // userMap.put("Token", token!!)
-
-        reference?.setValue(userMap)?.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                postEvent(RegisterEvent.onRegistroExitoso)
-            } else {
-                postEvent(RegisterEvent.onErrorRegistro, task.exception.toString())
-                Log.e("Error Firebase", task.exception.toString())
-            }
-        }
-        */
-    }
-
-    fun getCreationDate(): Map<String, String> {
-        return ServerValue.TIMESTAMP
-    }
 
     //region Métodos Interfaz
     //Cargar información inicial de Métodos de Pago para el productor

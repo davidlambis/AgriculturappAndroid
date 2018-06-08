@@ -2,16 +2,20 @@ package com.interedes.agriculturappv3.activities.login.repository
 
 import android.util.Base64
 import android.util.Log
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.interedes.agriculturappv3.activities.login.events.LoginEvent
 import com.interedes.agriculturappv3.modules.models.login.Login
 import com.interedes.agriculturappv3.modules.models.usuario.*
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.ResetPassword
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.login.LoginResponse
 import com.interedes.agriculturappv3.modules.models.rol.Rol
 import com.interedes.agriculturappv3.modules.models.rol.RolUserLogued
@@ -19,6 +23,7 @@ import com.interedes.agriculturappv3.modules.models.rol.Rol_Table
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.events.ProductosEvent
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
@@ -26,6 +31,10 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+
+
 
 class LoginRepositoryImpl : LoginRepository {
 
@@ -89,7 +98,6 @@ class LoginRepositoryImpl : LoginRepository {
                                     usuario.AccessToken = access_token
                                     usuario.RolNombre = rolNombre
                                     usuario.SessionId = session_id
-
                                     usuario.save()
                                 }
 
@@ -123,27 +131,7 @@ class LoginRepositoryImpl : LoginRepository {
                                             usuario.RolNombre = rol?.Nombre
                                             usuario.save()
 
-                                            mAuth = FirebaseAuth.getInstance()
-                                            mAuth?.signInWithEmailAndPassword(login.username!!, login.password!!)?.addOnCompleteListener({ task ->
-                                                if (task.isSuccessful) {
-                                                    var mCurrentUserID =task.result.user.uid
-                                                    usuario.IdFirebase=mCurrentUserID
-                                                    usuario.save()
-
-                                                    val usuarioLoguedList = SQLite.select().from(Usuario::class.java).queryList()
-                                                    val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
-
-                                                    postEventUsuarioOk(LoginEvent.SAVE_EVENT, usuario)
-
-                                                } else {
-                                                    try {
-                                                        throw task.exception!!
-                                                    } catch (firebaseException: FirebaseException) {
-                                                        postEventError(LoginEvent.ERROR_EVENT, firebaseException.toString())
-                                                        Log.e("Error Post", firebaseException.toString())
-                                                    }
-                                                }
-                                            })
+                                            loginFirebaseUser(usuario)
 
                                         } else {
                                             postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
@@ -184,11 +172,145 @@ class LoginRepositoryImpl : LoginRepository {
         })
     }
 
+    private fun loginFirebaseUser(usuario: Usuario) {
+        mAuth = FirebaseAuth.getInstance()
+        mAuth?.signInWithEmailAndPassword(usuario.Email!!, usuario.Contrasena!!)?.addOnCompleteListener({ task ->
+            if (task.isSuccessful) {
+                var mCurrentUserID =task.result.user.uid
+                usuario.IdFirebase=mCurrentUserID
+                usuario.save()
+                val usuarioLoguedList = SQLite.select().from(Usuario::class.java).queryList()
+                postEventUsuarioOk(LoginEvent.SAVE_EVENT, usuario)
+            } else {
+                /*try {
+                    throw task.exception!!
+                } catch (firebaseException: FirebaseException) {
+                }
+                */
+                try {
+                    throw task.exception!!
+                    // TODO: El usuario no existe
+                } catch (invalidEmail: FirebaseAuthInvalidUserException) {
+                    //if email doesn't exist or disabled.
+                    Log.d("AUTH FIREBASE", "onComplete: invalid_email")
+                    //FIREBASE
+                    registerFirebaseUser(usuario)
+                    // TODO: Credenciales de acceso incoreto
+                } catch (wrongPassword: FirebaseAuthInvalidCredentialsException) {
+                    Log.d("AUTH FIREBASE", "onComplete: wrong_password")
+                    postEventError(LoginEvent.ERROR_EVENT, "Contraseña Incorrecta")
+                    // TODO: Excepcion desconocida
+                } catch (e: Exception) {
+                    Log.d("AUTH FIREBASE", "onComplete: " + e.message)
+                    postEventError(LoginEvent.ERROR_EVENT, e.toString())
+                    Log.e("Error Post", e.toString())
+                }
+                // if user enters wrong email.
+                // if user enters wrong password.
+            }
+        })
+    }
+
+    private fun registerFirebaseUser(usuario: Usuario) {
+        //FIREBASE
+        FirebaseAuth.getInstance()?.createUserWithEmailAndPassword(usuario.Email!!, usuario.Contrasena!!)?.addOnCompleteListener { task: Task<AuthResult> ->
+            if (task.isSuccessful) {
+                val newUser = task.result.user
+                //success creating user, now set display name as name
+                val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(usuario.Nombre+" "+usuario.Apellidos)
+                        .build()
+                newUser.updateProfile(profileUpdates)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                /***CREATE USER IN FIREBASE DB AND REDIRECT ON SUCCESS */
+                                //createUserInDb(newUser.uid, newUser.displayName, newUser.email)
+                                createUserInDb(newUser.uid,usuario)
+                            } else {
+                                postEventError(LoginEvent.ERROR_EVENT,  task.exception?.localizedMessage)
+                                //error
+                                //Toast.makeText(this@SignUpActivity, "Error " + task.exception!!.localizedMessage, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+            } else {
+                try {
+                    throw task.exception!!
+                } catch (existEmail: FirebaseAuthUserCollisionException) {
+                    postEventError(LoginEvent.ERROR_EVENT, "Correo ya Registrado")
+                } catch (malformedEmail: FirebaseAuthInvalidCredentialsException) {
+                    postEventError(LoginEvent.ERROR_EVENT, "Mal formato de correo")
+                } catch (firebaseException: FirebaseException) {
+                    postEventError (LoginEvent.ERROR_EVENT, task.exception.toString())
+                }
+            }
+        }
+
+    }
+
+
+
+
+    private fun createUserInDb(user_id: String,usuario:Usuario) {
+        //val currentUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+        //val uid: String? = currentUser?.uid
+        // val reference: DatabaseReference? = mDatabase?.child("Users")?.child(uid)
+        /*---------------*/
+        //val token: String? = FirebaseInstanceId.getInstance()?.token
+        //val uuid_tipo_user = user.Tipouser as UUID?
+        val rolName =usuario.RolNombre
+        val reference: DatabaseReference?  = FirebaseDatabase.getInstance().reference.child("Users")
+        var userFirebase = UserFirebase(user_id, usuario.Nombre, usuario.Apellidos, usuario.Identificacion, usuario.Email, rolName, usuario.PhoneNumber, Status_Chat.OFFLINE, 0, usuario.Contrasena,usuario.Id.toString())
+        reference?.child(user_id)?.setValue(userFirebase)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
+            if (!task.isSuccessful) {
+                //error
+                postEventError(LoginEvent.ERROR_EVENT, task.exception.toString())
+                Log.e("Error Firebase", task.exception.toString())
+            } else {
+                //success adding user to db as well
+                //go to users chat list
+                var userLastOnlineRef= reference?.child(user_id+"/last_Online")
+                userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
+                loginFirebaseUser(usuario)
+            }
+        })
+        /*
+         val userMap = HashMap<String?, String?>()
+         userMap.put("Rol", rolName)
+         userMap.put("Nombres", response.body()?.nombre)
+         userMap.put("Apellidos", response.body()?.apellido)
+         userMap.put("Cedula", response.body()?.identification)
+         userMap.put("Correo", response.body()?.email)
+         userMap.put("Celular", response.body()?.phoneNumber)
+         //userMap.put("FotoEnfermedad", "")
+         // userMap.put("Token", token!!)
+
+         reference?.setValue(userMap)?.addOnCompleteListener { task ->
+             if (task.isSuccessful) {
+                 postEvent(RegisterEvent.onRegistroExitoso)
+             } else {
+                 postEvent(RegisterEvent.onErrorRegistro, task.exception.toString())
+                 Log.e("Error Firebase", task.exception.toString())
+             }
+         }
+         */
+    }
+
     override fun getSqliteUsuario(login: Login) {
         val usuario_sqlite = getUsuario(login)
         if (usuario_sqlite != null) {
+
+            val ultimo_usuario = getLastUser()
+            var session_id: Long?
+            if (ultimo_usuario == null) {
+                session_id = 1
+            } else {
+                session_id = ultimo_usuario.SessionId!! + 1
+            }
+
+            usuario_sqlite.SessionId = session_id
             usuario_sqlite.UsuarioRemembered = true
             usuario_sqlite.save()
+
             postEvent(LoginEvent.SAVE_EVENT)
         } else {
             postEventError(LoginEvent.ERROR_EVENT, "Usuario o Contraseña Incorrectos")

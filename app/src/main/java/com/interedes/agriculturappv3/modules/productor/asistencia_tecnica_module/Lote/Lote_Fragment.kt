@@ -1368,11 +1368,17 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         when (requestCode) {
             PERMISSION_REQUEST_CODE ->
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setPropertiesTypeLocationGps()
+
                     //showAlertDialogAddUnidadProductiva(null)
                 } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         Toast.makeText(activity,
                                 "Permiso denegado", Toast.LENGTH_LONG).show()
+
+                        if(_dialogTypeLocation!=null){
+                            _dialogTypeLocation?.dismiss()
+                        }
                     } else {
                         if (hasPermissions(context, *PERMISSIONS)) {
                             setPropertiesTypeLocationGps()

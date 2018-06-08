@@ -10,12 +10,14 @@ import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.BaseColumns
 import android.provider.ContactsContract
 import android.support.v4.app.NotificationCompat
+import android.support.v4.content.ContextCompat
 import android.telephony.SmsMessage
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.services.Const
@@ -66,11 +68,13 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                     }
 
                     //Build the notification:
+
+
                     val builder = NotificationCompat.Builder(context)
                             .setSmallIcon(R.drawable.ic_stat_agrapp_icon_notificacion)
                             .setContentTitle("$messageAdress")
                             .setContentText(messageContent)
-                            .setLargeIcon(((context.resources.getDrawable(R.mipmap.ic_launcher) as (BitmapDrawable)).bitmap))
+                            .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
                             .setStyle(NotificationCompat.BigTextStyle()
                                     .bigText(messageContent))
                     builder.setAutoCancel(true)
