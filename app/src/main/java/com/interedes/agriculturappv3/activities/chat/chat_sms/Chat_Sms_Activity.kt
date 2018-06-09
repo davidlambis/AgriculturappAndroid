@@ -15,6 +15,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
 import android.provider.BaseColumns
+import android.provider.Telephony
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
@@ -244,6 +245,21 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
     protected fun sendSMS() {
         val toPhoneNumber =contactNumber
         val smsMessage = getString(R.string.idenfication_send_sms_app)+" "+messageEditText.getText().toString()
+
+        try {
+
+        var intent =  Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + toPhoneNumber?.replace(" ","")));
+        intent.putExtra("sms_body", smsMessage);
+        startActivityForResult(intent,34);
+
+        } catch (e: Exception) {
+            Toast.makeText(applicationContext,
+                    "Sending SMS failed.",
+                    Toast.LENGTH_LONG).show()
+            e.printStackTrace()
+        }
+
+        /*
         try {
             val smsManager = SmsManager.getDefault()
             smsManager.sendTextMessage(toPhoneNumber, null, smsMessage, null, null)
@@ -257,6 +273,21 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
                     "Sending SMS failed.",
                     Toast.LENGTH_LONG).show()
             e.printStackTrace()
+        }*/
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 34) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(applicationContext, "SMS sent.",
+                        Toast.LENGTH_LONG).show()
+            }else{
+                Toast.makeText(applicationContext,
+                        "Sending SMS failed.",
+                        Toast.LENGTH_LONG).show()
+            }
         }
     }
 

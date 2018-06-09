@@ -89,8 +89,6 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
 
     }
 
-
-
     private fun setToolbarInjection() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
@@ -154,10 +152,7 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
 
                 if(objSms._msg?.contains(getString(R.string.idenfication_send_sms_app))!!){
 
-                    var verificateAddress = smsListUser?.filter { smsuser: SmsUser -> smsuser._address == objSms._address }
-
-                    
-
+                    var verificateAddress = smsListUser?.filter { smsuser: SmsUser -> smsuser._address?.replace(" ","") == objSms._address?.replace(" ","") }
                     if(verificateAddress.size>0){
                         var item:SmsUser= verificateAddress.get(0)
                         smsListUser?.remove(item)
