@@ -42,11 +42,16 @@ class CoordsServiceKotlin(): Service(), LocationListener {
     internal var gpsActivo: Boolean = false
     var locationManager: LocationManager? = null
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        Toast.makeText(this, "Servicio Iniciado", Toast.LENGTH_SHORT).show()
-        getLocation(applicationContext)
-        // If we get killed, after returning from here, restart
-        return START_STICKY
+    //Intent?: Soluccion de error parameter specified as non-null is null onstartcommand
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        //if(intent!=null){
+            Toast.makeText(this, "Servicio Iniciado", Toast.LENGTH_SHORT).show()
+            getLocation(applicationContext)
+            // If we get killed, after returning from here, restart
+            return START_STICKY
+        //}
+      // return START_STICKY
         //return Service.START_REDELIVER_INTENT
     }
 

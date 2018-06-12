@@ -57,6 +57,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.interedes.agriculturappv3.activities.chat.chat_sms.UserSmsActivity
 import com.interedes.agriculturappv3.activities.chat.online.ChatUsersActivity
+import com.interedes.agriculturappv3.activities.intro.PermissionsIntro
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
@@ -187,6 +188,16 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         getListasIniciales()
 
         setupMenuFloating()
+
+        septupInjection()
+    }
+
+    private fun septupInjection() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (!hasPermissions(this, *PERMISSIONS)) {
+                startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
+            }
+        }
     }
 
     private fun setupMenuFloating() {

@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/fondo_intro3"
+            android:src="@drawable/fondo_intro"
             tools:ignore="ContentDescription" />
 
         <ScrollView

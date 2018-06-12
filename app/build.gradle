@@ -148,7 +148,6 @@ dependencies {
     //Intro
     implementation 'com.github.apl-devs:appintro:v4.2.3'
 
-
     def SupportLibVersion = '27.1.0'
     compile "com.android.support:appcompat-v7:$SupportLibVersion",
             "com.android.support:design:$SupportLibVersion"
