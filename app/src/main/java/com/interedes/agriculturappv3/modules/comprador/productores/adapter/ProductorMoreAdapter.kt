@@ -165,7 +165,7 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                             try {
                                 try {
-                                    Picasso.with(contextLocal).load(user?.Imagen).placeholder(R.drawable.default_avata).into(imgProductor)
+                                    Picasso.with(contextLocal).load(user?.Imagen).placeholder(R.drawable.ic_account_box_green).into(imgProductor)
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }

@@ -7,13 +7,19 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
 
 @Table(database = DataSource::class)
-data class DetalleOferta(@PrimaryKey(autoincrement = true)
-                         @SerializedName("Id")
-                         @Column(name = "Id")
-                         var Id: Long? = 0,
+data class DetalleOferta(@PrimaryKey
+                         @SerializedName("Detalle_Oferta_Id")
+                         @Column(name = "Detalle_Oferta_Id")
+                         var Detalle_Oferta_Id: Long? = 0,
+
                          @SerializedName("CalidadId")
                          @Column(name = "CalidadId")
                          var CalidadId: Long? = 0,
+
+                         @SerializedName("Cantidad")
+                         @Column(name = "Cantidad")
+                         var Cantidad: Double? = 0.0,
+
                          @SerializedName("OfertasId")
                          @Column(name = "OfertasId")
                          var OfertasId: Long? = 0,
@@ -31,5 +37,11 @@ data class DetalleOferta(@PrimaryKey(autoincrement = true)
                          var Valor_minimo: Double? = 0.0,
                          @SerializedName("Valor_transaccion")
                          @Column(name = "Valor_transaccion")
-                         var Valor_transaccion: Double? = 0.0) {
+                         var Valor_transaccion: Double? = 0.0,
+
+
+                         @SerializedName("Id")
+                         @Column(name = "Id_Remote")
+                         var Id_Remote: Long? = 0
+                         ) {
 }

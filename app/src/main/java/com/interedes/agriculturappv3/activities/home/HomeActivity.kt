@@ -1,19 +1,26 @@
 package com.interedes.agriculturappv3.activities.home
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.ConnectivityManager
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.activities.intro.PermissionsIntro
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.activities.registration.register_rol.RegisterRolActivity
 import com.interedes.agriculturappv3.modules.models.detalle_metodo_pago.DetalleMetodoPago
@@ -44,6 +51,20 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
     var lista: MutableList<Rol>? = null
     var apiService: ApiInterface? = null
 
+    //PERMISSION
+    private val PERMISSION_REQUEST_CODE = 1
+    var PERMISSION_ALL = 9
+    var PERMISSIONS = arrayOf(Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.READ_CONTACTS
+            )
+
     init {
         connectivityReceiver = ConnectivityReceiver()
         apiService = ApiInterface.create()
@@ -52,7 +73,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        goToMainActivity()
+        PermissionGoToMainActivity()
+
         registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         AgriculturApplication.instance.setConnectivityListener(this)
         loadRoles()
@@ -80,6 +102,28 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
     //endregion
 
     //region Métodos
+    private fun PermissionGoToMainActivity() {
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (!hasPermissions(this, *PERMISSIONS)) {
+                startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
+            } else {
+                val response = doPermissionGrantedStuffs()
+                if (response) {
+                    goToMainActivity()
+                    //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+                }
+            }
+        } else {
+            val response = doPermissionGrantedStuffs()
+            if (response) {
+                goToMainActivity()
+                //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
+            }
+        }
+    }
+
+
     private fun goToMainActivity() {
 
         var list = SQLite.select().from(Usuario::class.java).queryList()
@@ -90,6 +134,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
             startActivity(i)
         }
     }
+
 
     private fun loadRoles() {
         if (checkConnection()) {
@@ -256,4 +301,38 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
         super.onDestroy()
         unregisterReceiver(connectivityReceiver)
     }
+
+
+
+    //region PERMISSIONS
+    //region PERMISSIONS
+
+    fun hasPermissions(context: Context?, vararg permissions: String): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (permission in permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+
+    fun doPermissionGrantedStuffs(): Boolean {
+        /// String SIMSerialNumber=tm.getSimSerialNumber();
+        for (permission in PERMISSIONS) {
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                val response = false
+                return response
+            }
+        }
+        val response = true
+        return response
+    }
+
+    //endregion
+
+
+    //endregion
 }

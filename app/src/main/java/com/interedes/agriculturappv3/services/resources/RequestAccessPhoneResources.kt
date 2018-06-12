@@ -10,9 +10,5 @@ class RequestAccessPhoneResources {
         //Localizacion
         val ACCESS_REQUEST_FINE_LOCATION:Int=3
         val ENABLED_REQUEST_GPS:Int=4
-
-
-
-
     }
 }

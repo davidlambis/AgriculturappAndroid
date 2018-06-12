@@ -123,8 +123,6 @@
     <string name="title_filter_unidad_productiva">Filtrar lote por unidad productiva</string>
 
 
-
-
     <!--Unidad Prodductiva-->
     <string name="tittle_add_unidadproductiva">Agregar Unidad Productiva</string>
     <string name="tittle_edit_unidadproductiva">Editar Unidad Productiva</string>
@@ -432,7 +430,7 @@
     <string name="content_oferta_success">En espera de aceptacion del productor</string>
 
 
-    <string name="content_oferta_tittle">Vas a realizar una oferta al señor %1$s</string>
+    <string name="content_oferta_tittle">Vas a realizar una oferta al señor(a) %1$s</string>
     <string name="content_oferta_confirm">%1$s  %2$s de %3$s por</string>
 
     <!--Lista de productos-->

@@ -75,7 +75,7 @@ class OfertasAdapter(var lista: ArrayList<Oferta>) : RecyclerView.Adapter<Oferta
 
 
             contentIcon.setImageResource(R.drawable.ic_ofertas)
-            txtNombreCliente.text = String.format(context.getString(R.string.title_cliente), data.NombreUsuario)
+           // txtNombreCliente.text = String.format(context.getString(R.string.title_cliente), data.NombreUsuario)
             txtPrecio.text = String.format(context.getString(R.string.title_precio_oferta), data.Valor_Oferta)
             txtDate.text = String.format(context.getString(R.string.title_fecha_oferta), data.getCreatedOnFormat())
 

@@ -307,7 +307,7 @@ class Listas {
 
         fun listStaticOfertas(): ArrayList<Oferta> {
             val list_static_ofertas = ArrayList<Oferta>()
-            list_static_ofertas.add(Oferta(Id = 1, CreatedOn = Calendar.getInstance().time, EstadoOferta = 1, EstadoOfertaId = 1, UsuarioId = 1, ProductoId = 1, NombreUsuario = "Anacleto", Valor_Oferta = 50.15))
+            //list_static_ofertas.add(Oferta(Id = 1, CreatedOn = Calendar.getInstance().time, EstadoOferta = 1, EstadoOfertaId = 1, UsuarioId = 1, ProductoId = 1, NombreUsuario = "Anacleto", Valor_Oferta = 50.15))
             return list_static_ofertas
         }
 

@@ -85,9 +85,10 @@
                             android:layout_height="match_parent">
 
                             <ImageView
-                                android:src="@drawable/default_avata"
+                                android:src="@drawable/ic_account_box_green"
                                 android:id="@+id/contentIcon"
                                 android:layout_width="50dp"
+                                android:scaleType="centerCrop"
                                 android:layout_height="wrap_content"
                                 />
 
@@ -226,7 +227,7 @@
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cage caturro"/>
+                            android:text=""/>
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
@@ -244,17 +245,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent">
 
-
-
                             <ImageView
-                                android:src="@drawable/ic_produccion_cultivo"
+                                android:src="@drawable/ic_productos_blue"
                                 android:id="@+id/contenIconProducto"
                                 android:layout_width="match_parent"
                                 android:layout_height="250dp"
                                 android:adjustViewBounds="true"
-                                android:scaleType="centerInside"
+                                android:scaleType="centerCrop"
                                 />
-
 
                         </LinearLayout>
                         <LinearLayout
@@ -264,7 +262,6 @@
                             android:layout_width="match_parent"
                             android:orientation="vertical"
                             android:layout_height="wrap_content">
-
 
                             <TextView
                                 android:layout_width="match_parent"

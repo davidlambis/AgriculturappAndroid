@@ -15,6 +15,10 @@ data class RequestEventDetalleProducto (var eventType: Int,
         val ERROR_EVENT: Int = 4
         val LIST_EVENT_UNIDAD_MEDIDA_PRICE: Int = 5
 
+        val OK_SEND_EVENT_OFERTA: Int = 6
+
+        //Error Connection
+        val ERROR_VERIFICATE_CONECTION: Int = 7
 
 
 

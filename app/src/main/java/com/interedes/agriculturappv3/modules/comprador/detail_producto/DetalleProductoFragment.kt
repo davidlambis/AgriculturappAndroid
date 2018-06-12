@@ -36,10 +36,13 @@ import com.afollestad.materialdialogs.Theme
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.modules.comprador.productores.adapter.ProductorMoreAdapter
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
+import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.alert_success.view.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
+import kotlinx.android.synthetic.main.dialog_form_cultivo.*
+import java.util.*
 
 
 class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View.OnClickListener {
@@ -171,7 +174,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                             try {
                                 try {
-                                    Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.default_avata).into(contentIcon)
+                                    Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.ic_account_box_green).into(contentIcon)
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }
@@ -244,7 +247,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
         onMessageOk(colorPrimary, message)
     }
 
-    override fun validarListasAddOferta(): Boolean {
+    override fun validarAddOferta(): Boolean {
         var cancel = false
         var focusView: View? = null
         if (viewDialog?.edtCantidadOfertar?.text.toString().isEmpty() ) {
@@ -442,7 +445,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                 .positiveColorRes(R.color.light_green_800)
                 .negativeColorRes(R.color.light_green_800)
                 .titleGravity(GravityEnum.CENTER)
-                .titleColorRes(R.color.light_green_800)
+                .titleColorRes(R.color.colorPrimary)
                 .contentColorRes(android.R.color.white)
                 .backgroundColorRes(R.color.material_blue_grey_800)
                 .dividerColorRes(R.color.light_green_800)
@@ -452,9 +455,9 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                 .theme(Theme.DARK)
                 .onPositive(
                         { dialog1, which ->
-                            Toast.makeText(activity,"Enviar oferta",Toast.LENGTH_SHORT).show()
+                            //Toast.makeText(activity,"Enviar oferta",Toast.LENGTH_SHORT).show()
                             _dialogOferta?.dismiss()
-                            sucessResponseOferta()
+                            postOferta()
                         })
                 .onNegative({ dialog1, which ->
                     dialog1.dismiss()
@@ -489,8 +492,10 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                 .onPositive(
                         { dialog1, which ->
                            dialog1.dismiss()
+                            if(_dialogOferta!=null){
+                                _dialogOferta?.dismiss()
+                            }
                         })
-
                 .build()
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())
@@ -498,6 +503,37 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
         dialog.show()
         dialog.getWindow().setAttributes(lp)
+    }
+
+
+
+    override fun postOferta(){
+
+        if(presenter?.validarCamposAddOferta()!!){
+
+            var oferta= Oferta()
+            var date= Calendar.getInstance().time
+
+            oferta.UpdatedOn=oferta.getDateFormatApi(date)
+            oferta.CreatedOn=oferta.getDateFormatApi(date)
+
+            oferta.CreatedOnLocal=date
+            oferta.UpdatedOnLocal=date
+
+            oferta.UsuarioTo=productoGlobal?.userId
+            oferta.CalidadId=productoGlobal?.CalidadId
+            oferta.EstadoOferta=0
+            oferta.EstadoOfertaId=0
+
+            oferta.ProductoId=productoIdGlobal
+            oferta.UnidadMedidaId=unidadMedidaPrecioGlobal?.Id
+            oferta.Valor_Oferta=valorTotalGlobal
+
+            oferta.Cantidad=viewDialog?.edtCantidadOfertar?.text.toString()?.toDoubleOrNull()
+
+            presenter?.postOferta(oferta)
+
+        }
     }
 
 
@@ -525,10 +561,6 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             R.id.ivClosetDialogOferta->{
                 _dialogOferta?.dismiss()
             }
-
-
-
-
 
             R.id.btnSendOferta->{
                 if(presenter?.validarCamposAddOferta()!!){

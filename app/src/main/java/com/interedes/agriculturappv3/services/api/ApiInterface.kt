@@ -30,6 +30,8 @@ import retrofit2.http.GET
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPlaga
+import com.interedes.agriculturappv3.modules.models.ofertas.PostDetalleOferta
+import com.interedes.agriculturappv3.modules.models.ofertas.PostOferta
 import com.interedes.agriculturappv3.modules.models.plagas.EnfermedadResponseApi
 import com.interedes.agriculturappv3.modules.models.producto.*
 import com.interedes.agriculturappv3.modules.models.rol.RolUserLogued
@@ -362,6 +364,17 @@ interface ApiInterface {
 
 
 
+    //region Oferta Comprador
+
+    //TODO Requiere Token
+    @Headers("Content-Type: application/json")
+    @POST("odata/Agp2/Oferta")
+    fun postOfertaComprador(@Body body: PostOferta): Call<PostOferta>
+
+
+    @Headers("Content-Type: application/json")
+    @POST("odata/Agp2/DetalleOferta")
+    fun postDetalleOfertaComprador(@Body body: PostDetalleOferta): Call<PostDetalleOferta>
 
     //http://18.233.87.16/odata/Agp2/DetalleTipoProductos?$expand=Cultivos($expand=Productos($expand=UnidadMedida,Calidad),Lote($expand=UnidadProductiva($expand=Usuario))),TipoProducto&$filter=TipoProductoId eq 2
 

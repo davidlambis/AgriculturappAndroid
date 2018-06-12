@@ -52,6 +52,11 @@
         <activity
             android:name=".activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".activities.intro.PermissionsIntro"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <!--
             <activity
             android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity"

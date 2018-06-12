@@ -5,9 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.modules.comprador.detail_producto.events.RequestEventDetalleProducto
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta
+import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 
 interface IMainViewDetailProducto {
 
@@ -19,7 +22,7 @@ interface IMainViewDetailProducto {
         fun hideProgressHud()
 
         //Validaciones
-        fun validarListasAddOferta(): Boolean
+        fun validarAddOferta(): Boolean
 
         //Response Notify
         fun requestResponseOK()
@@ -34,6 +37,9 @@ interface IMainViewDetailProducto {
         fun showConfirmOferta()
         fun sucessResponseOferta()
 
+
+        //Methods
+        fun postOferta()
 
 
         //Events
@@ -50,12 +56,16 @@ interface IMainViewDetailProducto {
         fun onEventMainThread(requestEvent: RequestEventDetalleProducto?)
 
         //validaciones
-        fun validarCamposAddOferta(): Boolean?
+        fun validarCamposAddOferta(): Boolean
 
         //Methods
+        fun getLastUserLogued(): Usuario?
         fun getProducto(producto_id:Long):Producto?
         fun getTipoProducto(tipo_producto_id:Long):TipoProducto?
         fun verificateCantProducto(producto_id:Long?,catnidad:Double?):Boolean?
+
+        //Oferta
+        fun postOferta(oferta: Oferta)
 
         //Set ListSppiner
         fun setListSpinnerMoneda()
@@ -65,16 +75,29 @@ interface IMainViewDetailProducto {
     }
 
     interface Interactor {
+        fun getLastUserLogued(): Usuario?
         fun getProducto(producto_id:Long):Producto?
         fun getTipoProducto(tipo_producto_id:Long):TipoProducto?
         fun verificateCantProducto(producto_id:Long?,catnidad:Double?):Boolean?
+
+        //Oferta
+        fun postOferta(oferta: Oferta,checkConection:Boolean)
+
         fun getListas()
     }
 
     interface Repository {
+        fun getLastUserLogued(): Usuario?
         fun getProducto(producto_id:Long):Producto?
         fun getTipoProducto(tipo_producto_id:Long):TipoProducto?
         fun verificateCantProducto(producto_id:Long?,catnidad:Double?):Boolean?
+
+        //Oferta
+        fun postOferta(oferta: Oferta,checkConection:Boolean)
+        fun saveOfertaLocal(oferta: Oferta, detalleOferta: DetalleOferta)
+        fun getLastOferta(): Oferta?
+        fun getLastDetalleOferta(): DetalleOferta?
+
         fun getListas()
     }
 

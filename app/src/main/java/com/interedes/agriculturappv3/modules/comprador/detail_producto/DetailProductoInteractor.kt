@@ -1,7 +1,9 @@
 package com.interedes.agriculturappv3.modules.comprador.detail_producto
 
+import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 
 class DetailProductoInteractor:IMainViewDetailProducto.Interactor {
 
@@ -27,5 +29,15 @@ class DetailProductoInteractor:IMainViewDetailProducto.Interactor {
 
     override fun getListas() {
         repository?.getListas()
+    }
+
+
+    override fun postOferta(oferta: Oferta, checkConection:Boolean){
+        repository?.postOferta(oferta,checkConection)
+    }
+
+
+    override fun getLastUserLogued(): Usuario?{
+       return  repository?.getLastUserLogued()
     }
 }

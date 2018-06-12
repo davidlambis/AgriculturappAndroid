@@ -8,9 +8,11 @@ import com.google.firebase.database.DatabaseReference
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.comprador.detail_producto.events.RequestEventDetalleProducto
+import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -89,19 +91,30 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
                 listUnidadMedidaGlobalPrecios = event.mutableList as List<Unidad_Medida>
             }
 
+            RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA -> {
+                onMessageOk()
+                mainView?.sucessResponseOferta()
+            }
 
+
+        //Error Conection
+            RequestEventDetalleProducto.ERROR_VERIFICATE_CONECTION -> {
+                onMessageConectionError()
+            }
         }
     }
     //endregion
 
     //region VALIDACIONES
     //region Methods
-    override fun validarCamposAddOferta(): Boolean? {
-        if (mainView?.validarListasAddOferta() == true) {
+    override fun validarCamposAddOferta(): Boolean {
+        if (mainView?.validarAddOferta() == true) {
             return true
         }
         return false
     }
+
+
 
     //endregion
 
@@ -122,6 +135,14 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
         interactor?.getListas()
     }
 
+    override fun postOferta(oferta: Oferta){
+        mainView?.showProgressHud()
+        interactor?.postOferta(oferta,checkConnection())
+    }
+
+    override fun getLastUserLogued(): Usuario?{
+        return  interactor?.getLastUserLogued()
+    }
 
     //endregion
 
@@ -135,6 +156,7 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
     //region Messages/Notificaciones
     private fun onMessageOk() {
         mainView?.hideProgress()
+        mainView?.hideProgressHud()
         mainView?.requestResponseOK()
     }
 
@@ -146,9 +168,12 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
 
     private fun onMessageConectionError() {
         mainView?.hideProgress()
-        mainView?.showProgressHud()
+        mainView?.hideProgressHud()
         mainView?.verificateConnection()
     }
+
+
+
     //endregion
 
 
