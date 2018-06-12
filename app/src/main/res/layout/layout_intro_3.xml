@@ -48,7 +48,7 @@
                         android:layout_gravity="center"
                         android:textAlignment="center"
                         android:layout_marginBottom="@dimen/margin_10"
-                        android:text="Permite AgriculturApp acceder a la camara y galleria de imagenes."
+                        android:text="Permite AgriculturApp acceder a la camara y galeria de imagenes."
                         android:textColor="@color/white_solid"
                         android:textSize="@dimen/text_size_25"
                         android:textStyle="bold" />
