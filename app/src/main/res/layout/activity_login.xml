@@ -41,8 +41,9 @@
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_above="@+id/footer"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:fillViewport="true">
 
         <LinearLayout
@@ -89,7 +90,10 @@
                             android:drawableLeft="@drawable/ic_productor"
                             android:drawableStart="@drawable/ic_productor"
                             android:hint="@string/edit_text_correo"
-                            android:inputType="textEmailAddress" />
+                            android:inputType="textEmailAddress" >
+
+                            <requestFocus />
+                        </EditText>
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout

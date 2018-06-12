@@ -585,8 +585,10 @@ class MenuRepository: MainViewMenu.Repository {
         var mProducto= SQLite.select()
                 .from(Producto::class.java)
                 .where(Producto_Table.Estado_Sincronizacion.eq(false))
-                .and(Produccion_Table.UsuarioId.eq(usuario?.Id))
+                .and(Producto_Table.userId.eq(usuario?.Id))
                 .orderBy(Producto_Table.ProductoId,false).querySingle()
+
+
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(mProducto?.cultivoId)).querySingle()
 
         if(mProducto!=null && cultivo?.EstadoSincronizacion==true){

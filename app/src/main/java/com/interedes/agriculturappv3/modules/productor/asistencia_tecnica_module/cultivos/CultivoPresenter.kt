@@ -14,6 +14,7 @@ import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleT
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 import java.util.ArrayList
@@ -61,8 +62,11 @@ class CultivoPresenter(var view: ICultivo.View?) : ICultivo.Presenter {
     }
 
     override fun onResume(context: Context) {
-        context.registerReceiver(mNotificationReceiver, IntentFilter("CONECTIVIDAD"))
-        context.registerReceiver(mNotificationReceiver, IntentFilter("LOCATION"))
+       /// context.registerReceiver(mNotificationReceiver, IntentFilter("CONECTIVIDAD"))
+       // context.registerReceiver(mNotificationReceiver, IntentFilter("LOCATION"))
+
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_LOCATION))
     }
 
     override fun onPause(context: Context) {

@@ -11,6 +11,7 @@ import com.interedes.agriculturappv3.modules.main_menu.fragment.ui.MainMenuFragm
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 
@@ -69,8 +70,12 @@ class MainMenuFragmentPresenterImpl(var view: MainMenuFragmentView?) : MainMenuF
     }
 
     override fun onResume(context: Context) {
-        context.registerReceiver(mNotificationReceiver, IntentFilter("CONECTIVIDAD"))
-        context.registerReceiver(mNotificationReceiver, IntentFilter("LOCATION"))
+        /*context.registerReceiver(mNotificationReceiver, IntentFilter("CONECTIVIDAD"))
+        context.registerReceiver(mNotificationReceiver, IntentFilter("LOCATION"))*/
+
+
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_LOCATION))
     }
 
     override fun onPause(context: Context) {

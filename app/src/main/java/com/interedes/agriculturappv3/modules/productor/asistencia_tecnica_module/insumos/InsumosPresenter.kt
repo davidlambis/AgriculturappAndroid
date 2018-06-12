@@ -38,7 +38,7 @@ class InsumosPresenter(var view: InterfaceInsumos.View?) : InterfaceInsumos.Pres
     }
 
     //region Conectividad
-    private val mNotificationReceiver = object : BroadcastReceiver() {
+    private val mNotificationReceiverApp = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             var extras = intent.extras
             if (extras != null) {
@@ -52,11 +52,11 @@ class InsumosPresenter(var view: InterfaceInsumos.View?) : InterfaceInsumos.Pres
     }
 
     override fun onResume(context: Context) {
-        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const.SERVICE_CONECTIVITY))
     }
 
     override fun onPause(context: Context) {
-        context.unregisterReceiver(this.mNotificationReceiver);
+        context.unregisterReceiver(this.mNotificationReceiverApp);
     }
 
     /*

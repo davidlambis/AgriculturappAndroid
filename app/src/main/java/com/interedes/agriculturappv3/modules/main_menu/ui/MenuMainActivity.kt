@@ -410,8 +410,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             if (sd.canWrite()) {
 
                 var usuario= presenter?.getLastUserLogued()
-                /*String currentDBPath = "//data//" + "com.datatakehnn"
-                        + "//databases//" + "db_datatake.db";*/
+
                 val currentDBPath = String.format("%s%s", applicationContext.getDatabasePath(DataSource.NAME).toString(), ".db")
                 val backupDBPath = "$directory/${usuario?.Nombre}_${usuario?.Apellidos}_db_agricultur_app.db"
                 val currentDB = File(currentDBPath)
@@ -449,7 +448,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             val sd = Environment.getExternalStorageDirectory()
             val data = Environment.getDataDirectory()
             if (sd.canWrite()) {
-                //String currentDBPath= "/data/data/com.datatakehnn/databases/db_datatake.db";
+
                 val currentDBPath = String.format("%s%s", applicationContext.getDatabasePath(DataSource.NAME).toString(), ".db")
 
                 val file = File(currentDBPath)

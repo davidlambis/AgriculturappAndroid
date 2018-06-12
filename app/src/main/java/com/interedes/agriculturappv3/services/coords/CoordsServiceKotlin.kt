@@ -1,29 +1,20 @@
 package com.interedes.agriculturappv3.services.coords
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.Dialog
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.location.LocationProvider
 import android.os.*
-import android.provider.Settings
-import android.support.v4.app.ActivityCompat
-import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.modules.models.Coords
 import com.interedes.agriculturappv3.services.Const
-import android.view.WindowManager
+
 
 
 
@@ -102,6 +93,7 @@ class CoordsServiceKotlin(): Service(), LocationListener {
         val is_enabled_gps=true
         val retIntent = Intent(Const.SERVICE_LOCATION)
         retIntent.setPackage(PACKAGE_NAME)
+       // retIntent.setAction("com.interedes.agriculturappv3.SendBroadcast")
         retIntent.putExtra("is_enabled_gps", is_enabled_gps)
         applicationContext?.sendBroadcast(retIntent)
 

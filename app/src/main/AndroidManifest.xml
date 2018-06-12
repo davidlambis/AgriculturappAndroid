@@ -63,13 +63,22 @@
             android:configChanges="screenSize|orientation"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateHidden" />
+
+
+             <activity
+            android:name=".activities.login.ui.LoginActivity"
+            android:configChanges="screenSize|orientation"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden"
+             />
         -->
 
         <activity
             android:name=".activities.login.ui.LoginActivity"
             android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+             />
         <activity
             android:name=".activities.registration.register_rol.RegisterRolActivity"
             android:parentActivityName=".activities.home.HomeActivity"
