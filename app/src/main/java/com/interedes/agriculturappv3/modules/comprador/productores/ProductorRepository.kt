@@ -192,7 +192,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                                 }
                                 lote.Area=item.area_lote
                                 lote.Unidad_Medida_Id=item.unidadmedida_id_lote
-
+                                lote.UsuarioId=item.usuario_id
                                 lote.Unidad_Productiva_Id=unidaProductiva?.Unidad_Productiva_Id
                                 lote.Nombre_Unidad_Medida= item.descripcion_unidadmedida_lote
                                 lote.Nombre_Unidad_Productiva= unidaProductiva?.nombre
@@ -231,7 +231,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                             cultivo.Id_Remote=item.cultivoid
                             cultivo.Nombre= item.nombre_cultivo
                             cultivo.Unidad_Medida_Id= item.unidadmedida_id_cultivo
-
+                            cultivo.UsuarioId=item.usuario_id
                             cultivo.LoteId=lote?.LoteId
                             cultivo.Descripcion=item.descripcion_cultivo
                             cultivo.NombreUnidadProductiva= unidaProductiva?.nombre
@@ -269,6 +269,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                                     producto.ProductoId = last_producto.ProductoId!! + 1
                                 }
                             }
+                            producto.userId=item.usuario_id
                             producto.Id_Remote= item.id
                             producto.CalidadId= item.calidad_id
                             producto.CategoriaId=0

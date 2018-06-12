@@ -162,7 +162,7 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
 
     private fun onMessageError(error: String?) {
         mainView?.hideProgress()
-        mainView?.showProgressHud()
+        mainView?.hideProgressHud()
         mainView?.requestResponseError(error)
     }
 

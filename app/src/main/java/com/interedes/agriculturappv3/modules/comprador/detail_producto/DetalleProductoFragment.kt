@@ -226,7 +226,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
     }
 
     override fun requestResponseError(error: String?) {
-        onMessageError(R.color.grey_luiyi, error)
+        onMessageError(R.color.red_900, error)
     }
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
@@ -524,8 +524,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             oferta.CalidadId=productoGlobal?.CalidadId
             oferta.EstadoOferta=0
             oferta.EstadoOfertaId=0
-
-            oferta.ProductoId=productoIdGlobal
+            oferta.ProductoId=productoGlobal?.Id_Remote
             oferta.UnidadMedidaId=unidadMedidaPrecioGlobal?.Id
             oferta.Valor_Oferta=valorTotalGlobal
 
