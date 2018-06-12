@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.activities.intro
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
@@ -19,6 +20,10 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.github.paolorotolo.appintro.AppIntro2
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
+import com.raizlabs.android.dbflow.sql.language.SQLite
 
 
 /**
@@ -65,11 +70,8 @@ class PermissionsIntro: AppIntro() {
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
         }*/
 
-        addSlide(SampleSlideJava.newInstance(R.layout.layout_intro_1))
-        addSlide(SampleSlideJava.newInstance(R.layout.layout_intro_2))
-        addSlide(SampleSlideJava.newInstance(R.layout.layout_intro_3))
-        addSlide(SampleSlideJava.newInstance(R.layout.layout_intro_4))
-        addSlide(SampleSlideJava.newInstance(R.layout.layout_intro_5))
+
+
 
 
        /* val sliderPage1 = SliderPage()
@@ -134,28 +136,30 @@ class PermissionsIntro: AppIntro() {
 
         // Here we load a string array with a camera permission, and tell the library to request permissions on slide 2
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            askForPermissions(PERMISSIONS_UBICACION, 2)
-            askForPermissions(PERMISSIONS_STORAGE_CAMERA, 3)
-            askForPermissions(PERMISSIONS_PHONE_SMS, 4)
-        }
-
+       // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        addSlide(SampleSlideJava.newInstance(R.layout.layout_intro_1))
+        addSlide(SampleSlideJava.newInstance(R.layout.layout_intro_2))
+        addSlide(SampleSlideJava.newInstance(R.layout.layout_intro_3))
+        addSlide(SampleSlideJava.newInstance(R.layout.layout_intro_4))
+        addSlide(SampleSlideJava.newInstance(R.layout.layout_intro_5))
+        askForPermissions(PERMISSIONS_UBICACION, 2)
+        askForPermissions(PERMISSIONS_STORAGE_CAMERA, 3)
+        askForPermissions(PERMISSIONS_PHONE_SMS, 4)
+       /* }else{
+            addSlide(SampleSlideJava.newInstance(R.layout.layout_intro_1))
+        }*/
 
 
 
 
        /* // Declare a new image view
         val imageView = ImageView(this)
-
         // Bind a drawable to the imageview
         imageView.setImageResource(R.drawable.fondo_login_opt)
-
         // Set background color
         imageView.setBackgroundColor(Color.WHITE)
-
         // Set layout params
         imageView.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-
         // Bind the background to the intro
         setBackgroundView(imageView)*/
     }
@@ -175,7 +179,14 @@ class PermissionsIntro: AppIntro() {
 
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
+
         if (doPermissionGrantedStuffs()!!) {
+            var usuario= getLastUserLogued()
+            if (usuario != null) {
+                val i = Intent(this, MenuMainActivity::class.java)
+                i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(i)
+            }
             finish()
         }else{
 
@@ -196,11 +207,28 @@ class PermissionsIntro: AppIntro() {
                 getPager().currentItem = 3
                 askForPermissions(PERMISSIONS_PHONE_SMS, 4)
             }
-
-
-
-
         }
+
+
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+
+        }else{
+            var usuario= getLastUserLogued()
+            if (usuario != null) {
+                val i = Intent(this, MenuMainActivity::class.java)
+                i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(i)
+            }
+            finish()
+        }*/
+    }
+
+    private fun getLastUserLogued(): Usuario? {
+        var usuarioLoguedHome = SQLite.select().from(Usuario::class.java)
+                .where(Usuario_Table.UsuarioRemembered.eq(true))
+                .querySingle()
+        return usuarioLoguedHome
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
