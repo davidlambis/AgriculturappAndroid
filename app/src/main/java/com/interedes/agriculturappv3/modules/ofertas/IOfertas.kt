@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas
+package com.interedes.agriculturappv3.modules.ofertas
 
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,7 @@ import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
-import com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas.events.OfertasEvent
+import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 
 interface IOfertas {
 

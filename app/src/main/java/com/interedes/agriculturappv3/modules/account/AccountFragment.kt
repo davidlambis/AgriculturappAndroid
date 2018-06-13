@@ -856,17 +856,26 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                       imageBitmapAccountGlobal=null
                       imageAccountGlobal=null
                   } else {
-                      //success saving photo
-                      val userPhotoLink = task.result.downloadUrl!!.toString()
-                      //now update the database with this user photo
-                      val childUpdates = HashMap<String, Any>()
-                      childUpdates["imagen"] = userPhotoLink
-                      mUserDBRef?.child(mCurrentUserID)?.updateChildren(childUpdates)
-                      user_image?.setImageBitmap(imageBitmapAccountGlobal)
-                      (activity as MenuMainActivity).circleImageView.setImageBitmap(imageBitmapAccountGlobal)
-                      progressDialog.dismiss();
-                      saveDataUserLogued()
-                      Toast.makeText(activity, "Foto Actualizada", Toast.LENGTH_LONG).show()
+                      try {
+                          //success saving photo
+                          val userPhotoLink = task.result.downloadUrl!!.toString()
+                          //now update the database with this user photo
+                          val childUpdates = HashMap<String, Any>()
+                          childUpdates["imagen"] = userPhotoLink
+                          mUserDBRef?.child(mCurrentUserID)?.updateChildren(childUpdates)
+
+                          if(imageBitmapAccountGlobal!=null){
+                              user_image?.setImageBitmap(imageBitmapAccountGlobal)
+                              (activity as MenuMainActivity).circleImageView.setImageBitmap(imageBitmapAccountGlobal)
+
+                          }
+
+                          progressDialog.dismiss();
+                          saveDataUserLogued()
+                          Toast.makeText(activity, "Foto Actualizada", Toast.LENGTH_LONG).show()
+                      }catch (ex:Exception){
+                          Log.d("ERROR UPDATE FOTO: ", ex.toString());
+                      }
                   }
               }?.addOnFailureListener{
                           exception ->

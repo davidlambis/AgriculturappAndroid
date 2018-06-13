@@ -9,7 +9,7 @@ import com.interedes.agriculturappv3.modules.models.compras.Compras
 import com.interedes.agriculturappv3.modules.models.compras.Compras_Table
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
-import com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas.events.OfertasEvent
+import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 import com.interedes.agriculturappv3.modules.productor.comercial_module.ventas.events.VentasEvent
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.save

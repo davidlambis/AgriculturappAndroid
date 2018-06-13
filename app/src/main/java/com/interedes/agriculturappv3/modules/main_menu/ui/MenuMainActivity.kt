@@ -18,7 +18,6 @@ import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
-import android.provider.Settings
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -33,24 +32,20 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
-import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.main_menu.fragment.ui.adapter.AdapterFragmetMenu
 import com.interedes.agriculturappv3.modules.main_menu.fragment.ui.MainMenuFragment
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import com.interedes.agriculturappv3.modules.main_menu.ui.MenuPresenterImpl
 import com.interedes.agriculturappv3.modules.main_menu.ui.MainViewMenu
 import com.interedes.agriculturappv3.services.Const
-import com.raizlabs.android.dbflow.sql.language.SQLite
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
-import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -60,13 +55,12 @@ import com.interedes.agriculturappv3.activities.chat.online.ChatUsersActivity
 import com.interedes.agriculturappv3.activities.intro.PermissionsIntro
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
-import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
+import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.services.resources.MenuBoomResources
 import com.interedes.agriculturappv3.services.resources.RolResources
-import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nightonke.boommenu.BoomMenuButton
 import com.nightonke.boommenu.Types.BoomType
@@ -74,10 +68,8 @@ import com.nightonke.boommenu.Types.ButtonType
 import com.nightonke.boommenu.Types.PlaceType
 import com.nightonke.boommenu.Util
 import com.raizlabs.android.dbflow.kotlinextensions.save
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.dialog_sync_data.view.*
-import kotlinx.android.synthetic.main.navigation_drawer_header.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -340,7 +332,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
                         }
 
-
                        /* Toast.makeText(
                                 this,
                                 "On click " + circleSubButtonTexts[buttonIndex],
@@ -349,7 +340,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     .init(boomMenuButtonInActionBar)
 
         }, 1)
-
 
     }
 
@@ -372,8 +362,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     //region IMPORTING AND EXPORTEING DB
     fun performFileSearch() {
-
-
         // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
         // browser.
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
@@ -403,8 +391,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 directory = posicion[1]
             }
 
-
-
             val sd = Environment.getExternalStorageDirectory()
             //File data = Environment.getDataDirectory();
             if (sd.canWrite()) {
@@ -427,10 +413,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
             }
         } catch (e: Exception) {
-
             Toast.makeText(baseContext, e.toString(), Toast.LENGTH_LONG)
                     .show()
-
         }
     }
 
@@ -512,6 +496,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val ProductosCompradorFragment = ProductosCompradorFragment()
 
         if (getLastUserLogued()?.RolNombre.equals(RolResources.PRODUCTOR)) {
+
             container.setPadding(0,0,0,0)
             navigationViewBotom.visibility=View.GONE
             AdapterFragmetMenu(MainMenuFragment, fragmentManager, R.id.container)
@@ -561,6 +546,16 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 var ss= ex.toString()
                 Log.d("Convert Image", "defaultValue = " + ss);
             }
+        }
+
+        if (getLastUserLogued()?.RolNombre.equals(RolResources.PRODUCTOR)) {
+            //Menu Lateral
+            headerViewHolder.itemSyncronizarDatos.visibility=View.VISIBLE
+
+        } else if (getLastUserLogued()?.RolNombre.equals(RolResources.COMPRADOR)) {
+            //Menu Lateral
+            headerViewHolder.itemSyncronizarDatos.visibility=View.GONE
+
         }
 
 
@@ -776,6 +771,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
             R.id.itemCerrarSesion -> {
                 showExit()
+            }
+
+            R.id.itemOfertas -> {
+                drawer_layout.closeDrawer(GravityCompat.START)
+                replaceFragment(OfertasFragment())
             }
 
             R.id.itemSyncronizarDatos -> {

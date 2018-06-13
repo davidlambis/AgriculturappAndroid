@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas
+package com.interedes.agriculturappv3.modules.ofertas
 
 
 import android.content.DialogInterface
@@ -27,7 +27,7 @@ import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
-import com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas.adapters.OfertasAdapter
+import com.interedes.agriculturappv3.modules.ofertas.adapters.OfertasAdapter
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*

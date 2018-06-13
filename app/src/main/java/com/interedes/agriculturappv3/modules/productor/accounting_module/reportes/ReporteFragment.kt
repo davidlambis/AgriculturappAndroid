@@ -352,7 +352,7 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
 
       //  adapter?.setItems(categoriaList as List<ExpandableGroup<*>>)
         val layoutManager = LinearLayoutManager(activity)
-        adapter = CategoriaPukAdapter(categoriaList as List<ExpandableGroup<*>>)
+        adapter = CategoriaPukAdapter(activity!!,categoriaList as List<ExpandableGroup<*>>)
         recycler_view.layoutManager = layoutManager
         recycler_view.adapter = adapter
 

@@ -1,15 +1,19 @@
-package com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas
+package com.interedes.agriculturappv3.modules.ofertas
 
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.lote.Lote
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta_Table
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta_Table
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
-import com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas.events.OfertasEvent
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -17,7 +21,6 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 class OfertasRepository : IOfertas.Repository {
 
     var eventBus: EventBus? = null
-
     init {
         eventBus = GreenRobotEventBus()
     }
@@ -35,20 +38,80 @@ class OfertasRepository : IOfertas.Repository {
     }
 
     override fun getListOfertas(productoId: Long?) {
-        val list_static_ofertas = Listas.listStaticOfertas()
+        /*val list_static_ofertas = Listas.listStaticOfertas()
         for (item in list_static_ofertas) {
             item.save()
-        }
+        }*/
         val listaOfertas = getOfertas(productoId)
         postEventOk(OfertasEvent.READ_EVENT, listaOfertas, null)
     }
 
     override fun getOfertas(productoId: Long?): List<Oferta> {
-        var listResponse: List<Oferta>? = null
+        var usuario= getLastUserLogued();
+
+
+
+        var listResponse= ArrayList<Oferta>()
+
         if (productoId == null) {
-            listResponse = SQLite.select().from(Oferta::class.java).queryList()
+            var ofertaResponse = SQLite.select()
+                    .from(Oferta::class.java)
+                    .where(Oferta_Table.UsuarioTo.eq(usuario?.Id))
+                    .queryList()
+
+            for (oferta in ofertaResponse){
+                var usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+                if(usuario!=null){
+                    oferta.Usuario=usuario
+                }
+
+                var detalleOferta= SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
+                if(detalleOferta!=null){
+
+                    oferta.DetalleOfertaSingle=detalleOferta
+
+                    var producto=SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(detalleOferta.ProductoId)).querySingle()
+                    if(producto!=null){
+                        oferta.Producto=producto
+                    }
+                }
+
+
+
+                listResponse.add(oferta)
+            }
+
+
         } else {
-            listResponse = SQLite.select().from(Oferta::class.java).where(Oferta_Table.ProductoId.eq(productoId)).queryList()
+
+
+            var ofertaResponse = SQLite.select().from(Oferta::class.java)
+                    .where(Oferta_Table.ProductoId.eq(productoId))
+                    .and(Oferta_Table.UsuarioTo.eq(usuario?.Id))
+                    .queryList()
+
+
+            for (oferta in ofertaResponse){
+                var usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+                if(usuario!=null){
+                    oferta.Usuario=usuario
+                }
+
+                var detalleOferta= SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
+                if(detalleOferta!=null){
+
+                    oferta.DetalleOfertaSingle=detalleOferta
+
+                    var producto=SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(detalleOferta.ProductoId)).querySingle()
+                    if(producto!=null){
+                        oferta.Producto=producto
+                    }
+                }
+
+
+
+                listResponse.add(oferta)
+            }
         }
         return listResponse;
     }
@@ -57,6 +120,12 @@ class OfertasRepository : IOfertas.Repository {
         val producto = SQLite.select().from(Producto::class.java).where(Producto_Table.ProductoId.eq(productoId)).querySingle()
         postEventOkProducto(OfertasEvent.GET_EVENT_PRODUCTO, producto)
     }
+
+    fun getLastUserLogued(): Usuario? {
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
+
 
     //endregion
 

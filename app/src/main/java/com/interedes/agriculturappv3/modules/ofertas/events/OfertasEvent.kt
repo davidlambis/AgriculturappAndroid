@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas.events
+package com.interedes.agriculturappv3.modules.ofertas.events
 
 data class OfertasEvent(var eventType: Int,
                         var mutableList: MutableList<Object>? = null,
@@ -13,6 +13,10 @@ data class OfertasEvent(var eventType: Int,
         val LIST_EVENT_PRODUCTO: Int = 4
         val READ_EVENT: Int = 5
         val GET_EVENT_PRODUCTO: Int = 6
+
+        val REQUEST_REFUSED_ITEM_EVENT: Int = 7
+        val REQUEST_CONFIRM_ITEM_EVENT: Int = 8
+        val REQUEST_CHAT_ITEM_EVENT: Int = 9
     }
 
 }

@@ -14,8 +14,6 @@ data class PostOferta (
         @SerializedName("CreatedOn")
         var CreatedOn: String? = null,
 
-        @SerializedName("EstadoOferta")
-        var EstadoOferta: Int? = 0,
 
         @SerializedName("EstadoOfertaId")
         var EstadoOfertaId: Long? = 0,

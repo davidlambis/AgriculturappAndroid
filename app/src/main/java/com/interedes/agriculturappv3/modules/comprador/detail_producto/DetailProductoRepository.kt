@@ -14,6 +14,7 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.resources.CategoriaMediaResources
+import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
@@ -75,8 +76,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
             val postOferta = PostOferta(
                     0,
                     oferta.CreatedOn,
-                    oferta.EstadoOferta,
-                    oferta.EstadoOfertaId,
+                    EstadosOfertasResources.VIGENTE,
                     oferta.UpdatedOn,
                     oferta.UsuarioId,
                     oferta.UsuarioTo
@@ -107,6 +107,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
 
                                     var detalleOferta=DetalleOferta()
+                                    detalleOferta.Id_Remote=response?.Id
                                     detalleOferta.OfertasId=oferta?.Id_Remote
                                     detalleOferta.Cantidad= oferta.Cantidad
                                     detalleOferta.CalidadId=oferta.CalidadId
@@ -115,6 +116,9 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                                     detalleOferta.Valor_Oferta=oferta.Valor_Oferta
                                     detalleOferta.Valor_minimo=oferta.Valor_Oferta
                                     detalleOferta.Valor_transaccion=oferta.Valor_Oferta
+                                    detalleOferta.NombreUnidadMedidaPrecio=oferta.NombreUnidadMedidaPrecio
+
+                                    oferta.Nombre_Estado_Oferta=EstadosOfertasResources.VIGENTE_STRING
 
                                     saveOfertaLocal(oferta,detalleOferta)
 

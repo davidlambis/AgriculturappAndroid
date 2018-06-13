@@ -15,7 +15,7 @@ import android.view.WindowManager
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.adapters.SingleAdapter
 import com.interedes.agriculturappv3.modules.productor.comercial_module.clientes.ClientesFragment
-import com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas.OfertasFragment
+import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.ProductosFragment
 import com.interedes.agriculturappv3.modules.productor.comercial_module.ventas.VentasFragment
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity

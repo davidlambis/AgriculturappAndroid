@@ -28,6 +28,7 @@ import com.interedes.agriculturappv3.modules.models.departments.Departamento
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.lote.PostLote
+import com.interedes.agriculturappv3.modules.models.ofertas.*
 import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.modules.models.plagas.EnfermedadResponseApi
 import com.interedes.agriculturappv3.modules.models.produccion.PostProduccion
@@ -64,6 +65,7 @@ import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.raizlabs.android.dbflow.data.Blob
+import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -960,6 +962,16 @@ class MenuRepository: MainViewMenu.Repository {
 
     }
 
+     fun getLastOferta(): Oferta? {
+        val lastOferta = SQLite.select().from(Oferta::class.java).where().orderBy(Oferta_Table.Oferta_Id, false).querySingle()
+        return lastOferta
+    }
+
+     fun getLastDetalleOferta(): DetalleOferta? {
+        val lastDetalleOferta = SQLite.select().from(DetalleOferta::class.java).where().orderBy(DetalleOferta_Table.Detalle_Oferta_Id, false).querySingle()
+        return lastDetalleOferta
+    }
+
     fun getLastTercero(usuario:Usuario?): Tercero? {
 
         if(usuario!=null){
@@ -1053,6 +1065,13 @@ class MenuRepository: MainViewMenu.Repository {
                                 .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
+
+
+
+
+
+
+
 
 
                         //TODO Add information new remote
@@ -1264,75 +1283,7 @@ class MenuRepository: MainViewMenu.Repository {
 
 
 
-            //Get Productos by user
-            val queryProductos = Listas.queryGeneral("userId",usuario?.Id.toString())
-            val callProductos = apiService?.getSyncProductos(queryProductos)
-            callProductos?.enqueue(object : Callback<GetSynProductosUserResponse> {
-                override fun onResponse(call: Call<GetSynProductosUserResponse>?, response: Response<GetSynProductosUserResponse>?) {
-                    if (response != null && response.code() == 200) {
-                        val productos = response.body()?.value as MutableList<Producto>
 
-
-                        SQLite.delete<Producto>(Producto::class.java)
-                                .where(Producto_Table.Estado_Sincronizacion.eq(true))
-                                .and(Producto_Table.Estado_SincronizacionUpdate.eq(true))
-                                .async()
-                                .execute()
-
-
-                        for(producto in productos){
-
-                            var productoVerficateSave= SQLite.select()
-                                    .from(Producto::class.java)
-                                    .where(Producto_Table.Id_Remote.eq(producto.Id_Remote))
-                                    .and(Producto_Table.Estado_SincronizacionUpdate.eq(false))
-                                    .querySingle()
-
-                            //TODO Verifica si tiene pendiente actualizacion por sincronizar
-                            if (productoVerficateSave!=null){
-                                producto.ProductoId=productoVerficateSave.ProductoId
-                            }else{
-
-                                val last_producto = getLastProducto(null)
-                                if (last_producto == null) {
-                                    producto.ProductoId = 1
-                                } else {
-                                    producto.ProductoId = last_producto.ProductoId!! + 1
-                                }
-
-                                producto.NombreCultivo= if(producto.Cultivo!=null)producto?.Cultivo?.Nombre else null
-                                producto.NombreLote= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.Nombre else null
-                                producto.NombreUnidadProductiva= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.UnidadProductiva?.nombre else null
-                                producto.NombreUnidadMedidaCantidad=if(producto.UnidadMedida!= null)producto.UnidadMedida?.Descripcion else null
-                                producto.NombreCalidad=if(producto.Calidad!=null)producto.Calidad?.Nombre else null
-                                producto.NombreUnidadMedidaPrecio=producto.PrecioUnidadMedida
-                                producto.Estado_Sincronizacion=true
-                                producto.Estado_SincronizacionUpdate=true
-                                producto.Usuario_Logued=usuario?.Id
-
-                                producto.NombreDetalleTipoProducto=if(producto.Cultivo!=null)producto.Cultivo?.detalleTipoProducto?.Nombre else null
-
-                                try {
-                                    val base64String = producto?.Imagen
-                                    val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
-                                    val byte = Base64.decode(base64Image, Base64.DEFAULT)
-                                    producto.blobImagen = Blob(byte)
-                                }catch (ex:Exception){
-                                    var ss= ex.toString()
-                                    Log.d("Convert Image", "defaultValue = " + ss);
-                                }
-
-                                producto.save()
-                            }
-                        }
-                    } else {
-                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                    }
-                }
-                override fun onFailure(call: Call<GetSynProductosUserResponse>?, t: Throwable?) {
-                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                }
-            })
 
 
 
@@ -1544,6 +1495,26 @@ class MenuRepository: MainViewMenu.Repository {
         })
 
 
+
+        //Calidades de Producto
+        val callEstadoOfertas = apiService?.getEstadosOfertas()
+        callEstadoOfertas?.enqueue(object : Callback<EstadoOfertaResponse> {
+            override fun onResponse(call: Call<EstadoOfertaResponse>?, response: Response<EstadoOfertaResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val listEstadosOfertas = response.body()?.value as MutableList<EstadoOferta>
+                    for (item in listEstadosOfertas) {
+                        item.save()
+                    }
+                } else {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<EstadoOfertaResponse>?, t: Throwable?) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+
+
         //Categorías de Producto
         //getLastUserLogued
         //
@@ -1560,12 +1531,14 @@ class MenuRepository: MainViewMenu.Repository {
 
                     SQLite.delete<Transaccion>(Transaccion::class.java)
                             .where(Transaccion_Table.Estado_Sincronizacion.eq(true))
+                            .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
                             .and(Transaccion_Table.Estado_SincronizacionUpdate.eq(true))
                             .async()
                             .execute()
 
                     SQLite.delete<Tercero>(Tercero::class.java)
                             .where(Tercero_Table.Estado_Sincronizacion.eq(true))
+                            .and(Tercero_Table.Usuario_Id.eq(usuario?.Id))
                             .and(Tercero_Table.Estado_SincronizacionUpdate.eq(true))
                             .async()
                             .execute()
@@ -1642,11 +1615,182 @@ class MenuRepository: MainViewMenu.Repository {
                             item.save()
                         }
                     }
+
+                    loadProductos(usuario)
                 } else {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
             }
             override fun onFailure(call: Call<GetSincronizacionTransacciones>?, t: Throwable?) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+    }
+
+
+    fun loadProductos(usuario:Usuario?){
+        //Get Productos by user
+        val queryProductos = Listas.queryGeneral("userId",usuario?.Id.toString())
+        val callProductos = apiService?.getSyncProductos(queryProductos)
+        callProductos?.enqueue(object : Callback<GetSynProductosUserResponse> {
+            override fun onResponse(call: Call<GetSynProductosUserResponse>?, response: Response<GetSynProductosUserResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val productos = response.body()?.value as MutableList<Producto>
+
+
+                    SQLite.delete<Producto>(Producto::class.java)
+                            .where(Producto_Table.userId.eq(usuario?.Id))
+                            .and(Producto_Table.Estado_Sincronizacion.eq(true))
+                            .and(Producto_Table.Estado_SincronizacionUpdate.eq(true))
+                            .async()
+                            .execute()
+
+
+
+                    for(producto in productos){
+
+                        var cultivo= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.Id_Remote.eq(producto.cultivoId)).querySingle()
+
+
+                        var productoVerficateSave= SQLite.select()
+                                .from(Producto::class.java)
+                                .where(Producto_Table.Id_Remote.eq(producto.Id_Remote))
+                                .and(Producto_Table.Estado_SincronizacionUpdate.eq(false))
+                                .querySingle()
+
+                        //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                        if (productoVerficateSave!=null){
+                            producto.ProductoId=productoVerficateSave.ProductoId
+                        }else{
+
+                            val last_producto = getLastProducto(null)
+                            if (last_producto == null) {
+                                producto.ProductoId = 1
+                            } else {
+                                producto.ProductoId = last_producto.ProductoId!! + 1
+                            }
+
+                            producto.NombreCultivo= if(producto.Cultivo!=null)producto?.Cultivo?.Nombre else null
+                            producto.NombreLote= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.Nombre else null
+                            producto.NombreUnidadProductiva= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.UnidadProductiva?.nombre else null
+                            producto.NombreUnidadMedidaCantidad=if(producto.UnidadMedida!= null)producto.UnidadMedida?.Descripcion else null
+                            producto.NombreCalidad=if(producto.Calidad!=null)producto.Calidad?.Nombre else null
+                            producto.NombreUnidadMedidaPrecio=producto.PrecioUnidadMedida
+                            producto.Estado_Sincronizacion=true
+                            producto.Estado_SincronizacionUpdate=true
+                            producto.Usuario_Logued=usuario?.Id
+
+                            producto.cultivoId=if(cultivo!=null)cultivo?.CultivoId else null
+
+                            producto.NombreDetalleTipoProducto=if(producto.Cultivo!=null)producto.Cultivo?.detalleTipoProducto?.Nombre else null
+
+                            try {
+                                val base64String = producto?.Imagen
+                                val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                producto.blobImagen = Blob(byte)
+                            }catch (ex:Exception){
+                                var ss= ex.toString()
+                                Log.d("Convert Image", "defaultValue = " + ss);
+                            }
+
+                            producto.save()
+                        }
+                    }
+
+                    loadOfertas(usuario)
+                } else {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<GetSynProductosUserResponse>?, t: Throwable?) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+    }
+
+    private fun loadOfertas(usuario: Usuario?) {
+        val queryOfertas = Listas.queryGeneral("usuarioto",usuario?.Id.toString())
+        val callOfertas = apiService?.getOfertas(queryOfertas)
+        callOfertas?.enqueue(object : Callback<OfertaResponse> {
+            override fun onResponse(call: Call<OfertaResponse>?, response: Response<OfertaResponse>?) {
+                if (response != null && response.code() == 200) {
+
+                    var listOferta=SQLite.select().from(Oferta::class.java).where(Oferta_Table.UsuarioTo.eq(usuario?.Id)).queryList()
+                    for (oferta in listOferta){
+                        SQLite.delete<DetalleOferta>(DetalleOferta::class.java)
+                                .where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id))
+                                .async()
+                                .execute()
+
+                        oferta.delete()
+                    }
+
+
+                    val ofertas = response.body()?.value as MutableList<Oferta>
+                    for(oferta in ofertas){
+
+                        var ofertaVerficateSave= SQLite.select()
+                                .from(Oferta::class.java)
+                                .where(Oferta_Table.Id_Remote.eq(oferta.Id_Remote))
+                                .querySingle()
+
+                        //TODO Verifica si tiene pendiente actualizacion por sincronizar
+                        if (ofertaVerficateSave!=null){
+                            ofertaVerficateSave.Oferta_Id=ofertaVerficateSave.Oferta_Id
+                        }else{
+                            val last_oferta = getLastOferta()
+                            if (last_oferta == null) {
+                                last_oferta?.Oferta_Id = 1
+                            } else {
+                                last_oferta?.Oferta_Id  = last_oferta.Oferta_Id!! + 1
+                            }
+                        }
+
+
+                        oferta.CreatedOnLocal=oferta.getFechaDate(oferta.CreatedOn)
+                        oferta.UpdatedOnLocal=oferta.getFechaDate(oferta.UpdatedOn)
+                        oferta.Nombre_Estado_Oferta=if(oferta.Estado_Oferta!=null)oferta.Estado_Oferta?.Nombre else null
+                        oferta.save()
+
+
+                        if(oferta.Usuario!=null){
+                            oferta.Usuario!!.save()
+                        }
+
+                        if(oferta.DetalleOferta!=null){
+
+                            for(detalleoferta in oferta.DetalleOferta!!){
+
+                                var detalleOfertaVerficateSave= SQLite.select()
+                                        .from(DetalleOferta::class.java)
+                                        .where(DetalleOferta_Table.Id_Remote.eq(detalleoferta.Id_Remote))
+                                        .querySingle()
+
+                                if (detalleOfertaVerficateSave!=null){
+                                    detalleOfertaVerficateSave.Detalle_Oferta_Id=detalleOfertaVerficateSave.Detalle_Oferta_Id
+                                }else{
+                                    val last_detalle_oferta = getLastDetalleOferta()
+                                    if (last_detalle_oferta == null) {
+                                        detalleOfertaVerficateSave?.Detalle_Oferta_Id = 1
+                                    } else {
+                                        detalleOfertaVerficateSave?.Detalle_Oferta_Id  = last_detalle_oferta.Detalle_Oferta_Id!! + 1
+                                    }
+                                }
+                                detalleoferta.NombreUnidadMedidaPrecio=if(detalleoferta.UnidadMedida!= null)detalleoferta.UnidadMedida?.Descripcion else null
+                                detalleoferta.OfertasId=oferta.Oferta_Id
+                                detalleoferta.Detalle_Oferta_Id=detalleOfertaVerficateSave?.Detalle_Oferta_Id
+                                detalleoferta.save()
+
+                            }
+                        }
+
+                    }
+                } else {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<OfertaResponse>?, t: Throwable?) {
                 postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
         })

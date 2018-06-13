@@ -112,7 +112,6 @@ data class Usuario(
                    @SerializedName("Rol")
                    var Rol: Rol?=null
 
-
 ) {}
 
 

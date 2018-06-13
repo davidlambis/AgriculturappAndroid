@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas
+package com.interedes.agriculturappv3.modules.ofertas
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -12,7 +12,7 @@ import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.productor.comercial_module.ofe.OfertasInteractor
-import com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas.events.OfertasEvent
+import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -101,6 +101,19 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
             OfertasEvent.GET_EVENT_PRODUCTO -> {
                 val producto = event.objectMutable as Producto
                 view?.setProducto(producto)
+            }
+
+
+            OfertasEvent.REQUEST_CONFIRM_ITEM_EVENT -> {
+                var oferta = event.objectMutable as Oferta
+            }
+
+            OfertasEvent.REQUEST_CHAT_ITEM_EVENT -> {
+                var oferta = event.objectMutable as Oferta
+            }
+
+            OfertasEvent.REQUEST_REFUSED_ITEM_EVENT -> {
+                var oferta = event.objectMutable as Oferta
             }
         }
     }

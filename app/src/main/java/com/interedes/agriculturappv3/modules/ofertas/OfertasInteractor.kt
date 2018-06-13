@@ -1,7 +1,7 @@
 package com.interedes.agriculturappv3.modules.productor.comercial_module.ofe
 
-import com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas.IOfertas
-import com.interedes.agriculturappv3.modules.productor.comercial_module.ofertas.OfertasRepository
+import com.interedes.agriculturappv3.modules.ofertas.IOfertas
+import com.interedes.agriculturappv3.modules.ofertas.OfertasRepository
 
 class OfertasInteractor : IOfertas.Interactor {
 

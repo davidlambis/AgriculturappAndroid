@@ -46,7 +46,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
 
     //Productos
-    var PAGE_SIZE=5
+    var PAGE_SIZE=4
     var pastVisiblesItems: Int? = 0
 
 

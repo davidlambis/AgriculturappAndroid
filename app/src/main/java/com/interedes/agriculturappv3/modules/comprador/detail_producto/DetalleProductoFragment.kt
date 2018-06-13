@@ -38,6 +38,7 @@ import com.interedes.agriculturappv3.modules.comprador.productores.adapter.Produ
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.alert_success.view.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
@@ -521,9 +522,9 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             oferta.UpdatedOnLocal=date
 
             oferta.UsuarioTo=productoGlobal?.userId
+            oferta.NombreUnidadMedidaPrecio=viewDialog?.spinnerMonedaPrecio?.text.toString()
             oferta.CalidadId=productoGlobal?.CalidadId
-            oferta.EstadoOferta=0
-            oferta.EstadoOfertaId=0
+            oferta.EstadoOfertaId=EstadosOfertasResources.VIGENTE
             oferta.ProductoId=productoGlobal?.Id_Remote
             oferta.UnidadMedidaId=unidadMedidaPrecioGlobal?.Id
             oferta.Valor_Oferta=valorTotalGlobal

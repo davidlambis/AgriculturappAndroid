@@ -108,7 +108,6 @@ data class Producto(@PrimaryKey
                     var Usuario_Logued: UUID? = null,
 
 
-
                     @SerializedName("Id")
                     @Column(name = "Id_Remote")
                     var Id_Remote: Long? = 0,
@@ -151,9 +150,9 @@ data class Producto(@PrimaryKey
 
 ) {
 
-    /*override fun toString(): String {
+    override fun toString(): String {
         return Nombre!!
-    }*/
+    }
 
     fun getFechaLimiteDisponibilidadFormat(): String {
 
@@ -190,7 +189,6 @@ data class Producto(@PrimaryKey
                 // TODO Auto-generated catch block
                 e.printStackTrace()
             }
-
 
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             return sdf.format(convertedDate)
