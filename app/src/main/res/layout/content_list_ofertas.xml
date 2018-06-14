@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="true">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/contentIcon"
+        android:layout_width="match_parent"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:layout_height="150dp"
+        android:contentDescription="hola"
+        android:gravity="top" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Platano "
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_18"
+            android:textStyle="bold" />
+
+
+        <LinearLayout
+            android:gravity="center|left"
+            android:layout_marginTop="@dimen/margin_5"
+            android:layout_below="@+id/txtTitle"
+            android:id="@+id/content"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/circleView"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_below="@+id/header_text"
+                android:src="@drawable/default_avata" />
+
+            <TextView
+                android:id="@+id/publisher_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@+id/publisher_name"
+                android:layout_toRightOf="@+id/publisher_name"
+                android:contentDescription="Place holder"
+                android:tint="@color/orange"
+                android:src="@android:drawable/sym_action_email" />
+
+            <TextView
+                android:id="@+id/comment_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/header_text"
+                android:text="Chat"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/content"
+            android:layout_marginTop="15dp"
+            android:text="contenido"
+            android:textSize="@dimen/text_size_15" />
+
+        <LinearLayout
+            android:layout_below="@+id/txtDescription"
+            android:id="@+id/contentQuantdate"
+            android:layout_marginTop="@dimen/margin_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_marginBottom="@dimen/margin_5"
+                android:id="@+id/txtQuantity"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:textSize="@dimen/text_size_16"
+                android:layout_height="wrap_content"
+                android:text=""/>
+
+            <TextView
+                android:layout_marginBottom="@dimen/margin_5"
+                android:paddingStart="@dimen/margin_10"
+                android:layout_weight="1"
+                android:id="@+id/txtDate"
+                android:textColor="@color/green_900"
+                android:layout_width="match_parent"
+                android:textSize="@dimen/text_size_12"
+                android:layout_height="wrap_content"
+                android:text=""/>
+        </LinearLayout>
+
+
+
+        <!-- <Button
+             android:id="@+id/read_more"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentLeft="true"
+             android:layout_below="@+id/blog_content"
+             android:layout_marginTop="16dp"
+             android:text="Detalle" />-->
+
+
+        <LinearLayout
+            android:layout_below="@+id/contentQuantdate"
+            android:id="@+id/optionsButtons"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:layout_margin="@dimen/margin_5"
+                android:textColor="@color/white_solid"
+                android:text="@string/to_refuse"
+                android:padding="@dimen/margin_5"
+                android:background="@color/red_900"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:id="@+id/btnButtomAction1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+          <!--  <Button
+
+                android:layout_margin="@dimen/margin_5"
+                android:textColor="@color/white_solid"
+                android:text="@string/chat"
+                android:padding="@dimen/margin_10"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:id="@+id/btnButtomAction2"
+                android:background="@color/orange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />-->
+
+            <Button
+                android:layout_margin="@dimen/margin_5"
+                android:textColor="@color/white_solid"
+                android:text="@string/confirm"
+                android:padding="@dimen/margin_5"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:id="@+id/btnButtomAction3"
+                android:background="@color/green_900"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
+
+</android.support.v7.widget.CardView>

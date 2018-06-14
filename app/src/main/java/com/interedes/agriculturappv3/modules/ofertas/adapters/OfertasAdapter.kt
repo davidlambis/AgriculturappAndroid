@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.modules.ofertas.adapters
 import android.graphics.BitmapFactory
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import de.hdodenhof.circleimageview.CircleImageView
 import java.util.ArrayList
 
 class OfertasAdapter(var lista: ArrayList<Oferta>) : RecyclerView.Adapter<OfertasAdapter.ViewHolder>() {
@@ -41,7 +43,7 @@ class OfertasAdapter(var lista: ArrayList<Oferta>) : RecyclerView.Adapter<Oferta
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OfertasAdapter.ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.content_list_general, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.content_list_ofertas, parent, false)
         return OfertasAdapter.ViewHolder(v)
     }
 
@@ -71,17 +73,24 @@ class OfertasAdapter(var lista: ArrayList<Oferta>) : RecyclerView.Adapter<Oferta
 
 
             val txtDate: TextView = itemView.findViewById(R.id.txtDate)
+            val publisher_name: TextView = itemView.findViewById(R.id.publisher_name)
+
+
+
+
             val btnAction1: Button = itemView.findViewById(R.id.btnButtomAction1)
-            val btnAction2: Button = itemView.findViewById(R.id.btnButtomAction2)
             val btnAction3: Button = itemView.findViewById(R.id.btnButtomAction3)
 
+            val circleView: CircleImageView =itemView.findViewById(R.id.circleView)
 
 
+            /*
             val options: LinearLayout =itemView.findViewById(R.id.options)
             options.visibility=View.GONE
 
             val optionsButtons: LinearLayout =itemView.findViewById(R.id.optionsButtons)
             optionsButtons.visibility=View.VISIBLE
+            */
 
 
 
@@ -99,6 +108,7 @@ class OfertasAdapter(var lista: ArrayList<Oferta>) : RecyclerView.Adapter<Oferta
 
             if(data.DetalleOfertaSingle!=null){
 
+                /*
                 var disponibilidad = ""
                 if ( data.DetalleOfertaSingle?.Cantidad.toString().contains(".0")) {
                     disponibilidad = String.format(context?.getString(R.string.price_empty_signe)!!,
@@ -107,10 +117,24 @@ class OfertasAdapter(var lista: ArrayList<Oferta>) : RecyclerView.Adapter<Oferta
                     disponibilidad = data.DetalleOfertaSingle?.Cantidad.toString()
                 }
                 txtCantidad.text =disponibilidad+" ${data.Producto?.NombreUnidadMedidaCantidad}"
+
+                */
             }
 
 
             if(data.Usuario!=null){
+
+                publisher_name.text=data.Usuario?.Nombre+" ${data.Usuario?.Apellidos}"
+
+                try {
+                    val foto = data.Usuario?.blobImagenUser?.blob
+                    var imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+                    circleView.setImageBitmap(imageBitmapAccountGlobal)
+                }catch (ex:Exception){
+                    var ss= ex.toString()
+                    Log.d("Convert Image", "defaultValue = " + ss);
+                }
+
 
                 var disponibilidad = ""
                 if ( data.DetalleOfertaSingle?.Cantidad.toString().contains(".0")) {
@@ -139,9 +163,6 @@ class OfertasAdapter(var lista: ArrayList<Oferta>) : RecyclerView.Adapter<Oferta
                 postEvent(OfertasEvent.REQUEST_REFUSED_ITEM_EVENT, data)
             }
 
-            btnAction2.setOnClickListener {
-                postEvent(OfertasEvent.REQUEST_CONFIRM_ITEM_EVENT, data)
-            }
 
             btnAction3.setOnClickListener {
                 postEvent(OfertasEvent.REQUEST_CHAT_ITEM_EVENT, data)

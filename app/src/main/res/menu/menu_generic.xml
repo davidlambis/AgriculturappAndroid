@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+
+
+
+    <item  android:id="@+id/action_more"
+        android:icon="@drawable/ic_action_more_vert"
+        android:title="Opciones"
+        android:orderInCategory="100"
+        app:showAsAction="always" >
+        <menu>
+                <item
+                    android:icon="@drawable/ic_action_edit_tinted"
+                    android:id="@+id/menuaction1"
+                    android:title="Editar"
+
+                    />
+
+
+                <item
+                    android:icon="@drawable/ic_action_delete_tinted"
+                    android:id="@+id/menuaction2"
+                    android:title="Eliminar"
+
+                    />
+        </menu>
+    </item>
+
+
+
+
+    <!--
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="Opciones"
+        android:icon="@drawable/ic_action_more_vert"
+        app:showAsAction="always" >
+        <menu>
+            <item android:id="@+id/action_exportar"
+                android:icon="@drawable/ic_action_backup_tinted"
+                android:title="Exportar">
+            </item>
+            <item android:id="@+id/action_importar"
+                android:icon="@drawable/ic_action_restore_tinted"
+                android:title="Importar">
+            </item>
+
+
+        </menu>
+    </item>
+-->
+
+</menu>

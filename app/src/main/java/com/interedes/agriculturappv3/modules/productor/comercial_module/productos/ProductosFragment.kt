@@ -825,7 +825,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 mProducto.Imagen = stringBuilder.toString()
             }*/
 
-            mProducto.NombreCultivo = cultivoGlobal?.Nombre
+            //mProducto.NombreCultivo = cultivoGlobal?.Nombre
             mProducto.Stock= viewDialog?.txtCantidadProductoDisponible?.text.toString().toDoubleOrNull()
             mProducto.Precio = viewDialog?.txtPrecioProducto?.text.toString().toDoubleOrNull()
             mProducto.NombreUnidadMedidaPrecio = viewDialog?.spinnerMonedaPrecio?.text.toString()

@@ -76,10 +76,11 @@
                     />
 
                 <android.support.design.widget.BottomNavigationView
+
                     android:id="@+id/navigationViewBotom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?android:attr/windowBackground"
+                    android:background="@color/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:itemBackground="@color/colorPrimary"
                     app:itemIconTint="@color/white_solid"

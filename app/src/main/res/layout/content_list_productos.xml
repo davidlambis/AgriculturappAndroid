@@ -38,6 +38,17 @@
                         android:orientation="vertical">
 
 
+                        <TextView
+                            android:id="@+id/textViewOptions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentTop="true"
+                            android:text="&#8942;"
+                            android:padding="@dimen/margin_15"
+                            android:textAppearance="?android:textAppearanceLarge" />
+
+
 
 
                         <!--<ImageView
@@ -50,11 +61,13 @@
                             android:src="@drawable/aguacate" />-->
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/imageViewProducto"
-                            android:layout_gravity="center"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_gravity="center"
+                            android:layout_toStartOf="@+id/textViewOptions"
                             android:padding="@dimen/margin_10"
-                            android:src="@drawable/ic_foto_producto"/>
+                            android:src="@drawable/ic_foto_producto" />
 
                         <TextView
                             android:id="@+id/txtNombreDetalleProducto"
@@ -153,23 +166,13 @@
                         </LinearLayout>
 
 
-
+<!--
                         <LinearLayout
                             android:orientation="horizontal"
                             android:layout_below="@+id/contentPrice"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
-                           <!-- <ImageButton
-                                android:padding="@dimen/margin_10"
-                                android:background="?android:selectableItemBackground"
-                                android:layout_weight="1"
-                                android:clickable="true"
-                                android:id="@+id/btnAction1"
-                                android:src="@android:drawable/ic_menu_add"
-                                android:layout_width="wrap_content"
-                                android:layout_marginEnd="@dimen/text_size_12"
-                                android:layout_height="wrap_content"
-                                /> -->
+
                             <ImageButton
                                 android:padding="@dimen/margin_10"
                                 android:layout_weight="1"
@@ -193,7 +196,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 />
-                        </LinearLayout>
+                        </LinearLayout>-->
 
                     </RelativeLayout>
 

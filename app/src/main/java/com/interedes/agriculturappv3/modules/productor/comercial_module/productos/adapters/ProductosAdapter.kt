@@ -12,6 +12,8 @@ import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.events.ProductosEvent
 import java.util.ArrayList
 import android.graphics.BitmapFactory
+import android.support.v7.widget.PopupMenu
+import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -71,8 +73,12 @@ class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
             val txtDescripcionProducto: TextView = itemView.findViewById(R.id.txtDescripcionProducto)
             val txtFechaDisponibilidad: TextView = itemView.findViewById(R.id.txtFechaDisponibilidad)
             val txtPrecioProducto: TextView = itemView.findViewById(R.id.txtPrecioProducto)
-            val btnEdit: ImageButton = itemView.findViewById(R.id.btnAction2)
-            val btnDelete: ImageButton = itemView.findViewById(R.id.btnAction3)
+
+           // val btnEdit: ImageButton = itemView.findViewById(R.id.btnAction2)
+           // val btnDelete: ImageButton = itemView.findViewById(R.id.btnAction3)
+
+
+            val textViewOptions:TextView=itemView.findViewById(R.id.textViewOptions)
 
 
             val content: LinearLayout = itemView.findViewById(R.id.contentPrice)
@@ -95,6 +101,31 @@ class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
             txtPrecioProducto.text = String.format(context.getString(R.string.title_adapter_precio_producto), data.Precio)
 
 
+            textViewOptions.setOnClickListener(View.OnClickListener {
+                //creating a popup menu
+                val popup = PopupMenu(context, textViewOptions)
+                //inflating menu from xml resource
+                popup.inflate(R.menu.menu_generic)
+                //adding click listener
+                popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+                    override fun onMenuItemClick(item: MenuItem): Boolean {
+                        when (item.getItemId()) {
+                            R.id.menuaction1 -> {
+                                postEvent(ProductosEvent.ITEM_EDIT_EVENT, data)
+                            }
+                            R.id.menuaction2 -> {
+                                postEvent(ProductosEvent.ITEM_DELETE_EVENT, data)
+                            }
+
+                        }//handle menu1 click
+                        //handle menu2 click
+                        //handle menu3 click
+                        return false
+                    }
+                })
+                //displaying the popup
+                popup.show()
+            })
 
 
             if (data.Estado_Sincronizacion == true) {
@@ -116,13 +147,14 @@ class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
                 }
             })
 
-            btnEdit.setOnClickListener {
+
+           /* btnEdit.setOnClickListener {
                 postEvent(ProductosEvent.ITEM_EDIT_EVENT, data)
             }
 
             btnDelete.setOnClickListener {
                 postEvent(ProductosEvent.ITEM_DELETE_EVENT, data)
-            }
+            }*/
 
         }
     }

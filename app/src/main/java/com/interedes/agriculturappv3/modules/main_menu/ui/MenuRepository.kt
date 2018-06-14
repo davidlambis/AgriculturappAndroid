@@ -1755,6 +1755,18 @@ class MenuRepository: MainViewMenu.Repository {
 
 
                         if(oferta.Usuario!=null){
+
+                            if(oferta.Usuario?.Fotopefil!=null){
+                                try {
+                                    val base64String = oferta.Usuario?.Fotopefil
+                                    val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                    val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                    oferta.Usuario?.blobImagenUser = Blob(byte)
+                                }catch (ex:Exception){
+                                    var ss= ex.toString()
+                                    Log.d("Convert Image", "defaultValue = " + ss);
+                                }
+                            }
                             oferta.Usuario!!.save()
                         }
 
