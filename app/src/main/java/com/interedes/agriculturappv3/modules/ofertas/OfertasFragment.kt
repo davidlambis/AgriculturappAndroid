@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
@@ -16,6 +17,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
@@ -29,6 +31,8 @@ import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.ofertas.adapters.OfertasAdapter
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
+import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
@@ -37,6 +41,9 @@ import java.util.ArrayList
 
 
 class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
+
+    //Progress
+    private var hud: KProgressHUD?=null
 
     var presenter: IOfertas.Presenter? = null
     var ofertasList: ArrayList<Oferta>? = ArrayList<Oferta>()
@@ -62,9 +69,14 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        OfertasFragment.instance = this
+
+        instance = this
         presenter = OfertasPresenter(this)
         presenter?.onCreate()
+
+       /* OfertasFragment.instance = this
+        presenter = OfertasPresenter(this)
+        presenter?.onCreate()*/
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -117,7 +129,6 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         adapter?.clear()
         ofertasList?.clear()
         adapter?.setItems(listOfertas)
-        hideProgress()
         setResults(listOfertas.size)
     }
 
@@ -288,7 +299,83 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         })
         builder.setIcon(R.drawable.ic_ofertas)
         return builder.show()
+        /*
+        return  MaterialDialog.Builder(activity!!)
+                .title(R.string.alert)
+                .content(R.string.verificate_conexion, true)
+                .positiveText(R.string.confirm)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.light_green_800)
+                .limitIconToDefaultSize()
+                .backgroundColorRes(R.color.white_solid)
+                // .negativeColorRes(R.color.material_red_400)
+                .iconRes(R.drawable.ic_ofertas)
+                .dividerColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.black)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                .positiveColor(Color.WHITE)
+                .autoDismiss(false)
+                //.negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .onPositive(
+                        { dialog1, which ->
+                            dialog1.dismiss()
+
+                        })
+                .show()*/
+
+        /*return   dialog.show()
+
+        return   MaterialDialog.Builder(activity!!)
+                .iconRes(R.mipmap.ic_launcher)
+                .limitIconToDefaultSize() // limits the displayed icon size to 48dp
+                .title(R.string.alert)
+                .content(R.string.verificate_conexion, true)
+                .positiveText(R.string.confirm)
+                .show()
+        */
     }
+
+    override fun showProgressHud(){
+        hud = KProgressHUD.create(activity)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setWindowColor(getResources().getColor(R.color.colorPrimary))
+                .setLabel("Cargando...", resources.getColor(R.color.white));
+        hud?.show()
+    }
+
+    override fun hideProgressHud(){
+        hud?.dismiss()
+    }
+    override fun requestResponseOK() {
+
+        onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
+    }
+
+    override fun requestResponseError(error: String?) {
+
+        onMessageError(R.color.red_900, error)
+    }
+
+    override fun onMessageOk(colorPrimary: Int, message: String?) {
+        val color = Color.WHITE
+        val snackbar = Snackbar
+                .make(container_fragment, message!!, Snackbar.LENGTH_LONG)
+        val sbView = snackbar.view
+        sbView.setBackgroundColor(ContextCompat.getColor(activity!!.applicationContext, colorPrimary))
+        val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.quantum_ic_cast_connected_white_24, 0, 0, 0)
+        // textView.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.activity_horizontal_margin));
+        textView.setTextColor(color)
+        snackbar.show()
+    }
+
+    override fun onMessageError(colorPrimary: Int, message: String?) {
+
+        onMessageOk(colorPrimary, message)
+    }
+
+
+
 
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
         if (extras != null) {
@@ -298,8 +385,38 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         }
     }
 
-    override fun confirmDelete(oferta: Oferta): AlertDialog? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+    override fun confirmResusedOferta(oferta: Oferta): AlertDialog?{
+        var builder = AlertDialog.Builder(activity!!)
+        builder.setTitle(getString(R.string.confirmation));
+        builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+            dialog.dismiss()
+        })
+        builder.setMessage(getString(R.string.title_alert_refused_oferta));
+        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            oferta.EstadoOfertaId=EstadosOfertasResources.RECHAZADO
+            oferta.Nombre_Estado_Oferta=EstadosOfertasResources.RECHAZADO_STRING
+            presenter?.updateOferta(oferta, Producto_Id)
+        })
+        builder.setIcon(R.drawable.ic_ofertas);
+        return builder.show();
+    }
+
+
+    override fun confirmAceptOferta(oferta: Oferta): AlertDialog?{
+        var builder = AlertDialog.Builder(activity!!)
+        builder.setTitle(getString(R.string.confirmation));
+        builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+            dialog.dismiss()
+        })
+        builder.setMessage(getString(R.string.title_alert_acept_oferta));
+        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            oferta.EstadoOfertaId=EstadosOfertasResources.CONFIRMADO
+            oferta.Nombre_Estado_Oferta=EstadosOfertasResources.CONFIRMADO_STRING
+            presenter?.updateOferta(oferta, Producto_Id)
+        })
+        builder.setIcon(R.drawable.ic_ofertas);
+        return builder.show();
     }
 
     override fun setProducto(producto: Producto?) {
@@ -317,6 +434,21 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
     override fun onRefresh() {
         showProgress()
         presenter?.getListOfertas(Producto_Id)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter?.onDestroy()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter?.onPause(activity?.applicationContext!!)
+    }
+
+    override fun onResume() {
+        presenter?.onResume(activity?.applicationContext!!)
+        super.onResume()
     }
     //endregion
 

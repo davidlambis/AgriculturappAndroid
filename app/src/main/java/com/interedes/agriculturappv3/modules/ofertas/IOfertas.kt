@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import com.afollestad.materialdialogs.MaterialDialog
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
@@ -17,15 +18,38 @@ interface IOfertas {
         fun showProgress()
         fun hideProgress()
 
+        //ProgresHud
+        fun showProgressHud()
+        fun hideProgressHud()
+
+
+
+        //Response Notify
+        fun requestResponseOK()
+        fun requestResponseError(error: String?)
+        fun onMessageOk(colorPrimary: Int, msg: String?)
+        fun onMessageError(colorPrimary: Int, msg: String?)
+
         fun setListOfertas(listOfertas: List<Oferta>)
         fun setResults(ofertas: Int)
+
+
+
+        //Listas
         fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
         fun setListLotes(listLotes: List<Lote>?)
         fun setListCultivos(listCultivos: List<Cultivo>?)
         fun setListProductos(listProductos: List<Producto>?)
+
+        //Verificate Conexion
         fun verificateConnection(): AlertDialog?
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)
-        fun confirmDelete(oferta: Oferta): AlertDialog?
+
+
+        fun confirmResusedOferta(oferta: Oferta): AlertDialog?
+        fun confirmAceptOferta(oferta: Oferta): AlertDialog?
+
+
         fun setProducto(producto: Producto?)
 
         fun showAlertDialogFilterOferta()
@@ -48,12 +72,16 @@ interface IOfertas {
         fun validarListas(): Boolean? = false
         fun getListOfertas(productoId: Long?)
         fun getProducto(productoId: Long?)
+
+        fun updateOferta(oferta: Oferta,productoId:Long?)
     }
 
     interface Interactor {
         fun getListOfertas(productoId: Long?)
         fun getListas()
         fun getProducto(productoId: Long?)
+
+        fun updateOferta(oferta: Oferta,productoId:Long?,checkConection:Boolean)
     }
 
     interface Repository {
@@ -61,5 +89,7 @@ interface IOfertas {
         fun getListOfertas(productoId: Long?)
         fun getOfertas(productoId: Long?): List<Oferta>
         fun getProducto(productoId: Long?)
+
+        fun updateOferta(oferta: Oferta,productoId:Long?,checkConection:Boolean)
     }
 }

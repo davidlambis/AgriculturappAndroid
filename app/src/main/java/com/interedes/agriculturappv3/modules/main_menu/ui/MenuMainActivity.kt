@@ -566,6 +566,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         headerViewHolder.itemSyncronizarDatos.setOnClickListener(this)
         headerViewHolder.itemCerrarSesion.setOnClickListener(this)
+        headerViewHolder.itemOfertas.setOnClickListener(this)
+
 
         // val header = navigationView.getHeaderView(0)
         // val headerViewHolder = HeaderViewHolder(header)

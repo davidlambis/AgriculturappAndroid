@@ -341,6 +341,15 @@ class Listas {
             return queryFilter
         }
 
+
+
+        fun queryOrderByDesc(criterio: String): String {
+            val queryFilter = "$criterio desc"
+            return queryFilter
+        }
+
+
+
         fun queryGeneralLong(criterio: String, valor: Long): String {
             val queryFilter = "$criterio eq $valor"
             return queryFilter

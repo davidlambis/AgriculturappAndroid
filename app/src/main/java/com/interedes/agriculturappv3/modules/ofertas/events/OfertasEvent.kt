@@ -17,6 +17,11 @@ data class OfertasEvent(var eventType: Int,
         val REQUEST_REFUSED_ITEM_EVENT: Int = 7
         val REQUEST_CONFIRM_ITEM_EVENT: Int = 8
         val REQUEST_CHAT_ITEM_EVENT: Int = 9
+
+        val UPDATE_EVENT: Int = 10
+        //Error Connection
+        val ERROR_VERIFICATE_CONECTION: Int = 11
+        val ERROR_EVENT: Int = 12
     }
 
 }

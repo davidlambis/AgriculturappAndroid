@@ -43,6 +43,7 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
     //region Métodos Interfaz
     override fun onCreate() {
         eventBus?.register(this)
+
         getListas()
     }
 
@@ -80,6 +81,17 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
     @Subscribe
     override fun onEventMainThread(event: OfertasEvent?) {
         when (event?.eventType) {
+
+            OfertasEvent.ERROR_EVENT -> {
+                onMessageError(event.mensajeError)
+            }
+
+            OfertasEvent.UPDATE_EVENT -> {
+                var list = event.mutableList as List<Oferta>
+                view?.setListOfertas(list)
+                onUpdateOk()
+            }
+
         //Listas
             OfertasEvent.LIST_EVENT_UP -> {
                 listUnidadProductivaGlobal = event.mutableList as List<Unidad_Productiva>
@@ -97,6 +109,7 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
             OfertasEvent.READ_EVENT -> {
                 val list = event.mutableList as List<Oferta>
                 view?.setListOfertas(list)
+                view?.hideProgress()
             }
             OfertasEvent.GET_EVENT_PRODUCTO -> {
                 val producto = event.objectMutable as Producto
@@ -106,14 +119,22 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
 
             OfertasEvent.REQUEST_CONFIRM_ITEM_EVENT -> {
                 var oferta = event.objectMutable as Oferta
+                view?.confirmAceptOferta(oferta)
             }
 
             OfertasEvent.REQUEST_CHAT_ITEM_EVENT -> {
                 var oferta = event.objectMutable as Oferta
+
             }
 
             OfertasEvent.REQUEST_REFUSED_ITEM_EVENT -> {
                 var oferta = event.objectMutable as Oferta
+                view?.confirmResusedOferta(oferta)
+            }
+
+        //Error Conection
+            OfertasEvent.ERROR_VERIFICATE_CONECTION -> {
+                onMessageConectionError()
             }
         }
     }
@@ -131,6 +152,12 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
 
     override fun getProducto(productoId: Long?) {
         interactor?.getProducto(productoId)
+    }
+
+
+    override fun updateOferta(oferta: Oferta, productoId: Long?) {
+        view?.showProgressHud()
+        interactor?.updateOferta(oferta,productoId,checkConnection())
     }
 
     //SET Listas
@@ -155,5 +182,38 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
 
 
     //endregion
+
+
+    // region Acciones de Respuesta a Post de Eventos
+    private fun onSaveOk() {
+        onMessageOk()
+    }
+
+    private fun onUpdateOk() {
+        onMessageOk()
+    }
+
+    private fun onDeleteOk() {
+        view?.hideProgress()
+        view?.requestResponseOK()
+    }
+    //endregion
+
+    //region Messages/Notificaciones
+    private fun onMessageOk() {
+        view?.hideProgressHud()
+        view?.hideProgress()
+        view?.requestResponseOK()
+    }
+
+    private fun onMessageError(error: String?) {
+        view?.hideProgress()
+        view?.requestResponseError(error)
+    }
+
+    private fun onMessageConectionError() {
+        view?.hideProgressHud()
+        view?.verificateConnection()
+    }
 
 }

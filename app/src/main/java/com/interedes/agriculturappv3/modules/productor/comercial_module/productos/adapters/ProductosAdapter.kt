@@ -94,8 +94,8 @@ class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
             txtDescripcionProducto.text = String.format(context.getString(R.string.title_adapter_descripcion_producto), data.Descripcion)
             txtFechaDisponibilidad.text = String.format(context.getString(R.string.title_adapter_fecha_disponibilidad), data.FechaLimiteDisponibilidad)
             txtPrecioProducto.text = String.format(context.getString(R.string.title_adapter_precio_producto), data.Precio)*/
-
-            txtNombreDetalleProducto.text = data.NombreDetalleTipoProducto+"( ${data.NombreCultivo} )"
+           // txtNombreDetalleProducto.text = data.NombreDetalleTipoProducto+"( ${data.NombreCultivo} )"
+            txtNombreDetalleProducto.text = data.Nombre
             txtDescripcionProducto.text =  data.Descripcion
             txtFechaDisponibilidad.text =if(data.FechaLimiteDisponibilidad!=null)data.getFechaLimiteDisponibilidadFormat() else null
             txtPrecioProducto.text = String.format(context.getString(R.string.title_adapter_precio_producto), data.Precio)

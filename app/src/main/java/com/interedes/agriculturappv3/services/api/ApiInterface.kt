@@ -388,10 +388,15 @@ interface ApiInterface {
 
     //TODO Requiere Token
     @GET("odata/Agp2/Oferta?\$expand=DetalleOferta(\$expand=UnidadMedida),EstadoOfertum,Usuario")
-    fun getOfertas( @Query("\$filter") filter: String): Call<OfertaResponse>
+    fun getOfertasProductor( @Query("\$filter") filter: String, @Query("\$orderby") order: String): Call<OfertaResponse>
+
+    @GET("odata/Agp2/Oferta?\$expand=DetalleOferta(\$expand=UnidadMedida),EstadoOfertum")
+    fun getOfertasComprador( @Query("\$filter") filter: String, @Query("\$orderby") order: String): Call<OfertaResponse>
 
 
-
+    @Headers("Content-Type: application/json")
+    @PATCH("odata/Agp2/Oferta({Id})")
+    fun updateOferta(@Body body: PostOferta, @Path("Id") Id: Long): Call<PostOferta>
 
     //http://18.233.87.16/odata/Agp2/DetalleTipoProductos?$expand=Cultivos($expand=Productos($expand=UnidadMedida,Calidad),Lote($expand=UnidadProductiva($expand=Usuario))),TipoProducto&$filter=TipoProductoId eq 2
 

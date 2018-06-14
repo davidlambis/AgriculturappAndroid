@@ -241,6 +241,10 @@
     <string name="title_fecha_oferta">Fecha: %s</string>
     <string name="select_product_ventas">Selecciona el producto para consultar sus ventas</string>
 
+    <string name="title_alert_acept_oferta">¿Estas seguro que deseas acepatr esta oferta?</string>
+    <string name="title_alert_refused_oferta">¿Estas seguro que deseas rechazar esta oferta?</string>
+
+    <string name="descripcion_oferta">%1$s %2$s  te oferto %3$s a un precio de  %4$s por el cultivo de %5$s de %6$s</string>
     <!-- Ventas Comercial -->
     <string name="title_ventas">Ventas</string>
 

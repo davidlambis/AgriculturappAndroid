@@ -12,11 +12,14 @@
     app:cardUseCompatPadding="true">
 
 <LinearLayout
+
+    android:id="@+id/cardOferta"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <ImageView
+android:layout_margin="@dimen/margin_10"
         android:id="@+id/contentIcon"
         android:layout_width="match_parent"
         android:scaleType="centerCrop"
@@ -35,10 +38,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Platano "
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/grey_luiyi"
             android:textSize="@dimen/text_size_18"
             android:textStyle="bold" />
-
 
         <LinearLayout
             android:gravity="center|left"
@@ -61,6 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
+                android:textColor="@color/grey_luiyi"
                 android:textSize="14sp" />
 
             <ImageView
@@ -81,6 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/header_text"
                 android:text="Chat"
+                android:textColor="@color/grey_luiyi"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -91,6 +95,7 @@
             android:layout_below="@+id/content"
             android:layout_marginTop="15dp"
             android:text="contenido"
+            android:textColor="@color/grey_luiyi"
             android:textSize="@dimen/text_size_15" />
 
         <LinearLayout

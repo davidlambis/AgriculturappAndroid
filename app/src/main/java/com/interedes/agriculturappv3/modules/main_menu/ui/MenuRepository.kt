@@ -1369,10 +1369,16 @@ class MenuRepository: MainViewMenu.Repository {
                     .async()
                     .execute()*/
 
-            SQLite.delete<Producto>(Producto::class.java)
-                    .where(Producto_Table.Usuario_Logued.notEq(usuario.Id))
+            SQLite.delete<DetalleOferta>(DetalleOferta::class.java)
                     .async()
                     .execute()
+
+            SQLite.delete<DetalleOferta>(DetalleOferta::class.java)
+                    .async()
+                    .execute()
+
+            loadOfertas(usuario)
+
 
         }
 
@@ -1710,21 +1716,33 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     private fun loadOfertas(usuario: Usuario?) {
-        val queryOfertas = Listas.queryGeneral("usuarioto",usuario?.Id.toString())
-        val callOfertas = apiService?.getOfertas(queryOfertas)
+        var queryOfertas =""
+        var callOfertas:Call<OfertaResponse>?=null
+        val orderDEsc=Listas.queryOrderByDesc("Id")
+        if(usuario?.RolNombre.equals(RolResources.COMPRADOR)){
+            queryOfertas = Listas.queryGeneral("Usuario_Id",usuario?.Id.toString())
+            callOfertas = apiService?.getOfertasComprador(queryOfertas,orderDEsc)
+        }else {
+            queryOfertas= Listas.queryGeneral("usuarioto",usuario?.Id.toString())
+            callOfertas = apiService?.getOfertasProductor(queryOfertas,orderDEsc)
+        }
+
         callOfertas?.enqueue(object : Callback<OfertaResponse> {
             override fun onResponse(call: Call<OfertaResponse>?, response: Response<OfertaResponse>?) {
                 if (response != null && response.code() == 200) {
 
-                    var listOferta=SQLite.select().from(Oferta::class.java).where(Oferta_Table.UsuarioTo.eq(usuario?.Id)).queryList()
-                    for (oferta in listOferta){
-                        SQLite.delete<DetalleOferta>(DetalleOferta::class.java)
-                                .where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id))
-                                .async()
-                                .execute()
+                    if(usuario?.RolNombre.equals(RolResources.PRODUCTOR)){
+                        var listOferta=SQLite.select().from(Oferta::class.java).where(Oferta_Table.UsuarioTo.eq(usuario?.Id)).queryList()
+                        for (oferta in listOferta){
+                            SQLite.delete<DetalleOferta>(DetalleOferta::class.java)
+                                    .where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id))
+                                    .async()
+                                    .execute()
 
-                        oferta.delete()
+                            oferta.delete()
+                        }
                     }
+
 
 
                     val ofertas = response.body()?.value as MutableList<Oferta>

@@ -82,6 +82,8 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
     @Subscribe
     override fun onEventMainThread(event: RequestEventProduccion?) {
         when (event?.eventType) {
+
+
             RequestEventProduccion.READ_EVENT -> {
                 var list = event.mutableList as List<Produccion>
                 mainView?.setListProduccion(list)
@@ -124,6 +126,7 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
                 mainView?.confirmDelete(producccion)
                 //// Toast.makeText(activity,"Eliminar: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
+
 
            //LIST EVENTS
             RequestEventProduccion.LIST_EVENT_UNIDAD_MEDIDA -> {
@@ -230,7 +233,10 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
 
     //endregion
 
-    //region Acciones de Respuesta a Post de Eventos
+
+    //endregion
+    //
+    // region Acciones de Respuesta a Post de Eventos
     private fun onSaveOk() {
         onMessageOk()
     }
@@ -263,5 +269,4 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
         mainView?.hideProgress()
         mainView?.verificateConnection()
     }
-    //endregion
 }
