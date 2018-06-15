@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.modules.models.ofertas
 
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
@@ -51,6 +52,9 @@ data class DetalleOferta(@PrimaryKey
 
                          @SerializedName("UnidadMedida")
                          var UnidadMedida: Unidad_Medida?= null,
+
+                         @SerializedName("Producto")
+                         var Producto: Producto?= null,
 
 
                          @SerializedName("Oferta")

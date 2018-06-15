@@ -70,6 +70,7 @@ class OfertasRepository : IOfertas.Repository {
                     if(usuario!=null){
                         oferta.Usuario=usuario
                     }
+
                     var detalleOferta= SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
                     if(detalleOferta!=null){
                         oferta.DetalleOfertaSingle=detalleOferta
@@ -104,6 +105,10 @@ class OfertasRepository : IOfertas.Repository {
 
         }else if(usuario?.RolNombre.equals(RolResources.PRODUCTOR)){
             if (productoId == null) {
+                var list = SQLite.select()
+                        .from(Oferta::class.java)
+                        .queryList()
+
                 var ofertaResponse = SQLite.select()
                         .from(Oferta::class.java)
                         .where(Oferta_Table.UsuarioTo.eq(usuario?.Id))
@@ -146,8 +151,6 @@ class OfertasRepository : IOfertas.Repository {
             }
 
         }
-
-
 
         return listResponse;
     }

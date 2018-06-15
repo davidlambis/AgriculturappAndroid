@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 ///apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
-
+apply plugin: 'io.fabric'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -75,9 +75,9 @@ dependencies {
 
     // DBFlow
     kapt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.ext.dbflow_version"
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.ext.dbflow_version"
-    compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.ext.dbflow_version"
-    compile "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:$rootProject.ext.dbflow_version"
+    implementation "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.ext.dbflow_version"
+    implementation "com.github.Raizlabs.DBFlow:dbflow:$rootProject.ext.dbflow_version"
+    implementation "com.github.Raizlabs.DBFlow:dbflow-kotlinextensions:$rootProject.ext.dbflow_version"
 
     ///API REST
     implementation "com.google.code.gson:gson:$rootProject.ext.gson"
@@ -94,18 +94,18 @@ dependencies {
 
 
 
-    compile "com.google.android.gms:play-services:$rootProject.ext.firebaseVersion"
-    compile "com.google.android.gms:play-services-maps:$rootProject.ext.firebaseVersion"
-    compile 'com.google.maps.android:android-maps-utils:0.4+'
+    implementation "com.google.android.gms:play-services:$rootProject.ext.firebaseVersion"
+    implementation "com.google.android.gms:play-services-maps:$rootProject.ext.firebaseVersion"
+    implementation 'com.google.maps.android:android-maps-utils:0.4+'
 
     ///Show Progress
-    compile "com.kaopiz:kprogresshud:$kprogresshudVersion"
+    implementation "com.kaopiz:kprogresshud:$kprogresshudVersion"
 
 
-    compile 'com.android.support:multidex:1.0.1'
+    implementation 'com.android.support:multidex:1.0.1'
 
     //Maps MapDrawingTools
-    compile "com.github.bkhezry:MapDrawingTools:$mapDrawingVersion"
+    implementation "com.github.bkhezry:MapDrawingTools:$mapDrawingVersion"
 
     //DIALOGS
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
@@ -118,14 +118,14 @@ dependencies {
     implementation 'com.github.jkwiecien:EasyImage:1.3.1'
 
     //CAMARA COMPRESOR
-    compile "id.zelory:compressor:$rootProject.ext.compressedImageVersion"
+    implementation "id.zelory:compressor:$rootProject.ext.compressedImageVersion"
 
     //Recycler
-    compile 'com.thoughtbot:expandablerecyclerview:1.3'
-    compile 'com.thoughtbot:expandablecheckrecyclerview:1.4'
+    implementation 'com.thoughtbot:expandablerecyclerview:1.3'
+    implementation 'com.thoughtbot:expandablecheckrecyclerview:1.4'
 
     //DateTiemUtils
-    compile 'com.github.thunder413:DateTimeUtils:1.0'
+    implementation 'com.github.thunder413:DateTimeUtils:1.0'
 
     /*
     //Extenciones Kotlin (QUERYS LIST)
@@ -136,22 +136,28 @@ dependencies {
     compile "io.reactivex.rxjava2:rxandroid:$rxandroidVerion"*/
 
     //Anumaciones
-    compile 'com.daimajia.easing:library:2.0@aar'
-    compile 'com.daimajia.androidanimations:library:2.3@aar'
+    implementation 'com.daimajia.easing:library:2.0@aar'
+    implementation 'com.daimajia.androidanimations:library:2.3@aar'
 
     //Picaso
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
     //Boom Menu
-    compile 'com.nightonke:boommenu:1.0.9'
+    implementation 'com.nightonke:boommenu:1.0.9'
 
     //Intro
     implementation 'com.github.apl-devs:appintro:v4.2.3'
 
+
+    //Crash Analitics
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
+
+
+
     def SupportLibVersion = '27.1.0'
-    compile "com.android.support:appcompat-v7:$SupportLibVersion",
+    implementation "com.android.support:appcompat-v7:$SupportLibVersion",
             "com.android.support:design:$SupportLibVersion"
-    compile('com.github.bkhezry:ExtraMapUtils:v1.2.0') {
+    implementation('com.github.bkhezry:ExtraMapUtils:v1.2.0') {
         exclude group: 'com.android.support'
     }
 

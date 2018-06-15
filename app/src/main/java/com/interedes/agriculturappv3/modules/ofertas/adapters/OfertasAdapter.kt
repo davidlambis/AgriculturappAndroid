@@ -20,7 +20,9 @@ import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.activity_chat_message.*
 import java.util.ArrayList
 
 class OfertasAdapter(var lista: ArrayList<Oferta>) : RecyclerView.Adapter<OfertasAdapter.ViewHolder>() {
@@ -159,6 +161,7 @@ class OfertasAdapter(var lista: ArrayList<Oferta>) : RecyclerView.Adapter<Oferta
                 }
 
                 publisher_name.text=data.Usuario?.Nombre+" ${data.Usuario?.Apellidos}"
+
                 try {
                     val foto = data.Usuario?.blobImagenUser?.blob
                     var imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
@@ -167,6 +170,16 @@ class OfertasAdapter(var lista: ArrayList<Oferta>) : RecyclerView.Adapter<Oferta
                     var ss= ex.toString()
                     Log.d("Convert Image", "defaultValue = " + ss);
                 }
+
+               // if(data.Usuario?.Fotopefil!=null){
+               /* try {
+                    Picasso.with(context).load("https://s3.amazonaws.com/datatakefiles/ic_asistencia_tecnica_color_500.png").placeholder(R.drawable.default_avata).into(circleView)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }*/
+               // }
+
+
 
                 //txtDescription.text= "${data.Usuario?.Nombre} ${data.Usuario?.Apellidos}  te oferto $productoCantidad a un precio de  $precioOferta por el cultivo de ${data.Producto?.Nombre}   de $calidad"
 

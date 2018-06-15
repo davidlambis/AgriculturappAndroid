@@ -1715,12 +1715,13 @@ class MenuRepository: MainViewMenu.Repository {
         })
     }
 
+
     private fun loadOfertas(usuario: Usuario?) {
         var queryOfertas =""
         var callOfertas:Call<OfertaResponse>?=null
         val orderDEsc=Listas.queryOrderByDesc("Id")
         if(usuario?.RolNombre.equals(RolResources.COMPRADOR)){
-            queryOfertas = Listas.queryGeneral("Usuario_Id",usuario?.Id.toString())
+            queryOfertas = Listas.queryGeneral("UsuarioId",usuario?.Id.toString())
             callOfertas = apiService?.getOfertasComprador(queryOfertas,orderDEsc)
         }else {
             queryOfertas= Listas.queryGeneral("usuarioto",usuario?.Id.toString())
@@ -1743,37 +1744,30 @@ class MenuRepository: MainViewMenu.Repository {
                         }
                     }
 
-
-
                     val ofertas = response.body()?.value as MutableList<Oferta>
                     for(oferta in ofertas){
-
                         var ofertaVerficateSave= SQLite.select()
                                 .from(Oferta::class.java)
                                 .where(Oferta_Table.Id_Remote.eq(oferta.Id_Remote))
                                 .querySingle()
-
                         //TODO Verifica si tiene pendiente actualizacion por sincronizar
                         if (ofertaVerficateSave!=null){
-                            ofertaVerficateSave.Oferta_Id=ofertaVerficateSave.Oferta_Id
+                            oferta.Oferta_Id=ofertaVerficateSave.Oferta_Id
                         }else{
                             val last_oferta = getLastOferta()
                             if (last_oferta == null) {
-                                last_oferta?.Oferta_Id = 1
+                                oferta?.Oferta_Id = 1
                             } else {
-                                last_oferta?.Oferta_Id  = last_oferta.Oferta_Id!! + 1
+                                oferta?.Oferta_Id  = last_oferta.Oferta_Id!! + 1
                             }
                         }
-
 
                         oferta.CreatedOnLocal=oferta.getFechaDate(oferta.CreatedOn)
                         oferta.UpdatedOnLocal=oferta.getFechaDate(oferta.UpdatedOn)
                         oferta.Nombre_Estado_Oferta=if(oferta.Estado_Oferta!=null)oferta.Estado_Oferta?.Nombre else null
                         oferta.save()
 
-
                         if(oferta.Usuario!=null){
-
                             if(oferta.Usuario?.Fotopefil!=null){
                                 try {
                                     val base64String = oferta.Usuario?.Fotopefil
@@ -1789,22 +1783,19 @@ class MenuRepository: MainViewMenu.Repository {
                         }
 
                         if(oferta.DetalleOferta!=null){
-
                             for(detalleoferta in oferta.DetalleOferta!!){
-
                                 var detalleOfertaVerficateSave= SQLite.select()
                                         .from(DetalleOferta::class.java)
                                         .where(DetalleOferta_Table.Id_Remote.eq(detalleoferta.Id_Remote))
                                         .querySingle()
-
                                 if (detalleOfertaVerficateSave!=null){
-                                    detalleOfertaVerficateSave.Detalle_Oferta_Id=detalleOfertaVerficateSave.Detalle_Oferta_Id
+                                    detalleoferta.Detalle_Oferta_Id=detalleOfertaVerficateSave.Detalle_Oferta_Id
                                 }else{
                                     val last_detalle_oferta = getLastDetalleOferta()
                                     if (last_detalle_oferta == null) {
-                                        detalleOfertaVerficateSave?.Detalle_Oferta_Id = 1
+                                        detalleoferta?.Detalle_Oferta_Id = 1
                                     } else {
-                                        detalleOfertaVerficateSave?.Detalle_Oferta_Id  = last_detalle_oferta.Detalle_Oferta_Id!! + 1
+                                        detalleoferta?.Detalle_Oferta_Id  = last_detalle_oferta.Detalle_Oferta_Id!! + 1
                                     }
                                 }
                                 detalleoferta.NombreUnidadMedidaPrecio=if(detalleoferta.UnidadMedida!= null)detalleoferta.UnidadMedida?.Descripcion else null
@@ -1814,7 +1805,6 @@ class MenuRepository: MainViewMenu.Repository {
 
                             }
                         }
-
                     }
                 } else {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
