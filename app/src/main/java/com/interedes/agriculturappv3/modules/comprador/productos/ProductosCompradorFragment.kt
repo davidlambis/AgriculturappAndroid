@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.modules.comprador.productos
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.Snackbar
@@ -14,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.TextView
 
 import com.interedes.agriculturappv3.R
@@ -58,10 +60,40 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
         swipeRefreshLayout.setOnRefreshListener(this)
 
         setupInjection()
-
+        setupInit()
 
 
     }
+
+    private fun setupInit() {
+        (activity as MenuMainActivity).toolbar.title = getString(R.string.title_menu)
+        var sdk = android.os.Build.VERSION.SDK_INT;
+        if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary));
+
+        } else {
+            (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary));
+        }
+        (activity as MenuMainActivity).toolbar.setTitleTextColor(resources.getColor(R.color.white))
+        var iconMenu = (activity as MenuMainActivity).menuItemGlobal
+        iconMenu?.isVisible = false
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val window = (activity as MenuMainActivity).getWindow()
+            // clear FLAG_TRANSLUCENT_STATUS flag:
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            // finally change the color
+            window.statusBarColor = ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary)
+            (activity as MenuMainActivity).app_bar_main.elevation = 4f
+
+        } else {
+            (activity as MenuMainActivity).app_bar_main.targetElevation = 4f
+        }
+    }
+
 
     private fun setupInjection() {
         presenter?.getListTipoProducto()

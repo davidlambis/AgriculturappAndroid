@@ -137,7 +137,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.addItemDecoration(VerticalLineDecorator(2))
         recyclerView.adapter = adapter
-
     }
 
     private fun loadMore(index: Int) {
@@ -180,12 +179,13 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         setResults(productosList?.size!!)
 
         //Se asigna para que no ejecute el evento More del Adaptador
-        if(listProducto.size>PAGE_SIZE){
+        if(presenter?.checkConnection()!!){
             //productosList?.removeAt(productosList?.size!! - 1)
-            pastVisiblesItems=3
+            pastVisiblesItems=listProducto.size
+
+        }else{
+            pastVisiblesItems=0
         }
-
-
     }
 
     override fun setListProducto(listProducto: List<Producto>) {
