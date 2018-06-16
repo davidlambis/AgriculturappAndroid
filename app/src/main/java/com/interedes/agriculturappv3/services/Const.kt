@@ -13,5 +13,12 @@ class Const {
 
         //recive
         val SERVICE_RECYVE_MESSAGE="RECIVE_MESSAGE"
+
+
+        //Service
+        val ACTION_RUN_ISERVICE = "com.interedes.agriculturappv3.action.RUN_INTENT_SERVICE"
+        val ACTION_PROGRESS_EXIT = "com.interedes.agriculturappv3.action.PROGRESS_EXIT"
+        val EXTRA_PROGRESS = "com.interedes.agriculturappv3.action.PROGRESS"
+
     }
 }

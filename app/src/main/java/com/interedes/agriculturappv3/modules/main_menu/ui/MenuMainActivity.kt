@@ -59,8 +59,10 @@ import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
+import com.interedes.agriculturappv3.services.services.ProgressIntentService
 import com.interedes.agriculturappv3.services.resources.MenuBoomResources
 import com.interedes.agriculturappv3.services.resources.RolResources
+import com.interedes.agriculturappv3.services.services.ProgresService
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nightonke.boommenu.BoomMenuButton
 import com.nightonke.boommenu.Types.BoomType
@@ -567,6 +569,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         headerViewHolder.itemSyncronizarDatos.setOnClickListener(this)
         headerViewHolder.itemCerrarSesion.setOnClickListener(this)
         headerViewHolder.itemOfertas.setOnClickListener(this)
+        headerViewHolder.itemProveedores.setOnClickListener(this)
 
 
         // val header = navigationView.getHeaderView(0)
@@ -772,8 +775,16 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             }
 
             R.id.itemCerrarSesion -> {
-                showExit()
+            showExit()
+        }
+            R.id.itemProveedores -> {
+                drawer_layout.closeDrawer(GravityCompat.START)
+                   var intent =  Intent(this, ProgresService::class.java)
+                    intent.setAction(Const.ACTION_RUN_ISERVICE)
+                    startService(intent);
             }
+
+
 
             R.id.itemOfertas -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
@@ -808,6 +819,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             supportFragmentManager.popBackStackImmediate()
         }*/
     }
+
+
 
 
     //endregion

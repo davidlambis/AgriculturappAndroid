@@ -85,9 +85,8 @@ data class Unidad_Productiva(@PrimaryKey
                              var Id_Remote: Long? = 0,
 
 
-
                              @Column(getterName = "getEstado_Sincronizacion")
-                            var Estado_Sincronizacion: Boolean? = false,
+                             var Estado_Sincronizacion: Boolean? = false,
 
                              @Column(getterName = "getEstado_SincronizacionUpdate")
                              var Estado_SincronizacionUpdate: Boolean? = false,

@@ -1020,7 +1020,6 @@ class MenuRepository: MainViewMenu.Repository {
         //LISTAS ROL PRODUCTOR
         /*-----------------------------------------------------------------------------------------------------------------*/
         if(usuario?.RolNombre?.equals(RolResources.PRODUCTOR)!!){
-
             val query = Listas.queryGeneral("UsuarioId",usuario?.Id.toString())
             val callInformacionSinronized = apiService?.getSyncInformacionUsuario(query)
             callInformacionSinronized?.enqueue(object : Callback<GetSincronizacionResponse> {
@@ -1068,13 +1067,6 @@ class MenuRepository: MainViewMenu.Repository {
                                 .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
-
-
-
-
-
-
-
 
 
                         //TODO Add information new remote
@@ -1350,6 +1342,53 @@ class MenuRepository: MainViewMenu.Repository {
         /*-----------------------------------------------------------------------------------------------------------------*/
         else if(usuario?.RolNombre?.equals(RolResources.COMPRADOR)!!){
 
+            //Limpiar BD con informacion de un productor
+            var users=SQLite.select().from(Usuario::class.java).where(Usuario_Table.RolNombre.eq(RolResources.PRODUCTOR)).queryList()
+            for (user in users){
+
+                SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
+                        .where(Unidad_Productiva_Table.UsuarioId.eq(user.Id))
+                        .async()
+                        .execute()
+
+                SQLite.delete<Lote>(Lote::class.java)
+                        .where(Lote_Table.UsuarioId.eq(user.Id))
+                        .async()
+                        .execute()
+
+                SQLite.delete<Cultivo>(Cultivo::class.java)
+                        .where(Cultivo_Table.UsuarioId.eq(user.Id))
+                        .async()
+                        .execute()
+
+                SQLite.delete<Producto>(Producto::class.java)
+                        .where(Producto_Table.userId.eq(user.Id))
+                        .async()
+                        .execute()
+
+                SQLite.delete<Oferta>(Oferta::class.java)
+                        .where(Oferta_Table.UsuarioTo .eq(user.Id))
+                        .async()
+                        .execute()
+
+                SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
+                        .where(ControlPlaga_Table.UsuarioId.eq(user.Id))
+                        .async()
+                        .execute()
+
+                SQLite.delete<Produccion>(Produccion::class.java)
+                        .where(Producto_Table.userId.eq(user.Id))
+                        .async()
+                        .execute()
+
+                SQLite.delete<Transaccion>(Transaccion::class.java)
+                        .where(Transaccion_Table.UsuarioId.eq(user.Id))
+                        .async()
+                        .execute()
+
+
+            }
+
             //TODO Delete information in local, add new remote
             /*SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
                     .async()
@@ -1372,7 +1411,7 @@ class MenuRepository: MainViewMenu.Repository {
                     .async()
                     .execute()*/
 
-            SQLite.delete<DetalleOferta>(DetalleOferta::class.java)
+            SQLite.delete<Oferta>(Oferta::class.java)
                     .async()
                     .execute()
 
@@ -1736,7 +1775,7 @@ class MenuRepository: MainViewMenu.Repository {
             override fun onResponse(call: Call<OfertaResponse>?, response: Response<OfertaResponse>?) {
                 if (response != null && response.code() == 200) {
 
-                    if(usuario?.RolNombre.equals(RolResources.PRODUCTOR)){
+                   /* if(usuario?.RolNombre.equals(RolResources.PRODUCTOR)){
                         var listOferta=SQLite.select().from(Oferta::class.java).where(Oferta_Table.UsuarioTo.eq(usuario?.Id)).queryList()
                         for (oferta in listOferta){
                             SQLite.delete<DetalleOferta>(DetalleOferta::class.java)
@@ -1746,7 +1785,7 @@ class MenuRepository: MainViewMenu.Repository {
 
                             oferta.delete()
                         }
-                    }
+                    }*/
 
                     val ofertas = response.body()?.value as MutableList<Oferta>
                     for(oferta in ofertas){
@@ -1771,9 +1810,6 @@ class MenuRepository: MainViewMenu.Repository {
                         oferta.Nombre_Estado_Oferta=if(oferta.Estado_Oferta!=null)oferta.Estado_Oferta?.Nombre else null
                         oferta.save()
 
-
-
-
                         if(oferta.DetalleOferta!=null){
                             for(detalleoferta in oferta.DetalleOferta!!){
                                 var detalleOfertaVerficateSave= SQLite.select()
@@ -1794,10 +1830,6 @@ class MenuRepository: MainViewMenu.Repository {
                                 detalleoferta.OfertasId=oferta.Oferta_Id
                                 detalleoferta.Detalle_Oferta_Id=detalleOfertaVerficateSave?.Detalle_Oferta_Id
                                 detalleoferta.save()
-
-
-
-
 
 
 

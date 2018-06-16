@@ -152,6 +152,11 @@
         <service android:name=".services.coords.CoordsServiceKotlin" />
 
 
+        <service
+            android:name=".services.services.ProgresService"
+            android:exported="false" >
+        </service>
+
     </application>
 
 </manifest>
