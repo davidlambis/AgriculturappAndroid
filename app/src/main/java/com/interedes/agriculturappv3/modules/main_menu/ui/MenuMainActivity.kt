@@ -62,6 +62,7 @@ import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.services.services.ProgressIntentService
 import com.interedes.agriculturappv3.services.resources.MenuBoomResources
 import com.interedes.agriculturappv3.services.resources.RolResources
+import com.interedes.agriculturappv3.services.services.JobService
 import com.interedes.agriculturappv3.services.services.ProgresService
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nightonke.boommenu.BoomMenuButton
@@ -75,6 +76,7 @@ import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.security.Provider
 import java.util.*
 
 
@@ -779,9 +781,25 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         }
             R.id.itemProveedores -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
-                   var intent =  Intent(this, ProgresService::class.java)
-                    intent.setAction(Const.ACTION_RUN_ISERVICE)
-                    startService(intent);
+
+                    //startService(intent);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+
+                    var intent =  Intent(this, JobService::class.java)
+                    //intent.setAction(Const.ACTION_RUN_ISERVICE)
+                    startForegroundService(intent)
+
+
+                    this.startForegroundService(intent)
+
+                    //Service.startForeground()
+                }else{
+                    //startService(intent)
+                }
+
+                //NotificationManager.startServiceInForeground()
             }
 
 

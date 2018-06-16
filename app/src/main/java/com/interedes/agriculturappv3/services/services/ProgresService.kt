@@ -13,16 +13,22 @@ import android.util.Log
 import android.widget.Toast
 import com.interedes.agriculturappv3.services.Const
 import android.os.SystemClock
+import android.app.job.JobParameters
 
 
 
-class ProgresService: IntentService("ProgressIntentService") {
+
+
+class ProgresService: JobIntentService() {
+
+
+
 
     private val TAG = ProgressIntentService::class.java.simpleName
     private var StartService=false
     private var Count=0
 
-    override fun onHandleIntent(intent: Intent?) {
+    override fun onHandleWork(intent: Intent) {
         if (intent != null) {
             val action = intent.action
             if (Const.ACTION_RUN_ISERVICE.equals(action)) {
@@ -35,6 +41,45 @@ class ProgresService: IntentService("ProgressIntentService") {
      * Maneja la acción de ejecución del servicio
      */
     private fun handleActionRun() {
+        Toast.makeText(this, "Servicio destruido...", Toast.LENGTH_SHORT).show()
+
+        /*try {
+            // Se construye la notificación
+            val builder = NotificationCompat.Builder(this)
+                    .setSmallIcon(android.R.drawable.stat_sys_download_done)
+                    .setContentTitle("Servicio en segundo plano")
+                    .setContentText("Procesando...")
+
+
+
+
+            // Bucle de simulación
+            for (i in 1..10) {
+
+                Log.d(TAG, i.toString() + "") // Logueo
+
+                // Poner en primer plano
+                // builder.setProgress(10, i, false);
+                builder.setProgress(0, 0, true)
+
+                startForeground(1, builder.build())
+
+                val localIntent = Intent(Const.ACTION_RUN_ISERVICE)
+                        .putExtra(Const.EXTRA_PROGRESS, i)
+
+                // Emisión de {@code localIntent}
+                LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent)
+
+                // Retardo de 1 segundo en la iteración
+                Thread.sleep(1000)
+            }
+            // Quitar de primer plano
+            //stopForeground(true)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+*/
+        /*
         try {
 
 
@@ -70,8 +115,19 @@ class ProgresService: IntentService("ProgressIntentService") {
             //stopForeground(true)
         } catch (e: InterruptedException) {
             e.printStackTrace()
-        }
+        }*/
 
+    }
+
+
+    fun onStartJob(params: JobParameters): Boolean {
+        handleActionRun()
+        return true
+    }
+
+    fun onStopJob(params: JobParameters): Boolean {
+        // whether or not you would like JobScheduler to automatically retry your failed job.
+        return false
     }
 
     override fun onDestroy() {

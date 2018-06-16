@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.interedes.agriculturappv3">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -18,6 +19,9 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+
+    <!--INtent Service Job-->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 
     <uses-feature
@@ -151,11 +155,17 @@
 
         <service android:name=".services.coords.CoordsServiceKotlin" />
 
-
+        <!--
         <service
             android:name=".services.services.ProgresService"
             android:exported="false" >
-        </service>
+        </service>-->
+
+
+        <service
+            android:exported="false"
+            android:name=".services.services.JobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
 
