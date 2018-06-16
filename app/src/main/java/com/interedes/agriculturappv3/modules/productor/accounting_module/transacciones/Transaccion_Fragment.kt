@@ -383,7 +383,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
     override fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?) {
         if(viewDialogFilter!=null){
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
-            var unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
+            var unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_list_item_activated_1, listUnidadProductiva)
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
             viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialogFilter?.spinnerLote?.setText("")
@@ -404,7 +404,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         viewDialogFilter?.spinnerLote!!.setAdapter(null)
         //viewDialogFilter?.spinnerLote?.setText("")
         //viewDialogFilter?.spinnerLote?.setHint(String.format(getString(R.string.spinner_lote)))
-        var loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, listLotes)
+        var loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_list_item_activated_1, listLotes)
         viewDialogFilter?.spinnerLote!!.setAdapter(loteArrayAdapter)
         viewDialogFilter?.spinnerLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             viewDialogFilter?.spinnerCultivo?.setText("")
@@ -418,7 +418,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
         viewDialogFilter?.spinnerCultivo!!.setAdapter(null)
         //viewDialogFilter?.spinnerCultivo?.setText("")
         //viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
-        val cultivoArrayAdapter = ArrayAdapter<Cultivo>(activity, android.R.layout.simple_spinner_dropdown_item, listCultivos)
+        val cultivoArrayAdapter = ArrayAdapter<Cultivo>(activity, android.R.layout.simple_list_item_activated_1, listCultivos)
         viewDialogFilter?.spinnerCultivo!!.setAdapter(cultivoArrayAdapter)
         viewDialogFilter?.spinnerCultivo!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             cultivoGlobal= listCultivos!![position] as Cultivo
@@ -440,7 +440,7 @@ class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayo
             viewDialog?.spinnerPuk?.setAdapter(null)
             //viewDialogFilter?.spinnerCultivo?.setText("")
             //viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
-            val cultivoArrayAdapter = ArrayAdapter<Puk>(activity, android.R.layout.simple_spinner_dropdown_item, listPuk)
+            val cultivoArrayAdapter = ArrayAdapter<Puk>(activity, android.R.layout.simple_list_item_activated_1, listPuk)
             viewDialog?.spinnerPuk?.setAdapter(cultivoArrayAdapter)
             viewDialog?.spinnerPuk?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 pukGlobal= listPuk!![position] as Puk

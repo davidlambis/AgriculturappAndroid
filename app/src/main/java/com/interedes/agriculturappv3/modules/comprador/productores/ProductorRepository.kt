@@ -157,8 +157,8 @@ class ProductorRepository:IMainViewProductor.Repository {
                                 }
                             }*/
 
-                            unidaProductiva.Estado_Sincronizacion=true
-                            unidaProductiva.Estado_SincronizacionUpdate=true
+                            unidaProductiva.Estado_Sincronizacion=false
+                            unidaProductiva.Estado_SincronizacionUpdate=false
                             unidaProductiva.save()
 
 
@@ -199,8 +199,8 @@ class ProductorRepository:IMainViewProductor.Repository {
                                 lote.Nombre= item.nombre_lote
                                 lote.Descripcion= item.descripcion_lote
                                 lote.Id_Remote=item.lote_id
-                                lote.EstadoSincronizacion=true
-                                lote.Estado_SincronizacionUpdate=true
+                                lote.EstadoSincronizacion=false
+                                lote.Estado_SincronizacionUpdate=false
                                 lote.save()
                             }
 
@@ -236,8 +236,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                             cultivo.Descripcion=item.descripcion_cultivo
                             cultivo.NombreUnidadProductiva= unidaProductiva?.nombre
                             cultivo.NombreLote= lote?.Nombre
-                            cultivo.EstadoSincronizacion= true
-                            cultivo.Estado_SincronizacionUpdate= true
+
                             cultivo.stringFechaInicio=cultivo.getFechaStringFormatApi(item.fechainicio_cultivo)
                             cultivo.stringFechaFin=cultivo.getFechaStringFormatApi(item.fechafin_cultivo)
 
@@ -246,8 +245,8 @@ class ProductorRepository:IMainViewProductor.Repository {
                             cultivo.Id_Tipo_Producto= detalleTipoProducto.TipoProductoId
                             cultivo.Nombre_Unidad_Medida=item.descripcion_unidadmedida_cultivo
 
-                            cultivo.EstadoSincronizacion=true
-                            cultivo.Estado_SincronizacionUpdate=true
+                            cultivo.EstadoSincronizacion=false
+                            cultivo.Estado_SincronizacionUpdate=false
                             cultivo.save()
 
 
@@ -300,8 +299,8 @@ class ProductorRepository:IMainViewProductor.Repository {
                             producto.Usuario_Logued=getLastUserLogued()?.Id
                             producto.NombreDetalleTipoProducto=detalleTipoProducto.Nombre
                             producto.TelefonoProductor=usuario.PhoneNumber
-                            producto.Estado_Sincronizacion=true
-                            producto.Estado_SincronizacionUpdate=true
+                            producto.Estado_Sincronizacion=false
+                            producto.Estado_SincronizacionUpdate=false
 
                             try {
                                 val base64String = item?.imagen_producto

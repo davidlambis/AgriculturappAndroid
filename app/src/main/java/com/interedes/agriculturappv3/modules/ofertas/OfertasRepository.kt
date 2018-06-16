@@ -3,11 +3,14 @@ package com.interedes.agriculturappv3.modules.ofertas
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.lote.Lote
+import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.ofertas.*
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
@@ -33,12 +36,34 @@ class OfertasRepository : IOfertas.Repository {
         apiService = ApiInterface.create()
     }
 
+    override fun getUserLogued():Usuario?{
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
+
     //region Métodos Interfaz
     override fun getListas() {
-        val listUnidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).queryList()
-        val listLotes = SQLite.select().from(Lote::class.java).queryList()
-        val listCultivos = SQLite.select().from(Cultivo::class.java).queryList()
-        val listProductos = SQLite.select().from(Producto::class.java).queryList()
+        var usuario=getLastUserLogued()
+
+        val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
+                .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+        val listLotes = SQLite.select().from(Lote::class.java)
+                .where(Lote_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+
+        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+                .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
+                .queryList()
+
+        val listProductos = SQLite.select()
+                .from(Producto::class.java)
+                .where(Producto_Table.userId.eq(usuario?.Id))
+                .queryList()
+
+
         postEventListUnidadProductiva(OfertasEvent.LIST_EVENT_UP, listUnidadProductiva, null)
         postEventListLotes(OfertasEvent.LIST_EVENT_LOTE, listLotes, null)
         postEventListCultivos(OfertasEvent.LIST_EVENT_CULTIVO, listCultivos, null)
@@ -66,7 +91,7 @@ class OfertasRepository : IOfertas.Repository {
                         .queryList()
 
                 for (oferta in ofertaResponse){
-                    var usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioId)).querySingle()
+                    var usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
                     if(usuario!=null){
                         oferta.Usuario=usuario
                     }
@@ -82,12 +107,14 @@ class OfertasRepository : IOfertas.Repository {
                     listResponse.add(oferta)
                 }
             } else {
+
+
                 var ofertaResponse = SQLite.select().from(Oferta::class.java)
                         .where(Oferta_Table.ProductoId.eq(productoId))
                         .and(Oferta_Table.UsuarioTo.eq(usuario?.Id))
                         .queryList()
                 for (oferta in ofertaResponse){
-                    var usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+                    var usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioId)).querySingle()
                     if(usuario!=null){
                         oferta.Usuario=usuario
                     }

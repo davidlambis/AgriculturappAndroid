@@ -121,8 +121,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
        adapter = ProductorMoreAdapter(productosList, activity)
         adapter?.setLoadMoreListener(object : ProductorMoreAdapter.OnLoadMoreListener {
             override fun onLoadMore() {
-
-
                 if(pastVisiblesItems!!>=PAGE_SIZE){
                     recyclerView.post {
 
@@ -131,7 +129,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
                         loadMore(index)
                     }
                 }
-
                 //Calling loadMore function in Runnable to fix the
                 // java.lang.IllegalStateException: Cannot call this method while RecyclerView is computing a layout or scrolling error
             }
@@ -181,24 +178,37 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         productosList?.addAll(listProducto)
         adapter?.notifyDataChanged()
         setResults(productosList?.size!!)
-        pastVisiblesItems=listProducto.size
+
+        //Se asigna para que no ejecute el evento More del Adaptador
+        if(listProducto.size>PAGE_SIZE){
+            //productosList?.removeAt(productosList?.size!! - 1)
+            pastVisiblesItems=3
+        }
+
+
     }
 
     override fun setListProducto(listProducto: List<Producto>) {
-        productosList?.removeAt(productosList?.size!! - 1)
-        if (listProducto.size > 0) {
-            //add loaded data
-            productosList?.addAll(listProducto!!)
-        } else {//result size 0 means there is no more data available at server
-            //adapter?.setMoreDataAvailable(false)
-            //telling adapter to stop calling load more as no more server data available
-            Toast.makeText(context, "No More Data Available", Toast.LENGTH_LONG).show()
-        }
-        adapter?.notifyDataChanged()
 
-        pastVisiblesItems=listProducto.size
 
-        setResults(productosList?.size!!)
+
+            productosList?.removeAt(productosList?.size!! - 1)
+
+            if (listProducto.size > 0) {
+                //add loaded data
+                productosList?.addAll(listProducto!!)
+            } else {//result size 0 means there is no more data available at server
+                //adapter?.setMoreDataAvailable(false)
+                //telling adapter to stop calling load more as no more server data available
+                Toast.makeText(context, "No More Data Available", Toast.LENGTH_LONG).show()
+            }
+            adapter?.notifyDataChanged()
+            pastVisiblesItems=listProducto.size
+
+            setResults(productosList?.size!!)
+
+
+
     }
 
     override fun setResults(listProduccion: Int) {

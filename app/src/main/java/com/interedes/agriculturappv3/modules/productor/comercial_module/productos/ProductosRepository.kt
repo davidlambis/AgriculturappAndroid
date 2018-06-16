@@ -74,14 +74,16 @@ class ProductosRepository : IProductos.Repository {
     }
 
     override fun getProductos(cultivo_id: Long?): List<Producto> {
+        var usuarioLogued= getLastUserLogued()
         var listResponse: List<Producto>? = null
         if (cultivo_id == null) {
-            var usuarioLogued= getLastUserLogued()
             listResponse = SQLite.select().from(Producto::class.java)
                     .where(Producto_Table.userId.eq(usuarioLogued?.Id))
                     .queryList()
         } else {
-            listResponse = SQLite.select().from(Producto::class.java).where(Producto_Table.cultivoId.eq(cultivo_id)).queryList()
+            listResponse = SQLite.select().from(Producto::class.java)
+                    .where(Producto_Table.userId.eq(usuarioLogued?.Id))
+                    .and(Producto_Table.cultivoId.eq(cultivo_id)).queryList()
         }
         return listResponse;
     }
@@ -89,7 +91,6 @@ class ProductosRepository : IProductos.Repository {
 
 
     override fun registerProducto(mProducto: Producto, cultivo_id: Long,checkConection:Boolean) {
-
 
         var usuarioLogued= getLastUserLogued()
         mProducto.userId=usuarioLogued?.Id

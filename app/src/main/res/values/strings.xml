@@ -235,6 +235,10 @@
     <!--Tipo Producto-->
 
     <!-- Ofertas Productor -->
+    <string name="title_oferta_refused">Rechazada</string>
+    <string name="title_oferta_vigente">En espera</string>
+    <string name="title_oferta_confirm">Confirmada</string>
+
     <string name="title_ofertas">Ofertas</string>
     <string name="title_cliente">Cliente: %s</string>
     <string name="title_precio_oferta">Valor : %f</string>
@@ -244,7 +248,8 @@
     <string name="title_alert_acept_oferta">¿Estas seguro que deseas acepatr esta oferta?</string>
     <string name="title_alert_refused_oferta">¿Estas seguro que deseas rechazar esta oferta?</string>
 
-    <string name="descripcion_oferta">%1$s %2$s  te oferto %3$s a un precio de  %4$s por el cultivo de %5$s de %6$s</string>
+    <string name="descripcion_oferta_productor">%1$s %2$s  te oferto %3$s a un precio de  %4$s por el cultivo de %5$s de %6$s</string>
+    <string name="descripcion_oferta_comprador">haz realizado una oferta al señor(a) %1$s %2$s  de %3$s a un precio de  %4$s por el cultivo de %5$s de %6$s</string>
     <!-- Ventas Comercial -->
     <string name="title_ventas">Ventas</string>
 

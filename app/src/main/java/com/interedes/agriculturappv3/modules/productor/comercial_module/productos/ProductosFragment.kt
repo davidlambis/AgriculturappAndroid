@@ -424,7 +424,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     override fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?) {
         if (viewDialogFilter != null) {
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
-            val unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
+            val unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_list_item_activated_1, listUnidadProductiva)
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
             viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialogFilter?.spinnerLote?.setText("")
@@ -445,7 +445,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         viewDialogFilter?.spinnerLote!!.setAdapter(null)
         //viewDialogFilter?.spinnerLote?.setText("")
         //viewDialogFilter?.spinnerLote?.setHint(String.format(getString(R.string.spinner_lote)))
-        val loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, listLotes)
+        val loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_list_item_activated_1, listLotes)
         viewDialogFilter?.spinnerLote!!.setAdapter(loteArrayAdapter)
         viewDialogFilter?.spinnerLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             viewDialogFilter?.spinnerCultivo?.setText("")
@@ -459,7 +459,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         viewDialogFilter?.spinnerCultivo!!.setAdapter(null)
         //viewDialogFilter?.spinnerCultivo?.setText("")
         //viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
-        val cultivoArrayAdapter = ArrayAdapter<Cultivo>(activity, android.R.layout.simple_spinner_dropdown_item, listCultivos)
+        val cultivoArrayAdapter = ArrayAdapter<Cultivo>(activity, android.R.layout.simple_list_item_activated_1, listCultivos)
         viewDialogFilter?.spinnerCultivo!!.setAdapter(cultivoArrayAdapter)
         viewDialogFilter?.spinnerCultivo!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             cultivoGlobal = listCultivos!![position]
@@ -470,7 +470,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     override fun setListMoneda(listMoneda: List<Unidad_Medida>?) {
         if (viewDialog != null) {
             viewDialog?.spinnerMonedaPrecio?.setAdapter(null)
-            val monedaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listMoneda)
+            val monedaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listMoneda)
             viewDialog?.spinnerMonedaPrecio?.setAdapter(monedaArrayAdapter)
             viewDialog?.spinnerMonedaPrecio?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadMedidaPrecioGlobal = listMoneda!![position]
@@ -482,7 +482,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     override fun setListUnidadCantidades(listMoneda: List<Unidad_Medida>?) {
         if (viewDialog != null) {
             viewDialog?.spinnerUnidadMedidaCosecha?.setAdapter(null)
-            val monedaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listMoneda)
+            val monedaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listMoneda)
             viewDialog?.spinnerUnidadMedidaCosecha?.setAdapter(monedaArrayAdapter)
             viewDialog?.spinnerUnidadMedidaCosecha?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadMedidaCantidadGlobal = listMoneda!![position]
@@ -497,7 +497,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     override fun setListCalidad(listCalidadProducto: List<CalidadProducto>?) {
         if (viewDialog != null) {
             viewDialog?.spinnerCalidadProducto?.setAdapter(null)
-            val calidadArrayAdapter = ArrayAdapter<CalidadProducto>(activity, android.R.layout.simple_spinner_dropdown_item, listCalidadProducto)
+            val calidadArrayAdapter = ArrayAdapter<CalidadProducto>(activity, android.R.layout.simple_list_item_activated_1, listCalidadProducto)
             viewDialog?.spinnerCalidadProducto?.setAdapter(calidadArrayAdapter)
             viewDialog?.spinnerCalidadProducto?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 calidadProductoGlobal = listCalidadProducto!![position]

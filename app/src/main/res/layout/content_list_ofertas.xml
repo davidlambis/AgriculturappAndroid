@@ -138,8 +138,20 @@ android:layout_margin="@dimen/margin_10"
              android:text="Detalle" />-->
 
 
+
+            <Button
+                android:layout_below="@+id/contentQuantdate"
+                android:id="@+id/btnStatusOferta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_drawable_card_view_red"
+                android:foreground="?attr/selectableItemBackground"
+                android:textColor="@color/grey_luiyi"
+                android:textSize="@dimen/text_size_15"
+                android:visibility="gone" />
+
         <LinearLayout
-            android:layout_below="@+id/contentQuantdate"
+            android:layout_below="@+id/btnStatusOferta"
             android:id="@+id/optionsButtons"
             android:orientation="horizontal"
             android:layout_width="match_parent"

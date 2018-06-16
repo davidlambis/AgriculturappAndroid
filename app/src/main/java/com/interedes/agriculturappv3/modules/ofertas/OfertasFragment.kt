@@ -4,6 +4,8 @@ package com.interedes.agriculturappv3.modules.ofertas
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -34,7 +36,6 @@ import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActi
 import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
-import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_ofertas.*
 import java.util.ArrayList
@@ -87,11 +88,39 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         swipeRefreshLayout.setOnRefreshListener(this)
         searchFilter.setOnClickListener(this)
         setupInjection()
+        setupInitDesign()
+    }
+
+    private fun setupInitDesign() {
+       // (activity as MenuMainActivity).toolbar.title = getString(R.string.title_module_comercial)
+        (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.blue));
+        var iconMenu = (activity as MenuMainActivity).menuItemGlobal
+        iconMenu?.isVisible = true
+
+        var iconc = iconMenu?.setIcon(ContextCompat.getDrawable((activity as MenuMainActivity), R.drawable.ic_icon_comercial))
+        var icon = iconc?.icon?.mutate()
+        icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val window = (activity as MenuMainActivity).getWindow()
+            // clear FLAG_TRANSLUCENT_STATUS flag:
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            // finally change the color
+            window.statusBarColor = ContextCompat.getColor((activity as MenuMainActivity), R.color.blue)
+            (activity as MenuMainActivity).app_bar_main.elevation = 0f
+            (activity as MenuMainActivity).app_bar_main.stateListAnimator = null
+
+        } else {
+            (activity as MenuMainActivity).app_bar_main.targetElevation = 0f
+        }
+
     }
 
     private fun initAdapter() {
         recyclerView?.layoutManager = LinearLayoutManager(activity)
-        adapter = OfertasAdapter(ofertasList!!)
+        adapter = OfertasAdapter(ofertasList!!, presenter?.getUserLogued()?.RolNombre)
         recyclerView?.adapter = adapter
     }
 
@@ -234,7 +263,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
     override fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?) {
         if (viewDialogFilter != null) {
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
-            val unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
+            val unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_list_item_activated_1, listUnidadProductiva)
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
             viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialogFilter?.spinnerLote?.setText("")
@@ -253,7 +282,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         viewDialogFilter?.spinnerLote!!.setAdapter(null)
         //viewDialogFilter?.spinnerLote?.setText("")
         //viewDialogFilter?.spinnerLote?.setHint(String.format(getString(R.string.spinner_lote)))
-        val loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, listLotes)
+        val loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_list_item_activated_1, listLotes)
         viewDialogFilter?.spinnerLote!!.setAdapter(loteArrayAdapter)
         viewDialogFilter?.spinnerLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             viewDialogFilter?.spinnerCultivo?.setText("")
@@ -267,7 +296,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         viewDialogFilter?.spinnerCultivo!!.setAdapter(null)
         //viewDialogFilter?.spinnerCultivo?.setText("")
         //viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
-        val cultivoArrayAdapter = ArrayAdapter<Cultivo>(activity, android.R.layout.simple_spinner_dropdown_item, listCultivos)
+        val cultivoArrayAdapter = ArrayAdapter<Cultivo>(activity, android.R.layout.simple_list_item_activated_1, listCultivos)
         viewDialogFilter?.spinnerCultivo!!.setAdapter(cultivoArrayAdapter)
         viewDialogFilter?.spinnerCultivo!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             viewDialogFilter?.spinnerProducto?.visibility = View.VISIBLE
@@ -281,12 +310,12 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         viewDialogFilter?.spinnerProducto!!.setAdapter(null)
         //viewDialogFilter?.spinnerCultivo?.setText("")
         //viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
-        val productoArrayAdapter = ArrayAdapter<Producto>(activity, android.R.layout.simple_spinner_dropdown_item, listProductos)
+        val productoArrayAdapter = ArrayAdapter<Producto>(activity, android.R.layout.simple_list_item_activated_1, listProductos)
         viewDialogFilter?.spinnerProducto!!.setAdapter(productoArrayAdapter)
         viewDialogFilter?.spinnerProducto!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
 
             productoGlobal = listProductos!![position]
-            Producto_Id = productoGlobal?.ProductoId
+            Producto_Id = productoGlobal?.Id_Remote
         }
     }
 

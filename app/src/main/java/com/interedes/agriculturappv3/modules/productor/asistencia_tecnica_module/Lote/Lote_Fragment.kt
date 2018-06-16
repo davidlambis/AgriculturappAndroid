@@ -747,7 +747,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(null);
-            var upArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductivaGlobal);
+            var upArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_list_item_activated_1, listUnidadProductivaGlobal);
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(upArrayAdapter);
             viewDialog?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadProductivaGlobalSppiner = listUnidadProductivaGlobal!![position] as Unidad_Productiva
@@ -760,7 +760,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadMedidaLote!!.setAdapter(null)
-            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedidaGlobal);
+            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listUnidadMedidaGlobal);
             viewDialog?.spinnerUnidadMedidaLote!!.setAdapter(uMedidaArrayAdapter);
             viewDialog?.spinnerUnidadMedidaLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadMedidaGlobal = listUnidadMedidaGlobal!![position] as Unidad_Medida

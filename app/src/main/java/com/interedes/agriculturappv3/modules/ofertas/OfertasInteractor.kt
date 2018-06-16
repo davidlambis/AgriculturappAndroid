@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.modules.productor.comercial_module.ofe
 
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.ofertas.IOfertas
 import com.interedes.agriculturappv3.modules.ofertas.OfertasRepository
 
@@ -29,5 +30,9 @@ class OfertasInteractor : IOfertas.Interactor {
         repository?.updateOferta(oferta,productoId,checkConection)
     }
 
+
+    override  fun getUserLogued(): Usuario? {
+        return repository?.getUserLogued()
+    }
     //endregion
 }

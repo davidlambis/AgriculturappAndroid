@@ -358,7 +358,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     override fun setListSpinnerDepartamentos(listDepartamentos: List<Departamento>) {
         if (viewDialog != null) {
             viewDialog?.spinnerDepartamento?.setAdapter(null)
-            val departamentoArrayAdapter = ArrayAdapter<Departamento>(activity, android.R.layout.simple_spinner_dropdown_item, listDepartamentos)
+            val departamentoArrayAdapter = ArrayAdapter<Departamento>(activity, android.R.layout.simple_list_item_activated_1, listDepartamentos)
             viewDialog?.spinnerDepartamento?.setAdapter(departamentoArrayAdapter)
             viewDialog?.spinnerDepartamento?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialog?.spinnerMunicipio?.setText("")
@@ -371,7 +371,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     override fun setListSpinnerMunicipios(listMunicipios: List<Ciudad>) {
         if (viewDialog != null) {
             viewDialog?.spinnerMunicipio?.setAdapter(null)
-            val municipioArrayAdapter = ArrayAdapter<Ciudad>(activity, android.R.layout.simple_spinner_dropdown_item, listMunicipios)
+            val municipioArrayAdapter = ArrayAdapter<Ciudad>(activity, android.R.layout.simple_list_item_activated_1, listMunicipios)
             viewDialog?.spinnerMunicipio?.setAdapter(municipioArrayAdapter)
             viewDialog?.spinnerMunicipio?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 municipioGlobal = listMunicipios[position]
@@ -416,7 +416,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadMedidaUp!!.setAdapter(null)
-            val uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedidaGlobal);
+            val uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listUnidadMedidaGlobal);
             viewDialog?.spinnerUnidadMedidaUp!!.setAdapter(uMedidaArrayAdapter);
             viewDialog?.spinnerUnidadMedidaUp!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadMedidaGlobal = listUnidadMedidaGlobal!![position] as Unidad_Medida

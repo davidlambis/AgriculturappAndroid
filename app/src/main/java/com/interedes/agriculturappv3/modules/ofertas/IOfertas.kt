@@ -10,6 +10,7 @@ import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 
 interface IOfertas {
@@ -73,10 +74,12 @@ interface IOfertas {
         fun getListOfertas(productoId: Long?)
         fun getProducto(productoId: Long?)
 
+        fun getUserLogued():Usuario?
         fun updateOferta(oferta: Oferta,productoId:Long?)
     }
 
     interface Interactor {
+        fun getUserLogued():Usuario?
         fun getListOfertas(productoId: Long?)
         fun getListas()
         fun getProducto(productoId: Long?)
@@ -85,6 +88,7 @@ interface IOfertas {
     }
 
     interface Repository {
+        fun getUserLogued(): Usuario?
         fun getListas()
         fun getListOfertas(productoId: Long?)
         fun getOfertas(productoId: Long?): List<Oferta>

@@ -589,7 +589,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     override fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?) {
         if (viewDialogFilter != null) {
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
-            val unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadProductiva)
+            val unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_list_item_activated_1, listUnidadProductiva)
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
             viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialogFilter?.spinnerLote?.setText("")
@@ -604,7 +604,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     override fun setListLotes(listLotes: List<Lote>?) {
         if (viewDialogFilter != null) {
             viewDialogFilter?.spinnerLote!!.setAdapter(null)
-            val loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_spinner_dropdown_item, listLotes)
+            val loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_list_item_activated_1, listLotes)
             viewDialogFilter?.spinnerLote!!.setAdapter(loteArrayAdapter)
             viewDialogFilter?.spinnerLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 loteGlobal = listLotes!![position] as Lote
@@ -617,7 +617,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     override fun setListTipoProducto(listTipoProducto: List<TipoProducto>?) {
         if (viewDialog != null) {
             viewDialog?.spinnerTipoProducto!!.setAdapter(null)
-            val tipoProductoArrayAdapter = ArrayAdapter<TipoProducto>(activity, android.R.layout.simple_spinner_dropdown_item, listTipoProducto)
+            val tipoProductoArrayAdapter = ArrayAdapter<TipoProducto>(activity, android.R.layout.simple_list_item_activated_1, listTipoProducto)
             viewDialog?.spinnerTipoProducto!!.setAdapter(tipoProductoArrayAdapter)
             viewDialog?.spinnerTipoProducto!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 tipoProductoGlobal = listTipoProducto!![position] as TipoProducto
@@ -632,7 +632,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     override fun setListDetalleTipoProducto(listDetalleTipoProducto: List<DetalleTipoProducto>?) {
         if (viewDialog != null) {
             viewDialog?.spinnerDetalleTipoProducto!!.setAdapter(null)
-            val detalleTipoProductoArrayAdapter = ArrayAdapter<DetalleTipoProducto>(activity, android.R.layout.simple_spinner_dropdown_item, listDetalleTipoProducto)
+            val detalleTipoProductoArrayAdapter = ArrayAdapter<DetalleTipoProducto>(activity, android.R.layout.simple_list_item_activated_1, listDetalleTipoProducto)
             viewDialog?.spinnerDetalleTipoProducto!!.setAdapter(detalleTipoProductoArrayAdapter)
             viewDialog?.spinnerDetalleTipoProducto!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 detalleTipoProductoGlobal = listDetalleTipoProducto!![position] as DetalleTipoProducto
@@ -644,7 +644,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadMedidaCosecha!!.setAdapter(null)
-            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listUnidadMedida);
+            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listUnidadMedida);
             viewDialog?.spinnerUnidadMedidaCosecha!!.setAdapter(uMedidaArrayAdapter);
             viewDialog?.spinnerUnidadMedidaCosecha!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadMedidaGlobal = listUnidadMedida!![position]

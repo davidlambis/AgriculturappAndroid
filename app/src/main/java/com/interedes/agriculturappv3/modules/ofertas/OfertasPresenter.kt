@@ -11,6 +11,7 @@ import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.productor.comercial_module.ofe.OfertasInteractor
 import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 import com.interedes.agriculturappv3.services.Const
@@ -158,6 +159,10 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
     override fun updateOferta(oferta: Oferta, productoId: Long?) {
         view?.showProgressHud()
         interactor?.updateOferta(oferta,productoId,checkConnection())
+    }
+
+    override  fun getUserLogued(): Usuario? {
+        return interactor?.getUserLogued()
     }
 
     //SET Listas
