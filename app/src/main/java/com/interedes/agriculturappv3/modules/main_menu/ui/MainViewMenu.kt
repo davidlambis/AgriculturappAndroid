@@ -39,6 +39,7 @@ interface MainViewMenu {
         fun showAlertDialogSyncDataConfirm()
 
         fun setQuantitySync(quantitySync: QuantitySync?)
+        fun setQuantitySyncAutomatic(quantitySync: QuantitySync?)
 
         fun getListasIniciales()
     }
@@ -51,7 +52,7 @@ interface MainViewMenu {
 
         //syncData
         fun syncData()
-        fun syncQuantityData()
+        fun syncQuantityData(automatic:Boolean)
 
         fun makeUserOnline()
         fun makeUserOffline()
@@ -74,7 +75,7 @@ interface MainViewMenu {
         fun makeUserOnline(checkConection:Boolean)
         fun makeUserOffline(checkConection:Boolean)
         fun getListasIniciales()
-        fun syncQuantityData()
+        fun syncQuantityData(automatic:Boolean)
         fun syncData()
         fun getLastUserLogued(): Usuario?
         fun getListSyncEnfermedadesAndTratamiento()
@@ -95,7 +96,7 @@ interface MainViewMenu {
 
 
         fun getListasIniciales()
-        fun syncQuantityData()
+        fun syncQuantityData(automatic:Boolean)
         fun syncData()
         fun getLastUserLogued(): Usuario?
         fun getListSyncEnfermedadesAndTratamiento()

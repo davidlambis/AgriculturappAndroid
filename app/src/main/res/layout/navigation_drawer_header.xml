@@ -73,12 +73,13 @@
                 android:src="@drawable/ic_ic_proveedores"
                 android:layout_width="40dp"
                 android:layout_height="40dp" />
+
             <TextView
                 android:textSize="@dimen/text_size_18"
                 android:textColor="@color/white_solid"
                 android:paddingStart="@dimen/margin_5"
                 android:textAlignment="textStart"
-                android:text="Mis Proveedores"
+                android:text="Sincronizacion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

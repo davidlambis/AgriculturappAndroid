@@ -91,6 +91,15 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
             RequestEventMainMenu.ERROR_EVENT -> {
                 onMessageError(event.mensajeError)
             }
+
+            RequestEventMainMenu.SYNC_RESUME_AUTOMATIC -> {
+                //onMessageError(event.mensajeError)
+                var quantitySync = event.objectMutable as QuantitySync
+                mainView?.setQuantitySyncAutomatic(quantitySync)
+            }
+
+
+
             RequestEventMainMenu.ERROR_VERIFICATE_CONECTION -> {
                 mainView?.verificateConnection()
             }
@@ -121,9 +130,9 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
         }
     }
 
-    override fun syncQuantityData() {
-        mainView?.showProgressHud()
-        interactor?.syncQuantityData()
+    override fun syncQuantityData(automatic:Boolean) {
+        //mainView?.showProgressHud()
+        interactor?.syncQuantityData(automatic)
     }
 
 

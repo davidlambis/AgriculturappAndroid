@@ -12,7 +12,9 @@ data class RequestEventMainMenu (var eventType: Int,
         val SYNC_EVENT: Int = 0
         val ERROR_EVENT: Int = 1
         val ERROR_VERIFICATE_CONECTION=2
+
         val SYNC_RESUME=3
+        val SYNC_RESUME_AUTOMATIC=4
 
 
 

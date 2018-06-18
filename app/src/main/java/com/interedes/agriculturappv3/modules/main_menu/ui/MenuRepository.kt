@@ -180,7 +180,7 @@ class MenuRepository: MainViewMenu.Repository {
 
 
 
-    override fun syncQuantityData() {
+    override fun syncQuantityData(automatic:Boolean) {
 
         var usuarioLogued=getLastUserLogued()
 
@@ -258,8 +258,18 @@ class MenuRepository: MainViewMenu.Repository {
                 countUpdatesControlPlagas+countUpdatesProducccion+countUpdatesProductos+countUpdatesTransacciones
 
 
-        var quantitySync= QuantitySync(registerTotal.toLong(),updatesTotal.toLong())
-        postEventOkQuntitySync(RequestEventMainMenu.SYNC_RESUME,quantitySync)
+
+        if(automatic){
+            var quantitySync= QuantitySync(registerTotal.toLong(),updatesTotal.toLong())
+            postEventOkQuntitySync(RequestEventMainMenu.SYNC_RESUME_AUTOMATIC,quantitySync)
+        }else{
+            var quantitySync= QuantitySync(registerTotal.toLong(),updatesTotal.toLong())
+            postEventOkQuntitySync(RequestEventMainMenu.SYNC_RESUME,quantitySync)
+        }
+
+
+
+
     }
 
     override fun syncData() {

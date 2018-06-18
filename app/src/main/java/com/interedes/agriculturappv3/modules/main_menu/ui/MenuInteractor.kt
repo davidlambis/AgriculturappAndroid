@@ -17,8 +17,8 @@ class MenuInteractor:MainViewMenu.Interactor {
        repository?.syncData()
     }
 
-    override fun syncQuantityData() {
-        repository?.syncQuantityData()
+    override fun syncQuantityData(automatic:Boolean) {
+        repository?.syncQuantityData(automatic)
     }
 
     override fun getListasIniciales() {

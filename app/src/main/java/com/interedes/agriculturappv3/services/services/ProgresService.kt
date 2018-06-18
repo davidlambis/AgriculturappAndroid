@@ -14,19 +14,20 @@ import android.widget.Toast
 import com.interedes.agriculturappv3.services.Const
 import android.os.SystemClock
 import android.app.job.JobParameters
-
-
+import android.app.NotificationManager
+import android.app.NotificationChannel
+import android.os.Build
 
 
 
 class ProgresService: JobIntentService() {
 
-
-
-
-    private val TAG = ProgressIntentService::class.java.simpleName
+    private val TAG = JobIntentService::class.java.simpleName
     private var StartService=false
     private var Count=0
+
+
+
 
     override fun onHandleWork(intent: Intent) {
         if (intent != null) {
@@ -41,102 +42,67 @@ class ProgresService: JobIntentService() {
      * Maneja la acción de ejecución del servicio
      */
     private fun handleActionRun() {
-        Toast.makeText(this, "Servicio destruido...", Toast.LENGTH_SHORT).show()
+        Log.i("D", "start")
+        val CHANNEL_ID = "my_channel_01"
+        val mBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
 
-        /*try {
-            // Se construye la notificación
-            val builder = NotificationCompat.Builder(this)
-                    .setSmallIcon(android.R.drawable.stat_sys_download_done)
-                    .setContentTitle("Servicio en segundo plano")
-                    .setContentText("Procesando...")
+                .setContentTitle("My notification")
+                .setContentText("Hello World!")
 
-
-
-
-            // Bucle de simulación
-            for (i in 1..10) {
-
-                Log.d(TAG, i.toString() + "") // Logueo
-
-                // Poner en primer plano
-                // builder.setProgress(10, i, false);
-                builder.setProgress(0, 0, true)
-
-                startForeground(1, builder.build())
-
-                val localIntent = Intent(Const.ACTION_RUN_ISERVICE)
-                        .putExtra(Const.EXTRA_PROGRESS, i)
-
-                // Emisión de {@code localIntent}
-                LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent)
-
-                // Retardo de 1 segundo en la iteración
-                Thread.sleep(1000)
-            }
-            // Quitar de primer plano
-            //stopForeground(true)
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
-*/
-        /*
-        try {
-
-
-            if(StartService==false){
-                // Se construye la notificación
-                val builder = NotificationCompat.Builder(this)
-                        .setSmallIcon(android.R.drawable.stat_sys_download_done)
-                        .setContentTitle("Servicio en segundo plano")
-                        .setContentText("Procesando...")
-
-                builder.setProgress(0, 0, true)
-
-                startForeground(1, builder.build())
-            }
+        startForeground(-1, mBuilder.build())
+        stopForeground(true)
 
 
 
+
+        for (i in 1..10) {
+
+            /* Log.d(TAG, i.toString() + "") // Logueo
+
+             // Poner en primer plano
+             // builder.setProgress(10, i, false);
+             builder.setProgress(0, 0, true)
+
+             startForeground(1, builder.build())
+
+             val localIntent = Intent(Const.ACTION_RUN_ISERVICE)
+                     .putExtra(Const.EXTRA_PROGRESS, i)
+
+             // Emisión de {@code localIntent}
+             LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent)*/
+
+            // Retardo de 1 segundo en la iteración
             Thread.sleep(1000)
-            StartService=true
-            Count=Count+1
+        }
 
-            if(Count==10){
-                stopForeground(true)
-                Toast.makeText(this, "Aqui...", Toast.LENGTH_SHORT).show()
-            }else{
-
-                handleActionRun()
-            }
-
-
-
-            // Quitar de primer plano
-            //stopForeground(true)
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }*/
+        stopSelf()
 
     }
 
-
-    fun onStartJob(params: JobParameters): Boolean {
-        handleActionRun()
-        return true
-    }
-
-    fun onStopJob(params: JobParameters): Boolean {
-        // whether or not you would like JobScheduler to automatically retry your failed job.
-        return false
-    }
 
     override fun onDestroy() {
         Toast.makeText(this, "Servicio destruido...", Toast.LENGTH_SHORT).show()
-        StartService=false
+        //StartService=false
         // Emisión para avisar que se terminó el servicio
-        val localIntent = Intent(Const.ACTION_PROGRESS_EXIT)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent)
+        //val localIntent = Intent(Const.ACTION_PROGRESS_EXIT)
+        //LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent)
 
-        Log.d(TAG, "Servicio destruido...")
+        //Log.d(TAG, "Servicio destruido...")
+    }
+
+
+
+    override fun onCreate() {
+        super.onCreate()
+
+    }
+
+
+    private fun fakeStartForeground() {
+        val builder = NotificationCompat.Builder(this, "2")
+                .setContentTitle("")
+                .setContentText("")
+
+        startForeground(1, builder.build())
     }
 }

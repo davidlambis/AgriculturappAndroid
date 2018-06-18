@@ -50,6 +50,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.activities.chat.chat_sms.UserSmsActivity
 import com.interedes.agriculturappv3.activities.chat.online.ChatUsersActivity
 import com.interedes.agriculturappv3.activities.intro.PermissionsIntro
@@ -59,10 +60,9 @@ import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
-import com.interedes.agriculturappv3.services.services.ProgressIntentService
 import com.interedes.agriculturappv3.services.resources.MenuBoomResources
 import com.interedes.agriculturappv3.services.resources.RolResources
-import com.interedes.agriculturappv3.services.services.JobService
+import com.interedes.agriculturappv3.services.services.JobSyncService
 import com.interedes.agriculturappv3.services.services.ProgresService
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nightonke.boommenu.BoomMenuButton
@@ -76,7 +76,6 @@ import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.security.Provider
 import java.util.*
 
 
@@ -131,6 +130,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
 
+
+
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_songs -> {
@@ -148,6 +149,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_main)
+
 
         //Presenter
         presenter = MenuPresenterImpl(this)
@@ -194,6 +196,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
             }
         }
+
+
+        presenter?.syncQuantityData(true)
     }
 
     private fun setupMenuFloating() {
@@ -288,7 +293,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                         if(circleSubButtonTexts!![buttonIndex].equals(MenuBoomResources.CHAT)){
                             showAlertTypeChat()
                         }else if(circleSubButtonTexts!![buttonIndex].equals(MenuBoomResources.SINCRONIZAR)){
-                            presenter?.syncQuantityData()
+                            presenter?.syncQuantityData(false)
 
                         }else if(circleSubButtonTexts!![buttonIndex].equals(MenuBoomResources.EXPORTAR)){
 
@@ -781,24 +786,32 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         }
             R.id.itemProveedores -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
-
-                    //startService(intent);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                presenter?.syncQuantityData(false)
 
 
-                    var intent =  Intent(this, JobService::class.java)
-                    //intent.setAction(Const.ACTION_RUN_ISERVICE)
+
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+                    var intent =  Intent(this, ProgresService::class.java)
+                    intent.setAction(Const.ACTION_RUN_ISERVICE)
                     startForegroundService(intent)
+                }*/
 
+                //startService(intent);
+                //var intent =  Intent(this, ProgresService::class.java)
+                //ContextCompat.startForegroundService(this, intent)
 
-                    this.startForegroundService(intent)
-
+                /*
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    var intent =  Intent(this, JobSyncService::class.java)
+                    //intent.setAction(Const.ACTION_RUN_ISERVICE)
+                    //startForegroundService(intent)
+                    //this.startForegroundService(intent)
+                    ContextCompat.startForegroundService(this, intent)
                     //Service.startForeground()
                 }else{
-                    //startService(intent)
-                }
-
+                    startService(intent)
+                }*/
                 //NotificationManager.startServiceInForeground()
             }
 
@@ -973,9 +986,19 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 .setView(viewDialogSync)
                 .setTitle(getString(R.string.alert))
                 .setMessage(message)
+
                 .setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
-                    presenter?.syncData()
+                    //presenter?.syncData()
+                    ///AgriculturApplication.instance.showNotification(true)
+
+                    if(presenter?.checkConnection()!!){
+                        setQuantitySyncAutomatic(quantitySync)
+                    }else{
+                        verificateConnection()
+                    }
+
                 })
+
                 .setNegativeButton(getString(R.string.cancel), DialogInterface.OnClickListener { dialog, which ->
                     dialog.dismiss()
                 })
@@ -990,6 +1013,17 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     override fun setQuantitySync(quantitySync: QuantitySync?){
         verificateSync(quantitySync)
+    }
+
+
+    override fun setQuantitySyncAutomatic(quantitySync: QuantitySync?){
+        if(quantitySync?.CantidadRegistrosSync!!.toInt()>0 || quantitySync?.CantidadUpdatesSync!!.toInt()>0 ){
+            if(presenter?.checkConnection()!!){
+                AgriculturApplication.instance.showNotification(true)
+            }else{
+                onMessageError(R.color.red_900,"Tienes informacion por sincronizar verifca tu conexion")
+            }
+        }
     }
 
     override fun verificateConnection(): AlertDialog? {
@@ -1021,7 +1055,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         retIntent.putExtra("state_conectivity", true)
         this?.sendBroadcast(retIntent)
         onMessageOk(R.color.colorPrimary, getString(R.string.on_connectividad))
+
+
         presenter?.makeUserOnline()
+        presenter?.syncQuantityData(true)
     }
 
     override fun offConnectivity() {
@@ -1070,7 +1107,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     override fun onDestroy() {
-
         presenter?.onDestroy(this)
         super.onDestroy()
     }
