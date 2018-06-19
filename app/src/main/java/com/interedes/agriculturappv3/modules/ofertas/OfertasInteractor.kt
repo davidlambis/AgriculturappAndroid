@@ -14,8 +14,8 @@ class OfertasInteractor : IOfertas.Interactor {
     }
 
     //region Métodos Interfaz
-    override fun getListOfertas(productoId: Long?) {
-        repository?.getListOfertas(productoId)
+    override fun getListOfertas(productoId: Long?,checkConection: Boolean) {
+        repository?.getListOfertas(productoId,checkConection)
     }
 
     override fun getListas() {

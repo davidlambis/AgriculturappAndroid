@@ -16,7 +16,7 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.services.Events.EventsService
-import com.interedes.agriculturappv3.services.services.request.RequestPostSyncData
+import com.interedes.agriculturappv3.services.services.request.RequestPostDataSync
 import org.greenrobot.eventbus.Subscribe
 
 
@@ -25,11 +25,15 @@ class JobSyncService : JobIntentService() {
 
     companion object {
 
+        lateinit var instance: JobSyncService
+
+        var runnableService:Boolean=false
+
         //SYNC
         var runnableGlobal:Runnable?=null
         var eventBus: EventBus? = null
         var apiService: ApiInterface? = null
-        var repository: IMainViewService.Repository? = null
+        var repository: IMainViewService.RepositoryPost? = null
 
 
         //region NOTIFCATION
@@ -91,6 +95,7 @@ class JobSyncService : JobIntentService() {
                 runnable = Runnable { context.stopService(intent) }
                 PENDING_STOP_SERVICE[intent] = runnable
                 runnableGlobal=runnable
+                runnableService=true
                 repository?.syncData()
                // for (i in 1..10) {
                     // Retardo de 1 segundo en la iteración
@@ -102,8 +107,6 @@ class JobSyncService : JobIntentService() {
                 context.stopService(intent)
             }
         }
-
-
 
         @RequiresApi(api = 26)
         fun createNotificationChannel(context: Context,
@@ -125,11 +128,11 @@ class JobSyncService : JobIntentService() {
         //endregion
     }
 
-
     init {
+        instance=this
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
-        repository = RequestPostSyncData()
+        repository = RequestPostDataSync()
     }
 
     override fun onCreate() {
@@ -139,10 +142,7 @@ class JobSyncService : JobIntentService() {
         eventBus?.register(this)
     }
 
-
-
     //region Override Methods
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         try {
             Log.d(TAG, "+onStartCommand(...)")
@@ -183,7 +183,8 @@ class JobSyncService : JobIntentService() {
 
     override fun onDestroy() {
         Log.d(TAG, "+onDestroy()")
-        Toast.makeText(this, "Servicio destruido...", Toast.LENGTH_SHORT).show()
+        runnableService=false
+        //Toast.makeText(this, "Servicio destruido...", Toast.LENGTH_SHORT).show()
         //PbLog.s(TAG, PbStringUtils.separateCamelCaseWords("onDestroy"));
         super.onDestroy()
         stopForeground(true)
@@ -218,7 +219,7 @@ class JobSyncService : JobIntentService() {
         when (event?.eventType) {
             EventsService.POST_SYNC_EVENT -> {
                 HANDLER.postDelayed(runnableGlobal,1000)
-                Toast.makeText(this, "Sincronzado...", Toast.LENGTH_SHORT).show()
+                ///Toast.makeText(this, "Sincronizado...", Toast.LENGTH_SHORT).show()
             }
             EventsService.ERROR_EVENT -> {
                 HANDLER.postDelayed(runnableGlobal,1000)
@@ -228,9 +229,6 @@ class JobSyncService : JobIntentService() {
         }
     }
     //endregion
-
-
-
 
 }
 

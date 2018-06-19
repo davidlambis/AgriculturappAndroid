@@ -85,10 +85,12 @@ class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
 
             val expandable : Expandable = itemView.findViewById(R.id.expandable)
 
-            val byte = data.blobImagen?.getBlob()
-            val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
-            image.setImageBitmap(bitmap)
 
+            if( data.blobImagen!=null){
+                val byte = data.blobImagen?.getBlob()
+                val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
+                image.setImageBitmap(bitmap)
+            }
           /*  txtNombreCultivo.text = String.format(context.getString(R.string.title_adapter_cultivo), data.NombreCultivo)
             txtNombreDetalleProducto.text = String.format(context.getString(R.string.title_adapter_detalle_producto), data.NombreDetalleTipoProducto)
             txtDescripcionProducto.text = String.format(context.getString(R.string.title_adapter_descripcion_producto), data.Descripcion)

@@ -75,7 +75,6 @@ class AgriculturApplication : Application() {
             val channelName = "$appName channel name"
             val channelImportance = NotificationManager.IMPORTANCE_LOW
             val channelDescription = "$appName channel description"
-
             JobSyncService.createNotificationChannel(this,
                     NOTIFICATION_CHANNEL_ID,
                     channelName,
@@ -84,7 +83,6 @@ class AgriculturApplication : Application() {
         }
 
         notification = createOngoingNotification(NOTIFICATION_REQUEST_CODE, R.drawable.ic_launcher_background, "Sincronizando informacion")
-
         Log.d(TAG, "-onCreate()")
     }
 

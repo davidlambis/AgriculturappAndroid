@@ -80,7 +80,7 @@ interface IOfertas {
 
     interface Interactor {
         fun getUserLogued():Usuario?
-        fun getListOfertas(productoId: Long?)
+        fun getListOfertas(productoId: Long?,checkConection: Boolean)
         fun getListas()
         fun getProducto(productoId: Long?)
 
@@ -90,7 +90,7 @@ interface IOfertas {
     interface Repository {
         fun getUserLogued(): Usuario?
         fun getListas()
-        fun getListOfertas(productoId: Long?)
+        fun getListOfertas(productoId: Long?,checkConection: Boolean)
         fun getOfertas(productoId: Long?): List<Oferta>
         fun getProducto(productoId: Long?)
 

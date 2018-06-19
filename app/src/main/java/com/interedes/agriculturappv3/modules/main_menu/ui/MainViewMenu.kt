@@ -26,6 +26,7 @@ interface MainViewMenu {
 
         fun onMessageOk(colorPrimary: Int, message: String?)
         fun onMessageError(colorPrimary: Int, message: String?)
+        fun onMessageToast(colorPrimary: Int, message: String?)
 
         fun requestResponseOK()
         fun requestResponseError(error: String?)
@@ -51,7 +52,6 @@ interface MainViewMenu {
         fun onEventMainThread(event: RequestEventMainMenu?)
 
         //syncData
-        fun syncData()
         fun syncQuantityData(automatic:Boolean)
 
         fun makeUserOnline()
@@ -76,7 +76,6 @@ interface MainViewMenu {
         fun makeUserOffline(checkConection:Boolean)
         fun getListasIniciales()
         fun syncQuantityData(automatic:Boolean)
-        fun syncData()
         fun getLastUserLogued(): Usuario?
         fun getListSyncEnfermedadesAndTratamiento()
 
@@ -97,7 +96,6 @@ interface MainViewMenu {
 
         fun getListasIniciales()
         fun syncQuantityData(automatic:Boolean)
-        fun syncData()
         fun getLastUserLogued(): Usuario?
         fun getListSyncEnfermedadesAndTratamiento()
     }

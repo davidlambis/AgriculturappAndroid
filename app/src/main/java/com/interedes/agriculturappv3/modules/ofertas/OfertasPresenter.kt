@@ -148,7 +148,7 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
     }
 
     override fun getListOfertas(productoId: Long?) {
-        interactor?.getListOfertas(productoId)
+        interactor?.getListOfertas(productoId,checkConnection())
     }
 
     override fun getProducto(productoId: Long?) {

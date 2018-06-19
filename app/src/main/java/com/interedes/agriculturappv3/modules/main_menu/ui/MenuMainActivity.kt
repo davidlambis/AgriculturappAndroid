@@ -72,6 +72,7 @@ import com.nightonke.boommenu.Types.PlaceType
 import com.nightonke.boommenu.Util
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import java.io.File
 import java.io.FileInputStream
@@ -196,9 +197,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
             }
         }
-
-
-        presenter?.syncQuantityData(true)
+        var usuarioLogued=getLastUserLogued()
+        if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
+            presenter?.syncQuantityData(true)
+        }
     }
 
     private fun setupMenuFloating() {
@@ -213,7 +215,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         mActionBar.setCustomView(mCustomView)
         mActionBar.setDisplayShowCustomEnabled(true)
         (mCustomView.getParent() as Toolbar).setContentInsetsAbsolute(0, 0)
-
        // var boomMenuButton:BoomMenuButton = findViewById(R.id.boom)
 
 
@@ -957,6 +958,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 .show()
     }
 
+
+
     override fun verificateSync(quantitySync: QuantitySync?): AlertDialog? {
         val inflater = this.layoutInflater
         viewDialogSync = inflater.inflate(R.layout.dialog_sync_data , null)
@@ -1021,7 +1024,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             if(presenter?.checkConnection()!!){
                 AgriculturApplication.instance.showNotification(true)
             }else{
-                onMessageError(R.color.red_900,"Tienes informacion por sincronizar verifca tu conexion")
+                onMessageToast(R.color.red_900,"Tienes informacion por sincronizar verifca tu conexion")
+                //onMessageError(R.color.red_900,"Tienes informacion por sincronizar verifca tu conexion")
             }
         }
     }
@@ -1033,7 +1037,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
         })
-        builder.setIcon(R.drawable.ic_contabilidad_color_500);
+        builder.setIcon(R.mipmap.ic_launcher_round);
         return builder.show();
     }
 
@@ -1097,6 +1101,19 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     override fun onMessageError(colorPrimary: Int, message: String?) {
         onMessageOk(colorPrimary, message)
+    }
+
+
+    override fun onMessageToast(colorPrimary: Int, message: String?){
+        val inflater = this.layoutInflater
+        var viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        viewToast.txtMessageToastCustom.setText(message)
+        viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(this,colorPrimary))
+        var mytoast =  Toast(this);
+        mytoast.setView(viewToast);
+        mytoast.setDuration(Toast.LENGTH_LONG);
+        mytoast.show();
+        ///onMessageError(R.color.red_900, getString(R.string.disabledGPS))
     }
     //endregion
 

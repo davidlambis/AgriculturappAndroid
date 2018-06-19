@@ -46,7 +46,7 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.text.SimpleDateFormat
 
-class RequestPostSyncData:IMainViewService.Repository {
+class RequestPostDataSync:IMainViewService.RepositoryPost {
 
     var eventBus: EventBus? = null
     var apiService: ApiInterface? = null
@@ -56,12 +56,11 @@ class RequestPostSyncData:IMainViewService.Repository {
         apiService = ApiInterface.create()
     }
 
-
+    //region POST  DATASYNC
 
     override fun syncData() {
 
         var usuario= getLastUserLogued()
-
         var mUnidadProductiva= SQLite.select()
                 .from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
@@ -509,7 +508,7 @@ class RequestPostSyncData:IMainViewService.Repository {
                                     if(transaccionPost!=null){
                                         syncDataTransacciones()
                                     }else{
-                                        postEvent(EventsService.POST_SYNC_EVENT, null,null,"Correcto")
+                                        postEventOk(EventsService.POST_SYNC_EVENT)
                                     }
                                 } else {
                                     postEventError(EventsService.ERROR_EVENT, "Error 500...")
@@ -529,15 +528,17 @@ class RequestPostSyncData:IMainViewService.Repository {
                 }
             })
         }else{
-            postEvent(EventsService.POST_SYNC_EVENT, null,null,"Correcto")
+            postEventOk(EventsService.POST_SYNC_EVENT)
         }
     }
+
+
+    //endregion SYN
 
     fun getLastUserLogued(): Usuario? {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
         return usuarioLogued
     }
-
 
     //region Events
     private fun postEventOk(type: Int) {

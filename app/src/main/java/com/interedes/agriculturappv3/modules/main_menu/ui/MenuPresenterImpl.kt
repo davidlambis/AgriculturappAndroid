@@ -121,14 +121,6 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
         }
     }
 
-    override fun syncData() {
-        if(checkConnection()!!){
-            mainView?.showProgressBar()
-            interactor?.syncData()
-        }else{
-            mainView?.verificateConnection()
-        }
-    }
 
     override fun syncQuantityData(automatic:Boolean) {
         //mainView?.showProgressHud()
