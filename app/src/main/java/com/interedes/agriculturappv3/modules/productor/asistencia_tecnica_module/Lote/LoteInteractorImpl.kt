@@ -34,4 +34,7 @@ class LoteInteractorImpl : MainViewLote.Interactor {
         loteRepository?.deleteLote(lote, unidad_productiva_id,checkConection)
     }
 
+    override fun verificateAreaLoteBiggerUp(unidad_productiva_id:Long?,area:Double):Boolean {
+      return loteRepository?.verificateAreaLoteBiggerUp(unidad_productiva_id,area)!!
+    }
 }

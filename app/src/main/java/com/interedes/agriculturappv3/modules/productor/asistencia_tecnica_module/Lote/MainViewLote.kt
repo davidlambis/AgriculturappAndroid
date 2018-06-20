@@ -103,6 +103,8 @@ interface MainViewLote {
         fun deleteLote(lote: Lote,unidad_productiva_id:Long?)
         fun getLotes(unidad_productiva_id:Long?)
 
+        fun verificateAreaLoteBiggerUp(unidad_productiva_id:Long?,area:Double):Boolean
+
 
         //Events
         fun onEventMainThread(eventLote: RequestEventLote?)
@@ -121,6 +123,7 @@ interface MainViewLote {
     }
 
     interface Interactor {
+        fun verificateAreaLoteBiggerUp(unidad_productiva_id:Long?,area:Double):Boolean
         fun registerLote(lote : Lote, unidad_productiva_id:Long?,checkConection:Boolean)
         fun updateLote(lote : Lote, unidad_productiva_id:Long?,checkConection:Boolean)
         fun deleteLote(lote : Lote, unidad_productiva_id:Long?,checkConection:Boolean)
@@ -130,6 +133,8 @@ interface MainViewLote {
     }
 
     interface Repository {
+        fun  verificateAreaLoteBiggerUp(unidad_productiva_id:Long?,area:Double):Boolean
+
         //fun registerLote(lote: Lote)
         fun getLotes(unidad_productiva_id: Long?): List<Lote>
         fun getListLotes(unidad_productiva_id: Long?)

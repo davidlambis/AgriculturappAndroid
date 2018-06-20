@@ -5,17 +5,32 @@ import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.Lote.events.RequestEventLote
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
+import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.lote.PostLote
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta_Table
+import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
+import com.interedes.agriculturappv3.modules.models.ofertas.Oferta_Table
+import com.interedes.agriculturappv3.modules.models.produccion.Produccion
+import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
+import com.interedes.agriculturappv3.modules.models.producto.Producto
+import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.modules.models.ventas.Tercero
+import com.interedes.agriculturappv3.modules.models.ventas.Tercero_Table
+import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
+import com.interedes.agriculturappv3.modules.models.ventas.Transaccion_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.resources.CategoriaMediaResources
+import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,6 +47,20 @@ class LoteRepositoryImpl : MainViewLote.Repository {
     init {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
+    }
+
+
+    override fun verificateAreaLoteBiggerUp(unidad_productiva_id:Long?,area:Double):Boolean {
+        var response: Boolean
+        val up_area = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()?.Area
+        val total_areas = area_lotes(area, unidad_productiva_id)
+        if (total_areas!! > up_area!!) {
+            response= true
+            //postEventError(RequestEventLote.ERROR_EVENT, "No se puede registrar. El área total de lotes supera el área de la Unidad Productiva")
+        } else {
+            response= false
+        }
+        return response
     }
 
     //region METHODS
@@ -56,14 +85,9 @@ class LoteRepositoryImpl : MainViewLote.Repository {
                         mLote.Unidad_Medida_Id,
                         unidad_productiva.Id_Remote)
 
-                val up_area = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()?.Area
-                val total_areas = area_lotes(mLote, unidad_productiva_id)
 
-                if (total_areas!! > up_area!!) {
-                    postEventError(RequestEventLote.ERROR_EVENT, "No se puede registrar. El área total de lotes supera el área de la Unidad Productiva")
-                } else {
-                    val call = apiService?.postLote(postLote)
-                    call?.enqueue(object : Callback<Lote> {
+                val call = apiService?.postLote(postLote)
+                call?.enqueue(object : Callback<Lote> {
                         override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
                             if (response != null && response.code() == 201) {
                                 mLote.Id_Remote = response.body()?.Id_Remote!!
@@ -82,14 +106,10 @@ class LoteRepositoryImpl : MainViewLote.Repository {
                                 postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
                             }
                         }
-
                         override fun onFailure(call: Call<Lote>?, t: Throwable?) {
                             postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
                         }
-
                     })
-                }
-
             }
             //TODO con conexion a internet sin sincronizacion, registro local
             else {
@@ -104,9 +124,6 @@ class LoteRepositoryImpl : MainViewLote.Repository {
 
 
     override fun saveLotesLocal(mLote: Lote, unidad_productiva_id: Long?){
-        val up_area = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()?.Area
-        val total_areas = area_lotes(mLote, unidad_productiva_id)
-        if (total_areas!! < up_area!!) {
             val last_lote = getLastLote()
             if (last_lote == null) {
                 mLote.LoteId = 1
@@ -116,19 +133,16 @@ class LoteRepositoryImpl : MainViewLote.Repository {
             mLote.save()
             val lotes = getLotes(unidad_productiva_id)
             postEventOk(RequestEventLote.SAVE_EVENT, lotes, mLote)
-        } else {
-            postEventError(RequestEventLote.ERROR_EVENT, "No se puede registrar. El área total de lotes supera el área de la Unidad Productiva")
-        }
     }
 
 
-    private fun area_lotes(mLote: Lote, unidad_productiva_id: Long?): Double? {
+    private fun area_lotes(area: Double, unidad_productiva_id: Long?): Double? {
         val lotes_up = SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).queryList()
         var suma_areas = 0.0
         for (item in lotes_up) {
-            suma_areas = suma_areas + item.Area!!
+            suma_areas = suma_areas +item.Area!!
         }
-        val total_areas = suma_areas + mLote.Area!!
+        val total_areas = suma_areas + area
         return total_areas
     }
 
@@ -173,11 +187,9 @@ class LoteRepositoryImpl : MainViewLote.Repository {
         //TODO si existe coneccion a internet
         if(checkConection){
 
-
             val unidad_productiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()
 
             val areaBig = BigDecimal(mLote.Area!!, MathContext.DECIMAL64)
-
 
             //TODO se valida estado de sincronizacion  para actualizar,actualizacion remota
             if (mLote.EstadoSincronizacion == true) {
@@ -228,7 +240,6 @@ class LoteRepositoryImpl : MainViewLote.Repository {
 
 
     override fun deleteLote(mLote: Lote, unidad_productiva_id: Long?,checkConection:Boolean) {
-
         //TODO se valida estado de sincronizacion  para eliminar
         if (mLote.EstadoSincronizacion == true) {
             //TODO si existe coneccion a internet se elimina
@@ -237,33 +248,74 @@ class LoteRepositoryImpl : MainViewLote.Repository {
                 call?.enqueue(object : Callback<Lote> {
                     override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
                         if (response != null && response.code() == 204) {
-                            mLote.delete()
+                            deleteLote(mLote)
                             postEventOk(RequestEventLote.DELETE_EVENT, getLotes(unidad_productiva_id), mLote)
                         }
                     }
-
                     override fun onFailure(call: Call<Lote>?, t: Throwable?) {
                         postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
                     }
-
                 })
-
             }else{
                 postEventError(RequestEventLote.ERROR_VERIFICATE_CONECTION, null)
             }
         } else {
             //TODO No sincronizado, Eliminar de manera local
+            deleteLote(mLote)
             //Verificate if cultivos register
-            var vericateRegisterCultivos= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(mLote.LoteId)).querySingle()
+            /*var vericateRegisterCultivos= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(mLote.LoteId)).querySingle()
             if(vericateRegisterCultivos!=null){
 
                 postEventError(RequestEventLote.ERROR_EVENT, "Error!. El lote no se ha podido eliminar, recuerde eliminar los cultivos")
             }else{
                 mLote.delete()
                 postEventOk(RequestEventLote.DELETE_EVENT, getLotes(unidad_productiva_id), mLote)
+            }*/
+        }
+    }
+
+
+    fun deleteLote(lote: Lote) {
+        var cultivos = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(lote.LoteId)).queryList()
+        for (cultivo in cultivos) {
+
+            SQLite.delete<Produccion>(Produccion::class.java)
+                    .where(Produccion_Table.CultivoId.eq(cultivo.CultivoId))
+                    .async()
+                    .execute()
+
+            SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
+                    .where(ControlPlaga_Table.CultivoId.eq(cultivo.CultivoId))
+                    .async()
+                    .execute()
+
+            var listTransacciones = SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Cultivo_Id.eq(cultivo?.CultivoId)).queryList()
+            for (transaccion in listTransacciones) {
+                SQLite.delete<Tercero>(Tercero::class.java)
+                        .where(Tercero_Table.TerceroId.eq(transaccion.TerceroId))
+                        .async()
+                        .execute()
+                transaccion.delete()
             }
 
+            var listProductos = SQLite.select().from(Producto::class.java).where(Producto_Table.cultivoId.eq(cultivo?.CultivoId)).queryList()
+            for (producto in listProductos) {
+                var listDetalleOferta = SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.ProductoId.eq(producto?.ProductoId)).queryList()
+                for (detalleoferta in listDetalleOferta) {
+
+                    SQLite.delete<Oferta>(Oferta::class.java)
+                            .where(Oferta_Table.Oferta_Id.eq(detalleoferta.OfertasId))
+                            .async()
+                            .execute()
+
+                    detalleoferta.delete()
+                }
+                producto.delete()
+            }
+
+            cultivo.delete()
         }
+        lote.delete()
     }
 
     //endregion

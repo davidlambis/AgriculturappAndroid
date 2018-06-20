@@ -7,6 +7,10 @@ import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta_Table
+import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
+import com.interedes.agriculturappv3.modules.models.ofertas.Oferta_Table
 import com.interedes.agriculturappv3.modules.models.producto.CalidadProducto
 import com.interedes.agriculturappv3.modules.models.producto.PostProducto
 import com.interedes.agriculturappv3.modules.models.producto.Producto
@@ -27,6 +31,10 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+import android.util.Base64
+import java.io.ByteArrayOutputStream
 
 
 class ProductosRepository : IProductos.Repository {
@@ -75,6 +83,8 @@ class ProductosRepository : IProductos.Repository {
 
     override fun getProductos(cultivo_id: Long?): List<Producto> {
         var usuarioLogued= getLastUserLogued()
+        val list= SQLite.select().from(Producto::class.java).queryList()
+
         var listResponse: List<Producto>? = null
         if (cultivo_id == null) {
             listResponse = SQLite.select().from(Producto::class.java)
@@ -101,6 +111,16 @@ class ProductosRepository : IProductos.Repository {
 
            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
            if (cultivo?.EstadoSincronizacion == true) {
+
+               /*
+               val data = mProducto.blobImagen?.getBlob()
+               var byteFoto:String="data:image/jpeg;base64,"
+
+               if(data!=null){
+                   val bitmap = BitmapFactory.decodeByteArray(data, 0, data!!.size)
+                   byteFoto+=getEncoded64ImageStringFromBitmap(bitmap)
+               }
+               */
                val postProducto = PostProducto(0,
                        mProducto.CalidadId,
                        1,
@@ -162,6 +182,14 @@ class ProductosRepository : IProductos.Repository {
        }
     }
 
+    fun getEncoded64ImageStringFromBitmap(bitmap: Bitmap): String {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        val byteFormat = stream.toByteArray()
+        // get the base 64 string
+        //String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return Base64.encodeToString(byteFormat, Base64.NO_WRAP)
+    }
     override fun registerProductoLocal(mProducto: Producto, cultivo_id: Long) {
         val last_producto = getLastProducto()
         if (last_producto == null) {
@@ -185,8 +213,6 @@ class ProductosRepository : IProductos.Repository {
             if (mProducto.Estado_Sincronizacion == true) {
 
                 val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
-
-
                 val postProducto = PostProducto(mProducto.Id_Remote,
                         mProducto.CalidadId,
                         1,
@@ -236,6 +262,8 @@ class ProductosRepository : IProductos.Repository {
         }
     }
 
+
+
     override fun deleteProducto(mProducto: Producto, cultivo_id: Long?,checkConection:Boolean) {
         //TODO se valida estado de sincronizacion  para eliminar
         if (mProducto.Estado_Sincronizacion == true) {
@@ -245,7 +273,8 @@ class ProductosRepository : IProductos.Repository {
                 call?.enqueue(object : Callback<Producto> {
                     override fun onResponse(call: Call<Producto>?, response: Response<Producto>?) {
                         if (response != null && response.code() == 204) {
-                            mProducto.delete()
+                            //mProducto.delete()
+                            deleteProducto(mProducto)
                             postEventOk(ProductosEvent.DELETE_EVENT, getProductos(cultivo_id), null)
                         }
                     }
@@ -259,10 +288,25 @@ class ProductosRepository : IProductos.Repository {
         } else {
             //TODO No sincronizado, Eliminar de manera local
             //Verificate if cultivos register
-            mProducto.delete()
+            deleteProducto(mProducto)
             postEventOk(ProductosEvent.DELETE_EVENT, getProductos(cultivo_id), null)
         }
     }
+
+    fun deleteProducto(producto: Producto) {
+            var listDetalleOferta = SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.ProductoId.eq(producto?.ProductoId)).queryList()
+            for (detalleoferta in listDetalleOferta) {
+
+                SQLite.delete<Oferta>(Oferta::class.java)
+                        .where(Oferta_Table.Oferta_Id.eq(detalleoferta.OfertasId))
+                        .async()
+                        .execute()
+
+                detalleoferta.delete()
+            }
+            producto.delete()
+    }
+
 
     fun getLastUserLogued(): Usuario? {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
@@ -275,7 +319,9 @@ class ProductosRepository : IProductos.Repository {
     }
 
     override fun getLastProducto(): Producto? {
-        val lastProducto = SQLite.select().from(Producto::class.java).where().orderBy(Producto_Table.ProductoId, false).querySingle()
+        //val list= SQLite.select().from(Producto::class.java).queryList()
+
+        val lastProducto = SQLite.select().from(Producto::class.java).where(Producto_Table.ProductoId.notEq(0)).orderBy(Producto_Table.ProductoId, false).querySingle()
         return lastProducto
     }
 

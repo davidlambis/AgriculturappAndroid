@@ -165,12 +165,16 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
                 IUpView?.showAlertDialogAddUnidadProductiva(unidadProductiva)
             }
 
+            RequestEventUP.ITEM_DELETE_EVENT -> {
+                var unidadProductiva =requestEvent.objectMutable as Unidad_Productiva
+                IUpView?.confirmDelete(unidadProductiva)
+            }
             RequestEventUP.ITEM_EDIT_EVENT -> {
                 var unidadProductiva = requestEvent.objectMutable as Unidad_Productiva
                 IUpView?.showAlertDialogAddUnidadProductiva(unidadProductiva)
             }
 
-        //List
+            //List
             RequestEventUP.LIST_EVENT_UNIDAD_MEDIDA -> {
                 var list = requestEvent.mutableList as List<Unidad_Medida>
                 IUpView?.setListUnidadMedida(list)

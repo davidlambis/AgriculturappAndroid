@@ -17,8 +17,10 @@ import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.robertlevonyan.views.expandable.Expandable
 import com.robertlevonyan.views.expandable.ExpandingListener
+import com.squareup.picasso.Picasso
 
 
 class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<ProductosAdapter.ViewHolder>() {
@@ -90,7 +92,22 @@ class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
                 val byte = data.blobImagen?.getBlob()
                 val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
                 image.setImageBitmap(bitmap)
+            }else{
+                if(data.Imagen!=null){
+                    if(data.Imagen!!.contains("Productos")){
+                        try {
+                            Picasso.with(context).load(S3Resources.RootImage+"${data.Imagen}").placeholder(R.drawable.ic_foto_producto).into(image)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
             }
+
+
+
+
+
           /*  txtNombreCultivo.text = String.format(context.getString(R.string.title_adapter_cultivo), data.NombreCultivo)
             txtNombreDetalleProducto.text = String.format(context.getString(R.string.title_adapter_detalle_producto), data.NombreDetalleTipoProducto)
             txtDescripcionProducto.text = String.format(context.getString(R.string.title_adapter_descripcion_producto), data.Descripcion)

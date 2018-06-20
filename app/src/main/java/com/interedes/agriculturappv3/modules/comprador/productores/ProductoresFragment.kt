@@ -190,8 +190,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
     override fun setListProducto(listProducto: List<Producto>) {
 
-
-
             productosList?.removeAt(productosList?.size!! - 1)
 
             if (listProducto.size > 0) {
@@ -206,8 +204,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             pastVisiblesItems=listProducto.size
 
             setResults(productosList?.size!!)
-
-
 
     }
 

@@ -232,6 +232,10 @@ class LotePresenterImpl(var loteMainView: MainViewLote.View?) : MainViewLote.Pre
         loteInteractor?.loadListas()
     }
 
+    override fun verificateAreaLoteBiggerUp(unidad_productiva_id:Long?,area:Double):Boolean {
+        return loteInteractor?.verificateAreaLoteBiggerUp(unidad_productiva_id,area)!!
+    }
+
     //endregion
 
     //region Acciones de Respuesta a Post de Eventos
@@ -263,6 +267,7 @@ class LotePresenterImpl(var loteMainView: MainViewLote.View?) : MainViewLote.Pre
     }
 
     private fun onMessageError(error: String?) {
+        loteMainView?.limpiarCampos()
         loteMainView?.enableInputs()
         loteMainView?.hideProgress()
         loteMainView?.hideProgressHud()

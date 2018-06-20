@@ -34,6 +34,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
@@ -375,9 +377,13 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 //mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
                 //mMap?.setPadding(0, getResources().getDrawable(R.drawable.logo_agr_app).getIntrinsicHeight(), 0, 0);
                 for (lote in lotes) {
-                    var latlngLote = LatLng(lote.Latitud!!, lote.Longitud!!);
-                    var markerLote = addMarker(latlngLote, lote.Nombre!!, lote.Descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_lote))
-                    listMarkerLote.add(markerLote!!)
+
+                    if(lote.Latitud!=0.0 && lote.Longitud!=0.0 || lote.Latitud!=null && lote.Longitud!=null){
+                        var latlngLote = LatLng(lote.Latitud!!, lote.Longitud!!);
+                        var markerLote = addMarker(latlngLote, lote.Nombre!!, lote.Descripcion!!, BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_lote))
+                        listMarkerLote.add(markerLote!!)
+                    }
+
                 }
 
                 //Add Marker UP
@@ -461,15 +467,16 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     }
 
     override fun onMapClick(latLng: LatLng) {
-        if (LastMarkerDrawingLote != null) {
-            LastMarkerDrawingLote?.remove()
-        }
         if (UBICATION_MAPA == true) {
+            if (LastMarkerDrawingLote != null) {
+                LastMarkerDrawingLote?.remove()
+            }
+
             // Creating a marker
+            latitud=latLng.latitude
+            longitud=latLng.longitude
             LastMarkerDrawingLote = drawMarker(latLng, latLng.latitude.toString() + " / " + latLng.longitude.toString(), getString(R.string.location_gps), BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-
             txtCoordsLote.setText(String.format(getString(R.string.coords), latLng.latitude, latLng.longitude))
-
         }
     }
 
@@ -572,7 +579,13 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             viewDialog?.coordenadas_lote?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.coordenadas_lote
             cancel = true
-        }else if (viewDialog?.edtLatitud?.text.toString().isEmpty()) {
+        }
+        else if(presenter?.verificateAreaLoteBiggerUp(unidadProductivaGlobalSppiner?.Unidad_Productiva_Id ,viewDialog?.area_lote?.text.toString()?.toDouble())==true){
+            viewDialog?.area_lote?.setError(getString(R.string.verifcate_area_lote))
+            focusView = viewDialog?.area_lote
+            cancel = true
+        }
+        else if (viewDialog?.edtLatitud?.text.toString().isEmpty()) {
             viewDialog?.edtLatitud?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.edtLatitud
             cancel = true
@@ -624,21 +637,37 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     }
 
     override fun limpiarCampos() {
-        viewDialog?.name_lote?.setText("");
-        viewDialog?.description_lote?.setText("");
-        viewDialog?.area_lote?.setText("");
-        viewDialog?.coordenadas_lote?.setText("");
+
+        if(viewDialog!=null){
+            viewDialog?.name_lote?.setText("");
+            viewDialog?.description_lote?.setText("");
+            viewDialog?.area_lote?.setText("");
+            viewDialog?.coordenadas_lote?.setText("");
+            viewDialog?.edtLatitud?.setText("");
+            viewDialog?.edtLongitud?.setText("");
+        }
+
         if (LastMarkerDrawingLote != null) LastMarkerDrawingLote?.remove()
         LastMarkerDrawingLote = null
         contentButtonsDrawingLoteMapa.visibility = View.GONE
         app_bar.layoutParams.width = AppBarLayout.LayoutParams.MATCH_PARENT
         app_bar.layoutParams.height = resources.getDimensionPixelSize(R.dimen.height_mapa)
+
+        latitud=0.0
+        longitud=0.0
+        UBICATION_GPS = false
+        UBICATION_MANUAL = false
+        UBICATION_MAPA=false
+        DIALOG_SET_TYPE_UBICATION=-1
+
     }
 
 
     override fun setPropertiesTypeLocationGps() {
         //var intent =  Intent(activity, CoordsServiceKotlin::class.java);
         //activity!!.startService(intent)
+        latitud=0.0
+        longitud=0.0
         presenter?.startGps(activity!!)
         UBICATION_GPS = true
         UBICATION_MANUAL = false
@@ -664,6 +693,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     override fun setPropertiesTypeLocationManual() {
         //var intent =  Intent(activity, CoordsServiceKotlin::class.java);
         //activity!!.stopService(intent)
+        latitud=0.0
+        longitud=0.0
         presenter?.closeServiceGps(activity!!)
         UBICATION_GPS = false
         UBICATION_MANUAL = true
@@ -677,6 +708,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     override fun setPropertiesTypeLocationMapa() {
         //var intent =  Intent(activity, CoordsServiceKotlin::class.java);
         //activity!!.stopService(intent)
+        latitud=0.0
+        longitud=0.0
         presenter?.closeServiceGps(activity!!)
         if (markerLocation != null) markerLocation?.remove()
         UBICATION_GPS = false
@@ -751,6 +784,9 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(upArrayAdapter);
             viewDialog?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadProductivaGlobalSppiner = listUnidadProductivaGlobal!![position] as Unidad_Productiva
+                if(viewDialog!=null){
+                    viewDialog?.area_lote?.setText("")
+                }
                 /// Toast.makeText(activity,""+Unidad_Productiva_Id.toString(),Toast.LENGTH_SHORT).show()
             }
         }
@@ -796,8 +832,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             lote.Coordenadas = viewDialog?.coordenadas_lote?.text.toString()
             lote.Localizacion = lote.Coordenadas
             lote.Unidad_Productiva_Id = unidadProductivaGlobalSppiner?.Unidad_Productiva_Id
-            lote.Latitud = locationLote.latitude
-            lote.Longitud = locationLote.longitude
+            lote.Latitud = latitud
+            lote.Longitud = longitud
             lote.Nombre_Unidad_Productiva = unidadProductivaGlobalSppiner?.nombre
             lote.Unidad_Medida_Id = unidadMedidaGlobal?.Id
             lote.Nombre_Unidad_Medida = unidadMedidaGlobal?.Descripcion
@@ -842,7 +878,11 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
             viewDialog?.txtTitle?.setText(getString(R.string.add_lote))
 
-            if (UBICATION_MAPA == true) {
+            coordsLote?.setText(latitud.toString() + " / " + longitud.toString())
+
+
+
+            /*if (UBICATION_MAPA == true) {
                 if (LastMarkerDrawingLote != null) {
 
                     locationLote.latitude = LastMarkerDrawingLote!!.getPosition().latitude
@@ -868,6 +908,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 coordsLote?.setText(latitud.toString() + " / " + longitud.toString())
             }
 
+            */
+
             viewDialog?.edtLatitud?.setText(latitud.toString())
             viewDialog?.edtLongitud?.setText(longitud.toString())
 
@@ -876,13 +918,13 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         else {
             viewDialog?.txtTitle?.setText(getString(R.string.edit_lote))
             //unidadMedidaGlobal = Unidad_Medida(lote.Id, lote.Nombre_Unidad_Medida, null)
-            var unidadProductiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(lote.Unidad_Productiva_Id)).querySingle()
+           unidadProductivaGlobalSppiner = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(lote.Unidad_Productiva_Id)).querySingle()
             unidadMedidaGlobal = SQLite.select().from(Unidad_Medida::class.java).where(Unidad_Medida_Table.Id.eq(lote.Unidad_Medida_Id)).querySingle()
             viewDialog?.name_lote?.setText(lote.Nombre)
             viewDialog?.description_lote?.setText(lote.Descripcion)
 
             viewDialog?.coordenadas_lote?.setText(lote.Coordenadas)
-            viewDialog?.spinnerUnidadProductiva?.setText(unidadProductiva?.nombre)
+            viewDialog?.spinnerUnidadProductiva?.setText(unidadProductivaGlobalSppiner?.nombre)
             viewDialog?.spinnerUnidadMedidaLote?.setText(lote.Nombre_Unidad_Medida)
             viewDialog?.spinnerUnidadProductiva?.setDropDownHeight(0)
 
@@ -894,7 +936,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             }
 
             val coordenadas =lote.Localizacion
-            if(coordenadas!=null || coordenadas!=""){
+            if(coordenadas!=null){
                 val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
                 if(isParceableDouble( separated!![0].toString())==true && isParceableDouble( separated!![1].toString())==true){
 
@@ -986,6 +1028,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
 
+
+
                 if(!viewDialog?.edtLongitud?.text.toString().isEmpty()){
                     if(isParceableDouble(viewDialog?.edtLongitud?.text.toString())){
                         longitud=  viewDialog?.edtLongitud?.text.toString()?.toDoubleOrNull()
@@ -1006,6 +1050,39 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
             }
         })
+
+
+        viewDialog?.area_lote?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                if (viewDialog?.spinnerUnidadProductiva?.text.toString().isEmpty() && viewDialog?.spinnerUnidadProductiva?.visibility == View.VISIBLE) {
+                    var focusView:View? =null
+                    viewDialog?.spinnerUnidadProductiva?.setError(getString(R.string.error_field_required))
+                    focusView=viewDialog?.spinnerUnidadProductiva
+                    focusView?.requestFocus()
+
+                }else{
+                    if(!viewDialog?.area_lote?.text.toString().isEmpty()){
+
+                        var areaLote=  viewDialog?.area_lote?.text.toString()?.toDouble()
+                        if(presenter?.verificateAreaLoteBiggerUp(unidadProductivaGlobalSppiner?.Unidad_Productiva_Id ,areaLote)==true){
+                            var focusView:View? =null
+                            viewDialog?.area_lote?.setError(getString(R.string.verifcate_area_lote))
+                            focusView=viewDialog?.area_lote
+                            focusView?.requestFocus()
+
+                        }
+                    }
+                }
+            }
+        })
+
 
 
         val dialog = AlertDialog.Builder(context!!, android.R.style.Theme_Light_NoTitleBar)
@@ -1271,6 +1348,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 contentButtonsDrawingLoteMapa.visibility = View.GONE
                 app_bar.layoutParams.width = AppBarLayout.LayoutParams.MATCH_PARENT
                 app_bar.layoutParams.height = resources.getDimensionPixelSize(R.dimen.height_mapa)
+                setPropertiesTypeLocationMapa()
                 //app_bar.layoutParams.width=AppBarLayout.LayoutParams.MATCH_PARENT
                 //var layoutParams1 =  LinearLayout.LayoutParams(AppBarLayout.LayoutParams.MATCH_PARENT,
                 //R.dimen.height_mapa)
@@ -1317,6 +1395,9 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                     hideProgressHudCoords()
                     txtCoordsLote.setText(String.format(getString(R.string.coords), latitud, longitud))
 
+                    YoYo.with(Techniques.Pulse)
+                            .repeat(2)
+                            .playOn(fabAddLote)
 
                     if(viewDialog != null){
                         viewDialog?.edtLatitud?.setText(latitud.toString())

@@ -244,7 +244,6 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
     }
 
     override fun onMessageError(colorPrimary: Int, message: String?) {
-
         onMessageOk(colorPrimary, message)
     }
 
@@ -295,8 +294,6 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             }
         }
     }
-
-
 
     override fun setListMoneda(listMoneda: List<Unidad_Medida>?) {
         if (viewDialog != null) {
@@ -457,7 +454,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                 .onPositive(
                         { dialog1, which ->
                             //Toast.makeText(activity,"Enviar oferta",Toast.LENGTH_SHORT).show()
-                            _dialogOferta?.dismiss()
+                           // _dialogOferta?.dismiss()
                             postOferta()
                         })
                 .onNegative({ dialog1, which ->

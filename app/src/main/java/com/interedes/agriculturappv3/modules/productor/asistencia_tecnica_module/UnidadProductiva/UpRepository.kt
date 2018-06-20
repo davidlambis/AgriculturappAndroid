@@ -5,16 +5,32 @@ import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.UnidadProductiva.events.RequestEventUP
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
+import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
+import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.departments.Ciudad
 import com.interedes.agriculturappv3.modules.models.departments.Departamento
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta_Table
+import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
+import com.interedes.agriculturappv3.modules.models.ofertas.Oferta_Table
+import com.interedes.agriculturappv3.modules.models.produccion.Produccion
+import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
+import com.interedes.agriculturappv3.modules.models.producto.Producto
+import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.PostUnidadProductiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.localizacion.LocalizacionUp
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.modules.models.ventas.Tercero
+import com.interedes.agriculturappv3.modules.models.ventas.Tercero_Table
+import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
+import com.interedes.agriculturappv3.modules.models.ventas.Transaccion_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
@@ -233,7 +249,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                 call?.enqueue(object : Callback<Unidad_Productiva> {
                     override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
                         if (response != null && response.code() == 204) {
-                            mUnidadProductiva.delete()
+                            deleteUp(mUnidadProductiva)
                             postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
                         }
                     }
@@ -241,24 +257,73 @@ class UpRepository() : IUnidadProductiva.Repo {
                         postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
                     }
                 })
-
             }else{
                 postEventError(RequestEventUP.ERROR_VERIFICATE_CONECTION, null)
             }
         } else {
             //TODO No sincronizado, Eliminar de manera local
             //Verificate if cultivos register
-            var vericateRegisterLotes= SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(mUnidadProductiva.Unidad_Productiva_Id)).querySingle()
+            deleteUp(mUnidadProductiva)
+           /* var vericateRegisterLotes= SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(mUnidadProductiva.Unidad_Productiva_Id)).querySingle()
             if(vericateRegisterLotes!=null){
-
                 postEventError(RequestEventUP.ERROR_EVENT, "Error!. La unidad productiva no se ha podido eliminar, recuerde eliminar los lotes")
             }else{
                 mUnidadProductiva.delete()
                 postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
-            }
+            }*/
             //mUnidadProductiva.delete()
             //postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
         }
+    }
+
+    fun deleteUp(mUnidadProductiva: Unidad_Productiva){
+
+        var lotes= SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(mUnidadProductiva.Unidad_Productiva_Id)).queryList()
+        for (lote in lotes){
+            var cultivos= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(lote.LoteId)).queryList()
+            for (cultivo in cultivos){
+
+                SQLite.delete<Produccion>(Produccion::class.java)
+                        .where(Produccion_Table.CultivoId.eq(cultivo.CultivoId))
+                        .async()
+                        .execute()
+
+                SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
+                        .where(ControlPlaga_Table.CultivoId.eq(cultivo.CultivoId))
+                        .async()
+                        .execute()
+
+                var listTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Cultivo_Id.eq(cultivo?.CultivoId)).queryList()
+                for (transaccion in listTransacciones){
+                    SQLite.delete<Tercero>(Tercero::class.java)
+                            .where(Tercero_Table.TerceroId.eq(transaccion.TerceroId))
+                            .async()
+                            .execute()
+                    transaccion.delete()
+                }
+
+                var listProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.cultivoId.eq(cultivo?.CultivoId)).queryList()
+                for (producto in listProductos){
+                    var listDetalleOferta=SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.ProductoId.eq(producto?.ProductoId)).queryList()
+                    for(detalleoferta in listDetalleOferta){
+
+                        SQLite.delete<Oferta>(Oferta::class.java)
+                                .where(Oferta_Table.Oferta_Id.eq(detalleoferta.OfertasId))
+                                .async()
+                                .execute()
+
+                        detalleoferta.delete()
+                    }
+                    producto.delete()
+                }
+
+                cultivo.delete()
+            }
+
+            lote.delete()
+        }
+
+        mUnidadProductiva.delete()
     }
 
     override fun getUPs(): List<Unidad_Productiva> {

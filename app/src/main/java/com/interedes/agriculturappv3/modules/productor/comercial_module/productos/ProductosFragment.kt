@@ -757,7 +757,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
     fun convertBitmapToByte(bitmapCompressed: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()
-        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 70, stream)
+        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 80, stream)
         return stream.toByteArray()
         //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }
@@ -777,7 +777,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             producto.blobImagen = Blob(imageGlobal)
             val stringBuilder = StringBuilder()
             stringBuilder.append("data:image/jpeg;base64,")
-            stringBuilder.append(android.util.Base64.encodeToString(imageGlobal, android.util.Base64.DEFAULT))
+            stringBuilder.append(android.util.Base64.encodeToString(imageGlobal, android.util.Base64.NO_WRAP))
             producto.Imagen = stringBuilder.toString()
             producto.Nombre= cultivoGlobal?.Nombre_Detalle_Tipo_Producto
             producto.Precio = viewDialog?.txtPrecioProducto?.text.toString().toDoubleOrNull()
@@ -812,7 +812,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 mProducto.blobImagen = Blob(imageGlobal)
                 val stringBuilder = StringBuilder()
                 stringBuilder.append("data:image/jpeg;base64,")
-                stringBuilder.append(android.util.Base64.encodeToString(imageGlobal, android.util.Base64.DEFAULT))
+                stringBuilder.append(android.util.Base64.encodeToString(imageGlobal, android.util.Base64.NO_WRAP))
                 mProducto.Imagen = stringBuilder.toString()
             } /*else {
                 viewDialog?.product_image?.isDrawingCacheEnabled = true

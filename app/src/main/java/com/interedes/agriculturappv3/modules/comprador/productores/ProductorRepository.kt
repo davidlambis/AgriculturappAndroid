@@ -61,7 +61,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                     if (response != null && response.code() == 200) {
 
                         //TODO Delete information in local, add new remote
-                        SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
+                        /*SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
                                 .async()
                                 .execute()
 
@@ -79,18 +79,16 @@ class ProductorRepository:IMainViewProductor.Repository {
 
                         SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
                                 .async()
-                                .execute()
+                                .execute()*/
 
 
                         val list = response.body()?.value as MutableList<ViewProducto>
-
-
                         var listProductos=ArrayList<Producto>()
 
                         for (item in list){
 
                             //TODO Usuario
-                            var usuario=Usuario()
+                            val usuario=Usuario()
                             usuario.Id=item.usuario_id
                             usuario.Nombre=item.nombre_usuario
                             usuario.Apellidos=item.apellido_usuario
@@ -106,16 +104,16 @@ class ProductorRepository:IMainViewProductor.Repository {
 
 
                             //TODO Detalle Producto
-                            var detalleTipoProducto= DetalleTipoProducto(
+                            /*var detalleTipoProducto= DetalleTipoProducto(
                                     item.detalle_tipo_productoid,
                                     item.descripcion_detalle_tipoproducto,
                                     item.nombre_detalle_tipoproducto,
                                     item.tipo_producto_id
                             )
-                            detalleTipoProducto.save()
+                            detalleTipoProducto.save()*/
 
                             //TODO Unidades Productivas
-                            var unidaProductiva= Unidad_Productiva()
+                            val unidaProductiva= Unidad_Productiva()
 
                             var unidadProductivaVerficateSave= SQLite.select()
                                     .from(Unidad_Productiva::class.java)
@@ -163,7 +161,7 @@ class ProductorRepository:IMainViewProductor.Repository {
 
 
                             //TODO Lote
-                            var lote=Lote()
+                            val lote=Lote()
                             if(lote!=null){
                                 var loteVerficateSave= SQLite.select()
                                         .from(Lote::class.java)
@@ -182,13 +180,15 @@ class ProductorRepository:IMainViewProductor.Repository {
                                 }
 
                                 val coordenadas =item.localizacion_lote
-                                if(coordenadas!=null || coordenadas!=""){
-                                    val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
-                                    var latitud= separated!![0].toDoubleOrNull() // this will contain "Fruit"
-                                    var longitud=separated!![1].toDoubleOrNull() // this will contain " they taste good"
-                                    lote.Latitud=latitud
-                                    lote.Longitud=longitud
-                                    lote.Coordenadas=coordenadas
+                                if(coordenadas!=null){
+                                    if(coordenadas.isNotEmpty()){
+                                        val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
+                                        var latitud= separated!![0].toDoubleOrNull() // this will contain "Fruit"
+                                        var longitud=separated!![1].toDoubleOrNull() // this will contain " they taste good"
+                                        lote.Latitud=latitud
+                                        lote.Longitud=longitud
+                                        lote.Coordenadas=coordenadas
+                                    }
                                 }
                                 lote.Area=item.area_lote
                                 lote.Unidad_Medida_Id=item.unidadmedida_id_lote
@@ -206,7 +206,7 @@ class ProductorRepository:IMainViewProductor.Repository {
 
 
                             //TODO Cultivo
-                            var cultivo=Cultivo()
+                            val cultivo=Cultivo()
                             var cultivoVerficateSave= SQLite.select()
                                     .from(Cultivo::class.java)
                                     .where(Cultivo_Table.Id_Remote.eq(item.cultivoid))
@@ -242,7 +242,7 @@ class ProductorRepository:IMainViewProductor.Repository {
 
                             cultivo.Nombre_Tipo_Producto= item.nombre_tipoproducto
                             cultivo.Nombre_Detalle_Tipo_Producto=item.nombre_detalle_tipoproducto
-                            cultivo.Id_Tipo_Producto= detalleTipoProducto.TipoProductoId
+                            cultivo.Id_Tipo_Producto= item.tipo_producto_id
                             cultivo.Nombre_Unidad_Medida=item.descripcion_unidadmedida_cultivo
 
                             cultivo.EstadoSincronizacion=false
@@ -251,7 +251,7 @@ class ProductorRepository:IMainViewProductor.Repository {
 
 
                             //TODO Producto
-                            var producto=Producto()
+                            val producto=Producto()
                             var productoVerficateSave= SQLite.select()
                                     .from(Producto::class.java)
                                     .where(Producto_Table.Id_Remote.eq(item.id))
@@ -289,7 +289,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                             producto.CodigoUp=unidaProductiva?.Unidad_Productiva_Id.toString()
                             producto.Ciudad=unidaProductiva?.Nombre_Ciudad
                             producto.Departamento=unidaProductiva?.Nombre_Departamento
-                            producto.TipoProductoId=detalleTipoProducto.TipoProductoId
+                            producto.TipoProductoId=item.tipo_producto_id
                             producto.NombreCultivo= cultivo.Nombre
                             producto.NombreLote= lote.Nombre
                             producto.NombreUnidadProductiva= unidaProductiva.nombre
@@ -297,7 +297,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                             producto.NombreCalidad=item.nombre_calidad
                             producto.NombreUnidadMedidaPrecio=producto.PrecioUnidadMedida
                             producto.Usuario_Logued=getLastUserLogued()?.Id
-                            producto.NombreDetalleTipoProducto=detalleTipoProducto.Nombre
+                            producto.NombreDetalleTipoProducto=item.nombre_detalle_tipoproducto
                             producto.TelefonoProductor=usuario.PhoneNumber
                             producto.Estado_Sincronizacion=false
                             producto.Estado_SincronizacionUpdate=false
@@ -312,7 +312,6 @@ class ProductorRepository:IMainViewProductor.Repository {
                                 Log.d("Convert Image", "defaultValue = " + ss);
                             }
                             producto.save()
-
                             listProductos.add(producto)
                         }
 
@@ -321,8 +320,6 @@ class ProductorRepository:IMainViewProductor.Repository {
                         }else{
                             postEventOk(RequestEventProductor.READ_EVENT,listProductos,null)
                         }
-
-
 
                     } else {
                         postEventError(RequestEventProductor.ERROR_EVENT, "Comprueba tu conexión a Internet")

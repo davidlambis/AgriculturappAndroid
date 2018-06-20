@@ -70,7 +70,7 @@ class UnidadProductivaAdapter(val lista: ArrayList<Unidad_Productiva>) : Recycle
             var txt_area_unidad_productiva: TextView = itemView.findViewById(R.id.txtQuantity)
             var txtAdicional: TextView = itemView.findViewById(R.id.txtDescripcionAdditional)
             var iconUp: ImageView = itemView.findViewById(R.id.contentIcon)
-            var btnAddPoligonUp: ImageButton = itemView.findViewById(R.id.btnAction3)
+            var btnDelete: ImageButton = itemView.findViewById(R.id.btnAction3)
             var btnAddLocationUp: ImageButton = itemView.findViewById(R.id.btnAction1)
             var btnEditUp: ImageButton = itemView.findViewById(R.id.btnAction2)
 
@@ -79,6 +79,7 @@ class UnidadProductivaAdapter(val lista: ArrayList<Unidad_Productiva>) : Recycle
             iconUp.setImageResource(R.drawable.ic_unidad_productiva)
             txtAdicional.visibility = View.GONE
             btnEditUp.setColorFilter(getContext().getResources().getColor(R.color.orange))
+            btnDelete.setColorFilter(getContext().getResources().getColor(R.color.red_900))
 
 
             txt_unidad_productiva.text = data.nombre
@@ -123,6 +124,7 @@ class UnidadProductivaAdapter(val lista: ArrayList<Unidad_Productiva>) : Recycle
 
             }
 
+            /*
             if (data.Configuration_Poligon == true) {
                 // indicator_is_configured_poligon.setImageResource(R.drawable.ic_done_white)
                 // indicator_is_configured_poligon.setBackgroundResource(R.color.light_green_800)
@@ -133,7 +135,7 @@ class UnidadProductivaAdapter(val lista: ArrayList<Unidad_Productiva>) : Recycle
                 //indicator_is_configured_poligon.setBackgroundResource(R.color.red_900)
                 // badge_notification_poligon_up.visibility=View.VISIBLE
                 btnAddPoligonUp.setImageResource(R.drawable.ic_poligono_grey)
-            }
+            }*/
 
 
             //El listener en base a la posición
@@ -145,8 +147,8 @@ class UnidadProductivaAdapter(val lista: ArrayList<Unidad_Productiva>) : Recycle
                 postEventc(RequestEventUP.ITEM_EDIT_EVENT, data)
             }
 
-            btnAddPoligonUp.setOnClickListener {
-                postEventc(RequestEventUP.ADD_POLIGON_EVENT, data)
+            btnDelete.setOnClickListener {
+                postEventc(RequestEventUP.ITEM_DELETE_EVENT, data)
             }
         }
     }

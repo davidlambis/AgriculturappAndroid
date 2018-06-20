@@ -34,7 +34,7 @@ interface IUnidadProductiva {
         fun hideProgressHudCoords()
         fun hideProgressHud()
 
-        //Fun Lote CRUD
+        //Fun UP CRUD
         fun registerUp()
 
         fun updateUp(unidadProductiva: Unidad_Productiva?)
@@ -56,7 +56,7 @@ interface IUnidadProductiva {
 
         //Dialog
         fun showAlertDialogAddUnidadProductiva(unidadProductiva: Unidad_Productiva?)
-
+        fun  confirmDelete(unidadProductiva: Unidad_Productiva): AlertDialog?
         fun verificateConnection(): AlertDialog?
 
 

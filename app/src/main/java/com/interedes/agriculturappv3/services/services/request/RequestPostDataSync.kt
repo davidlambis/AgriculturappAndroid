@@ -57,17 +57,15 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
     }
 
     //region POST  DATASYNC
-
     override fun syncData() {
 
-        var usuario= getLastUserLogued()
-        var mUnidadProductiva= SQLite.select()
+        val usuario= getLastUserLogued()
+        val mUnidadProductiva= SQLite.select()
                 .from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
                 .and(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
                 .orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id,false).querySingle()
         if(mUnidadProductiva!=null){
-
 
             val areaBig = BigDecimal(mUnidadProductiva.Area!!, MathContext.DECIMAL64)
             val postUnidadProductiva = PostUnidadProductiva(0,
@@ -83,14 +81,10 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
             val call = apiService?.postUnidadProductiva(postUnidadProductiva)
             call?.enqueue(object : Callback<Unidad_Productiva> {
 
-
-
                 override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
                     if (response != null && response.code() == 201) {
 
                         //Thread.sleep(100)
-
-
                         val idUP = response.body()?.Id_Remote
                         mUnidadProductiva?.Id_Remote = idUP
                         //mUnidadProductiva?.save()
@@ -98,8 +92,6 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
 
                         val latitudBig = BigDecimal(mUnidadProductiva.Latitud!!, MathContext.DECIMAL64)
                         val longitudBig = BigDecimal(mUnidadProductiva.Longitud!!, MathContext.DECIMAL64)
-
-
 
                         val postLocalizacionUnidadProductiva = LocalizacionUp(0,
                                 "",
@@ -124,9 +116,10 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                                     mUnidadProductiva?.Estado_SincronizacionUpdate=true
                                     mUnidadProductiva?.update()
                                     //postLocalizacionUnidadProductiva
-                                    var mUnidadProductivaPost= SQLite.select()
+                                    val mUnidadProductivaPost= SQLite.select()
                                             .from(Unidad_Productiva::class.java)
                                             .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
+                                            .and(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
                                             .orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id,false)
                                             .querySingle()
                                     if(mUnidadProductivaPost!=null){
@@ -156,10 +149,8 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
     }
 
     fun syncDataLotes() {
-
-        var usuario=getLastUserLogued()
-
-        var mLote= SQLite.select()
+        val usuario=getLastUserLogued()
+        val mLote= SQLite.select()
                 .from(Lote::class.java)
                 .where(Lote_Table.EstadoSincronizacion.eq(false))
                 .and(Lote_Table.UsuarioId.eq(usuario?.Id))
@@ -186,9 +177,10 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                         mLote.EstadoSincronizacion = true
                         mLote.Estado_SincronizacionUpdate = true
                         mLote.save()
-                        var mLotePost= SQLite.select()
+                        val mLotePost= SQLite.select()
                                 .from(Lote::class.java)
                                 .where(Lote_Table.EstadoSincronizacion.eq(false))
+                                .and(Lote_Table.UsuarioId.eq(usuario?.Id))
                                 .orderBy(Lote_Table.LoteId,false).querySingle()
 
                         if(mLotePost!=null){
@@ -210,14 +202,16 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
     }
 
     private fun syncDataCultivos() {
-        var usuario=getLastUserLogued()
-        var mCultivo= SQLite.select()
+
+        val usuario=getLastUserLogued()
+        val mCultivo= SQLite.select()
                 .from(Cultivo::class.java)
                 .where(Cultivo_Table.EstadoSincronizacion.eq(false))
                 .and(Cultivo_Table.UsuarioId.eq(usuario?.Id))
                 .orderBy(Cultivo_Table.CultivoId,false).querySingle()
         val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.LoteId.eq(mCultivo?.LoteId)).querySingle()
         if(mCultivo!=null && lote?.EstadoSincronizacion==true){
+
             val postCultivo = PostCultivo(0,
                     mCultivo?.Descripcion,
                     mCultivo?.DetalleTipoProductoId,
@@ -240,9 +234,10 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                         mCultivo?.EstadoSincronizacion = true
                         mCultivo?.Estado_SincronizacionUpdate = true
                         mCultivo?.save()
-                        var mCultivo= SQLite.select()
+                        val mCultivo= SQLite.select()
                                 .from(Cultivo::class.java)
                                 .where(Cultivo_Table.EstadoSincronizacion.eq(false))
+                                .and(Cultivo_Table.UsuarioId.eq(usuario?.Id))
                                 .orderBy(Cultivo_Table.CultivoId,false).querySingle()
 
                         if(mCultivo!=null){
@@ -267,14 +262,16 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
 
     private fun syncDataControlPlagas() {
 
-        var usuario= getLastUserLogued()
+        val usuario= getLastUserLogued()
 
-        var controlPlaga= SQLite.select()
+        val controlPlaga= SQLite.select()
                 .from(ControlPlaga::class.java)
                 .where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
                 .and(ControlPlaga_Table.UsuarioId.eq(usuario?.Id))
                 .orderBy(ControlPlaga_Table.ControlPlagaId,false).querySingle()
+
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(controlPlaga?.CultivoId)).querySingle()
+
         if(controlPlaga!=null && cultivo?.EstadoSincronizacion==true){
             val postControlPlaga = PostControlPlaga(
                     0,
@@ -293,14 +290,17 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                 override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
                     if (response != null && response.code() == 201 || response?.code() == 200) {
 
-                        var controlPlagaResponse= response.body()
+                        val controlPlagaResponse= response.body()
                         controlPlaga.Id_Remote = controlPlagaResponse?.Id!!
                         controlPlaga.Estado_Sincronizacion = true
                         controlPlaga?.Estado_SincronizacionUpdate = true
                         controlPlaga.save()
-                        var controlPlaga= SQLite.select()
+
+
+                        val controlPlaga= SQLite.select()
                                 .from(ControlPlaga::class.java)
                                 .where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
+                                .and(ControlPlaga_Table.UsuarioId.eq(usuario?.Id))
                                 .orderBy(ControlPlaga_Table.ControlPlagaId,false).querySingle()
                         if(controlPlaga!=null){
                             syncDataControlPlagas()
@@ -322,9 +322,9 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
 
     private fun syncDataProduccion() {
 
-        var usuario=getLastUserLogued()
+        val usuario=getLastUserLogued()
 
-        var produccion= SQLite.select()
+        val produccion= SQLite.select()
                 .from(Produccion::class.java)
                 .where(Produccion_Table.Estado_Sincronizacion.eq(false))
                 .and(Produccion_Table.UsuarioId.eq(usuario?.Id))
@@ -352,9 +352,10 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                         produccion?.Estado_SincronizacionUpdate = true
                         produccion.save()
 
-                        var produccionPost= SQLite.select()
+                        val produccionPost= SQLite.select()
                                 .from(Produccion::class.java)
                                 .where(Produccion_Table.Estado_Sincronizacion.eq(false))
+                                .and(Produccion_Table.UsuarioId.eq(usuario?.Id))
                                 .orderBy(Produccion_Table.ProduccionId,false).querySingle()
 
                         if(produccionPost!=null){
@@ -378,17 +379,15 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
     }
 
     private fun syncDataProductos() {
-        var usuario=getLastUserLogued()
+        val usuario=getLastUserLogued()
 
-        var mProducto= SQLite.select()
+        val mProducto= SQLite.select()
                 .from(Producto::class.java)
                 .where(Producto_Table.Estado_Sincronizacion.eq(false))
                 .and(Producto_Table.userId.eq(usuario?.Id))
                 .orderBy(Producto_Table.ProductoId,false).querySingle()
 
-
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(mProducto?.cultivoId)).querySingle()
-
         if(mProducto!=null && cultivo?.EstadoSincronizacion==true){
             val postProducto = PostProducto(0,
                     mProducto.CalidadId,
@@ -412,16 +411,20 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
             call?.enqueue(object : Callback<Producto> {
                 override fun onResponse(call: Call<Producto>?, response: Response<Producto>?) {
                     if (response != null && response.code() == 201) {
+
                         val value = response.body()
                         mProducto.Id_Remote = value?.Id_Remote!!
                         mProducto.Estado_Sincronizacion = true
                         mProducto.Estado_SincronizacionUpdate = true
                         mProducto.save()
 
-                        var mProductoPost= SQLite.select()
+
+                        val mProductoPost= SQLite.select()
                                 .from(Producto::class.java)
                                 .where(Producto_Table.Estado_Sincronizacion.eq(false))
+                                .and(Producto_Table.userId.eq(usuario?.Id))
                                 .orderBy(Producto_Table.ProductoId,false).querySingle()
+
 
                         if(mProductoPost!=null){
                             syncDataProductos()
@@ -445,9 +448,9 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
 
     private fun syncDataTransacciones() {
 
-        var usuario=getLastUserLogued()
+        val usuario=getLastUserLogued()
 
-        var transaccion= SQLite.select()
+        val transaccion= SQLite.select()
                 .from(Transaccion::class.java)
                 .where(Transaccion_Table.Estado_Sincronizacion.eq(false))
                 .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
@@ -456,7 +459,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(transaccion?.Cultivo_Id)).querySingle()
         if(transaccion!=null && cultivo?.EstadoSincronizacion==true){
 
-            var terceroLocal= SQLite.select().from(Tercero::class.java).where(Tercero_Table.TerceroId.eq(transaccion.TerceroId)).querySingle()
+            val terceroLocal= SQLite.select().from(Tercero::class.java).where(Tercero_Table.TerceroId.eq(transaccion.TerceroId)).querySingle()
             val postTercero = PostTercero(
                     0,
                     terceroLocal?.Nombre,
@@ -500,9 +503,10 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                                     transaccion.Estado_SincronizacionUpdate = true
                                     transaccion.save()
 
-                                    var transaccionPost= SQLite.select()
+                                    val transaccionPost= SQLite.select()
                                             .from(Transaccion::class.java)
                                             .where(Transaccion_Table.Estado_Sincronizacion.eq(false))
+                                            .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
                                             .orderBy(Transaccion_Table.TransaccionId,false).querySingle()
 
                                     if(transaccionPost!=null){

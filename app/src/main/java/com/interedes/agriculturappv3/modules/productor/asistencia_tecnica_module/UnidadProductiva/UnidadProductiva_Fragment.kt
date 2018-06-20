@@ -555,8 +555,6 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
                     latitud=0.0
                     viewDialog?.edtLocalizacionUnidadProductiva?.setText(String.format(getString(R.string.coords), latitud, longitud))
                 }
-
-
             }
         })
 
@@ -689,6 +687,20 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             dialog.dismiss()
         })
         builder.setIcon(R.drawable.ic_unidad_productiva);
+        return builder.show();
+    }
+
+    override fun confirmDelete(unidadProductiva: Unidad_Productiva): AlertDialog? {
+        var builder = AlertDialog.Builder(activity!!)
+        builder.setTitle(getString(R.string.confirmation));
+        builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+
+        })
+        builder.setMessage(getString(R.string.alert_delete_up));
+        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            presenter?.deleteUP(unidadProductiva)
+        })
+        builder.setIcon(R.drawable.ic_lote);
         return builder.show();
     }
 

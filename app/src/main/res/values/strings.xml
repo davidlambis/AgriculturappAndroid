@@ -114,13 +114,20 @@
     <string name="tittle_add_coord_lote_gps">Agregar Lote</string>
     <string name="location_type_gps">Ubicación con GPS</string>
     <string name="location_type_manual">Ubicación Manual</string>
-    <string name="alert_delete_lote">¿Está seguro que desea eliminar el lote?</string>
+
+
+    <string name="alert_delete_lote">¿Está seguro que desea eliminar el Lote?, se perderan todos los registros, Cultivos,Produccion, Productos, Transacciones y Ofertas de este Lote</string>
+
     <string name="select_UP">Seleccione Unidad Productiva</string>
     <string name="message_location_lote">Seleccione una opción de ubicación</string>
     <string name="message_location_lote_marker">Haga click en el mapa para ubicar el lote</string>
 
     <string name="title_list_unidad_productiva">Lista de unidades productivas</string>
     <string name="title_filter_unidad_productiva">Filtrar lote por unidad productiva</string>
+
+
+    <string name="verifcate_area_lote">Verifica. El área  total de lotes supera el área de la Unidad Productiva</string>
+
 
 
     <!--Unidad Prodductiva-->
@@ -130,6 +137,7 @@
     <string name="spinner_departamento">Departamento</string>
     <string name="spinner_municipio">Municipio</string>
     <string name="registra_up">Registra tu Unidad Productiva</string>
+    <string name="alert_delete_up">¿Está seguro que desea eliminar la Unidad Productiva ?, se perderan todos los registros de Lotes, Cultivos, Produccion, Productos, Transacciones y Ofertas de esta Unidad Productiva</string>
     <!--Produccion-->
 
 
@@ -159,7 +167,9 @@
     <string name="snackbar_error_up">Debes seleccionar unidad productiva</string>
     <string name="snackbar_error_lote">Debes seleccionar lote</string>
     <string name="error_lotes">No hay lotes registrados</string>
-    <string name="alert_delete_cultivo">¿Está seguro que desea eliminar el cultivo?</string>
+    <string name="alert_delete_cultivo">¿Está seguro que desea eliminar el Cultivo? , se perderan todos los registros de Producción, Productos, Transacciones y Ofertas de Este Cultivo</string>
+
+
     <string name="spinner_tipo_producto">Tipo Producto</string>
     <string name="spinner_detalle_tipo_producto">Detalle Tipo Producto</string>
     <string name="tittle_select_lote">Seleccione el lote para agregar un cultivo</string>
@@ -228,7 +238,10 @@
     <string name="error_date">La fecha limite no puede ser inferior a la fecha actual</string>
 
 
-    <string name="title_alert_delete_producto">¿Está seguro de eliminar este producto?</string>
+
+    <string name="title_alert_delete_producto">¿Está seguro que desea eliminar este Producto? , se perderan todos los registros de Oferta</string>
+
+
     <string name="spinner_producto">Producto</string>
     <string name="select_product_ofertas">Selecciona el producto para consultar sus ofertas</string>
     <string name="edit_text_nombre_producto">Nombre Producto</string>

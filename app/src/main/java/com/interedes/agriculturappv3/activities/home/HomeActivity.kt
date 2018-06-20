@@ -125,7 +125,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
 
 
     private fun goToMainActivity() {
-
         var list = SQLite.select().from(Usuario::class.java).queryList()
         var usuario= getLastUserLogued()
         if (usuario != null) {

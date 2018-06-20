@@ -151,7 +151,8 @@ data class Producto(@PrimaryKey
 ) {
 
     override fun toString(): String {
-        return Nombre!!
+       // return Nombre!!
+        return String.format("%s", Nombre);
     }
 
     fun getFechaLimiteDisponibilidadFormat(): String {
