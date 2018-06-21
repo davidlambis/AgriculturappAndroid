@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.activities.chat.online.adapters
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -135,7 +136,23 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
             personNameTxtV.setText(data.Nombre+" "+data.Apellido)
             txtUserType.setText(data.Rol)
             try {
-                Picasso.with(context).load(data.Imagen).placeholder(R.drawable.default_avata).into(contentIconUser)
+                //Picasso.with(context).load(data.Imagen).placeholder(R.drawable.default_avata).into(contentIconUser)
+                try {
+                    //Picasso.with(context).load((context as ChatMessageActivity).mReceiverFoto).placeholder(R.drawable.default_avata).into(imageUser)
+
+                    val builder = Picasso.Builder(context)
+                    builder.listener(object : Picasso.Listener {
+                        override fun onImageLoadFailed(picasso: Picasso, uri: Uri, exception: Exception) {
+                            contentIconUser.setImageResource(R.drawable.default_avata)
+                            contentIconUser.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                        }
+                    })
+                    builder.build().load(data.Imagen).into(contentIconUser)
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -166,7 +183,19 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
 
 
                         try {
-                            Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.default_avata).into(contentIconUser)
+                            ///Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.default_avata).into(contentIconUser)
+                            Picasso.get()
+                                    .load(user?.Imagen)
+                                    .into( contentIconUser, object : com.squareup.picasso.Callback {
+                                        override fun onError(e: java.lang.Exception?) {
+                                            contentIconUser.setImageResource(R.drawable.default_avata)
+                                        }
+                                        override fun onSuccess() {
+                                            // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                                        }
+                                    })
+
+
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }

@@ -45,7 +45,7 @@ data class ViewProducto(
         var precio_unidadmedida_producto: String? = null,
 
         @SerializedName("usuarioid_producto")
-        var usuarioid_producto: UUID? = null,
+        var usuarioid_producto: String? = null,
 
         @SerializedName("calidad_id")
         var calidad_id: Long? = 0,

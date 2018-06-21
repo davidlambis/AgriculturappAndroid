@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 class OfertaResponse {
     @SerializedName("value")
-    var value: MutableList<Oferta>? = null
+    var value: MutableList<DetalleOferta>? = null
 }

@@ -12,6 +12,7 @@ import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.events.ProductosEvent
 import java.util.ArrayList
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.support.v7.widget.PopupMenu
 import android.view.MenuItem
 import android.widget.ImageButton
@@ -96,7 +97,20 @@ class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
                 if(data.Imagen!=null){
                     if(data.Imagen!!.contains("Productos")){
                         try {
-                            Picasso.with(context).load(S3Resources.RootImage+"${data.Imagen}").placeholder(R.drawable.ic_foto_producto).into(image)
+                            //Picasso.with(context).load(S3Resources.RootImage+"${data.Imagen}").placeholder(R.drawable.ic_foto_producto).into(image)
+                            Picasso.get()
+                                    .load(S3Resources.RootImage+"${data.Imagen}")
+                                    .into(image, object : com.squareup.picasso.Callback {
+                                        override fun onError(e: java.lang.Exception?) {
+                                            image.setImageResource(R.drawable.ic_foto_producto)
+                                            image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                            //) Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
+                                        }
+                                        override fun onSuccess() {
+                                            // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                                        }
+                                    })
+
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }

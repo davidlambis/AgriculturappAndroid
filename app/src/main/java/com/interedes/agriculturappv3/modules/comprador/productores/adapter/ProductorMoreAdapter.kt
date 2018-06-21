@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.modules.comprador.productores.adapter
 
 import android.app.Activity
 import android.content.Context
+import android.net.Uri
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -163,15 +164,38 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                             // do something with the individual "issues"
                             var user = issue.getValue<UserFirebase>(UserFirebase::class.java)
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
-                            try {
+
                                 try {
-                                    Picasso.with(contextLocal).load(user?.Imagen).placeholder(R.drawable.ic_account_box_green).into(imgProductor)
+                                    //Picasso.with(contextLocal).load(user?.Imagen).placeholder(R.drawable.ic_account_box_green).into(imgProductor)
+
+                                    /*val builder = Picasso.Builder(contextLocal!!)
+                                    builder.listener(object : Picasso.Listener {
+                                        override fun onImageLoadFailed(picasso: Picasso, uri: Uri, exception: Exception) {
+                                            imgProductor?.setImageResource(R.drawable.ic_account_box_green)
+                                            imgProductor?.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                        }
+                                    })
+                                    builder.build().load(user?.Imagen).into(imgProductor)
+                                    */
+
+                                    Picasso.get()
+                                            .load(user?.Imagen)
+                                            .into(imgProductor, object : com.squareup.picasso.Callback {
+                                                override fun onError(e: java.lang.Exception?) {
+                                                    imgProductor?.setImageResource(R.drawable.ic_account_box_green)
+                                                    imgProductor?.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                                    // Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
+                                                }
+                                                override fun onSuccess() {
+                                                    // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                                                }
+                                            })
+
+
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
+
                         }
                     }
                 }

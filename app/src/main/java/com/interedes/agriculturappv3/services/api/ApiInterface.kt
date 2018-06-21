@@ -387,11 +387,11 @@ interface ApiInterface {
     //region Oferta Productor
 
     //TODO Requiere Token
-    @GET("odata/Agp2/Oferta?\$expand=DetalleOferta(\$expand=UnidadMedida),EstadoOfertum,Usuario(\$select=Id,Apellidos,DetallemetodoPagoId,Email,EmailConfirmed,FechaRegistro,Identificacion,Nombre,Nro_movil,NumeroCuenta,PhoneNumber,PhoneNumberConfirmed,RolId,UserName)")
+    @GET("odata/Agp2/DetalleOferta?\$expand=UnidadMedida,Oferta(\$expand=EstadoOfertum,Usuario(\$select=Id,Apellidos,DetallemetodoPagoId,Email,EmailConfirmed,FechaRegistro,Identificacion,Nombre,Nro_movil,NumeroCuenta,PhoneNumber,PhoneNumberConfirmed,RolId,UserName))")
     fun getOfertasProductor( @Query("\$filter") filter: String, @Query("\$orderby") order: String): Call<OfertaResponse>
 
-    @GET("http://18.233.87.16/odata/Agp2/Oferta?\$expand=DetalleOferta(\$expand=UnidadMedida,Producto(\$expand=UnidadMedida,Calidad,Cultivo(\$expand=Lote(\$expand=UnidadProductiva(\$expand=Ciudad(\$expand=Departamento),Usuario(\$select=Id,Apellidos,DetallemetodoPagoId,Email,EmailConfirmed,FechaRegistro,Identificacion,Nombre,Nro_movil,NumeroCuenta,PhoneNumber,PhoneNumberConfirmed,RolId,UserName)))))),EstadoOfertum")
-    fun getOfertasComprador( @Query("\$filter") filter: String, @Query("\$orderby") order: String): Call<OfertaResponse>
+    @GET("odata/Agp2/DetalleOferta?\$expand=Oferta(\$expand=EstadoOfertum),UnidadMedida,Producto(\$expand=UnidadMedida,Calidad,Cultivo(\$expand=Lote(\$expand=UnidadProductiva(\$expand=Ciudad(\$expand=Departamento),Usuario(\$select=Id,Apellidos,DetallemetodoPagoId,Email,EmailConfirmed,FechaRegistro,Identificacion,Nombre,Nro_movil,NumeroCuenta,PhoneNumber,PhoneNumberConfirmed,RolId,UserName)))))")
+    fun getOfertasComprador(@Query("\$filter") filter: String, @Query("\$orderby") order: String): Call<OfertaResponse>
 
 
 

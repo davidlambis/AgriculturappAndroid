@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.modules.ofertas.adapters
 
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -21,11 +22,18 @@ import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
 import com.interedes.agriculturappv3.services.resources.RolResources
+import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_chat_message.*
 import java.util.ArrayList
+import com.interedes.agriculturappv3.R.id.imageView
+import com.squareup.picasso.Callback
+import com.interedes.agriculturappv3.R.id.imageView
+
+
+
 
 class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : RecyclerView.Adapter<OfertasAdapter.ViewHolder>() {
 
@@ -139,12 +147,57 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
 
 
             if(data.Producto!=null){
-                val byte = data.Producto?.blobImagen?.getBlob()
-                val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
-                contentIcon.setImageBitmap(bitmap)
-                contentIcon.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                txtTitle.setText(data.Producto?.Nombre)
 
+               /* if( data.Producto?.blobImagen!=null){
+                    val byte = data.Producto?.blobImagen?.getBlob()
+                    val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
+                    contentIcon.setImageBitmap(bitmap)
+                }*/
+
+                if( data.Producto?.blobImagen!=null){
+                    val byte = data.Producto?.blobImagen?.getBlob()
+                    val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
+                    contentIcon.setImageBitmap(bitmap)
+                }else{
+                    if(data.Producto?.Imagen!=null){
+                        if(data.Producto?.Imagen!!.contains("Productos")){
+                           /* try {
+                                Picasso.with(context).load(S3Resources.RootImage+"${data.Producto?.Imagen}").placeholder(R.drawable.ic_foto_producto).into(contentIcon)
+                                contentIcon.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }*/
+                            Picasso.get()
+                                    .load(S3Resources.RootImage+"${data.Producto?.Imagen}")
+                                    .into(contentIcon, object : com.squareup.picasso.Callback {
+                                        override fun onError(e: java.lang.Exception?) {
+
+                                            contentIcon.setImageResource(R.drawable.ic_foto_producto)
+                                            contentIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                            //) Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
+                                        }
+
+                                        override fun onSuccess() {
+                                           // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                                        }
+                                    })
+
+                           /* val builder = Picasso.Builder(context)
+                            builder.listener(object : Picasso.Listener {
+                                override fun onImageLoadFailed(picasso: Picasso, uri: Uri, exception: Exception) {
+
+                                    Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
+                                    exception.printStackTrace()
+                                }
+                            })
+                            builder.build().load(S3Resources.RootImage+"${data.Producto?.Imagen}").into(contentIcon)
+                            */
+
+                        }
+                    }
+                }
+
+                txtTitle.setText(data.Producto?.Nombre)
                 productoCantidad= String.format("%s %s ", disponibilidad, data.Producto?.NombreUnidadMedidaCantidad)
                 calidad= String.format("%s",data.Producto?.NombreCalidad)
                 // contentIcon.setImageResource(R.drawable.ic_ofertas)
@@ -157,15 +210,8 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
 
             if(data.Usuario!=null){
 
-
                 //TODO se valida que el usuario sea productor para mostrar opciones de editar la oferta
-
-
-
-
                 publisher_name.text=data.Usuario?.Nombre+" ${data.Usuario?.Apellidos}"
-
-
                 val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(data.Usuario?.Email)
                 query?.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -175,15 +221,37 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
                                 // do something with the individual "issues"
                                 var user = issue.getValue<UserFirebase>(UserFirebase::class.java)
                                 //if not current user, as we do not want to show ourselves then chat with ourselves lol
-                                try {
+
                                     try {
-                                        Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.ic_account_box_green).into(circleView)
+                                        //Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.ic_account_box_green).into(circleView)
+
+                                       /* val builder = Picasso.Builder(context)
+                                        builder.listener(object : Picasso.Listener {
+                                            override fun onImageLoadFailed(picasso: Picasso, uri: Uri, exception: Exception) {
+                                                contentIcon.setImageResource(R.drawable.ic_foto_producto)
+                                                contentIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                            }
+                                        })
+                                        builder.build().load(user?.Imagen).into(circleView)*/
+                                        Picasso.get()
+                                                .load(user?.Imagen)
+                                                .into(circleView, object : com.squareup.picasso.Callback {
+                                                    override fun onError(e: java.lang.Exception?) {
+                                                        circleView.setImageResource(R.drawable.ic_account_box_green)
+                                                        circleView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                                       // Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
+                                                    }
+                                                    override fun onSuccess() {
+                                                        // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                                                    }
+                                                })
+
+
+
                                     } catch (e: Exception) {
                                         e.printStackTrace()
                                     }
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
+
                             }
                         }
                     }

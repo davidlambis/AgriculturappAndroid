@@ -31,7 +31,6 @@ import java.util.*
 
 class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
-
     var PERMISSIONS = arrayOf(
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,

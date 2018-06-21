@@ -58,6 +58,6 @@ data class DetalleOferta(@PrimaryKey
 
 
                          @SerializedName("Oferta")
-                         var Oferta: DetalleOferta?= null
+                         var Oferta: Oferta?= null
                          ) {
 }

@@ -343,6 +343,11 @@ class Listas {
 
 
 
+        fun queryGeneralWithContains(model:String,criterio: String, valor: String): String {
+            val queryFilter = "contains($model/$criterio,  '$valor')"
+            return queryFilter
+        }
+
         fun queryOrderByDesc(criterio: String): String {
             val queryFilter = "$criterio desc"
             return queryFilter

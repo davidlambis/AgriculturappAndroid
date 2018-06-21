@@ -207,7 +207,7 @@ class ProductorRepository:IMainViewProductor.Repository {
 
                             //TODO Cultivo
                             val cultivo=Cultivo()
-                            var cultivoVerficateSave= SQLite.select()
+                            val cultivoVerficateSave= SQLite.select()
                                     .from(Cultivo::class.java)
                                     .where(Cultivo_Table.Id_Remote.eq(item.cultivoid))
                                     .querySingle()
@@ -252,7 +252,7 @@ class ProductorRepository:IMainViewProductor.Repository {
 
                             //TODO Producto
                             val producto=Producto()
-                            var productoVerficateSave= SQLite.select()
+                            val productoVerficateSave= SQLite.select()
                                     .from(Producto::class.java)
                                     .where(Producto_Table.Id_Remote.eq(item.id))
                                     .querySingle()
@@ -301,6 +301,8 @@ class ProductorRepository:IMainViewProductor.Repository {
                             producto.TelefonoProductor=usuario.PhoneNumber
                             producto.Estado_Sincronizacion=false
                             producto.Estado_SincronizacionUpdate=false
+
+                            producto.Imagen=item?.imagen_producto
 
                             try {
                                 val base64String = item?.imagen_producto

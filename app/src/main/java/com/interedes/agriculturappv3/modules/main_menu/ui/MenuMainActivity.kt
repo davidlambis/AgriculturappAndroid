@@ -197,10 +197,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
             }
         }
-        var usuarioLogued=getLastUserLogued()
+        /*var usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
             presenter?.syncQuantityData(true)
-        }
+        }*/
     }
 
     private fun setupMenuFloating() {
@@ -226,9 +226,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         var placeType:PlaceType?=null
 
 
-        var usuarioLogued=getLastUserLogued()
+        val usuarioLogued=getLastUserLogued()
 
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
+
 
             placeType=PlaceType.HAM_4_1
             //placeType=PlaceType.CIRCLE_4_1
@@ -1062,7 +1063,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
         presenter?.makeUserOnline()
-        presenter?.syncQuantityData(true)
+
+        val usuarioLogued=getLastUserLogued()
+        if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
+            presenter?.syncQuantityData(true)
+        }
     }
 
     override fun offConnectivity() {

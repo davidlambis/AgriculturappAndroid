@@ -653,12 +653,19 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         app_bar.layoutParams.width = AppBarLayout.LayoutParams.MATCH_PARENT
         app_bar.layoutParams.height = resources.getDimensionPixelSize(R.dimen.height_mapa)
 
+
+        if(UBICATION_GPS){
+            closeServiceGps()
+        }
         latitud=0.0
         longitud=0.0
         UBICATION_GPS = false
         UBICATION_MANUAL = false
         UBICATION_MAPA=false
         DIALOG_SET_TYPE_UBICATION=-1
+
+
+
 
     }
 
@@ -736,6 +743,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         if (_dialogRegisterUpdate != null) {
             _dialogRegisterUpdate?.dismiss()
         }
+
+        limpiarCampos()
         onMessageError(R.color.grey_luiyi, error)
     }
 

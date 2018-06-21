@@ -52,9 +52,11 @@ import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.adapters.ProductosAdapter
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.resources.RequestAccessPhoneResources
+import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.dialog_form_producto.*
@@ -350,9 +352,27 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         else {
             isFoto = true
             viewDialog?.txtTitle?.setText(getString(R.string.title_editar_producto))
-            val byte = producto.blobImagen?.getBlob()
-            val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
-            viewDialog?.product_image?.setImageBitmap(bitmap)
+
+
+            if(producto.blobImagen!=null){
+                val byte = producto.blobImagen?.getBlob()
+                val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
+                viewDialog?.product_image?.setImageBitmap(bitmap)
+            }else{
+                Picasso.get()
+                        .load(S3Resources.RootImage+"${producto.Imagen}")
+                        .into( viewDialog?.product_image, object : com.squareup.picasso.Callback {
+                            override fun onError(e: java.lang.Exception?) {
+                                viewDialog?.product_image?.setImageResource(R.drawable.ic_foto_producto)
+                                viewDialog?.product_image?.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                //) Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
+                            }
+                            override fun onSuccess() {
+                                // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                            }
+                        })
+            }
+
             viewDialog?.txtUnidadProductivaSelected?.setText(producto.NombreUnidadProductiva)
             viewDialog?.txtLoteSelected?.setText(producto.NombreLote)
             viewDialog?.txtCultivoSelected?.setText(producto.NombreCultivo)
@@ -814,7 +834,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 stringBuilder.append("data:image/jpeg;base64,")
                 stringBuilder.append(android.util.Base64.encodeToString(imageGlobal, android.util.Base64.NO_WRAP))
                 mProducto.Imagen = stringBuilder.toString()
-            } /*else {
+            } else {
                 viewDialog?.product_image?.isDrawingCacheEnabled = true
                 val bitmap = viewDialog?.product_image?.getDrawingCache()
                 val byte = convertBitmapToByte(bitmap!!)
@@ -823,7 +843,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 stringBuilder.append("data:image/jpeg;base64,")
                 stringBuilder.append(android.util.Base64.encodeToString(byte, android.util.Base64.DEFAULT))
                 mProducto.Imagen = stringBuilder.toString()
-            }*/
+            }
 
             //mProducto.NombreCultivo = cultivoGlobal?.Nombre
             mProducto.Stock= viewDialog?.txtCantidadProductoDisponible?.text.toString().toDoubleOrNull()

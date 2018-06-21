@@ -1,9 +1,11 @@
 package com.interedes.agriculturappv3.activities.chat.online.adapters
 
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -128,7 +130,19 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
 
                 if((context as ChatMessageActivity).mReceiverFoto!=null){
                     try {
-                        Picasso.with(context).load((context as ChatMessageActivity).mReceiverFoto).placeholder(R.drawable.default_avata).into(imageUser)
+                        //Picasso.with(context).load((context as ChatMessageActivity).mReceiverFoto).placeholder(R.drawable.default_avata).into(imageUser)
+                        Picasso.get()
+                                .load((context as ChatMessageActivity).mReceiverFoto)
+                                .into( imageUser, object : com.squareup.picasso.Callback {
+                                    override fun onError(e: java.lang.Exception?) {
+                                        imageUser.setImageResource(R.drawable.default_avata)
+                                    }
+                                    override fun onSuccess() {
+                                        // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                                    }
+                                })
+
+
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

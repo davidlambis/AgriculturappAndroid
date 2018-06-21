@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.activities.chat.online
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -19,6 +20,8 @@ import android.os.Build
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
 import android.view.MenuItem
+import android.widget.ImageView
+import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.*
@@ -151,11 +154,22 @@ class ChatMessageActivity : AppCompatActivity() {
                 mReceiverName = recepient!!.Nombre+" "+recepient!!.Apellido
                 try {
                     nameUserTo.setText(mReceiverName)
-                    try {
+
+                    /*try {
                         Picasso.with(applicationContext).load(recepient.Imagen).placeholder(R.drawable.default_avata).into(imgUserTo)
                     } catch (e: Exception) {
                         e.printStackTrace()
-                    }
+                    }*/
+                    Picasso.get()
+                            .load(recepient.Imagen)
+                            .into( imgUserTo, object : com.squareup.picasso.Callback {
+                                override fun onError(e: java.lang.Exception?) {
+                                    imgUserTo.setImageResource(R.drawable.default_avata)
+                                }
+                                override fun onSuccess() {
+                                    // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                                }
+                            })
                     //supportActionBar!!.setTitle(mReceiverName)
                     //actionBar!!.title = mReceiverName
                 } catch (e: Exception) {

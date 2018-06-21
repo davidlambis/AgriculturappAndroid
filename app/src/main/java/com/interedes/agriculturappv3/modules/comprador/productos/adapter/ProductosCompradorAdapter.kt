@@ -95,6 +95,8 @@ class ProductosCompradorAdapter(val lista: ArrayList<TipoProducto>) : RecyclerVi
                 }
             }
 
+
+
             txtNombreTipoProducto.text = data.Nombre
 
             itemView.setOnClickListener {

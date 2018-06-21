@@ -24,10 +24,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 import com.google.firebase.auth.FirebaseAuth
@@ -219,7 +216,20 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     val userIdentification = currentuser!!.Cedula
                     val userPhone = currentuser!!.Telefono
 
-                    Picasso.with(activity).load(userPhoto).placeholder(R.drawable.ic_foto_producto_square).into(user_image)
+                    //Picasso.with(activity).load(userPhoto).placeholder(R.drawable.ic_foto_producto_square).into(user_image)
+                    Picasso.get()
+                            .load(userPhoto)
+                            .into( user_image, object : com.squareup.picasso.Callback {
+                                override fun onError(e: java.lang.Exception?) {
+                                    user_image.setImageResource(R.drawable.ic_asistencia_tecnica_color_500)
+                                }
+                                override fun onSuccess() {
+                                    // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                                }
+                            })
+
+
+
                     edtNombres.setText(userName)
                     edtApellidos.setText(userLastName)
                     edtCedula.setText(userIdentification)

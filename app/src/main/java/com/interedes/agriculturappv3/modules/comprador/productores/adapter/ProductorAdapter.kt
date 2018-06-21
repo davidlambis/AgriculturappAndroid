@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.modules.comprador.productores.adapter
 
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -125,7 +126,17 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
                                 //if not current user, as we do not want to show ourselves then chat with ourselves lol
                                 try {
                                     try {
-                                        Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.default_avata).into(imgProductor)
+                                        //Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.default_avata).into(imgProductor)
+
+                                        val builder = Picasso.Builder(context)
+                                        builder.listener(object : Picasso.Listener {
+                                            override fun onImageLoadFailed(picasso: Picasso, uri: Uri, exception: Exception) {
+                                                imgProductor.setImageResource(R.drawable.default_avata)
+                                                imgProductor.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                            }
+                                        })
+                                        builder.build().load(user?.Imagen).into(imgProductor)
+
                                     } catch (e: Exception) {
                                         e.printStackTrace()
                                     }

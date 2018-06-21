@@ -208,6 +208,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
     }
 
     private fun onUPDeleteOk() {
+        IUpView?.hideProgress()
         IUpView?.requestResponseOK()
     }
 
@@ -275,7 +276,6 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
 
     private fun onMessageOk() {
         IUpView?.enableInputs()
-        IUpView?.hideProgress()
         IUpView?.limpiarCampos()
         IUpView?.hideElements()
         IUpView?.requestResponseOK()

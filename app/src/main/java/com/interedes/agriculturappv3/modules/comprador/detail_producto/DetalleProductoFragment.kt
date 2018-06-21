@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -17,10 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.producto.Producto
@@ -39,6 +37,7 @@ import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
+import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.alert_success.view.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
@@ -160,6 +159,19 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                     var ss= ex.toString()
                     Log.d("Convert Image", "defaultValue = " + ss);
                 }
+            }else{
+                Picasso.get()
+                        .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
+                        .into(contenIconProducto, object : com.squareup.picasso.Callback {
+                            override fun onError(e: java.lang.Exception?) {
+                                contenIconProducto?.setImageResource(R.drawable.ic_foto_producto)
+                                contenIconProducto?.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                // Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
+                            }
+                            override fun onSuccess() {
+                                // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                            }
+                        })
             }
 
 
@@ -174,28 +186,31 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                             var user = issue.getValue<UserFirebase>(UserFirebase::class.java)
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                             try {
-                                try {
-                                    Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.ic_account_box_green).into(contentIcon)
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
+
+                                Picasso.get()
+                                        .load(user?.Imagen)
+                                        .into(contentIcon, object : com.squareup.picasso.Callback {
+                                            override fun onError(e: java.lang.Exception?) {
+                                                contentIcon?.setImageResource(R.drawable.ic_account_box_green)
+                                                contentIcon?.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                                // Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
+                                            }
+                                            override fun onSuccess() {
+                                                // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                                            }
+                                        })
+
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
                         }
                     }
                 }
-
                 override fun onCancelled(databaseError: DatabaseError) {
 
                 }
             })
-
         }
-
-
-
-
     }
 
 
