@@ -455,6 +455,9 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
                 unidadProductivaGlobal = listUnidadProductiva!![position] as Unidad_Productiva
                 presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
+
+                presenter?.setListSpinnerCultivo(0)
+
             }
             presenter?.setListSpinnerLote(null)
             presenter?.setListSpinnerCultivo(null)

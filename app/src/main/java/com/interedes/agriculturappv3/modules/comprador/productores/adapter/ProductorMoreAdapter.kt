@@ -177,21 +177,13 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                                     })
                                     builder.build().load(user?.Imagen).into(imgProductor)
                                     */
-
                                     Picasso.get()
                                             .load(user?.Imagen)
-                                            .into(imgProductor, object : com.squareup.picasso.Callback {
-                                                override fun onError(e: java.lang.Exception?) {
-                                                    imgProductor?.setImageResource(R.drawable.ic_account_box_green)
-                                                    imgProductor?.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                                                    // Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
-                                                }
-                                                override fun onSuccess() {
-                                                    // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
-                                                }
-                                            })
-
-
+                                            .fit()
+                                            .centerCrop()
+                                            .placeholder(R.drawable.ic_account_box_green)
+                                            .error(R.drawable.ic_account_box_green)
+                                            .into(imgProductor);
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }

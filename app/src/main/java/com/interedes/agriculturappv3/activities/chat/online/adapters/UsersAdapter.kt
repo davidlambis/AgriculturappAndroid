@@ -65,7 +65,6 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
     fun setItems(newItems: List<UserFirebase>) {
         lista.addAll(newItems)
         notifyDataSetChanged()
-
     }
 
     fun clear() {

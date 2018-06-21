@@ -67,7 +67,7 @@ class TratamientoPresenter(var view: ITratamiento.View?) : ITratamiento.Presente
         view?.setListLotes(list)
     }
 
-    override fun setListSpinnerCultivo(lote_id: Long?, tipoProductoId: Long?) {
+    override fun setListSpinnerCultivo(lote_id: Long?) {
         val list = listCultivosGlobal?.filter { cultivo: Cultivo -> cultivo.LoteId == lote_id }
         view?.setListCultivos(list)
     }

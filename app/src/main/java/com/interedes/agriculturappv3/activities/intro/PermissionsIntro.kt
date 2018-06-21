@@ -35,6 +35,7 @@ class PermissionsIntro: AppIntro() {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.SEND_SMS,
             Manifest.permission.READ_SMS,
@@ -42,9 +43,9 @@ class PermissionsIntro: AppIntro() {
             Manifest.permission.READ_CONTACTS
     )
 
-
     val PERMISSIONS_UBICACION = arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
     )
 
     val PERMISSIONS_STORAGE_CAMERA = arrayOf(

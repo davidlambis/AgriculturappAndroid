@@ -70,7 +70,7 @@ interface ITratamiento {
         fun onEventMainThread(tratamientoEvent: TratamientoEvent?)
         fun setListSpinnerUnidadProductiva()
         fun setListSpinnerLote(unidad_productiva_id: Long?)
-        fun setListSpinnerCultivo(lote_id: Long?, tipoProductoId: Long?)
+        fun setListSpinnerCultivo(lote_id: Long?)
         fun getListas()
         fun validarListasAddControlPlaga(): Boolean?
         fun setListSpinnerUnidadMedida()

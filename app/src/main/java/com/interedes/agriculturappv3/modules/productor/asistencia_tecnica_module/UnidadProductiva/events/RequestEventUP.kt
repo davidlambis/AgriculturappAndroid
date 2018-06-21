@@ -36,6 +36,6 @@ data class RequestEventUP(var eventType: Int, var mutableList: MutableList<Objec
 
 
         //Error Connection
-        val ERROR_VERIFICATE_CONECTION: Int = 12
+        val ERROR_VERIFICATE_CONECTION: Int = 14
     }
 }

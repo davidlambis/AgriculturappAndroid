@@ -230,7 +230,12 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
 
     override fun hideElementsAndSetPropertiesOnConectionInternet() {
-        if (imgOffConection.visibility == View.VISIBLE) imgOffConection.visibility = View.GONE
+        try {
+            if (imgOffConection.visibility == View.VISIBLE) imgOffConection.visibility = View.GONE
+        }catch (ex:NullPointerException){
+            Log.e("AGRICULTURAPP", "exception: " + ex.toString());
+        }
+
         if (UBICATION_MANUAL == true) {
             DIALOG_SET_TYPE_UBICATION = 1
         } else if (UBICATION_GPS == true) {
@@ -310,7 +315,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             hideElementsAndSetPropertiesOnConectionInternet()
         })
 
-            animateLocationMap(lotesList!!)
+        animateLocationMap(lotesList!!)
 
     }
 
@@ -1505,7 +1510,6 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         }
 
         INI_TASK_HANDLER = false
-
         presenter?.onDestroy()
     }
 

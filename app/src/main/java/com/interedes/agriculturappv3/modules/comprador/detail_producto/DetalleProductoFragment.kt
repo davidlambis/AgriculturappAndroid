@@ -160,8 +160,26 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                     Log.d("Convert Image", "defaultValue = " + ss);
                 }
             }else{
+               /* Picasso.get()
+                        .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
+                        .placeholder(R.drawable.ic_account_box_green)
+                        .error(R.drawable.ic_account_box_green)
+                        .into(contenIconProducto, object : com.squareup.picasso.Callback {
+                            override fun onError(e: java.lang.Exception?) {
+                                contenIconProducto?.setImageResource(R.drawable.ic_foto_producto)
+                                contenIconProducto?.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                // Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
+                            }
+                            override fun onSuccess() {
+                                // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
+                            }
+                        })*/
+
                 Picasso.get()
                         .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
+                        .fit()
+                        .placeholder(R.drawable.ic_foto_producto)
+                        .error(R.drawable.ic_foto_producto)
                         .into(contenIconProducto, object : com.squareup.picasso.Callback {
                             override fun onError(e: java.lang.Exception?) {
                                 contenIconProducto?.setImageResource(R.drawable.ic_foto_producto)
@@ -172,9 +190,16 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                                 // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
                             }
                         })
+               // Picasso.setSingletonInstance(picassoss) //apply to default singleton instance
+                /*Picasso.get()
+                        .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
+                        .placeholder(R.drawable.ic_foto_producto)
+                        .fit()
+                        .centerCrop()
+                        .error(R.drawable.ic_foto_producto)
+                        .into(contenIconProducto)*/
+
             }
-
-
 
             val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(productoGlobal?.EmailProductor)
             query?.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -189,16 +214,11 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
 
                                 Picasso.get()
                                         .load(user?.Imagen)
-                                        .into(contentIcon, object : com.squareup.picasso.Callback {
-                                            override fun onError(e: java.lang.Exception?) {
-                                                contentIcon?.setImageResource(R.drawable.ic_account_box_green)
-                                                contentIcon?.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                                                // Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
-                                            }
-                                            override fun onSuccess() {
-                                                // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
-                                            }
-                                        })
+                                        .fit()
+                                        .centerCrop()
+                                        .placeholder(R.drawable.ic_account_box_green)
+                                        .error(R.drawable.ic_account_box_green)
+                                        .into(contentIcon);
 
                             } catch (e: Exception) {
                                 e.printStackTrace()

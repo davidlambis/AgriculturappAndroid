@@ -86,6 +86,7 @@ class ProductosCompradorAdapter(val lista: ArrayList<TipoProducto>) : RecyclerVi
                 // val bitmap = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                 // imgTipoProducto.setImageBitmap(bitmap)
                 try {
+
                     val foto = data.Imagen?.blob
                     val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                     imgTipoProducto.setImageBitmap(bitmapBlob)

@@ -87,8 +87,8 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         ivBackButton.setOnClickListener(this)
         swipeRefreshLayout.setOnRefreshListener(this)
         searchFilter.setOnClickListener(this)
-        setupInjection()
         setupInitDesign()
+        setupInjection()
     }
 
     private fun setupInitDesign() {
@@ -125,6 +125,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
     }
 
     private fun setupInjection() {
+        showProgress()
         presenter?.getListOfertas(Producto_Id)
     }
 

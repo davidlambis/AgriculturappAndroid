@@ -231,6 +231,8 @@ class VentasFragment : Fragment(), IVentas.View, View.OnClickListener, SwipeRefr
                 viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
                 unidadProductivaGlobal = listUnidadProductiva!![position] as Unidad_Productiva
                 presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
+
+                presenter?.setListSpinnerCultivo(0)
             }
             presenter?.setListSpinnerLote(null)
             presenter?.setListSpinnerCultivo(null)

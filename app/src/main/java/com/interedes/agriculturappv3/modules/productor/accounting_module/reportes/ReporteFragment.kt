@@ -298,6 +298,8 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
 
                 unidadProductivaGlobal= listUnidadProductiva!![position] as Unidad_Productiva
                 presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
+
+                presenter?.setListSpinnerCultivo(0)
             }
             presenter?.setListSpinnerLote(null)
             presenter?.setListSpinnerCultivo(null)

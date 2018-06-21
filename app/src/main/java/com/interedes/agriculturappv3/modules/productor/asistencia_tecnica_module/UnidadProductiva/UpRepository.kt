@@ -61,9 +61,7 @@ class UpRepository() : IUnidadProductiva.Repo {
 
         //TODO si existe conexion a internet
         if(checkConection){
-
             val cantidadBig = BigDecimal(mUnidadProductiva.Area!!, MathContext.DECIMAL64)
-
             //TODO Ciudad Id de la tabla del backend
             val postUnidadProductiva = PostUnidadProductiva(0,
                     cantidadBig,
@@ -258,12 +256,14 @@ class UpRepository() : IUnidadProductiva.Repo {
                     }
                 })
             }else{
+
                 postEventError(RequestEventUP.ERROR_VERIFICATE_CONECTION, null)
             }
         } else {
             //TODO No sincronizado, Eliminar de manera local
             //Verificate if cultivos register
             deleteUp(mUnidadProductiva)
+            postEventOk(RequestEventUP.DELETE_EVENT, getUPs(), mUnidadProductiva)
            /* var vericateRegisterLotes= SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(mUnidadProductiva.Unidad_Productiva_Id)).querySingle()
             if(vericateRegisterLotes!=null){
                 postEventError(RequestEventUP.ERROR_EVENT, "Error!. La unidad productiva no se ha podido eliminar, recuerde eliminar los lotes")

@@ -538,7 +538,6 @@ class MenuRepository: MainViewMenu.Repository {
                 user.delete()
             }
 
-
             val query = Listas.queryGeneral("UsuarioId",usuario?.Id.toString())
             val callInformacionSinronized = apiService?.getSyncInformacionUsuario(query)
             callInformacionSinronized?.enqueue(object : Callback<GetSincronizacionResponse> {
@@ -771,9 +770,7 @@ class MenuRepository: MainViewMenu.Repository {
                                                         controlplaga.Estado_SincronizacionUpdate=true
                                                         controlplaga.Fecha_aplicacion_local=controlplaga.getFechaDate(controlplaga.Fecha_aplicacion)
                                                         controlplaga.Fecha_Erradicacion_Local=if(controlplaga.FechaErradicacion!=null)controlplaga.getFechaDate(controlplaga.FechaErradicacion)else null
-
                                                         controlplaga.save()
-
                                                     }
                                                 }
                                             }
@@ -793,8 +790,6 @@ class MenuRepository: MainViewMenu.Repository {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
             })
-
-
 
 
             ///ENFERMEDADES AND TRATAMIENTOS
@@ -856,7 +851,7 @@ class MenuRepository: MainViewMenu.Repository {
         else if(usuario?.RolNombre?.equals(RolResources.COMPRADOR)!!){
 
             //Limpiar BD con informacion de un productor
-            var users=SQLite.select().from(Usuario::class.java).where(Usuario_Table.RolNombre.eq(RolResources.PRODUCTOR)).queryList()
+            val users=SQLite.select().from(Usuario::class.java).where(Usuario_Table.RolNombre.eq(RolResources.PRODUCTOR)).queryList()
             for (user in users){
 
                 SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
@@ -1340,7 +1335,7 @@ class MenuRepository: MainViewMenu.Repository {
                             //TODO Unidades Productivas
                             val unidaProductiva = detalleoferta?.Producto?.Cultivo?.Lote?.UnidadProductiva
                             if (unidaProductiva != null) {
-                                var unidadProductivaVerficateSave = SQLite.select()
+                                val unidadProductivaVerficateSave = SQLite.select()
                                         .from(Unidad_Productiva::class.java)
                                         .where(Unidad_Productiva_Table.Id_Remote.eq(unidaProductiva.Id_Remote))
                                         .querySingle()
@@ -1366,7 +1361,7 @@ class MenuRepository: MainViewMenu.Repository {
                             //TODO Lote
                             val lote = detalleoferta?.Producto?.Cultivo?.Lote
                             if (lote != null) {
-                                var loteVerficateSave = SQLite.select()
+                                val loteVerficateSave = SQLite.select()
                                         .from(Lote::class.java)
                                         .where(Lote_Table.Id_Remote.eq(lote.Id_Remote))
                                         .querySingle()
@@ -1383,7 +1378,7 @@ class MenuRepository: MainViewMenu.Repository {
                                 }
 
                                 val coordenadas = lote.Localizacion
-                                if (coordenadas != null || coordenadas != "") {
+                                if (coordenadas != null) {
                                     val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
                                     var latitud = separated!![0].toDoubleOrNull() // this will contain "Fruit"
                                     var longitud = separated!![1].toDoubleOrNull() // this will contain " they taste good"

@@ -87,7 +87,7 @@
                             <ImageView
                                 android:src="@drawable/ic_account_box_green"
                                 android:id="@+id/contentIcon"
-                                android:layout_width="50dp"
+                                android:layout_width="60dp"
                                 android:scaleType="centerCrop"
                                 android:layout_height="wrap_content"
                                 />

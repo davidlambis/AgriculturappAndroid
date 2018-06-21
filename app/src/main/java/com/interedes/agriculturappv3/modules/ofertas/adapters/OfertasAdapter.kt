@@ -88,12 +88,8 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
 
             val txtCantidad: TextView = itemView.findViewById(R.id.txtQuantity)
 
-
             val txtDate: TextView = itemView.findViewById(R.id.txtDate)
             val publisher_name: TextView = itemView.findViewById(R.id.publisher_name)
-
-
-
 
             val btnAction1: Button = itemView.findViewById(R.id.btnButtomAction1)
             val btnAction3: Button = itemView.findViewById(R.id.btnButtomAction3)
@@ -132,6 +128,7 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
                 } else {
                     disponibilidad = data.DetalleOfertaSingle?.Cantidad.toString()
                 }
+
                 precioOferta=String.format(context.getString(R.string.price_producto),
                         data.DetalleOfertaSingle?.Valor_Oferta, data.DetalleOfertaSingle?.NombreUnidadMedidaPrecio)
                 /*var disponibilidad = ""
@@ -169,6 +166,7 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
                             }*/
                             Picasso.get()
                                     .load(S3Resources.RootImage+"${data.Producto?.Imagen}")
+                                    .fit()
                                     .into(contentIcon, object : com.squareup.picasso.Callback {
                                         override fun onError(e: java.lang.Exception?) {
 
@@ -235,6 +233,7 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
                                         builder.build().load(user?.Imagen).into(circleView)*/
                                         Picasso.get()
                                                 .load(user?.Imagen)
+                                                .fit()
                                                 .into(circleView, object : com.squareup.picasso.Callback {
                                                     override fun onError(e: java.lang.Exception?) {
                                                         circleView.setImageResource(R.drawable.ic_account_box_green)

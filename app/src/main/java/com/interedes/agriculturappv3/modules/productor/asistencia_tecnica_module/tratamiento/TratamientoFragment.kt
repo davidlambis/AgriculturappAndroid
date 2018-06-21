@@ -401,9 +401,11 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
 
                 unidadProductivaGlobal = listUnidadProductiva!![position]
                 presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
+
+                presenter?.setListSpinnerCultivo(0)
             }
             presenter?.setListSpinnerLote(null)
-            presenter?.setListSpinnerCultivo(null, null)
+            presenter?.setListSpinnerCultivo(null)
         }
     }
 
@@ -417,7 +419,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             viewDialogFilter?.spinnerCultivo?.setText("")
             viewDialogFilter?.spinnerCultivo?.setHint(String.format(getString(R.string.spinner_cultivo)))
             loteGlobal = listLotes!![position]
-            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId, tipoProductoId)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
         }
     }
 
@@ -493,7 +495,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
 
         if (unidadProductivaGlobal != null && loteGlobal != null && cultivoGlobal != null) {
             presenter?.setListSpinnerLote(unidadProductivaGlobal?.Unidad_Productiva_Id)
-            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId, tipoProductoId)
+            presenter?.setListSpinnerCultivo(loteGlobal?.LoteId)
 
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.toString())

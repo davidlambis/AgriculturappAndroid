@@ -137,6 +137,8 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.addItemDecoration(VerticalLineDecorator(2))
         recyclerView.adapter = adapter
+
+        recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0)
     }
 
     private fun loadMore(index: Int) {
