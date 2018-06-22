@@ -246,7 +246,7 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
         val toPhoneNumber =contactNumber
         val smsMessage = getString(R.string.idenfication_send_sms_app)+" "+messageEditText.getText().toString()
 
-        try {
+       /* try {
 
         var intent =  Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + toPhoneNumber?.replace(" ","")));
         intent.putExtra("sms_body", smsMessage);
@@ -257,9 +257,9 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
                     "Sending SMS failed.",
                     Toast.LENGTH_LONG).show()
             e.printStackTrace()
-        }
+        }*/
 
-        /*
+
         try {
             val smsManager = SmsManager.getDefault()
             smsManager.sendTextMessage(toPhoneNumber, null, smsMessage, null, null)
@@ -273,7 +273,7 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
                     "Sending SMS failed.",
                     Toast.LENGTH_LONG).show()
             e.printStackTrace()
-        }*/
+        }
     }
 
 

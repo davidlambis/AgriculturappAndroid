@@ -37,7 +37,6 @@ class PermissionsIntro: AppIntro() {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.SEND_SMS,
             Manifest.permission.READ_SMS,
             Manifest.permission.RECEIVE_SMS,
             Manifest.permission.READ_CONTACTS
@@ -55,7 +54,6 @@ class PermissionsIntro: AppIntro() {
             )
 
     val PERMISSIONS_PHONE_SMS= arrayOf(Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.SEND_SMS,
             Manifest.permission.READ_SMS,
             Manifest.permission.RECEIVE_SMS,
             Manifest.permission.READ_CONTACTS)
