@@ -13,5 +13,4 @@ data class Conversation(
         @SerializedName("User_To")
         var User_To: String? = null
         ) {
-
 }
