@@ -135,8 +135,8 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                     .setContentText(description)  // required
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)
-                    .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_notification))
-                    .setBadgeIconType(R.mipmap.ic_launcher_notification)
+                    //.setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_notification))
+                    //.setBadgeIconType(R.mipmap.ic_launcher_notification)
                     .setContentIntent(pendingIntent)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setShowWhen(true)

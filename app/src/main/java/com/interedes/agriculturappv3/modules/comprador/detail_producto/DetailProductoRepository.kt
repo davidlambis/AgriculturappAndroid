@@ -1,8 +1,14 @@
 package com.interedes.agriculturappv3.modules.comprador.detail_producto
 
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.comprador.detail_producto.events.RequestEventDetalleProducto
+import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.ofertas.*
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
@@ -15,13 +21,17 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.resources.CategoriaMediaResources
 import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
+import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.math.BigDecimal
 import java.math.MathContext
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
@@ -29,9 +39,16 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
     var eventBus: EventBus? = null
     var apiService: ApiInterface? = null
+     var mUserDBRef: DatabaseReference? = null
+    var mMessagesDBRef: DatabaseReference? = null
+    private var mReceiverId: String? = null
+
+
     init {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
+        mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
+        mMessagesDBRef = FirebaseDatabase.getInstance().reference.child("Messages")
     }
 
     //region Métodos Interfaz
@@ -120,6 +137,13 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
                                     oferta.Nombre_Estado_Oferta=EstadosOfertasResources.VIGENTE_STRING
 
+
+                                    val usuarioTo= SQLite.select().from(Usuario::class.java).where(Oferta_Table.UsuarioTo.eq(oferta.UsuarioTo)).querySingle()
+
+                                    sendMessageNotificationUser(usuarioTo)
+
+
+
                                     saveOfertaLocal(oferta,detalleOferta)
 
                                 } else {
@@ -145,7 +169,65 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         }
     }
 
+    private fun sendMessageNotificationUser(usuarioTo: Usuario?) {
+        if(usuarioTo!=null){
 
+
+            val query = mUserDBRef?.child("Users")?.orderByChild("correo")?.equalTo(usuarioTo?.Email)
+            query?.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // dataSnapshot is the "issue" node with all children with id 0
+                        for (issue in dataSnapshot.children) {
+                            // do something with the individual "issues"
+                            var user = issue.getValue<UserFirebase>(UserFirebase::class.java)
+
+                            mReceiverId=user?.User_Id
+                            val message = "Te han ofertado por un producto"
+                            val senderId = FirebaseAuth.getInstance().currentUser!!.uid
+                            //if not current user, as we do not want to show ourselves then chat with ourselves lol
+                            try {
+                                if(user?.Status.equals(Status_Chat.ONLINE)){
+                                    sendMessageToFirebase(message, senderId, mReceiverId)
+                                }else{
+
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                //postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
+                            }
+                        }
+                    }
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
+
+                    //postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
+                }
+            })
+        }
+    }
+
+
+
+    private fun sendMessageToFirebase(message: String, senderId: String, receiverId: String?) {
+        var time= System.currentTimeMillis()
+        val dateFormat = SimpleDateFormat("MM/dd/yyyy")
+        val date = Date()
+        val fecha = dateFormat.format(date)
+        //Obtener Hora
+        val cal = Calendar.getInstance()
+        val timeFormat = SimpleDateFormat("HH:mm")
+        val hora = timeFormat.format(cal.time)
+        val newMsg = ChatMessage(message, senderId, receiverId,fecha,hora,time)
+        mMessagesDBRef?.push()?.setValue(newMsg)?.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                //error
+                //Toast.makeText(applicationContext, "Error " + task.exception!!.localizedMessage, Toast.LENGTH_SHORT).show()
+            } else {
+                postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
+            }
+        }
+    }
 
     override fun saveOfertaLocal(oferta: Oferta, detalleOferta: DetalleOferta){
 
@@ -168,9 +250,6 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         oferta.save()
         detalleOferta.OfertasId=oferta.Oferta_Id
         detalleOferta.save()
-
-        postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
-
     }
 
 

@@ -16,9 +16,11 @@ data class RequestEventDetalleProducto (var eventType: Int,
         val LIST_EVENT_UNIDAD_MEDIDA_PRICE: Int = 5
 
         val OK_SEND_EVENT_OFERTA: Int = 6
+        val OK_SEND_EVENT_SMS: Int = 7
+        val OK_SEND_EVENT_SMS_ONLINE: Int = 8
 
         //Error Connection
-        val ERROR_VERIFICATE_CONECTION: Int = 7
+        val ERROR_VERIFICATE_CONECTION: Int = 9
 
 
 

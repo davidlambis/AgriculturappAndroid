@@ -37,7 +37,6 @@ data class UserFirebase(
         @SerializedName("Id_Account_Remote")
         var Id_Account_Remote: String? = null,
 
-
         @SerializedName("Imagen")
         var Imagen: String? = null
 
