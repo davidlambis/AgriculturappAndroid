@@ -146,11 +146,13 @@
 
         <receiver
             android:name=".activities.chat.chat_sms.MySmsBroadcastReceiver"
+            android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="999">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+
 
 
         <service android:name=".services.coords.CoordsServiceKotlin" />

@@ -1,18 +1,18 @@
 package com.interedes.agriculturappv3.activities.chat.chat_sms
 
+import android.app.*
 import android.content.BroadcastReceiver
 import android.widget.Toast
 import android.content.Context.NOTIFICATION_SERVICE
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
 import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.media.RingtoneManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.BaseColumns
 import android.provider.ContactsContract
@@ -21,11 +21,14 @@ import android.support.v4.content.ContextCompat
 import android.telephony.SmsMessage
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.services.Const
+import java.util.*
 
 
 class MySmsBroadcastReceiver: BroadcastReceiver() {
 
     val SMS_BUNDLE = "pdus"
+    var mChannel: NotificationChannel? = null
+    var notifManager: NotificationManager? = null
 
     /**
      * onReceive
@@ -51,7 +54,7 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                 smsMessageStr += smsBody + "\n"
             }
 
-            if(smsMessageStr.contains(context.getString(R.string.idenfication_sms_app))){
+           // if(smsMessageStr.contains(context.getString(R.string.idenfication_sms_app))){
 
                 //Get the user's settings
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -67,67 +70,17 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                         messageAdress=smsAddress
                     }
 
+
+
+                    displayCustomNotificationForOrders(messageAdress, messageContent, context,smsAddress,messageAdress)
+                    val retIntent = Intent(Const.SERVICE_RECYVE_MESSAGE)
+                    retIntent.putExtra("new_message", smsMessageStr)
+                    context.sendBroadcast(retIntent)
+
                     //Build the notification:
-
-
-                    val builder = NotificationCompat.Builder(context)
-                            .setSmallIcon(R.drawable.ic_stat_agrapp_icon_notificacion)
-                            .setContentTitle("$messageAdress")
-                            .setContentText(messageContent)
-                            .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
-                            .setStyle(NotificationCompat.BigTextStyle()
-                                    .bigText(messageContent))
-                    builder.setAutoCancel(true)
-                    val TAG = "SMSCHATAPP"
-                    val TAG_USER_NAME = "USER_NAME"
-                    val notificationIntent = Intent(context, Chat_Sms_Activity::class.java)
-                    notificationIntent.putExtra(TAG,smsAddress)
-                    notificationIntent.putExtra(TAG_USER_NAME,messageAdress)
-
-                    // The stack builder object will contain an artificial back stack for the started Activity.
-                    // This ensures that navigating backward from the Activity leads out of your application to the Home screen.
-                    val stackBuilder = TaskStackBuilder.create(context)
-                    // Adds the back stack for the Intent (but not the Intent itself)
-                    stackBuilder.addParentStack(Chat_Sms_Activity::class.java)
-                    // Adds the Intent that starts the Activity to the top of the stack
-                    stackBuilder.addNextIntent(notificationIntent)
-                    val pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-
-                    builder.setContentIntent(pendingIntent)
-                    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    //                int id = 123; //TODO: needs to be an integer unique to this application to be able to update the notification later on after it's created. (or could create multiple notifications?)
-                    notificationManager.notify(Chat_Sms_Activity.NOTIFICATION_ID, builder.build())
                 }
 
-                /*if (vibratorOn) {
-                    //Create the vibration
-                    Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-
-                    if (vibrator.hasVibrator()) {
-                        //vibrator.vibrate(long[] pattern, int repeat, AudioAttributes attributes)
-                        //vibrator.vibrate(long[] pattern, int repeat)
-                        //vibrator.vibrate(long milliseconds, AudioAttributes attributes)
-                        //test
-                        vibrator.vibrate(5);
-                    }
-                }*/
-
-                Toast.makeText(context, smsMessageStr, Toast.LENGTH_SHORT).show()
-                //This updates the UI with message
-                /*
-                if(Chat_Sms_Activity.instance!=null){
-                val inst = Chat_Sms_Activity.instance
-                inst?.updateList(smsMessageStr)
-                }
-                val instUserAct = UserSmsActivity.instance
-                instUserAct.refreshSmsInbox()*/
-
-                val retIntent = Intent(Const.SERVICE_RECYVE_MESSAGE)
-                retIntent.putExtra("new_message", smsMessageStr)
-               context.sendBroadcast(retIntent)
-
-
-            }
+           // }
         }
     }
 
@@ -146,8 +99,81 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
             contactLookup?.close()
         }
 
-
         return name
+    }
+
+
+    private fun displayCustomNotificationForOrders(title: String, description: String, context: Context,smsAddress:String,messageAdress:String) {
+        if (notifManager == null) {
+            notifManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val builder: NotificationCompat.Builder
+            val intent = Intent(context, Chat_Sms_Activity::class.java)
+
+            val TAG = "SMSCHATAPP"
+            val TAG_USER_NAME = "USER_NAME"
+
+            intent.putExtra(TAG,smsAddress)
+            intent.putExtra(TAG_USER_NAME,messageAdress)
+
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            val pendingIntent: PendingIntent
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            if (mChannel == null) {
+                mChannel = NotificationChannel("0", title, importance)
+                mChannel?.setDescription(description)
+                mChannel?.enableVibration(true)
+                notifManager?.createNotificationChannel(mChannel)
+            }
+            builder = NotificationCompat.Builder(context, "0")
+
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            pendingIntent = PendingIntent.getActivity(context, 1251, intent, PendingIntent.FLAG_ONE_SHOT)
+            builder.setContentTitle(title)
+                    .setSmallIcon(getNotificationIcon()) // required
+                    .setContentText(description)  // required
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_notification))
+                    .setBadgeIconType(R.mipmap.ic_launcher_notification)
+                    .setContentIntent(pendingIntent)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setShowWhen(true)
+                    .setWhen(Calendar.getInstance().getTimeInMillis())
+            val notification = builder.build()
+            notifManager?.notify(0, notification)
+        } else {
+
+            val intent = Intent(context, Chat_Sms_Activity::class.java)
+            val TAG = "SMSCHATAPP"
+            val TAG_USER_NAME = "USER_NAME"
+            intent.putExtra(TAG,smsAddress)
+            intent.putExtra(TAG_USER_NAME,messageAdress)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            var pendingIntent: PendingIntent? = null
+
+            pendingIntent = PendingIntent.getActivity(context, 1251, intent, PendingIntent.FLAG_ONE_SHOT)
+
+            val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val notificationBuilder = NotificationCompat.Builder(context)
+                    .setContentTitle(title)
+                    .setContentText(description)
+                    .setAutoCancel(true)
+                    ///.setColor(context.getColor(R.color.colorPrimary))
+                    .setSound(defaultSoundUri)
+                    .setSmallIcon(getNotificationIcon())
+                    .setContentIntent(pendingIntent)
+                    .setStyle(NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(description))
+
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.notify(1251, notificationBuilder.build())
+        }
+    }
+
+    private fun getNotificationIcon(): Int {
+        val useWhiteIcon = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+        return if (useWhiteIcon) R.mipmap.ic_launcher else R.mipmap.ic_launcher
     }
 
 

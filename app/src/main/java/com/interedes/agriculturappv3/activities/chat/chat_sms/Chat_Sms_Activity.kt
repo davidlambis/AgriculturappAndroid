@@ -1,6 +1,8 @@
 package com.interedes.agriculturappv3.activities.chat.chat_sms
 
 import android.Manifest
+import android.app.Activity
+import android.app.PendingIntent
 import android.content.*
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -15,10 +17,13 @@ import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
 import android.provider.BaseColumns
+import android.provider.Settings
 import android.provider.Telephony
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.telephony.SmsManager
 import android.view.Menu
@@ -28,7 +33,9 @@ import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsAdapter
 import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsUserAdapter
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
+import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_chat__sms_.*
+import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import java.util.*
 
 
@@ -41,19 +48,29 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
     var contactUserName:String?=""
     var contactNumber:String?=""
 
-     var PERMISSIONS = arrayOf(
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-             Manifest.permission.SEND_SMS,
-             Manifest.permission.READ_SMS,
-             Manifest.permission.RECEIVE_SMS,
-             Manifest.permission.READ_CONTACTS,
-             Manifest.permission.WRITE_CONTACTS
-             )
 
-     val PERMISSION_REQUEST_CODE = 1
+    //Progress
+    private var hud: KProgressHUD?=null
+
+
      var PERMISSION_ALL = 1
+
+
+
+    var PERMISSIONS = arrayOf(
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.RECEIVE_SMS
+    )
+
+    val PERMISSION_REQUEST_CODE = 1
+
+
+
+    private var sentStatusReceiver: BroadcastReceiver? = null
+    private var deliveredStatusReceiver: BroadcastReceiver? = null
+    private var mNotificationReceiver: BroadcastReceiver? = null
+
 
 
     ///
@@ -122,6 +139,18 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
         // Habilitar Up Button
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.title = getString(R.string.title_sms_text)
+    }
+
+     fun showProgressHud(){
+        hud = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setWindowColor(getResources().getColor(R.color.colorPrimary))
+                .setLabel("Cargando...", resources.getColor(R.color.white))
+        hud?.show()
+    }
+
+     fun hideProgressHud(){
+        hud?.dismiss()
     }
 
     fun refreshSmsInbox() {
@@ -236,14 +265,26 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
                 if (cancel) {
                     focusView?.requestFocus()
                 } else {
-                    sendSMS()
+
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        if (!hasPermissions(applicationContext, *PERMISSIONS)) {
+                            requestPermission()
+                        } else {
+                            sendSMS()
+                        }
+                    } else {
+                        sendSMS()
+                    }
+
+
                 }
             }
         }
     }
 
     protected fun sendSMS() {
-        val toPhoneNumber =contactNumber
+
+        val phone =contactNumber
         val smsMessage = getString(R.string.idenfication_send_sms_app)+" "+messageEditText.getText().toString()
 
        /* try {
@@ -261,35 +302,38 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
 
 
         try {
-            val smsManager = SmsManager.getDefault()
-            smsManager.sendTextMessage(toPhoneNumber, null, smsMessage, null, null)
 
-            Toast.makeText(applicationContext, "SMS sent.",
-                    Toast.LENGTH_LONG).show()
-            messageEditText.setText("")
-            refreshSmsInbox()
+
+            val message = smsMessage
+
+            //Check if the phoneNumber is empty
+            if (phone!!.isEmpty()) {
+                Toast.makeText(applicationContext, "Please Enter a Valid Phone Number", Toast.LENGTH_SHORT).show()
+            } else {
+
+                val sms = SmsManager.getDefault()
+                // if message length is too long messages are divided
+                val messages = sms.divideMessage(message)
+                for (msg in messages) {
+                    val sentIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
+                    val deliveredIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_DELIVERED"), 0)
+                    sms.sendTextMessage(phone, null, msg, sentIntent, deliveredIntent)
+                }
+
+                showProgressHud()
+            }
+
+           // refreshSmsInbox()
         } catch (e: Exception) {
             Toast.makeText(applicationContext,
                     "Sending SMS failed.",
                     Toast.LENGTH_LONG).show()
             e.printStackTrace()
+            hideProgressHud()
         }
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 34) {
-            if (resultCode == RESULT_OK) {
-                Toast.makeText(applicationContext, "SMS sent.",
-                        Toast.LENGTH_LONG).show()
-            }else{
-                Toast.makeText(applicationContext,
-                        "Sending SMS failed.",
-                        Toast.LENGTH_LONG).show()
-            }
-        }
-    }
 
 
     /*
@@ -354,40 +398,139 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
     }
 
     private fun requestPermission() {
-        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-        ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL)
+        ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
+        //ContextCompat.requestPermissions(activity!!, PERMISSIONS, PERMISSION_ALL)
+        // requestPermissions(PERMISSIONS, PERMISSION_ALL)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            PERMISSION_REQUEST_CODE -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                refreshSmsInbox()
-            } else {
-                Toast.makeText(applicationContext,
-                        "Permiso denegado", Toast.LENGTH_LONG).show()
+            PERMISSION_REQUEST_CODE ->
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(applicationContext, "Permission Granted, Now you can access sms", Toast.LENGTH_SHORT).show()
+                    sendSMS()
+                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
 
-            }
+
+                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                        if (shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
+                            Toast.makeText(this,
+                                    "Permiso denegado", Toast.LENGTH_LONG).show()
+                        }
+                        else{
+                            if (hasPermissions(this, *PERMISSIONS)) {
+                                sendSMS()
+                            } else {
+                                val builder = AlertDialog.Builder(this)
+                                builder.setMessage("Permission Granted, Now you can access sms")
+                                        .setPositiveButton("Aceptar") { dialog, id ->
+                                            val intent = Intent()
+                                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                            val uri = Uri.fromParts("package", "com.example.usuario.sendsms", null)
+                                            intent.setData(uri)
+                                            startActivity(intent)
+                                        }
+                                builder.setTitle("Permiso")
+                                builder.setIcon(R.mipmap.ic_launcher)
+                                // Create the AlertDialog object and return it
+                                builder.show()
+
+                            }
+                        }
+                    }
+                }
+        //else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
-    private val mNotificationReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
-            if (extras != null) {
-               // if (extras.containsKey("new_message")) {
-                    updateList("")
-               // }
-            }
-        }
-    }
 
-    override fun onResume() {
+
+
+
+    public override fun onResume() {
         super.onResume()
+        sentStatusReceiver = object : BroadcastReceiver() {
+
+            override fun onReceive(arg0: Context, arg1: Intent) {
+                var s = "Unknown Error"
+                when (resultCode) {
+                    Activity.RESULT_OK -> s = "Message Sent Successfully !!"
+                    SmsManager.RESULT_ERROR_GENERIC_FAILURE -> s = "Generic Failure Error"
+                    SmsManager.RESULT_ERROR_NO_SERVICE -> s = "Error : No Service Available"
+                    SmsManager.RESULT_ERROR_NULL_PDU -> s = "Error : Null PDU"
+                    SmsManager.RESULT_ERROR_RADIO_OFF -> s = "Error : Radio is off"
+                    else -> {
+                    }
+                }
+                //hideProgressHud()
+                //messageEditText.setText("")
+                //message_status_text_view.setText(s)
+
+            }
+        }
+        deliveredStatusReceiver = object : BroadcastReceiver() {
+            override fun onReceive(arg0: Context, arg1: Intent) {
+                var s = "Message Not Delivered"
+                when (resultCode) {
+                    Activity.RESULT_OK -> s = "Message Delivered Successfully"
+                    Activity.RESULT_CANCELED -> {
+                    }
+                }
+                //delivery_status_text_view.setText(s)
+                //phone_number_edit_text.setText("")
+                //message_edit_text.setText("")
+
+                if(s.contains("Delivered Successfully")){
+                    onMessageToas("Mensage enviado correctamente",R.color.green)
+                    messageEditText.setText("")
+                }else{
+                    onMessageToas("Mensage no enviado",R.color.red_900)
+                }
+
+                hideProgressHud()
+            }
+        }
+
+        mNotificationReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                var extras = intent.extras
+                if (extras != null) {
+                    // if (extras.containsKey("new_message")) {
+                    updateList("")
+                    // }
+                }
+            }
+        }
+
+        registerReceiver(sentStatusReceiver, IntentFilter("SMS_SENT"))
+        registerReceiver(deliveredStatusReceiver, IntentFilter("SMS_DELIVERED"))
         registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_RECYVE_MESSAGE))
     }
 
-    override fun onPause() {
+
+     fun onMessageToas(message:String,color:Int){
+        val inflater = this.layoutInflater
+        var viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        viewToast.txtMessageToastCustom.setText(message)
+        viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(this, color))
+        var mytoast =  Toast(this);
+        mytoast.setView(viewToast);
+        mytoast.setDuration(Toast.LENGTH_LONG);
+        mytoast.show();
+        ///onMessageError(R.color.red_900, getString(R.string.disabledGPS))
+    }
+
+    public override fun onPause() {
         super.onPause()
+        unregisterReceiver(sentStatusReceiver)
+        unregisterReceiver(deliveredStatusReceiver)
         unregisterReceiver(this.mNotificationReceiver);
     }
+
+
+
+
+
+
 }

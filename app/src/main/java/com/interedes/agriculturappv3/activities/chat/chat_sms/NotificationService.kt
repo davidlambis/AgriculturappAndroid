@@ -13,7 +13,7 @@ class NotificationService: Service() {
     private var serviceLooper: Looper? = null
     private var serviceHandler: ServiceHandler? = null
 
-    private val receiver: MySmsBroadcastReceiver? = null
+    private var receiver: MySmsBroadcastReceiver? = null
 
     // Handler that receives messages from the thread
     private inner class ServiceHandler(looper: Looper?) : Handler(looper) {
