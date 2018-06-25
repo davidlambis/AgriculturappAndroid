@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.modules.comprador.detail_producto
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -29,12 +30,14 @@ interface IMainViewDetailProducto {
         fun requestResponseError(error: String?)
         fun onMessageOk(colorPrimary: Int, msg: String?)
         fun onMessageError(colorPrimary: Int, msg: String?)
+        fun onMessageToas(message:String,color:Int)
 
         //Dialog
         fun verificateConnection(): AlertDialog?
         fun showAlertDialogOfertar(producto:Producto?)
         fun setListMoneda(listMoneda: List<Unidad_Medida>?)
         fun showConfirmOferta()
+        fun showConfirmSendSmsOferta(oferta:Oferta)
         fun sucessResponseOferta()
 
 
@@ -66,6 +69,9 @@ interface IMainViewDetailProducto {
 
         //Oferta
         fun postOferta(oferta: Oferta)
+
+         fun sendSmsOferta(user: Usuario,oferta:Oferta, activity:Activity)
+
 
         //Set ListSppiner
         fun setListSpinnerMoneda()

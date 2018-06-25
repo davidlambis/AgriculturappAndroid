@@ -64,6 +64,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                 .from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
                 .and(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
+                .and(Unidad_Productiva_Table.Id_Remote.eq(0))
                 .orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id,false).querySingle()
         if(mUnidadProductiva!=null){
 
@@ -120,6 +121,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                                             .from(Unidad_Productiva::class.java)
                                             .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
                                             .and(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
+                                            .and(Unidad_Productiva_Table.Id_Remote.eq(0))
                                             .orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id,false)
                                             .querySingle()
                                     if(mUnidadProductivaPost!=null){
@@ -154,6 +156,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                 .from(Lote::class.java)
                 .where(Lote_Table.EstadoSincronizacion.eq(false))
                 .and(Lote_Table.UsuarioId.eq(usuario?.Id))
+                .and(Lote_Table.Id_Remote.eq(0))
                 .orderBy(Lote_Table.LoteId,false).querySingle()
         val unidad_productiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(mLote?.Unidad_Productiva_Id)).querySingle()
         if(mLote!=null && unidad_productiva?.Estado_Sincronizacion==true){
@@ -181,6 +184,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                                 .from(Lote::class.java)
                                 .where(Lote_Table.EstadoSincronizacion.eq(false))
                                 .and(Lote_Table.UsuarioId.eq(usuario?.Id))
+                                .and(Lote_Table.Id_Remote.eq(0))
                                 .orderBy(Lote_Table.LoteId,false).querySingle()
 
                         if(mLotePost!=null){
@@ -208,6 +212,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                 .from(Cultivo::class.java)
                 .where(Cultivo_Table.EstadoSincronizacion.eq(false))
                 .and(Cultivo_Table.UsuarioId.eq(usuario?.Id))
+                .and(Cultivo_Table.Id_Remote.eq(0))
                 .orderBy(Cultivo_Table.CultivoId,false).querySingle()
         val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.LoteId.eq(mCultivo?.LoteId)).querySingle()
         if(mCultivo!=null && lote?.EstadoSincronizacion==true){
@@ -238,6 +243,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                                 .from(Cultivo::class.java)
                                 .where(Cultivo_Table.EstadoSincronizacion.eq(false))
                                 .and(Cultivo_Table.UsuarioId.eq(usuario?.Id))
+                                .and(Cultivo_Table.Id_Remote.eq(0))
                                 .orderBy(Cultivo_Table.CultivoId,false).querySingle()
 
                         if(mCultivo!=null){
@@ -268,6 +274,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                 .from(ControlPlaga::class.java)
                 .where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
                 .and(ControlPlaga_Table.UsuarioId.eq(usuario?.Id))
+                .and(ControlPlaga_Table.Id_Remote.eq(0))
                 .orderBy(ControlPlaga_Table.ControlPlagaId,false).querySingle()
 
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(controlPlaga?.CultivoId)).querySingle()
@@ -301,6 +308,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                                 .from(ControlPlaga::class.java)
                                 .where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
                                 .and(ControlPlaga_Table.UsuarioId.eq(usuario?.Id))
+                                .and(ControlPlaga_Table.Id_Remote.eq(0))
                                 .orderBy(ControlPlaga_Table.ControlPlagaId,false).querySingle()
                         if(controlPlaga!=null){
                             syncDataControlPlagas()
@@ -328,6 +336,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                 .from(Produccion::class.java)
                 .where(Produccion_Table.Estado_Sincronizacion.eq(false))
                 .and(Produccion_Table.UsuarioId.eq(usuario?.Id))
+                .and(Producto_Table.Id_Remote.eq(0))
                 .orderBy(Produccion_Table.ProduccionId,false).querySingle()
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(produccion?.CultivoId)).querySingle()
         if(produccion!=null && cultivo?.EstadoSincronizacion==true){
@@ -356,6 +365,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                                 .from(Produccion::class.java)
                                 .where(Produccion_Table.Estado_Sincronizacion.eq(false))
                                 .and(Produccion_Table.UsuarioId.eq(usuario?.Id))
+                                .and(Produccion_Table.Id_Remote.eq(0))
                                 .orderBy(Produccion_Table.ProduccionId,false).querySingle()
 
                         if(produccionPost!=null){
@@ -385,6 +395,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                 .from(Producto::class.java)
                 .where(Producto_Table.Estado_Sincronizacion.eq(false))
                 .and(Producto_Table.userId.eq(usuario?.Id))
+                .and(Producto_Table.Id_Remote.eq(0))
                 .orderBy(Producto_Table.ProductoId,false).querySingle()
 
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(mProducto?.cultivoId)).querySingle()
@@ -423,6 +434,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                                 .from(Producto::class.java)
                                 .where(Producto_Table.Estado_Sincronizacion.eq(false))
                                 .and(Producto_Table.userId.eq(usuario?.Id))
+                                .and(Producto_Table.Id_Remote.eq(0))
                                 .orderBy(Producto_Table.ProductoId,false).querySingle()
 
 
@@ -454,6 +466,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                 .from(Transaccion::class.java)
                 .where(Transaccion_Table.Estado_Sincronizacion.eq(false))
                 .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
+                .and(Transaccion_Table.Id_Remote.eq(0))
                 .orderBy(Transaccion_Table.TransaccionId,false).querySingle()
 
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(transaccion?.Cultivo_Id)).querySingle()
@@ -507,6 +520,7 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                                             .from(Transaccion::class.java)
                                             .where(Transaccion_Table.Estado_Sincronizacion.eq(false))
                                             .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
+                                            .and(Transaccion_Table.Id_Remote.eq(0))
                                             .orderBy(Transaccion_Table.TransaccionId,false).querySingle()
 
                                     if(transaccionPost!=null){

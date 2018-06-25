@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.modules.models.chat
 
-data class ChatMessage(var message: String? = null,
+data class ChatMessage(var room_id: String? = null,
+                        var message: String? = null,
                        var senderId: String? = null,
                        var receiverId: String? = null,
                        var date: String? = null,

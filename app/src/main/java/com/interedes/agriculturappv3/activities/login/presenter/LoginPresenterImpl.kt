@@ -59,6 +59,11 @@ class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
     override fun ingresar(login: Login) {
         loginView?.disableInputs()
         loginView?.showProgress()
+
+
+
+
+
         if (loginView?.checkConnection()!!) {
             loginInteractor?.ingresar(login)
         } else {

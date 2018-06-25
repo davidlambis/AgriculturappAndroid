@@ -174,7 +174,6 @@ class ProductosRepository : IProductos.Repository {
            else {
                registerProductoLocal(mProducto, cultivo_id)
            }
-
        }
        //TODO sin conexion a internet, registro local
        else{

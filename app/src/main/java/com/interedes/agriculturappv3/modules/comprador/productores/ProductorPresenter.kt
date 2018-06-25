@@ -76,7 +76,7 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
                 listTipoProducto=list
                 mainView?.setListProducto(list)
                 mainView?.hideProgress()
-                mainView?.hideProgressHud()
+               // mainView?.hideProgressHud()
 
             }
 
@@ -106,7 +106,7 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
     //region Request Repository
     override fun getListProducto(tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean) {
         mainView?.showProgress()
-        mainView?.showProgressHud()
+        //mainView?.showProgressHud()
         interactor?.execute(checkConnection(),tipoProducto,top,skip,isFirst)
     }
 

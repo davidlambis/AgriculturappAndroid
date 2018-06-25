@@ -42,6 +42,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     //Progress
     private var hud: KProgressHUD?=null
 
+
     private var loadedFragment:Boolean=false
 
 
@@ -80,6 +81,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
     private fun setupInjection() {
         if(!loadedFragment){
+            showProgressHud()
             loadFirstPageProducts()
             loadedFragment=true
         }else{
@@ -123,7 +125,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             override fun onLoadMore() {
                 if(pastVisiblesItems!!>=PAGE_SIZE){
                     recyclerView.post {
-
                         //val index = productosList?.size!! - 1
                         val index = productosList?.size!!
                         loadMore(index)
@@ -133,6 +134,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
                 // java.lang.IllegalStateException: Cannot call this method while RecyclerView is computing a layout or scrolling error
             }
         })
+
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.addItemDecoration(VerticalLineDecorator(2))

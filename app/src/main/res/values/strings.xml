@@ -458,6 +458,11 @@
     <string name="content_oferta_tittle">Vas a realizar una oferta al señor(a) %1$s</string>
     <string name="content_oferta_confirm">%1$s  %2$s de %3$s por</string>
 
+
+    <string name="content_sms_message">El señor(a) %1$s no se encuentra en linea desea enviarle un mensaje de texto para notificar su oferta ?</string>
+
+    <string name="content_sms_tittle">Notifcacion Oferta</string>
+
     <!--Lista de productos-->
     <string name="tittle_ubicacion">Ubicacion</string>
     <string name="tittle_date_avalilable">Fecha Disponibilidad</string>

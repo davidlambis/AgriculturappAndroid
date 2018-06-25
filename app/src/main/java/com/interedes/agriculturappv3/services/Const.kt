@@ -12,7 +12,12 @@ class Const {
 
 
         //recive
-        val SERVICE_RECYVE_MESSAGE="RECIVE_MESSAGE"
+        val SERVICE_RECYVE_MESSAGE="com.interedes.agriculturappv3.action.RECIVE_MESSAGE"
+
+        //SMS
+        val SERVICE_SMS_SENT="com.interedes.agriculturappv3.action.SERVICE_SMS_SENT"
+        val SERVICE_SMS_DELIVERED="com.interedes.agriculturappv3.action.SERVICE_SMS_DELIVERED"
+
 
 
         //Service

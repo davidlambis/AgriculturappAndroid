@@ -66,9 +66,7 @@ class ChatUsersActivity : AppCompatActivity() {
         mUsersDBRef?.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.childrenCount > 0) {
-
                     mUsersList.clear()
-
                     for (snap in dataSnapshot.children) {
                         var user = snap.getValue<UserFirebase>(UserFirebase::class.java)
                         //if not current user, as we do not want to show ourselves then chat with ourselves lol
@@ -129,7 +127,6 @@ class ChatUsersActivity : AppCompatActivity() {
 
                 // Comprobar si DetailActivity no se creó desde CourseActivity
                 if (NavUtils.shouldUpRecreateTask(this, upIntent) || this.isTaskRoot) {
-
                     // Construir de nuevo la tarea para ligar ambas actividades
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         TaskStackBuilder.create(this)
@@ -157,9 +154,5 @@ class ChatUsersActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
 
     }
-
-
     //endregion
-
-
 }

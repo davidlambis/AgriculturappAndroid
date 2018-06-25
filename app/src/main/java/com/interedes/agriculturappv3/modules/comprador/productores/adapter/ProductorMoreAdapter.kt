@@ -109,28 +109,22 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
     /* VIEW HOLDERS */
 
     class ProductHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var txtNombreProductor: TextView? = null
-        var imgProductor: ImageView? = null
-        var ratingBar: RatingBar? = null
-        var txtProducto: TextView? = null
-        var txtUbicacion: TextView? = null
-        var txtFechaDisponibilidad: TextView? = null
-        var txtDisponibilidad: TextView? = null
-        var txtPrecio: TextView? = null
-
-        init {
-            txtNombreProductor = itemView.findViewById(R.id.txtNombreProductor)
-            imgProductor = itemView.findViewById(R.id.imgProductor)
-
-            ratingBar = itemView.findViewById(R.id.ratingBar)
-            txtProducto = itemView.findViewById(R.id.txtProducto)
-            txtUbicacion = itemView.findViewById(R.id.txtUbicacion)
-            txtFechaDisponibilidad = itemView.findViewById(R.id.txtFechaDisponibilidad)
-            txtDisponibilidad = itemView.findViewById(R.id.txtDisponibilidad)
-            txtPrecio = itemView.findViewById(R.id.txtPrecio)
-        }
 
         fun bindData(data: Producto) {
+
+
+            var txtNombreProductor: TextView = itemView.findViewById(R.id.txtNombreProductor)
+            var imgProductor: ImageView = itemView.findViewById(R.id.imgProductor)
+
+            var ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
+            var txtProducto: TextView = itemView.findViewById(R.id.txtProducto)
+            var txtUbicacion: TextView = itemView.findViewById(R.id.txtUbicacion)
+            var txtFechaDisponibilidad:TextView = itemView.findViewById(R.id.txtFechaDisponibilidad)
+            var txtDisponibilidad: TextView = itemView.findViewById(R.id.txtDisponibilidad)
+            var txtPrecio: TextView = itemView.findViewById(R.id.txtPrecio)
+
+
+
             txtProducto?.setText(data.Nombre)
 
             var disponibilidad = ""
@@ -196,7 +190,6 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
 
                 }
             })
-
 
             itemView.setOnClickListener {
                 postEvento(RequestEventProductor.ITEM_EVENT, data)

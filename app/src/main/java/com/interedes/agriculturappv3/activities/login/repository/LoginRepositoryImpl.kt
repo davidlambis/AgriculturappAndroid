@@ -33,7 +33,21 @@ import retrofit2.Callback
 import retrofit2.Response
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
-
+import com.google.firebase.database.Transaction
+import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
+import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
+import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
+import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
+import com.interedes.agriculturappv3.modules.models.lote.Lote
+import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta
+import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
+import com.interedes.agriculturappv3.modules.models.produccion.Produccion
+import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
+import com.interedes.agriculturappv3.modules.models.ventas.Tercero
+import com.interedes.agriculturappv3.services.resources.RolResources
 
 
 class LoginRepositoryImpl : LoginRepository {
@@ -52,6 +66,9 @@ class LoginRepositoryImpl : LoginRepository {
 
     //region Interfaz
     override fun ingresar(login: Login) {
+
+
+
         val call = apiService?.postLogin(login)
         call?.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
@@ -295,6 +312,46 @@ class LoginRepositoryImpl : LoginRepository {
          */
     }
 
+
+    fun cleanDataSqlite(){
+        SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
+                .async()
+                .execute()
+
+        SQLite.delete<Lote>(Lote::class.java)
+                .async()
+                .execute()
+
+        SQLite.delete<Cultivo>(Cultivo::class.java)
+                .async()
+                .execute()
+
+        SQLite.delete<Produccion>(Produccion::class.java)
+                .async()
+                .execute()
+
+        SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
+                .async()
+                .execute()
+
+        SQLite.delete<Transaction>(Transaction::class.java)
+                .async()
+                .execute()
+
+        SQLite.delete<Oferta>(Oferta::class.java)
+                .async()
+                .execute()
+
+
+        SQLite.delete<DetalleOferta>(DetalleOferta::class.java)
+                .async()
+                .execute()
+
+        SQLite.delete<Tercero>(Tercero::class.java)
+                .async()
+                .execute()
+    }
+
     override fun getSqliteUsuario(login: Login) {
         val usuario_sqlite = getUsuario(login)
         if (usuario_sqlite != null) {
@@ -305,6 +362,10 @@ class LoginRepositoryImpl : LoginRepository {
                 session_id = 1
             } else {
                 session_id = ultimo_usuario.SessionId!! + 1
+            }
+
+            if(usuario_sqlite?.RolNombre.equals(RolResources.PRODUCTOR) && ultimo_usuario?.RolNombre.equals(RolResources.COMPRADOR) || usuario_sqlite?.RolNombre.equals(RolResources.COMPRADOR) && ultimo_usuario?.RolNombre.equals(RolResources.PRODUCTOR)){
+                cleanDataSqlite()
             }
 
             usuario_sqlite.SessionId = session_id

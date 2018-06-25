@@ -7,18 +7,11 @@ import android.content.*
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.interedes.agriculturappv3.R
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.preference.PreferenceManager
 import android.view.View
-import android.widget.AdapterView
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import android.provider.ContactsContract
-import android.provider.BaseColumns
 import android.provider.Settings
-import android.provider.Telephony
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
@@ -26,11 +19,10 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.telephony.SmsManager
-import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsAdapter
-import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsUserAdapter
+import com.interedes.agriculturappv3.activities.chat.chat_sms.models.Sms
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -67,9 +59,9 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
 
 
 
-    private var sentStatusReceiver: BroadcastReceiver? = null
-    private var deliveredStatusReceiver: BroadcastReceiver? = null
-    private var mNotificationReceiver: BroadcastReceiver? = null
+    //private var sentStatusReceiver: BroadcastReceiver? = null
+    //private var deliveredStatusReceiver: BroadcastReceiver? = null
+    //private var mNotificationReceiver: BroadcastReceiver? = null
 
 
 
@@ -117,7 +109,6 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
         adressUserTo.setText(contactNumber)
 
         sendMessageImagebutton.setOnClickListener(this)
-
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (!hasPermissions(applicationContext, *PERMISSIONS)) {
@@ -232,15 +223,11 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
       //  setResults(sms.size)
     }
 
-
-
     private fun initAdapter() {
         messagesRecyclerView?.layoutManager = LinearLayoutManager(this)
         adapter = SmsAdapter(ArrayList<Sms>())
         messagesRecyclerView?.adapter = adapter
     }
-
-
 
     fun updateList(smsMessage: String) {
         refreshSmsInbox()
@@ -283,7 +270,6 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
     }
 
     protected fun sendSMS() {
-
         val phone =contactNumber
         val smsMessage = getString(R.string.idenfication_send_sms_app)+" "+messageEditText.getText().toString()
 
@@ -300,10 +286,7 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
             e.printStackTrace()
         }*/
 
-
         try {
-
-
             val message = smsMessage
 
             //Check if the phoneNumber is empty
@@ -315,8 +298,8 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
                 // if message length is too long messages are divided
                 val messages = sms.divideMessage(message)
                 for (msg in messages) {
-                    val sentIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
-                    val deliveredIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_DELIVERED"), 0)
+                    val sentIntent = PendingIntent.getBroadcast(this, 0, Intent(Const.SERVICE_SMS_SENT), 0)
+                    val deliveredIntent = PendingIntent.getBroadcast(this, 0, Intent(Const.SERVICE_SMS_DELIVERED), 0)
                     sms.sendTextMessage(phone, null, msg, sentIntent, deliveredIntent)
                 }
 
@@ -445,66 +428,75 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
     }
 
 
+    //region Services Broadkast
 
+    private val sentStatusReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(arg0: Context, arg1: Intent) {
+            var s = "Unknown Error"
+            when (resultCode) {
+                Activity.RESULT_OK -> s = "Message Sent Successfully !!"
+                SmsManager.RESULT_ERROR_GENERIC_FAILURE -> s = "Generic Failure Error"
+                SmsManager.RESULT_ERROR_NO_SERVICE -> s = "Error : No Service Available"
+                SmsManager.RESULT_ERROR_NULL_PDU -> s = "Error : Null PDU"
+                SmsManager.RESULT_ERROR_RADIO_OFF -> s = "Error : Radio is off"
+                else -> {
+                }
+            }
+            //hideProgressHud()
+            //messageEditText.setText("")
+            //message_status_text_view.setText(s)
+
+        }
+    }
+
+    private val deliveredStatusReceiver = object : BroadcastReceiver() {
+        override fun onReceive(arg0: Context, arg1: Intent) {
+            var s = "Message Not Delivered"
+            when (resultCode) {
+                Activity.RESULT_OK -> s = "Message Delivered Successfully"
+                Activity.RESULT_CANCELED -> {
+                }
+            }
+            //delivery_status_text_view.setText(s)
+            //phone_number_edit_text.setText("")
+            //message_edit_text.setText("")
+
+            if(s.contains("Successfully")){
+                onMessageToas("Mensage enviado correctamente",R.color.green)
+                messageEditText.setText("")
+            }else{
+                onMessageToas("Mensage no enviado",R.color.red_900)
+            }
+
+            hideProgressHud()
+        }
+    }
+
+    private val mNotificationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            var extras = intent.extras
+            if (extras != null) {
+                // if (extras.containsKey("new_message")) {
+                updateList("")
+                // }
+            }
+        }
+    }
+
+
+    //endregion
 
 
     public override fun onResume() {
         super.onResume()
-        sentStatusReceiver = object : BroadcastReceiver() {
 
-            override fun onReceive(arg0: Context, arg1: Intent) {
-                var s = "Unknown Error"
-                when (resultCode) {
-                    Activity.RESULT_OK -> s = "Message Sent Successfully !!"
-                    SmsManager.RESULT_ERROR_GENERIC_FAILURE -> s = "Generic Failure Error"
-                    SmsManager.RESULT_ERROR_NO_SERVICE -> s = "Error : No Service Available"
-                    SmsManager.RESULT_ERROR_NULL_PDU -> s = "Error : Null PDU"
-                    SmsManager.RESULT_ERROR_RADIO_OFF -> s = "Error : Radio is off"
-                    else -> {
-                    }
-                }
-                //hideProgressHud()
-                //messageEditText.setText("")
-                //message_status_text_view.setText(s)
 
-            }
-        }
-        deliveredStatusReceiver = object : BroadcastReceiver() {
-            override fun onReceive(arg0: Context, arg1: Intent) {
-                var s = "Message Not Delivered"
-                when (resultCode) {
-                    Activity.RESULT_OK -> s = "Message Delivered Successfully"
-                    Activity.RESULT_CANCELED -> {
-                    }
-                }
-                //delivery_status_text_view.setText(s)
-                //phone_number_edit_text.setText("")
-                //message_edit_text.setText("")
 
-                if(s.contains("Delivered Successfully")){
-                    onMessageToas("Mensage enviado correctamente",R.color.green)
-                    messageEditText.setText("")
-                }else{
-                    onMessageToas("Mensage no enviado",R.color.red_900)
-                }
 
-                hideProgressHud()
-            }
-        }
 
-        mNotificationReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                var extras = intent.extras
-                if (extras != null) {
-                    // if (extras.containsKey("new_message")) {
-                    updateList("")
-                    // }
-                }
-            }
-        }
-
-        registerReceiver(sentStatusReceiver, IntentFilter("SMS_SENT"))
-        registerReceiver(deliveredStatusReceiver, IntentFilter("SMS_DELIVERED"))
+        registerReceiver(sentStatusReceiver, IntentFilter(Const.SERVICE_SMS_SENT))
+        registerReceiver(deliveredStatusReceiver, IntentFilter(Const.SERVICE_SMS_DELIVERED))
         registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_RECYVE_MESSAGE))
     }
 
@@ -527,10 +519,4 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
         unregisterReceiver(deliveredStatusReceiver)
         unregisterReceiver(this.mNotificationReceiver);
     }
-
-
-
-
-
-
 }

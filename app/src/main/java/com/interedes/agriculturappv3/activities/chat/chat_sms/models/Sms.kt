@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.activities.chat.chat_sms
+package com.interedes.agriculturappv3.activities.chat.chat_sms.models
 
 
 

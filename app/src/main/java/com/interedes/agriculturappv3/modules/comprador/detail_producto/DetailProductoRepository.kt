@@ -32,6 +32,11 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.text.SimpleDateFormat
 import java.util.*
+import android.R.attr.keySet
+import com.google.android.gms.tasks.OnCompleteListener
+import com.interedes.agriculturappv3.modules.models.chat.Room
+import com.interedes.agriculturappv3.services.resources.Chat_Resources
+
 
 class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
@@ -41,7 +46,11 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     var apiService: ApiInterface? = null
      var mUserDBRef: DatabaseReference? = null
     var mMessagesDBRef: DatabaseReference? = null
-    private var mReceiverId: String? = null
+    var mRoomDBRef: DatabaseReference? = null
+    private var mProductorReceiverId: String? = null
+    private var mCompradorSenderId: String? = null
+
+    private var roomId: String? = null
 
 
     init {
@@ -49,6 +58,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         apiService = ApiInterface.create()
         mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
         mMessagesDBRef = FirebaseDatabase.getInstance().reference.child("Messages")
+        mRoomDBRef = FirebaseDatabase.getInstance().reference.child("Room")
     }
 
     //region Métodos Interfaz
@@ -138,12 +148,9 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                                     oferta.Nombre_Estado_Oferta=EstadosOfertasResources.VIGENTE_STRING
 
 
-                                    val usuarioTo= SQLite.select().from(Usuario::class.java).where(Oferta_Table.UsuarioTo.eq(oferta.UsuarioTo)).querySingle()
+                                    val usuarioTo= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
 
-                                    sendMessageNotificationUser(usuarioTo)
-
-
-
+                                    sendMessageNotificationUser(usuarioTo,oferta)
                                     saveOfertaLocal(oferta,detalleOferta)
 
                                 } else {
@@ -169,47 +176,132 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         }
     }
 
-    private fun sendMessageNotificationUser(usuarioTo: Usuario?) {
+    private fun sendMessageNotificationUser(usuarioTo: Usuario?,oferta:Oferta) {
         if(usuarioTo!=null){
-
-
-            val query = mUserDBRef?.child("Users")?.orderByChild("correo")?.equalTo(usuarioTo?.Email)
+            val query = mUserDBRef?.orderByChild("correo")?.equalTo(usuarioTo?.Email)
             query?.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
                         // dataSnapshot is the "issue" node with all children with id 0
+                        var user:UserFirebase?=null
                         for (issue in dataSnapshot.children) {
                             // do something with the individual "issues"
-                            var user = issue.getValue<UserFirebase>(UserFirebase::class.java)
-
-                            mReceiverId=user?.User_Id
-                            val message = "Te han ofertado por un producto"
-                            val senderId = FirebaseAuth.getInstance().currentUser!!.uid
+                            user = issue.getValue<UserFirebase>(UserFirebase::class.java)
+                            mProductorReceiverId=user?.User_Id
+                            mCompradorSenderId=FirebaseAuth.getInstance().currentUser!!.uid
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
-                            try {
-                                if(user?.Status.equals(Status_Chat.ONLINE)){
-                                    sendMessageToFirebase(message, senderId, mReceiverId)
-                                }else{
-
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                                //postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
-                            }
+                        }
+                        if(user?.Status.equals(Status_Chat.ONLINE)){
+                               findRoomUser(user)
+                        // sendMessageToFirebase(message, senderId, mReceiverId)
+                        }else{
+                            postEvenNotifySms(RequestEventDetalleProducto.OK_SEND_EVENT_SMS,oferta)
                         }
                     }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
-
+                    var error = databaseError.message
+                    postEventError(RequestEventDetalleProducto.ERROR_EVENT, error)
                     //postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
                 }
             })
         }
     }
 
+    private fun findRoomUser(user: UserFirebase?) {
+        //val query = mRoomDBRef?.child("/"+mCompradorSenderId+"/"+mProductorReceiverId)
+        val query = mRoomDBRef?.child(mCompradorSenderId)?.orderByChild("user_To")?.equalTo(Chat_Resources.getRoomById(mProductorReceiverId))
+        query?.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    //var room = dataSnapshot.value as HashMap<*, *>
+                    //roomId=room.get("idRoom") as String;
+                    for (issue in dataSnapshot.children) {
+                        var room = issue.getValue<Room>(Room::class.java)
+                        roomId=room?.IdRoom
+                    }
+                    val message = "Te han ofertado por un producto 3"
+                    sendMessageToFirebase(message)
+                }else{
+                    createRoomUser(user,mProductorReceiverId,true)
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                var error = databaseError.message
+                postEventError(RequestEventDetalleProducto.ERROR_EVENT, error)
+            }
+        })
+    }
+
+    fun getDateFormatApi(date: Date): String? {
+        val format1 = SimpleDateFormat("yyyy-MM-dd")
+        return format1.format(date)
+    }
+
+    private fun createRoomUser(user: UserFirebase?,idProductor:String?,roomComprador:Boolean) {
+        var date= Calendar.getInstance().time
+        var dateString =getDateFormatApi(date)
+
+         if(idProductor!= null){
+            if(roomComprador){
+                var room = Room(Chat_Resources.getRoomByCompradorProductor(mCompradorSenderId,mProductorReceiverId), mCompradorSenderId, mProductorReceiverId, 0, 0,dateString,"")
+                mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId))?.setValue(room)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
+                    if (!task.isSuccessful) {
+                        var error = task.exception
+                        postEventError(RequestEventDetalleProducto.ERROR_EVENT, error.toString())
+                    } else {
+                        createRoomUser(user,mProductorReceiverId,false)
+                    }
+                })
+            }else{
+                var room = Room(Chat_Resources.getRoomByCompradorProductor(mCompradorSenderId,mProductorReceiverId), mProductorReceiverId, mCompradorSenderId, 0, 0,dateString,"")
+                mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId))?.setValue(room)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
+                    if (!task.isSuccessful) {
+                        var error = task.exception
+                        postEventError(RequestEventDetalleProducto.ERROR_EVENT, error.toString())
+                        //error
+                    } else {
+                        createRoomUser(user,null,false)
+                    }
+                })
+            }
+        }else{
+            updateDatesRoomUser()
+
+            var roomDateComprador= mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId)+"/date")
+            roomDateComprador?.setValue(ServerValue.TIMESTAMP);
+
+            var roomDateProductor= mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId)+"/date")
+            roomDateProductor?.setValue(ServerValue.TIMESTAMP);
 
 
-    private fun sendMessageToFirebase(message: String, senderId: String, receiverId: String?) {
+            roomId=Chat_Resources.getRoomByCompradorProductor(mCompradorSenderId,mProductorReceiverId)
+
+            val message = "Te han ofertado por un producto 3"
+            sendMessageToFirebase(message)
+        }
+    }
+
+    private fun updateDatesRoomUser() {
+        //success adding user to db as well
+        var roomDateLastComprador= mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId)+"/date_Last")
+        roomDateLastComprador?.setValue(ServerValue.TIMESTAMP);
+
+        var roomDateLastProductor= mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId)+"/date_Last")
+        roomDateLastProductor?.setValue(ServerValue.TIMESTAMP);
+    }
+
+
+    private fun updateLastMessageRoomUser(message:String?) {
+        //success adding user to db as well
+        var lastMessageRoomComprador= mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId)+"/lastMessage")
+        lastMessageRoomComprador?.setValue(message)
+
+        var lastMessageRoomProductor= mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId)+"/lastMessage")
+        lastMessageRoomProductor?.setValue(message)
+    }
+
+    private fun sendMessageToFirebase(message: String) {
         var time= System.currentTimeMillis()
         val dateFormat = SimpleDateFormat("MM/dd/yyyy")
         val date = Date()
@@ -218,12 +310,16 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         val cal = Calendar.getInstance()
         val timeFormat = SimpleDateFormat("HH:mm")
         val hora = timeFormat.format(cal.time)
-        val newMsg = ChatMessage(message, senderId, receiverId,fecha,hora,time)
+        val newMsg = ChatMessage(roomId,message, mCompradorSenderId, mProductorReceiverId,fecha,hora,time)
         mMessagesDBRef?.push()?.setValue(newMsg)?.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
+                var error = task.exception
+                postEventError(RequestEventDetalleProducto.ERROR_EVENT, error.toString())
                 //error
                 //Toast.makeText(applicationContext, "Error " + task.exception!!.localizedMessage, Toast.LENGTH_SHORT).show()
             } else {
+                updateDatesRoomUser()
+                updateLastMessageRoomUser(newMsg.message)
                 postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
             }
         }
@@ -238,7 +334,6 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
             oferta.Oferta_Id = last_oferta.Oferta_Id!! + 1
         }
 
-
         val last_detalle_oferta = getLastDetalleOferta()
         if (last_detalle_oferta == null) {
             detalleOferta.Detalle_Oferta_Id = 1
@@ -246,12 +341,10 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
             detalleOferta.Detalle_Oferta_Id = last_detalle_oferta.Detalle_Oferta_Id!! + 1
         }
 
-
         oferta.save()
         detalleOferta.OfertasId=oferta.Oferta_Id
         detalleOferta.save()
     }
-
 
     override fun getLastOferta(): Oferta? {
         val lastOferta = SQLite.select().from(Oferta::class.java).where().orderBy(Oferta_Table.Oferta_Id, false).querySingle()
@@ -264,11 +357,12 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     }
 
     //region Events
-
     private fun postEventListUnidadMedida(type: Int, listUnidadMedida: List<Unidad_Medida>?, messageError: String?) {
         val upMutable = listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable, null, messageError)
     }
+
+
 
 
     private fun postEventOk(type: Int, listProducto: List<Producto>?, producto: Producto?) {
@@ -280,6 +374,15 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         postEvent(type, productoListMutable, productoMutable, null)
     }
 
+
+    private fun postEvenNotifySms(type: Int,  oferta: Oferta?) {
+
+        var ofertaMutable: Object? = null
+        if (oferta != null) {
+            ofertaMutable = oferta as Object
+        }
+        postEvent(type, null, ofertaMutable, null)
+    }
 
     private fun postEventError(type: Int,messageError:String?) {
         postEvent(type, null,null,messageError)
@@ -293,5 +396,4 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     }
     //endregion
     //endregion
-
 }

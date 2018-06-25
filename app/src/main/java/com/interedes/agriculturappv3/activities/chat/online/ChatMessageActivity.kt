@@ -96,7 +96,7 @@ class ChatMessageActivity : AppCompatActivity() {
         val cal = Calendar.getInstance()
         val timeFormat = SimpleDateFormat("HH:mm")
         val hora = timeFormat.format(cal.time)
-        val newMsg = ChatMessage(message, senderId, receiverId,fecha,hora,time)
+        val newMsg = ChatMessage("",message, senderId, receiverId,fecha,hora,time)
         mMessagesDBRef?.push()?.setValue(newMsg)?.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
                 //error

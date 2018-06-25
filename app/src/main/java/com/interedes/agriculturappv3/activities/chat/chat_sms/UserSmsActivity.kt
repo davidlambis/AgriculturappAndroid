@@ -23,6 +23,8 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsUserAdapter
+import com.interedes.agriculturappv3.activities.chat.chat_sms.models.Sms
+import com.interedes.agriculturappv3.activities.chat.chat_sms.models.SmsUser
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
 import kotlinx.android.synthetic.main.activity_user_sms.*
@@ -153,7 +155,7 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
 
                     var verificateAddress = smsListUser?.filter { smsuser: SmsUser -> smsuser._address?.replace(" ","") == objSms._address?.replace(" ","") }
                     if(verificateAddress.size>0){
-                        var item:SmsUser= verificateAddress.get(0)
+                        var item: SmsUser = verificateAddress.get(0)
                         smsListUser?.remove(item)
                     }
 

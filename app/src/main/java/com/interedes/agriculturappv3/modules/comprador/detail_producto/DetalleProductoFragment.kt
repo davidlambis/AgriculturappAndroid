@@ -1,16 +1,23 @@
 package com.interedes.agriculturappv3.modules.comprador.detail_producto
 
 
-import android.content.DialogInterface
-import android.content.Intent
+import android.Manifest
+import android.app.Activity
+import android.app.PendingIntent
+import android.content.*
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.telephony.SmsManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -36,10 +43,15 @@ import com.interedes.agriculturappv3.modules.comprador.productores.adapter.Produ
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
 import com.interedes.agriculturappv3.services.resources.S3Resources
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.alert_success.view.*
+import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
 import kotlinx.android.synthetic.main.dialog_form_cultivo.*
 import java.util.*
@@ -64,6 +76,15 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
 
     var unidadMedidaPrecioGlobal: Unidad_Medida? = null
 
+
+    //Permission
+    var PERMISSIONS = arrayOf(
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.RECEIVE_SMS
+    )
+
+    val PERMISSION_REQUEST_CODE = 1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -282,6 +303,19 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
         onMessageOk(colorPrimary, message)
     }
 
+
+    override fun onMessageToas(message:String,color:Int){
+        val inflater = this.layoutInflater
+        var viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        viewToast.txtMessageToastCustom.setText(message)
+        viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(activity!!, color))
+        var mytoast =  Toast(activity);
+        mytoast.setView(viewToast);
+        mytoast.setDuration(Toast.LENGTH_LONG);
+        mytoast.show();
+        ///onMessageError(R.color.red_900, getString(R.string.disabledGPS))
+    }
+
     override fun validarAddOferta(): Boolean {
         var cancel = false
         var focusView: View? = null
@@ -333,14 +367,13 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
     override fun setListMoneda(listMoneda: List<Unidad_Medida>?) {
         if (viewDialog != null) {
             viewDialog?.spinnerMonedaPrecio?.setAdapter(null)
-            val monedaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_spinner_dropdown_item, listMoneda)
+            val monedaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listMoneda)
             viewDialog?.spinnerMonedaPrecio?.setAdapter(monedaArrayAdapter)
             viewDialog?.spinnerMonedaPrecio?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadMedidaPrecioGlobal = listMoneda!![position]
             }
         }
     }
-
 
     override fun showAlertDialogOfertar(producto: Producto?) {
         val inflater = this.layoutInflater
@@ -499,6 +532,55 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
     }
 
 
+    override fun showConfirmSendSmsOferta(oferta:Oferta){
+        val inflater = this.layoutInflater
+        var viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
+
+        viewDialogConfirm?.txtTitleConfirm?.setText("")
+        viewDialogConfirm?.txtTitleConfirm?.setText(productoGlobal?.NombreProductor)
+
+
+        var content =String.format(getString(R.string.content_sms_message),productoGlobal?.NombreProductor)
+        viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
+
+        MaterialDialog.Builder(activity!!)
+                .title(getString(R.string.content_sms_tittle))
+                .customView(viewDialogConfirm!!, true)
+                .positiveText(R.string.confirm)
+                .negativeText(R.string.cancel)
+                .positiveColorRes(R.color.light_green_800)
+                .negativeColorRes(R.color.light_green_800)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .backgroundColorRes(R.color.material_blue_grey_800)
+                .dividerColorRes(R.color.light_green_800)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                .positiveColor(Color.WHITE)
+                .negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .theme(Theme.DARK)
+                .onPositive(
+                        { dialog1, which ->
+                            dialog1.dismiss()
+
+                            val usuarioTo= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+                            if(usuarioTo!=null){
+                                presenter?.sendSmsOferta(usuarioTo,oferta,activity!!)
+                            }
+
+                            //Toast.makeText(activity,"Enviar oferta",Toast.LENGTH_SHORT).show()
+                            // _dialogOferta?.dismiss()
+
+                        })
+                .onNegative({ dialog1, which ->
+                    dialog1.dismiss()
+                    sucessResponseOferta()
+                    onMessageToas("Mensage no enviado",R.color.red_900)
+                })
+                .show()
+    }
+
+
     override fun sucessResponseOferta() {
 
         val inflater = this.layoutInflater
@@ -569,6 +651,9 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
     }
 
 
+
+
+
     //endregion
 
 
@@ -583,9 +668,16 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             }
 
             R.id.btnOfertar -> {
-                showAlertDialogOfertar(productoGlobal)
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (!hasPermissions(activity, *PERMISSIONS)) {
+                        requestPermission()
+                    } else {
+                        showAlertDialogOfertar(productoGlobal)
+                    }
+                } else {
+                    showAlertDialogOfertar(productoGlobal)
+                }
             }
-
             R.id.btnConatctProductor->{
 
             }
@@ -603,22 +695,96 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
     }
     //endregio
 
+    //region PERMISSION
+    fun hasPermissions(context: Context?, vararg permissions: String): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (permission in permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(activity!!, PERMISSIONS, PERMISSION_REQUEST_CODE);
+        //ContextCompat.requestPermissions(activity!!, PERMISSIONS, PERMISSION_ALL)
+        // requestPermissions(PERMISSIONS, PERMISSION_ALL)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_CODE ->
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                   // Toast.makeText(activity, "Permission Granted, Now you can access sms", Toast.LENGTH_SHORT).show()
+                    showAlertDialogOfertar(productoGlobal)
+                    ///presenter.sendSmsOferta()
+                    //sendSMS()
+                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+
+
+                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                        if (shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) || shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
+                            showAlertDialogOfertar(productoGlobal)
+                            ///Toast.makeText(activity, "Permiso denegado", Toast.LENGTH_LONG).show()
+                        }
+                        else{
+                            if (hasPermissions(activity, *PERMISSIONS)) {
+                                //sendSMS()
+                            } else {
+                                val builder = AlertDialog.Builder(activity!!)
+                                builder.setMessage("Permission Granted, Now you can access sms")
+                                        .setPositiveButton("Aceptar") { dialog, id ->
+                                            val intent = Intent()
+                                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                            val uri = Uri.fromParts("package", "com.interedes.agriculturappv3.modules.comprador.detail_producto", null)
+                                            intent.setData(uri)
+                                            startActivity(intent)
+                                        }
+                                builder.setTitle("Permiso")
+                                builder.setIcon(R.mipmap.ic_launcher)
+                                // Create the AlertDialog object and return it
+                                builder.show()
+
+                            }
+                        }
+                    }
+                }
+        //else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    //endregion
+
+
+
     //region OVERRIDES METHODS
     override fun onDestroy() {
         super.onDestroy()
         presenter?.onDestroy()
     }
 
-
     override fun onPause() {
         super.onPause()
+
         presenter?.onPause( activity!!.applicationContext)
     }
 
     override fun onResume() {
+
+
         presenter?.onResume(activity!!.applicationContext)
         super.onResume()
     }
+
+
+
+
+
+
+
 
     //end region
 

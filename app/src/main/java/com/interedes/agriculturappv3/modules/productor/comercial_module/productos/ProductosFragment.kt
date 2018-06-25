@@ -878,7 +878,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     override fun onMessageOk(colorPrimary: Int, msg: String?) {
         val color = Color.WHITE
         val snackbar = Snackbar
-                .make(viewDialog!!.containerDialogProducto, msg!!, Snackbar.LENGTH_LONG)
+                .make(container_fragment, msg!!, Snackbar.LENGTH_LONG)
         val sbView = snackbar.view
         sbView.setBackgroundColor(ContextCompat.getColor(activity!!.applicationContext, colorPrimary))
         val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
@@ -891,7 +891,6 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     override fun onMessageError(colorPrimary: Int, msg: String?) {
         onMessageOk(colorPrimary, msg)
     }
-
 
     override fun verificateConnection(): AlertDialog? {
         val builder = AlertDialog.Builder(context!!)

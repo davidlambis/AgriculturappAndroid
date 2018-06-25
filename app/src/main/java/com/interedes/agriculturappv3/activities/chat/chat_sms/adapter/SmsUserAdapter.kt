@@ -13,12 +13,9 @@ import android.widget.TextView
 import android.widget.Toast
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.chat_sms.Chat_Sms_Activity
-import com.interedes.agriculturappv3.activities.chat.chat_sms.SmsUser
-import com.interedes.agriculturappv3.activities.chat.online.ChatMessageActivity
+import com.interedes.agriculturappv3.activities.chat.chat_sms.models.SmsUser
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 

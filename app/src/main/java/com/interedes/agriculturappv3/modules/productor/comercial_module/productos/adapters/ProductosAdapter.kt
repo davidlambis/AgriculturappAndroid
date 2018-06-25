@@ -22,6 +22,7 @@ import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.robertlevonyan.views.expandable.Expandable
 import com.robertlevonyan.views.expandable.ExpandingListener
 import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 
 
 class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<ProductosAdapter.ViewHolder>() {
@@ -69,7 +70,7 @@ class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: Producto, pos: Int) = with(itemView) {
-            val image: ImageView = itemView.findViewById(R.id.imageViewProducto)
+            val image: CircleImageView = itemView.findViewById(R.id.imageViewProducto)
            // val txtNombreCultivo: TextView = itemView.findViewById(R.id.txtNombreCultivo)
             val txtNombreDetalleProducto: TextView = itemView.findViewById(R.id.txtNombreDetalleProducto)
             val txtEstaodSincronizacion: TextView = itemView.findViewById(R.id.txtEstaodSincronizacion)
@@ -103,7 +104,7 @@ class ProductosAdapter(var lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
                                     .into(image, object : com.squareup.picasso.Callback {
                                         override fun onError(e: java.lang.Exception?) {
                                             image.setImageResource(R.drawable.ic_foto_producto)
-                                            image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                            //image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                                             //) Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
                                         }
                                         override fun onSuccess() {

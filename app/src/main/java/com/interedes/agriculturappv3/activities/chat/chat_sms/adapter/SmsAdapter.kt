@@ -5,16 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.google.firebase.auth.FirebaseAuth
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.activities.chat.chat_sms.Sms
-import com.interedes.agriculturappv3.activities.chat.online.ChatMessageActivity
+import com.interedes.agriculturappv3.activities.chat.chat_sms.models.Sms
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
-import com.squareup.picasso.Picasso
-import de.hdodenhof.circleimageview.CircleImageView
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
