@@ -1,6 +1,9 @@
 package com.interedes.agriculturappv3.modules.main_menu.ui
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat.startActivity
 import android.util.Base64
 import android.util.Log
@@ -59,17 +62,23 @@ import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.EstadoTran
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.RolResources
+import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.math.BigDecimal
 import java.math.MathContext
+import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 
 class MenuRepository: MainViewMenu.Repository {
@@ -1160,7 +1169,7 @@ class MenuRepository: MainViewMenu.Repository {
                             producto.cultivoId=if(cultivo!=null)cultivo?.CultivoId else null
 
                             producto.NombreDetalleTipoProducto=if(producto.Cultivo!=null)producto.Cultivo?.detalleTipoProducto?.Nombre else null
-
+                            /*
                             try {
                                 val base64String = producto?.Imagen
                                 val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
@@ -1171,10 +1180,55 @@ class MenuRepository: MainViewMenu.Repository {
                                 Log.d("Convert Image", "defaultValue = " + ss);
                             }
 
+                            */
+
+
+
+
+
                             producto.save()
                         }
                     }
 
+
+                   // if(producto.Imagen!=null){
+                     //   if(producto.Imagen!!.contains("Productos")){
+
+                           /* try{
+                                Picasso.get()
+                                        //.load(S3Resources.RootImage+""+producto?.Imagen)
+                                        .load("https://s3.amazonaws.com/agriculturapp/Productos/7ea3bcfc-4e4a-484d-9727-31f106b998297e0c69fe-1753-44b5-ac80-e939afd27d2e.jpg")
+                                        .into(object : com.squareup.picasso.Target {
+                                            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                                            }
+                                            override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {
+                                                var error= e.toString()
+                                            }
+                                            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                                                if(bitmap!=null){
+                                                    try {
+                                                        var imgByteArray=convertBitmapToByte(bitmap!!)
+                                                        /* val base64String = producto?.Imagen
+                                                         val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                                         val byte = Base64.decode(base64Image, Base64.DEFAULT)*/
+                                                        // producto.blobImagen = Blob(imgByteArray)
+                                                    }catch (ex:Exception){
+                                                        var ss= ex.toString()
+                                                        Log.d("Convert Image", "defaultValue = " + ss);
+                                                    }
+                                                }
+
+                                            }
+
+                                        })
+                            }catch (ex:Exception){
+                                var message=ex.toString()
+                            }
+
+                            */
+
+                    //    }
+                  //  }
                     loadOfertas(usuario)
                 } else {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
@@ -1186,6 +1240,12 @@ class MenuRepository: MainViewMenu.Repository {
         })
     }
 
+    fun convertBitmapToByte(bitmapCompressed: Bitmap): ByteArray? {
+        val stream = ByteArrayOutputStream()
+        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 80, stream)
+        return stream.toByteArray()
+        //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
+    }
 
     private fun loadOfertas(usuario: Usuario?) {
         var queryOfertas = ""

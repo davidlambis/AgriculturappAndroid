@@ -119,6 +119,9 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
                 .repeat(5)
                 .playOn(fabAddCultivo)
 
+
+
+
     }
 
     private fun initAdapter() {

@@ -1,9 +1,11 @@
 package com.interedes.agriculturappv3.activities.chat.online.adapters
 
 import android.content.Intent
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.support.v7.widget.RecyclerView
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,27 +13,28 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.github.thunder413.datetimeutils.DateTimeUtils
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.online.ChatMessageActivity
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.models.chat.Room
+import com.interedes.agriculturappv3.modules.models.chat.RoomConversation
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
+import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 
 
-class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
+class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
 
 
     companion object {
         lateinit var instance: UsersAdapter
         var mUsersDBRef: DatabaseReference? = null
+        var mRoomDBRef: DatabaseReference? = null
         var eventBus: EventBus? = null
         /*fun postEventc(type: Int, produccion: Produccion?) {
             var produccionMutable= produccion as Object
@@ -44,7 +47,8 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
     init {
         instance=this
         eventBus = GreenRobotEventBus()
-
+        mUsersDBRef = Chat_Resources.mUserDBRef
+        mRoomDBRef = Chat_Resources.mRoomDBRef
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -62,7 +66,7 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
     }
 
 
-    fun setItems(newItems: List<UserFirebase>) {
+    fun setItems(newItems: List<RoomConversation>) {
         lista.addAll(newItems)
         notifyDataSetChanged()
     }
@@ -77,14 +81,13 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
         notifyItemRemoved(position)
     }
 
-    fun add(position: Int, person: UserFirebase) {
+    fun add(position: Int, person: RoomConversation) {
         lista.add(position, person)
         notifyItemInserted(position)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindItems(data: UserFirebase, pos: Int) = with(itemView) {
-
+        fun bindItems(data: RoomConversation, pos: Int) = with(itemView) {
 
             var personNameTxtV: TextView = itemView.findViewById(R.id.txtTitle)
             var personImageImgV: ImageView = itemView.findViewById(R.id.contentIcon)
@@ -93,6 +96,8 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
             var txtUserType: TextView = itemView.findViewById(R.id.txtDescription)
 
             var txtDescripcionAdditional: TextView = itemView.findViewById(R.id.txtDescripcionAdditional)
+
+            var txtLastMessage: TextView = itemView.findViewById(R.id.txtStatisSincronized)
 
 
 
@@ -109,11 +114,6 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
             var imgStatus: ImageView = itemView.findViewById(R.id.imgStatus)
             imgStatus.visibility=View.VISIBLE
 
-
-
-
-
-
             if(data.Status.equals(Status_Chat.ONLINE)){
                 imgStatus.setImageResource(R.drawable.is_online_user)
                 txtDescripcionAdditional.setText( context.getString(R.string.online))
@@ -124,13 +124,15 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
                 if(data.Last_Online!=null){
                     txtDate.setText(DateTimeUtils.getTimeAgo(context, Date(data.Last_Online!!)))
                 }
-
-
             }
 
 
-
-
+            if(data.Room!=null){
+                txtLastMessage.visibility=View.VISIBLE
+                txtLastMessage.setText(data.Room?.LastMessage)
+                txtLastMessage.setTypeface(null, Typeface.NORMAL);
+                txtLastMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11F);
+            }
 
             personNameTxtV.setText(data.Nombre+" "+data.Apellido)
             txtUserType.setText(data.Rol)
@@ -153,7 +155,26 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
 
 
             //Change State
-            mUsersDBRef?.child(data.User_Id)?.addListenerForSingleValueEvent(object : ValueEventListener {
+            mRoomDBRef?.child(data.User_Id)?.child(Chat_Resources.getRoomById(data.Room?.User_From))?.addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError?) {
+                }
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.value != null) {
+                        //val avataStr = dataSnapshot.value as String
+                        var room = dataSnapshot.getValue<Room>(Room::class.java)
+                        try {
+                            txtLastMessage.setText(room?.LastMessage)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                        //  UsersAdapter.instance.notifyDataSetChanged()
+                    }
+                }
+            })
+
+
+            //Change State
+           mUsersDBRef?.child(data.User_Id)?.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError?) {
 
                 }
@@ -175,10 +196,6 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
                             }
                         }
 
-
-
-
-
                         try {
 
                             Picasso.get()
@@ -195,7 +212,7 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
                         }
 
 
-                        UsersAdapter.instance.notifyDataSetChanged()
+                      //  UsersAdapter.instance.notifyDataSetChanged()
                     }
                 }
             })
@@ -203,6 +220,7 @@ class UsersAdapter(var lista: ArrayList<UserFirebase>) : RecyclerView.Adapter<Us
             itemView.setOnClickListener {
                 //postEventc(RequestEventProduccion.ITEM_EVENT,data)
                 val goToUpdate = Intent(context, ChatMessageActivity::class.java)
+                goToUpdate.putExtra("ROOM", data.Room)
                 goToUpdate.putExtra("USER_ID", data.User_Id)
                 goToUpdate.putExtra("FOTO", data.Imagen)
                 context.startActivity(goToUpdate)

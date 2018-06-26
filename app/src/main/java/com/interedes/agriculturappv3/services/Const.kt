@@ -25,5 +25,12 @@ class Const {
         val ACTION_PROGRESS_EXIT = "com.interedes.agriculturappv3.action.PROGRESS_EXIT"
         val EXTRA_PROGRESS = "com.interedes.agriculturappv3.action.PROGRESS"
 
+        //Firebase
+        val FIREBASE_TOKEN = "AAAA-D1BmYg:APA91bFT75lhEfyY15HblsNlm9fWtYa_pZRnIN0vV68XWbtLunslfO0T2LhM18s7o9OmQbmisOfx5FXaowTXHDs64UIjE5L99zwbgYtQZ-CU7wAfmS2qmB_XAJHi7TOEtOdC2MhALuWyw3SuPiSP7OM25vFXSbKgdw"
+
+
+
     }
+
+
 }

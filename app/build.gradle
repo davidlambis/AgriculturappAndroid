@@ -3,6 +3,9 @@ apply plugin: 'kotlin-android'
 ///apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
+
+
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -22,6 +25,7 @@ android {
                 true
     }
     buildTypes {
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -90,6 +94,7 @@ dependencies {
     implementation "com.google.firebase:firebase-storage:$rootProject.ext.firebaseVersion"
     implementation "com.google.firebase:firebase-messaging:$rootProject.ext.firebaseVersion"
     implementation "com.google.firebase:firebase-core:$rootProject.ext.firebaseVersion"
+    implementation "com.google.android.gms:play-services-vision:$rootProject.ext.firebaseVersion"
 
 
 
@@ -126,6 +131,10 @@ dependencies {
     //DateTiemUtils
     implementation 'com.github.thunder413:DateTimeUtils:1.0'
 
+
+    //Loader Files
+    implementation 'com.github.kk121:File-Loader:1.2'
+
     /*
     //Extenciones Kotlin (QUERYS LIST)
     compile "com.github.vicpinm:krealmextensions:$krealmextensionsVersion"
@@ -151,6 +160,7 @@ dependencies {
 
     //Crash Analitics
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
+
 
 
 

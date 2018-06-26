@@ -12,7 +12,6 @@ class Chat_Resources {
 
 
         fun getRoomByCompradorProductor(SenderId:String?, ReceiverId:String?):String?{
-
             return String.format("%s_%s",SenderId,ReceiverId);
         }
 

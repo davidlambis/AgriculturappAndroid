@@ -21,6 +21,8 @@ import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
 import android.view.MenuItem
 import android.widget.ImageView
+import com.interedes.agriculturappv3.modules.models.chat.Room
+import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
@@ -40,6 +42,7 @@ class ChatMessageActivity : AppCompatActivity() {
 
     private var mReceiverId: String? = null
     var mReceiverFoto: String? = null
+    var mReceiverRoom: Room? = null
     private var mReceiverName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,13 +58,13 @@ class ChatMessageActivity : AppCompatActivity() {
         messagesRecyclerView?.setLayoutManager(mLayoutManager)
 
         //init Firebase
-        mMessagesDBRef = FirebaseDatabase.getInstance().reference.child("Messages")
-        mUsersRef = FirebaseDatabase.getInstance().reference.child("Users")
+        mMessagesDBRef =  Chat_Resources.mMessagesDBRef
+        mUsersRef = Chat_Resources.mUserDBRef
 
         //get receiverId from intent
         mReceiverId = intent.getStringExtra("USER_ID")
         mReceiverFoto = intent.getStringExtra("FOTO")
-
+        mReceiverRoom= intent.getParcelableExtra("ROOM")
         /**listen to send message imagebutton click**/
         sendMessageImagebutton?.setOnClickListener(View.OnClickListener {
             val message = messageEditText?.getText().toString()
@@ -96,7 +99,21 @@ class ChatMessageActivity : AppCompatActivity() {
         val cal = Calendar.getInstance()
         val timeFormat = SimpleDateFormat("HH:mm")
         val hora = timeFormat.format(cal.time)
-        val newMsg = ChatMessage("",message, senderId, receiverId,fecha,hora,time)
+        val newMsg = ChatMessage(mReceiverRoom?.IdRoom,message, senderId, receiverId,fecha,hora,time)
+
+
+        var roomDateComprador= Chat_Resources.mRoomDBRef?.child(mReceiverRoom?.User_From)?.child(Chat_Resources.getRoomById(mReceiverRoom?.User_To)+"/lastMessage")
+        roomDateComprador?.setValue(message);
+
+        var roomDateProductor= Chat_Resources.mRoomDBRef?.child(mReceiverRoom?.User_To)?.child(Chat_Resources.getRoomById(mReceiverRoom?.User_From)+"/lastMessage")
+        roomDateProductor?.setValue(message);
+
+        var roomDateCompradorDate= Chat_Resources.mRoomDBRef?.child(mReceiverRoom?.User_From)?.child(Chat_Resources.getRoomById(mReceiverRoom?.User_To)+"/date_Last")
+        roomDateCompradorDate?.setValue(ServerValue.TIMESTAMP);
+
+        var roomDateProductorDate= Chat_Resources.mRoomDBRef?.child(mReceiverRoom?.User_To)?.child(Chat_Resources.getRoomById(mReceiverRoom?.User_From)+"/date_Last")
+        roomDateProductorDate?.setValue(ServerValue.TIMESTAMP);
+
         mMessagesDBRef?.push()?.setValue(newMsg)?.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
                 //error
@@ -116,26 +133,21 @@ class ChatMessageActivity : AppCompatActivity() {
         }
     }
 
-
     private fun querymessagesBetweenThisUserAndClickedUser() {
-        mMessagesDBRef?.addValueEventListener(object : ValueEventListener {
+        val query = mMessagesDBRef?.orderByChild("room_id")?.equalTo("${mReceiverRoom?.IdRoom}")
+        query?.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 mMessagesList.clear()
-
                 for (snap in dataSnapshot.children) {
                     val chatMessage = snap.getValue(ChatMessage::class.java)
                     if (chatMessage!!.senderId.equals(FirebaseAuth.getInstance().currentUser!!.uid) && chatMessage.receiverId.equals(mReceiverId) ||
                             chatMessage.senderId.equals(mReceiverId) && chatMessage.receiverId.equals(FirebaseAuth.getInstance().currentUser!!.uid)) {
                         mMessagesList.add(chatMessage)
                     }
-
                 }
-
                 /**populate messages */
                 populateMessagesRecyclerView()
-
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
 
             }

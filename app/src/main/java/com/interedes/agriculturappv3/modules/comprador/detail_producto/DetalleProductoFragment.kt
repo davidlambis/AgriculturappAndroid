@@ -565,9 +565,14 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
 
                             val usuarioTo= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
                             if(usuarioTo!=null){
-                                presenter?.sendSmsOferta(usuarioTo,oferta,activity!!)
+                                if(presenter?.validatePhoneNumber(usuarioTo.PhoneNumber)!!){
+                                    presenter?.sendSmsOferta(usuarioTo,oferta,activity!!)
+                                }else{
+                                    dialog1.dismiss()
+                                    sucessResponseOferta()
+                                    onMessageToas(getString(R.string.content_sms_verificate_phone_number),R.color.red_900)
+                                }
                             }
-
                             //Toast.makeText(activity,"Enviar oferta",Toast.LENGTH_SHORT).show()
                             // _dialogOferta?.dismiss()
 
@@ -575,7 +580,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                 .onNegative({ dialog1, which ->
                     dialog1.dismiss()
                     sucessResponseOferta()
-                    onMessageToas("Mensage no enviado",R.color.red_900)
+                    onMessageToas(getString(R.string.content_sms_not_send),R.color.red_900)
                 })
                 .show()
     }

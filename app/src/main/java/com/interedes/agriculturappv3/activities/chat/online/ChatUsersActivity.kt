@@ -13,9 +13,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.online.adapters.UsersAdapter
+import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
+import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import kotlinx.android.synthetic.main.activity_chat_users.*
 import java.util.ArrayList
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.ValueEventListener
+
+import com.interedes.agriculturappv3.modules.models.chat.RoomConversation
+
 
 class ChatUsersActivity : AppCompatActivity() {
 
@@ -23,7 +31,11 @@ class ChatUsersActivity : AppCompatActivity() {
     private var mUsersDBRef: DatabaseReference? = null
     private var mLayoutManager: RecyclerView.LayoutManager? = null
     private var adapter: UsersAdapter? = null
-    private val mUsersList = ArrayList<UserFirebase>()
+    private val mUsersList = ArrayList<RoomConversation>()
+
+
+    private var mRoomDBRef: DatabaseReference? = null
+    private var listRoom: ArrayList<Room>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +43,8 @@ class ChatUsersActivity : AppCompatActivity() {
         setToolbarInjection()
         //assign firebase auth
         mAuth = FirebaseAuth.getInstance()
-        mUsersDBRef = FirebaseDatabase.getInstance().reference.child("Users")
+        mUsersDBRef = Chat_Resources.mUserDBRef
+        mRoomDBRef = Chat_Resources.mRoomDBRef
         //initialize the recyclerview variables
 
         //usersRecyclerView.setHasFixedSize(true)
@@ -44,7 +57,7 @@ class ChatUsersActivity : AppCompatActivity() {
 
     private fun initAdapter() {
         usersRecyclerView?.layoutManager = LinearLayoutManager(this)
-        adapter = UsersAdapter(ArrayList<UserFirebase>())
+        adapter = UsersAdapter(ArrayList<RoomConversation>())
         usersRecyclerView?.adapter = adapter
     }
 
@@ -63,11 +76,44 @@ class ChatUsersActivity : AppCompatActivity() {
     }
 
     private fun queryUsersAndAddthemToList() {
-        mUsersDBRef?.addValueEventListener(object : ValueEventListener {
+        mRoomDBRef?.child(mAuth?.currentUser?.uid)?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                
+                if (dataSnapshot.value != null) {
+
+                    listRoom = ArrayList<Room>()
+
+                    if (dataSnapshot.childrenCount > 0) {
+                        mUsersList.clear()
+                        for (snap in dataSnapshot.children) {
+                            var room = snap.getValue<Room>(Room::class.java)
+                            //if not current user, as we do not want to show ourselves then chat with ourselves lol
+                            //if not current user, as we do not want to show ourselves then chat with ourselves lol
+                            try {
+                                listRoom?.add(room!!)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                        getAllFriendInfo(0);
+                    }
+                    
+                   /* val mapRecord = dataSnapshot.value as HashMap<*, *>
+                    val listKey = mapRecord.mapKeys {  }.iterator()
+                    while (listKey.hasNext()) {
+                        val key = listKey.next().toString()
+                        listFriendID?.add(mapRecord[key].toString())
+                    }
+                    */
+                } else {
+
+                }
+               /*
                 if (dataSnapshot.childrenCount > 0) {
                     mUsersList.clear()
                     for (snap in dataSnapshot.children) {
+                        //var room = snap.getValue<Room>(Room::class.java)
+                        //if not current user, as we do not want to show ourselves then chat with ourselves lol
                         var user = snap.getValue<UserFirebase>(UserFirebase::class.java)
                         //if not current user, as we do not want to show ourselves then chat with ourselves lol
                         try {
@@ -81,13 +127,45 @@ class ChatUsersActivity : AppCompatActivity() {
                         }
                     }
                 }
-                /**populate listview */
                 populaterecyclerView()
+                */
             }
             override fun onCancelled(databaseError: DatabaseError) {
             }
         })
     }
+
+    private fun getAllFriendInfo(index: Int) {
+
+        if (index === listRoom?.size) {
+            populaterecyclerView()
+            //save list friend
+            /*adapter.notifyDataSetChanged()
+            dialogFindAllFriend.dismiss()
+            mSwipeRefreshLayout.setRefreshing(false)
+            detectFriendOnline.start()*/
+        } else {
+            val id = listRoom?.get(index)?.User_To
+            mUsersDBRef?.child("$id")?.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.value != null) {
+                        var user = dataSnapshot.getValue<RoomConversation>(RoomConversation::class.java)
+                        user?.Room = listRoom?.get(index)
+                        mUsersList.add(user!!)
+                        //dataListFriend.getListFriend().add(user)
+                        //FriendDB.getInstance(getContext()).addFriend(user)
+                    }
+                    getAllFriendInfo(index + 1)
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+
+                }
+            })
+        }
+    }
+
+
 
     override fun onStart() {
         super.onStart()

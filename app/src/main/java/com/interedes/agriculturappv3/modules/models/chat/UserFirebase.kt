@@ -3,7 +3,7 @@ package com.interedes.agriculturappv3.modules.models.chat
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-data class UserFirebase(
+open  class UserFirebase(
         @SerializedName("User_Id")
         var User_Id: String? = null,
 
@@ -39,6 +39,8 @@ data class UserFirebase(
 
         @SerializedName("Imagen")
         var Imagen: String? = null
+
+
 
 ) {
 }

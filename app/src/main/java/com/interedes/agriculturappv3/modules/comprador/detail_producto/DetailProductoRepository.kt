@@ -56,9 +56,9 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     init {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
-        mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
-        mMessagesDBRef = FirebaseDatabase.getInstance().reference.child("Messages")
-        mRoomDBRef = FirebaseDatabase.getInstance().reference.child("Room")
+        mUserDBRef = Chat_Resources.mUserDBRef
+        mMessagesDBRef = Chat_Resources.mMessagesDBRef
+        mRoomDBRef = Chat_Resources.mRoomDBRef
     }
 
     //region Métodos Interfaz

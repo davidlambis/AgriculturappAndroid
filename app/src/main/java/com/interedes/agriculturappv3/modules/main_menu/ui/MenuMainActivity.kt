@@ -2,10 +2,7 @@ package com.interedes.agriculturappv3.modules.productor.ui.main_menu
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.AlarmManager
-import android.app.Dialog
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -46,6 +43,7 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -65,6 +63,10 @@ import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.services.JobSyncService
 import com.interedes.agriculturappv3.services.services.ProgresService
 import com.kaopiz.kprogresshud.KProgressHUD
+import com.krishna.fileloader.FileLoader
+import com.krishna.fileloader.listener.FileRequestListener
+import com.krishna.fileloader.pojo.FileResponse
+import com.krishna.fileloader.request.FileLoadRequest
 import com.nightonke.boommenu.BoomMenuButton
 import com.nightonke.boommenu.Types.BoomType
 import com.nightonke.boommenu.Types.ButtonType
@@ -72,6 +74,7 @@ import com.nightonke.boommenu.Types.PlaceType
 import com.nightonke.boommenu.Util
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import de.hdodenhof.circleimageview.CircleImageView
+import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import java.io.File
@@ -83,6 +86,7 @@ import java.util.*
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu.MainView,View.OnClickListener {
 
 
+    var isAppRunning: Boolean = false
 
     // var coordsService: CoordsService? = null
     //var coordsGlobal:Coords?=null
@@ -130,6 +134,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private var IS_EXPORT = false
 
 
+    companion object {
+        var instance: MenuMainActivity? = null
+
+
+    }
 
 
 
@@ -151,7 +160,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_main)
 
+        //Fabric.with(this,  Crashlytics());
 
+        instance=this
         //Presenter
         presenter = MenuPresenterImpl(this)
         (presenter as MenuPresenterImpl).onCreate()
@@ -166,6 +177,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         setAdapterFragment()
         // this.coordsService = CoordsService(this)
         //fragmentManager.beginTransaction().add(R.id.container, AccountingFragment()).commit()
+
+
 
         //Firebase
         mCurrentUserID = FirebaseAuth.getInstance()?.currentUser?.uid
@@ -189,6 +202,51 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         setupMenuFloating()
 
         septupInjection()
+
+
+
+        //var notificationManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        var channelId = "1";
+        var channel2 = "2";
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            var notificationChannel =  NotificationChannel(channelId,
+                    "Channel 1",NotificationManager.IMPORTANCE_HIGH);
+
+            notificationChannel.setDescription("This is BNT");
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setShowBadge(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+
+            var notificationChannel2 =  NotificationChannel(channel2,
+                    "Channel 2",NotificationManager.IMPORTANCE_MIN);
+
+            notificationChannel.setDescription("This is bTV");
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setShowBadge(true);
+            notificationManager.createNotificationChannel(notificationChannel2);
+
+        }
+
+
+
+        FileLoader.with(this)
+                .load("https://upload.wikimedia.org/wikipedia/commons/3/3c/Enrique_Simonet_-_Marina_veneciana_6MB.jpg",false) //2nd parameter is optioal, pass true to force load from network
+                //.fromDirectory("test4", FileLoader.DIR_EXTERNAL_PUBLIC)
+                .fromDirectory(Environment.DIRECTORY_PICTURES, FileLoader.DIR_EXTERNAL_PUBLIC)
+                .asFile( object:FileRequestListener<File> {
+                    override fun onLoad(request: FileLoadRequest?, response: FileResponse<File>?) {
+                        var loadedFile = response?.getBody();
+                    }
+
+                    override fun onError(request: FileLoadRequest?, error : Throwable?) {
+                     var error = error.toString()
+                    }
+                });
+
     }
 
     private fun septupInjection() {
@@ -197,6 +255,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
             }
         }
+
+
         /*var usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
             presenter?.syncQuantityData(true)
@@ -1130,6 +1190,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     override fun onDestroy() {
         presenter?.onDestroy(this)
+        isAppRunning = false;
         super.onDestroy()
     }
 

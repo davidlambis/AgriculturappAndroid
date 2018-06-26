@@ -44,6 +44,8 @@ interface IMainViewDetailProducto {
 
 
 
+
+
         //Methods
         fun postOferta()
 
@@ -63,6 +65,7 @@ interface IMainViewDetailProducto {
 
         //validaciones
         fun validarCamposAddOferta(): Boolean
+        fun validatePhoneNumber(phone:String?):Boolean
 
         //Methods
         fun getLastUserLogued(): Usuario?

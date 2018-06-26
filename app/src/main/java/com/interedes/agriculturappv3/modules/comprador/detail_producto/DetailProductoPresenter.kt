@@ -27,6 +27,7 @@ import com.interedes.agriculturappv3.services.internet_connection.ConnectivityRe
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import org.greenrobot.eventbus.Subscribe
 import java.util.ArrayList
+import java.util.regex.Pattern
 
 
 class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):IMainViewDetailProducto.Presenter {
@@ -104,6 +105,23 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
             //message_status_text_view.setText(s)
 
         }
+    }
+
+
+    override fun validatePhoneNumber(phone:String?):Boolean{
+        var check = false
+        if (!Pattern.matches("[a-zA-Z]+", phone)) {
+            if (phone?.length!! < 6 || phone.length > 13) {
+                // if(phone.length() != 10) {
+                check = false
+               // txtPhone.setError("Not Valid Number")
+            } else {
+                check = true
+            }
+        } else {
+            check = false
+        }
+        return check
     }
 
     private val deliveredStatusReceiver = object : BroadcastReceiver() {
