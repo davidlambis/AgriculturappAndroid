@@ -61,7 +61,7 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
 
 
         setupInit()
-//        setupInjection()
+        setupInjection()
 
     }
 
