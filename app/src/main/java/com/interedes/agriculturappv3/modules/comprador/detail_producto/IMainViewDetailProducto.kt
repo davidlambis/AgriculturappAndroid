@@ -41,6 +41,9 @@ interface IMainViewDetailProducto {
         fun sucessResponseOferta()
 
 
+
+
+
         //Methods
         fun postOferta()
 

@@ -44,9 +44,11 @@ import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.produccion.Produccion
 import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
+import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.ventas.Tercero
+import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
 import com.interedes.agriculturappv3.services.resources.RolResources
 
 
@@ -66,9 +68,6 @@ class LoginRepositoryImpl : LoginRepository {
 
     //region Interfaz
     override fun ingresar(login: Login) {
-
-
-
         val call = apiService?.postLogin(login)
         call?.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
@@ -85,10 +84,12 @@ class LoginRepositoryImpl : LoginRepository {
                                 val user_login: MutableList<UserLoginResponse>? = response.body()?.value!!
 
 
-                                var usuario:Usuario= Usuario()
+                                val usuario:Usuario= Usuario()
+                                val ultimo_usuario = getLastUser()
+
                                 for (item in user_login!!) {
 
-                                    val ultimo_usuario = getLastUser()
+
                                     var session_id: Long?
                                     if (ultimo_usuario == null) {
                                         session_id = 1
@@ -115,7 +116,7 @@ class LoginRepositoryImpl : LoginRepository {
                                     usuario.AccessToken = access_token
                                     usuario.RolNombre = rolNombre
                                     usuario.SessionId = session_id
-                                    usuario.save()
+
                                 }
 
 
@@ -131,6 +132,12 @@ class LoginRepositoryImpl : LoginRepository {
                                             rol.Id=userLoguedResponse?.Rol?.Id
                                             rol.Nombre=userLoguedResponse?.Rol?.Nombre
                                             rol.save()
+
+
+                                            if(rol?.Nombre.equals(RolResources.PRODUCTOR) && ultimo_usuario?.RolNombre.equals(RolResources.COMPRADOR) ||
+                                                    rol?.Nombre.equals(RolResources.COMPRADOR) && ultimo_usuario?.RolNombre.equals(RolResources.PRODUCTOR)){
+                                                cleanDataSqlite()
+                                            }
 
 
                                             if(userLoguedResponse.Fotopefil!=null){
@@ -196,7 +203,7 @@ class LoginRepositoryImpl : LoginRepository {
                 var mCurrentUserID =task.result.user.uid
                 usuario.IdFirebase=mCurrentUserID
                 usuario.save()
-                val usuarioLoguedList = SQLite.select().from(Usuario::class.java).queryList()
+                //val usuarioLoguedList = SQLite.select().from(Usuario::class.java).queryList()
                 postEventUsuarioOk(LoginEvent.SAVE_EVENT, usuario)
             } else {
                 /*try {
@@ -314,6 +321,11 @@ class LoginRepositoryImpl : LoginRepository {
 
 
     fun cleanDataSqlite(){
+
+        SQLite.delete<Usuario>(Usuario::class.java)
+                .async()
+                .execute()
+
         SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
                 .async()
                 .execute()
@@ -330,11 +342,15 @@ class LoginRepositoryImpl : LoginRepository {
                 .async()
                 .execute()
 
+        SQLite.delete<Producto>(Producto::class.java)
+                .async()
+                .execute()
+
         SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
                 .async()
                 .execute()
 
-        SQLite.delete<Transaction>(Transaction::class.java)
+        SQLite.delete<Transaccion>(Transaccion::class.java)
                 .async()
                 .execute()
 

@@ -851,70 +851,7 @@ class MenuRepository: MainViewMenu.Repository {
         else if(usuario?.RolNombre?.equals(RolResources.COMPRADOR)!!){
 
             //Limpiar BD con informacion de un productor
-            val users=SQLite.select().from(Usuario::class.java).where(Usuario_Table.RolNombre.eq(RolResources.PRODUCTOR)).queryList()
-            for (user in users){
-
-                SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
-                        .where(Unidad_Productiva_Table.UsuarioId.eq(user.Id))
-                        .async()
-                        .execute()
-
-                SQLite.delete<Lote>(Lote::class.java)
-                        .where(Lote_Table.UsuarioId.eq(user.Id))
-                        .async()
-                        .execute()
-
-                SQLite.delete<Cultivo>(Cultivo::class.java)
-                        .where(Cultivo_Table.UsuarioId.eq(user.Id))
-                        .async()
-                        .execute()
-
-                SQLite.delete<Producto>(Producto::class.java)
-                        .where(Producto_Table.userId.eq(user.Id))
-                        .async()
-                        .execute()
-
-                SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
-                        .where(ControlPlaga_Table.UsuarioId.eq(user.Id))
-                        .async()
-                        .execute()
-
-                SQLite.delete<Produccion>(Produccion::class.java)
-                        .where(Producto_Table.userId.eq(user.Id))
-                        .async()
-                        .execute()
-
-                SQLite.delete<Transaccion>(Transaccion::class.java)
-                        .where(Transaccion_Table.UsuarioId.eq(user.Id))
-                        .async()
-                        .execute()
-
-                user.delete()
-
-            }
-
             //TODO Delete information in local, add new remote
-            /*SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
-                    .async()
-                    .execute()
-
-            SQLite.delete<Lote>(Lote::class.java)
-                    .async()
-                    .execute()
-
-
-            SQLite.delete<Cultivo>(Cultivo::class.java)
-                    .async()
-                    .execute()
-
-            SQLite.delete<Produccion>(Produccion::class.java)
-                    .async()
-                    .execute()
-
-            SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
-                    .async()
-                    .execute()*/
-
             SQLite.delete<Oferta>(Oferta::class.java)
                     .async()
                     .execute()
@@ -924,7 +861,6 @@ class MenuRepository: MainViewMenu.Repository {
                     .execute()
 
             loadOfertas(usuario)
-
 
         }
 
@@ -1059,8 +995,6 @@ class MenuRepository: MainViewMenu.Repository {
                 postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
         })
-
-
         //Categorías de Producto
         //getLastUserLogued
         //
@@ -1130,9 +1064,6 @@ class MenuRepository: MainViewMenu.Repository {
                             item.Nombre_Cultivo=cultivo?.Nombre
                             item.Nombre_Detalle_Producto_Cultivo=cultivo?.Nombre_Detalle_Tipo_Producto
                             item.Cultivo_Id=cultivo?.CultivoId
-
-
-
 
                             val terceroVerificateSave= SQLite.select()
                                     .from(Tercero::class.java)

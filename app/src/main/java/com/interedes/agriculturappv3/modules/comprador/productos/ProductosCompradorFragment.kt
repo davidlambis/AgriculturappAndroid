@@ -59,9 +59,9 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
         (activity as MenuMainActivity).toolbar.title=getString(R.string.tittle_productos)
         swipeRefreshLayout.setOnRefreshListener(this)
 
-        setupInjection()
-        setupInit()
 
+        setupInit()
+//        setupInjection()
 
     }
 

@@ -12,8 +12,11 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.comprador.detail_producto.events.RequestEventDetalleProducto
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta
+import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta_Table
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
+import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.models.usuario.User
@@ -36,6 +39,10 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
 
     //private var sentStatusReceiver: BroadcastReceiver? = null
     //private var deliveredStatusReceiver: BroadcastReceiver? = null
+
+
+    private var sendMessageSuccess=false
+
 
     //GLOBALS
     var listTipoProducto:List<Producto>?= ArrayList<Producto>()
@@ -113,15 +120,17 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
             if(s.contains("Successfully")){
                 // onMessageToas("Mensage enviado correctamente",R.color.green)
                 // messageEditText.setText("")
-                onMessageOk()
-                mainView?.sucessResponseOferta()
-                mainView?.onMessageToas("Mensage enviado correctamente", R.color.green)
+                if(!sendMessageSuccess){
+                    onMessageOk()
+                    mainView?.sucessResponseOferta()
+                    mainView?.onMessageToas("Mensage enviado correctamente", R.color.green)
+                    sendMessageSuccess=true
+                }
             }else{
                 onMessageOk()
                 mainView?.sucessResponseOferta()
                 mainView?.onMessageToas("Mensage no enviado",R.color.red_900)
             }
-
 
             mainView?.hideProgressHud()
             //hideProgressHud()
@@ -246,17 +255,55 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
     override fun sendSmsOferta(user: Usuario,oferta:Oferta, activity:Activity) {
 
         val phone =user.PhoneNumber?.trim()
-        val smsMessage = "Oferta por sms"
+        //val smsMessage = "Oferta por sms"
         try {
-            val message = smsMessage
+
+            var disponibilidad = ""
+            var precioOferta = ""
+            var productoCantidad=""
+            var calidad=""
+
+            val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
+
+            var detalleOferta=SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
+
+            if (detalleOferta?.Cantidad.toString().contains(".0")) {
+                disponibilidad = String.format(activity?.getString(R.string.price_empty_signe)!!,
+                        detalleOferta?.Cantidad)
+            } else {
+                disponibilidad = detalleOferta?.Cantidad.toString()
+            }
+
+            productoCantidad= String.format("%s %s ", disponibilidad, producto?.NombreUnidadMedidaCantidad)
+            calidad= String.format("%s",producto?.NombreCalidad)
+
+            precioOferta=String.format(activity.getString(R.string.price_producto),
+                    detalleOferta?.Valor_Oferta, detalleOferta?.NombreUnidadMedidaPrecio)
+
+            var message=String.format(activity.getString(R.string.descripcion_oferta_productor)
+                    ,user?.Nombre,user.Apellidos,productoCantidad,precioOferta,producto?.Nombre,calidad)
+
             val sms = SmsManager.getDefault()
             // if message length is too long messages are divided
+
+
+            //val sendIntent=PendingIntent.getBroadcast(activity, 0, Intent(Const.SERVICE_SMS_SENT), 0)
+            //val deliveredIntent=PendingIntent.getBroadcast(activity, 0, Intent(Const.SERVICE_SMS_DELIVERED), 0)
+            //sms.sendTextMessage(phone, null, message, sendIntent, deliveredIntent)
+
+
+
             val messages = sms.divideMessage(message)
+            val sentIntents = ArrayList<PendingIntent>()
+            val deliveryIntents = ArrayList<PendingIntent>()
+
             for (msg in messages) {
-                val sentIntent = PendingIntent.getBroadcast(activity, 0, Intent(Const.SERVICE_SMS_SENT), 0)
-                val deliveredIntent = PendingIntent.getBroadcast(activity, 0, Intent(Const.SERVICE_SMS_DELIVERED), 0)
-                sms.sendTextMessage(phone, null, msg, sentIntent, deliveredIntent)
+                sentIntents.add(PendingIntent.getBroadcast(activity, 0, Intent(Const.SERVICE_SMS_SENT), 0))
+                deliveryIntents.add(PendingIntent.getBroadcast(activity, 0, Intent(Const.SERVICE_SMS_DELIVERED), 0))
+                //sms.sendTextMessage(phone, null, msg, sentIntent, deliveredIntent)
             }
+            sms.sendMultipartTextMessage(phone, null, messages, sentIntents, deliveryIntents);
+
 
             mainView?.showProgressHud()
             // refreshSmsInbox()

@@ -162,7 +162,6 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                             }
                         })
 
-
                     } else {
                         postEventError(RequestEventDetalleProducto.ERROR_EVENT, "Comprueba tu conexión")
                     }
@@ -191,12 +190,12 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                             mCompradorSenderId=FirebaseAuth.getInstance().currentUser!!.uid
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                         }
-                        if(user?.Status.equals(Status_Chat.ONLINE)){
-                               findRoomUser(user)
+                       // if(user?.Status.equals(Status_Chat.ONLINE)){
+                               findRoomUser(user,oferta)
                         // sendMessageToFirebase(message, senderId, mReceiverId)
-                        }else{
-                            postEvenNotifySms(RequestEventDetalleProducto.OK_SEND_EVENT_SMS,oferta)
-                        }
+                       // }else{
+                        //    postEvenNotifySms(RequestEventDetalleProducto.OK_SEND_EVENT_SMS,oferta)
+                        //}
                     }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -208,7 +207,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         }
     }
 
-    private fun findRoomUser(user: UserFirebase?) {
+    private fun findRoomUser(user: UserFirebase?,oferta:Oferta) {
         //val query = mRoomDBRef?.child("/"+mCompradorSenderId+"/"+mProductorReceiverId)
         val query = mRoomDBRef?.child(mCompradorSenderId)?.orderByChild("user_To")?.equalTo(Chat_Resources.getRoomById(mProductorReceiverId))
         query?.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -220,10 +219,10 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                         var room = issue.getValue<Room>(Room::class.java)
                         roomId=room?.IdRoom
                     }
-                    val message = "Te han ofertado por un producto 3"
+                    val message=getMessageOferta(oferta)
                     sendMessageToFirebase(message)
                 }else{
-                    createRoomUser(user,mProductorReceiverId,true)
+                    createRoomUser(user,mProductorReceiverId,true,oferta)
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {
@@ -238,7 +237,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         return format1.format(date)
     }
 
-    private fun createRoomUser(user: UserFirebase?,idProductor:String?,roomComprador:Boolean) {
+    private fun createRoomUser(user: UserFirebase?,idProductor:String?,roomComprador:Boolean,oferta:Oferta) {
         var date= Calendar.getInstance().time
         var dateString =getDateFormatApi(date)
 
@@ -250,7 +249,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                         var error = task.exception
                         postEventError(RequestEventDetalleProducto.ERROR_EVENT, error.toString())
                     } else {
-                        createRoomUser(user,mProductorReceiverId,false)
+                        createRoomUser(user,mProductorReceiverId,false,oferta)
                     }
                 })
             }else{
@@ -261,7 +260,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                         postEventError(RequestEventDetalleProducto.ERROR_EVENT, error.toString())
                         //error
                     } else {
-                        createRoomUser(user,null,false)
+                        createRoomUser(user,null,false,oferta)
                     }
                 })
             }
@@ -277,9 +276,53 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
             roomId=Chat_Resources.getRoomByCompradorProductor(mCompradorSenderId,mProductorReceiverId)
 
-            val message = "Te han ofertado por un producto 3"
+
+
+             val message=getMessageOferta(oferta)
+
+
             sendMessageToFirebase(message)
         }
+    }
+
+    private fun getMessageOferta(oferta: Oferta): String {
+
+        var message= ""
+
+        var disponibilidad = ""
+        var precioOferta = ""
+        var productoCantidad=""
+        var calidad=""
+
+        val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
+
+
+        if (oferta?.Cantidad.toString().contains(".0")) {
+            disponibilidad = String.format("%.0f",
+                    oferta?.Cantidad)
+        } else {
+            disponibilidad = oferta?.Cantidad.toString()
+        }
+
+        productoCantidad= String.format("%s %s ", disponibilidad, producto?.NombreUnidadMedidaCantidad)
+        calidad= String.format("%s",producto?.NombreCalidad)
+
+
+
+        precioOferta=String.format("$ %,.0f %2s",
+                oferta?.Valor_Oferta, oferta?.NombreUnidadMedidaPrecio)
+
+
+        val usuarioTo= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+
+
+
+         message=String.format("%s %s te oferto %s a un precio de %s por el cultivo de %s de %s"
+                ,usuarioTo?.Nombre,usuarioTo?.Apellidos,productoCantidad,precioOferta,producto?.Nombre,calidad)
+
+
+        return  message
+
     }
 
     private fun updateDatesRoomUser() {

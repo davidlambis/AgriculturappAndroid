@@ -242,7 +242,7 @@
                         <LinearLayout
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
                             <ImageView
@@ -250,8 +250,6 @@
                                 android:id="@+id/contenIconProducto"
                                 android:layout_width="match_parent"
                                 android:layout_height="250dp"
-                                android:adjustViewBounds="true"
-                                android:scaleType="centerCrop"
                                 />
 
                         </LinearLayout>

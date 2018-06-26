@@ -204,7 +204,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                         .into(contenIconProducto, object : com.squareup.picasso.Callback {
                             override fun onError(e: java.lang.Exception?) {
                                 contenIconProducto?.setImageResource(R.drawable.ic_foto_producto)
-                                contenIconProducto?.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                contenIconProducto?.setScaleType(ImageView.ScaleType.CENTER_CROP);
                                 // Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
                             }
                             override fun onSuccess() {
