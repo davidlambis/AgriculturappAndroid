@@ -38,9 +38,18 @@ open  class UserFirebase(
         var Id_Account_Remote: String? = null,
 
         @SerializedName("Imagen")
-        var Imagen: String? = null
+        var Imagen: String? = null,
+
+        @SerializedName("StatusTokenFcm")
+        var StatusTokenFcm: Boolean? = null,
+
+
+        @SerializedName("TokenFcm")
+        var TokenFcm: String? = null
 
 
 
 ) {
+
+
 }

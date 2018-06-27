@@ -54,8 +54,8 @@ interface MainViewMenu {
         //syncData
         fun syncQuantityData(automatic:Boolean)
 
-        fun makeUserOnline()
-        fun makeUserOffline()
+        fun makeUserOnline(context: Context)
+        fun makeUserOffline(context: Context)
         fun logOut(usuario: Usuario?)
 
         //Conection
@@ -72,8 +72,8 @@ interface MainViewMenu {
     }
 
     interface Interactor {
-        fun makeUserOnline(checkConection:Boolean)
-        fun makeUserOffline(checkConection:Boolean)
+        fun makeUserOnline(checkConection:Boolean,context: Context)
+        fun makeUserOffline(checkConection:Boolean,context: Context)
         fun getListasIniciales()
         fun syncQuantityData(automatic:Boolean)
         fun getLastUserLogued(): Usuario?
@@ -86,10 +86,10 @@ interface MainViewMenu {
 
     interface Repository {
         //firebase
-        fun makeUserOnline(checkConection:Boolean)
-        fun makeUserOffline(checkConection:Boolean)
+        fun makeUserOnline(checkConection:Boolean,context: Context)
+        fun makeUserOffline(checkConection:Boolean,context: Context)
         fun verificateUserLoguedFirebaseFirebase(): FirebaseUser?
-        fun loginFirebase(usuario:Usuario?)
+        fun loginFirebase(usuario:Usuario,context: Context)
         fun logOut(usuario: Usuario?)
 
 

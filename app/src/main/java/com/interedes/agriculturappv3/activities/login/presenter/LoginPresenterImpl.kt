@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.activities.login.presenter
 
+import android.content.Context
 import android.support.v4.content.ContextCompat
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.events.LoginEvent
@@ -10,6 +11,7 @@ import com.interedes.agriculturappv3.modules.models.login.Login
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import org.greenrobot.eventbus.Subscribe
 
 class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
@@ -39,8 +41,11 @@ class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
                 onErrorIngresar(event.mensajeError)
             }
             LoginEvent.SAVE_EVENT -> {
+
+                var usuario = event.objectMutable as Usuario
+
                 loginView?.hideProgress()
-                loginView?.navigateToMainActivity()
+                loginView?.navigateToMainActivity(usuario)
             }
             LoginEvent.RESET_PASSWORD_EVENT -> {
                 loginView?.hideProgress()
@@ -56,18 +61,14 @@ class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
         return false
     }
 
-    override fun ingresar(login: Login) {
+    override fun ingresar(login: Login, context: Context) {
         loginView?.disableInputs()
         loginView?.showProgress()
 
-
-
-
-
         if (loginView?.checkConnection()!!) {
-            loginInteractor?.ingresar(login)
+            loginInteractor?.ingresar(login,context)
         } else {
-            loginInteractor?.getSqliteUsuario(login)
+            loginInteractor?.getSqliteUsuario(login,context)
         }
     }
 

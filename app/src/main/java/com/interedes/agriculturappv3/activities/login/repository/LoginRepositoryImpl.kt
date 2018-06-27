@@ -1,5 +1,7 @@
 package com.interedes.agriculturappv3.activities.login.repository
 
+import android.content.Context
+import android.preference.PreferenceManager
 import android.util.Base64
 import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
@@ -34,6 +36,7 @@ import retrofit2.Response
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.database.Transaction
+import com.google.firebase.iid.FirebaseInstanceId
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
@@ -49,7 +52,10 @@ import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Pro
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.ventas.Tercero
 import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
+import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.resources.RolResources
+import java.io.IOException
 
 
 class LoginRepositoryImpl : LoginRepository {
@@ -67,7 +73,7 @@ class LoginRepositoryImpl : LoginRepository {
     }
 
     //region Interfaz
-    override fun ingresar(login: Login) {
+    override fun ingresar(login: Login,context: Context) {
         val call = apiService?.postLogin(login)
         call?.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
@@ -140,6 +146,7 @@ class LoginRepositoryImpl : LoginRepository {
                                             }
 
 
+
                                             if(userLoguedResponse.Fotopefil!=null){
                                                 try {
                                                     val base64String = userLoguedResponse.Fotopefil
@@ -155,7 +162,7 @@ class LoginRepositoryImpl : LoginRepository {
                                             usuario.RolNombre = rol?.Nombre
                                             usuario.save()
 
-                                            loginFirebaseUser(usuario)
+                                            loginFirebaseUser(usuario,context)
 
                                         } else {
                                             postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
@@ -196,13 +203,18 @@ class LoginRepositoryImpl : LoginRepository {
         })
     }
 
-    private fun loginFirebaseUser(usuario: Usuario) {
+    private fun loginFirebaseUser(usuario: Usuario, context:Context) {
         mAuth = FirebaseAuth.getInstance()
         mAuth?.signInWithEmailAndPassword(usuario.Email!!, usuario.Contrasena!!)?.addOnCompleteListener({ task ->
             if (task.isSuccessful) {
                 var mCurrentUserID =task.result.user.uid
                 usuario.IdFirebase=mCurrentUserID
                 usuario.save()
+
+
+
+
+                resetTokenFCM(context)
                 //val usuarioLoguedList = SQLite.select().from(Usuario::class.java).queryList()
                 postEventUsuarioOk(LoginEvent.SAVE_EVENT, usuario)
             } else {
@@ -218,7 +230,7 @@ class LoginRepositoryImpl : LoginRepository {
                     //if email doesn't exist or disabled.
                     Log.d("AUTH FIREBASE", "onComplete: invalid_email")
                     //FIREBASE
-                    registerFirebaseUser(usuario)
+                    registerFirebaseUser(usuario,context)
                     // TODO: Credenciales de acceso incoreto
                 } catch (wrongPassword: FirebaseAuthInvalidCredentialsException) {
                     Log.d("AUTH FIREBASE", "onComplete: wrong_password")
@@ -235,7 +247,7 @@ class LoginRepositoryImpl : LoginRepository {
         })
     }
 
-    private fun registerFirebaseUser(usuario: Usuario) {
+    private fun registerFirebaseUser(usuario: Usuario,context:Context) {
         //FIREBASE
         FirebaseAuth.getInstance()?.createUserWithEmailAndPassword(usuario.Email!!, usuario.Contrasena!!)?.addOnCompleteListener { task: Task<AuthResult> ->
             if (task.isSuccessful) {
@@ -249,7 +261,7 @@ class LoginRepositoryImpl : LoginRepository {
                             if (task.isSuccessful) {
                                 /***CREATE USER IN FIREBASE DB AND REDIRECT ON SUCCESS */
                                 //createUserInDb(newUser.uid, newUser.displayName, newUser.email)
-                                createUserInDb(newUser.uid,usuario)
+                                createUserInDb(newUser.uid,usuario,context)
                             } else {
                                 postEventError(LoginEvent.ERROR_EVENT,  task.exception?.localizedMessage)
                                 //error
@@ -274,7 +286,7 @@ class LoginRepositoryImpl : LoginRepository {
 
 
 
-    private fun createUserInDb(user_id: String,usuario:Usuario) {
+    private fun createUserInDb(user_id: String,usuario:Usuario,context:Context) {
         //val currentUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
         //val uid: String? = currentUser?.uid
         // val reference: DatabaseReference? = mDatabase?.child("Users")?.child(uid)
@@ -294,7 +306,7 @@ class LoginRepositoryImpl : LoginRepository {
                 //go to users chat list
                 var userLastOnlineRef= reference?.child(user_id+"/last_Online")
                 userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
-                loginFirebaseUser(usuario)
+                loginFirebaseUser(usuario,context)
             }
         })
         /*
@@ -368,7 +380,7 @@ class LoginRepositoryImpl : LoginRepository {
                 .execute()
     }
 
-    override fun getSqliteUsuario(login: Login) {
+    override fun getSqliteUsuario(login: Login,context:Context) {
         val usuario_sqlite = getUsuario(login)
         if (usuario_sqlite != null) {
 
@@ -384,15 +396,67 @@ class LoginRepositoryImpl : LoginRepository {
                 cleanDataSqlite()
             }
 
+            resetTokenFCM(context)
+
             usuario_sqlite.SessionId = session_id
             usuario_sqlite.UsuarioRemembered = true
             usuario_sqlite.save()
 
-            postEvent(LoginEvent.SAVE_EVENT)
+
+            postEventUsuarioOk(LoginEvent.SAVE_EVENT, usuario_sqlite)
+
         } else {
             postEventError(LoginEvent.ERROR_EVENT, "Usuario o Contraseña Incorrectos")
         }
     }
+
+    private fun resetTokenFCM(context: Context) {
+        try {
+            // Check for current token
+            val originalToken = getTokenFromPrefs(context)
+            Log.d("TAG", "Token before deletion: $originalToken")
+            // Resets Instance ID and revokes all tokens.
+            Thread(Runnable {
+                try {
+                    FirebaseInstanceId.getInstance().deleteInstanceId()
+                    // Clear current saved token
+                    saveTokenToPrefs("",context)
+
+                    // Check for success of empty token
+                    val tokenCheck = getTokenFromPrefs(context)
+                    Log.d("TAG", "Token deleted. Proof: $tokenCheck")
+
+                    // Now manually call onTokenRefresh()
+                    Log.d("TAG", "Getting new token")
+                    FirebaseInstanceId.getInstance().token
+
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }).start()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun saveTokenToPrefs(_token:String?,context: Context )
+    {
+        // Access Shared Preferences
+        //var preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //var editor = preferences.edit();
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        // Save to SharedPreferences
+        //editor.putString("registration_id", _token);
+        //editor.apply();
+        preferences.edit().putString(Const.FIREBASE_TOKEN, _token).apply()
+    }
+
+    private fun  getTokenFromPrefs(context:Context):String?
+    {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString(Const.FIREBASE_TOKEN, null);
+    }
+
 
     override fun resetPassword(correo: String) {
         val resetPassword = ResetPassword(correo)
@@ -412,7 +476,6 @@ class LoginRepositoryImpl : LoginRepository {
         })
     }
     //region Querys Sqlite
-
 
 
     private fun getLastUser(): Usuario? {

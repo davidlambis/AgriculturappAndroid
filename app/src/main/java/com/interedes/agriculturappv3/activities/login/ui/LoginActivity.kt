@@ -28,6 +28,7 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -125,7 +126,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
         if (presenter?.validarCampos() == true) {
             val login = Login(edtCorreo?.text?.trim().toString(),
                     edtContrasena?.text?.trim()?.toString())
-            presenter?.ingresar(login)
+            presenter?.ingresar(login,this)
             //progressBar.visibility = View.VISIBLE
             /*progressBar.visibility = View.VISIBLE
             startActivity(Intent(this, MenuMainActivity::class.java))*/
@@ -227,7 +228,10 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
         setInputs(false)
     }
 
-    override fun navigateToMainActivity() {
+    override fun navigateToMainActivity(usuario: Usuario?) {
+
+
+        SharedPreferenceHelper.getInstance(this).saveUserInfo(usuario);
         val i = Intent(this, MenuMainActivity::class.java)
         //i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(i)

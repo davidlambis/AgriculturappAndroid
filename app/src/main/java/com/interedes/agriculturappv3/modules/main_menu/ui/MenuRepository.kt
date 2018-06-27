@@ -1,9 +1,11 @@
 package com.interedes.agriculturappv3.modules.main_menu.ui
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.preference.PreferenceManager
 import android.support.v4.content.ContextCompat.startActivity
 import android.util.Base64
 import android.util.Log
@@ -13,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
@@ -59,8 +62,10 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.models.ventas.*
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.CategoriaPucResponse
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.EstadoTransaccionResponse
+import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
@@ -99,14 +104,13 @@ class MenuRepository: MainViewMenu.Repository {
         apiService = ApiInterface.create()
 
         mCurrentUserID = FirebaseAuth.getInstance().currentUser?.uid
-
         if(mCurrentUserID==null){
             mCurrentUserID=getLastUserLogued()?.IdFirebase
         }
 
 
         mAuth= FirebaseAuth.getInstance()
-        mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
+        mUserDBRef = Chat_Resources.mUserDBRef
         mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
     }
 
@@ -116,13 +120,13 @@ class MenuRepository: MainViewMenu.Repository {
         return  FirebaseAuth.getInstance().currentUser
     }
 
-    override fun makeUserOnline(checkConection:Boolean) {
+    override fun makeUserOnline(checkConection:Boolean,context: Context) {
         val userLogued=getLastUserLogued()
         if(userLogued!=null){
             val verficateLoguedFirebase=verificateUserLoguedFirebaseFirebase()
             if(checkConection){
                 if(verficateLoguedFirebase==null){
-                    loginFirebase(userLogued)
+                    loginFirebase(userLogued,context)
                 }else{
                     makeUserOnlineSet()
                 }
@@ -136,9 +140,14 @@ class MenuRepository: MainViewMenu.Repository {
         userStatus?.setValue(Status_Chat.ONLINE)
         userStatus?.onDisconnect()?.setValue(Status_Chat.OFFLINE)
         userLastOnlineRef?.onDisconnect()?.setValue(ServerValue.TIMESTAMP);
+
+        //Status FCM
+        val userTokenMessaginStatus= mUserDBRef?.child(mCurrentUserID+"/statusTokenFcm")
+
+        userTokenMessaginStatus?.setValue(true)
     }
 
-    override fun makeUserOffline(checkConection:Boolean) {
+    override fun makeUserOffline(checkConection:Boolean,context: Context) {
         var verficateLoguedFirebase=verificateUserLoguedFirebaseFirebase()
         if(verficateLoguedFirebase!=null){
                 makeUserOfflineSet()
@@ -146,16 +155,21 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     private fun makeUserOfflineSet() {
-        var userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
-        var userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
+        val userStatus= mUserDBRef?.child(mCurrentUserID+"/status")
+        val userLastOnlineRef= mUserDBRef?.child(mCurrentUserID+"/last_Online")
         userStatus?.setValue(Status_Chat.OFFLINE)
         userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
     }
 
-    override fun loginFirebase(usuario:Usuario?)
+    override fun loginFirebase(usuario:Usuario,context: Context)
     {
         mAuth?.signInWithEmailAndPassword(usuario?.Email!!, usuario?.Contrasena!!)?.addOnCompleteListener({ task ->
             if (task.isSuccessful) {
+                val mCurrentUserID =task.result.user.uid
+                usuario.IdFirebase=mCurrentUserID
+                usuario.save()
+
+                resetTokenFCM(context)
                 makeUserOnlineSet()
             } else {
                 try {
@@ -168,25 +182,82 @@ class MenuRepository: MainViewMenu.Repository {
         })
     }
 
+    //region TOKEN
+    private fun resetTokenFCM(context: Context) {
+        try {
+            // Check for current token
+            val originalToken = getTokenFromPrefs(context)
+            Log.d("TAG", "Token before deletion: $originalToken")
+            // Resets Instance ID and revokes all tokens.
+            Thread(Runnable {
+                try {
+                    FirebaseInstanceId.getInstance().deleteInstanceId()
+                    // Clear current saved token
+                    saveTokenToPrefs("",context)
+
+                    // Check for success of empty token
+                    val tokenCheck = getTokenFromPrefs(context)
+                    Log.d("TAG", "Token deleted. Proof: $tokenCheck")
+
+                    // Now manually call onTokenRefresh()
+                    Log.d("TAG", "Getting new token")
+                    FirebaseInstanceId.getInstance().token
+
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }).start()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun saveTokenToPrefs(_token:String?,context: Context )
+    {
+        // Access Shared Preferences
+        //var preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //var editor = preferences.edit();
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        // Save to SharedPreferences
+        //editor.putString("registration_id", _token);
+        //editor.apply();
+        preferences.edit().putString(Const.FIREBASE_TOKEN, _token).apply()
+    }
+
+    private fun  getTokenFromPrefs(context:Context):String?
+    {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString(Const.FIREBASE_TOKEN, null);
+    }
+
+
+
+    //endregion
 
     override fun logOut(usuario: Usuario?) {
         try {
             mAuth = FirebaseAuth.getInstance()
             if (mAuth?.currentUser != null) {
                 mAuth?.signOut()
+
+                var currentUserID = mAuth?.currentUser?.uid
+                if(currentUserID==null){
+                    currentUserID=getLastUserLogued()?.IdFirebase
+                }
+
+                val userTokenMessaginStatus= mUserDBRef?.child(currentUserID+"/statusTokenFcm")
+
+                userTokenMessaginStatus?.setValue(false)
             }
             usuario?.UsuarioRemembered = false
-            usuario?.AccessToken = null
+            //usuario?.AccessToken = null
             usuario?.save()
         } catch (e: Exception) {
            // postEvent(RequestEvent.ERROR_EVENT, e.message.toString())
         }
     }
 
-
-
     override fun syncQuantityData(automatic:Boolean) {
-
         var usuarioLogued=getLastUserLogued()
         var counRegisterUnidadesProductivas=SQLite.select().from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
@@ -234,6 +305,7 @@ class MenuRepository: MainViewMenu.Repository {
                 .where(Cultivo_Table.EstadoSincronizacion.eq(true))
                 .and(Cultivo_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
+
 
 
         var countUpdatesControlPlagas=SQLite.select().from(ControlPlaga::class.java)
@@ -520,9 +592,6 @@ class MenuRepository: MainViewMenu.Repository {
                     .orderBy(Producto_Table.ProductoId, false).querySingle()
             return lastProducto
         }
-
-
-
     }
 
 

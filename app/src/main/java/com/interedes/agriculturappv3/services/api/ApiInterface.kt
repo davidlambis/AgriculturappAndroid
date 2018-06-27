@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit
 import retrofit2.http.GET
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.interedes.agriculturappv3.modules.models.Notification.PostNotification
+import com.interedes.agriculturappv3.modules.models.Notification.ResponsePostNotification
 import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPlaga
 import com.interedes.agriculturappv3.modules.models.ofertas.*
 import com.interedes.agriculturappv3.modules.models.plagas.EnfermedadResponseApi
@@ -410,6 +412,12 @@ interface ApiInterface {
 
     //endregion
 
+    //region NOTIFICATION
+    @POST("fcm/send")
+    @Headers("Content-Type: application/json")
+    fun postSendNotifcation(@Header("Authorization") token: String,@Body body: PostNotification): Call<ResponsePostNotification>
+
+    //endregion
 
 
 
@@ -421,6 +429,8 @@ interface ApiInterface {
     companion object Factory {
 
 
+
+
         internal val okHttpClient = OkHttpClient.Builder()
                 .readTimeout(5, TimeUnit.MINUTES) //Tiempo de respuesta del servicio
                 .connectTimeout(5, TimeUnit.MINUTES)
@@ -430,7 +440,7 @@ interface ApiInterface {
                 .setLenient()
                 .create()*/
 
-        private val gson: Gson? = GsonBuilder()
+        private var gson: Gson? = GsonBuilder()
         .setDateFormat("yyyy-MM-dd'T'HH:mm")
         .create();
 
@@ -445,6 +455,18 @@ interface ApiInterface {
 
             return retrofit.create(ApiInterface::class.java);
         }
+
+        val BASE_URL_NOTIFICATIONS_FCM = "https://fcm.googleapis.com/"
+        fun getClienNotifcation(): ApiInterface? {
+            var retrofitNotifcation:Retrofit?=null
+                retrofitNotifcation = Retrofit.Builder()
+                        .baseUrl(BASE_URL_NOTIFICATIONS_FCM)
+                        .client(okHttpClient)
+                        .addConverterFactory(GsonConverterFactory.create(gson))
+                        .build()
+            return retrofitNotifcation.create(ApiInterface::class.java);
+        }
+
     }
 
 }

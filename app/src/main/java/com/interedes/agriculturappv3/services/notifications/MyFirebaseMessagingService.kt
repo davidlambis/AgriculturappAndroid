@@ -34,12 +34,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         //validate,change for splash activity
         val notificationIntent = Intent(this, MenuMainActivity::class.java)
-        /*if (SplashTheme.instance?.isAppRunning!!) {
+        /*if (MenuMainActivity.instance?.isAppRunning!!) {
             //Some action
         } else {
             //Show notification as usual
         }*/
-
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
         val pendingIntent = PendingIntent.getActivity(this,
@@ -50,16 +49,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationId = Random().nextInt(60000)
 
 
-        val bitmap = remoteMessage!!.data["image-url"]?.let { getBitmapfromUrl(it) }
+        val bitmap = remoteMessage!!.data["image_url"]?.let { getBitmapfromUrl(it) }
 
         val likeIntent = Intent(this, LikeService::class.java)
         likeIntent.putExtra(NOTIFICATION_ID_EXTRA, notificationId)
-        likeIntent.putExtra(IMAGE_URL_EXTRA, remoteMessage!!.data["image-url"])
+        likeIntent.putExtra(IMAGE_URL_EXTRA, remoteMessage!!.data["image_url"])
         val likePendingIntent = PendingIntent.getService(this,
                 notificationId + 1, likeIntent, PendingIntent.FLAG_ONE_SHOT)
 
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
 

@@ -180,6 +180,7 @@ class AccountRepository:IMainViewAccount.Repository {
         }
     }
 
+
     private fun updateUserFirebase(newDisplayName: String?, newLastName: String?,newIdentificacion: String?,phone:String?) {
         val childUpdates = HashMap<String?, Any?>()
         childUpdates["nombre"] = newDisplayName

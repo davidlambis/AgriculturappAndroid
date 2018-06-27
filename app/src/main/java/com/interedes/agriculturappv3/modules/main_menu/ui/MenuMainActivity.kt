@@ -64,6 +64,7 @@ import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
+import com.interedes.agriculturappv3.services.chat.ServiceUtils
 import com.interedes.agriculturappv3.services.notifications.DeleteTokenService
 import com.interedes.agriculturappv3.services.notifications.MyFirebaseInstanceIDService
 import com.interedes.agriculturappv3.services.resources.MenuBoomResources
@@ -207,7 +208,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         //Status Chat
-        presenter?.makeUserOnline()
+        presenter?.makeUserOnline(this)
         getListasIniciales()
 
         setupMenuFloating()
@@ -221,6 +222,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         var channelId = "1";
         var channel2 = "2";
 
+
+        /*
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             var notificationChannel =  NotificationChannel(channelId,
                     "Channel 1",NotificationManager.IMPORTANCE_HIGH);
@@ -240,7 +243,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             notificationChannel.setShowBadge(true);
             notificationManager.createNotificationChannel(notificationChannel2);
 
-        }
+        }*/
 
 
 
@@ -261,91 +264,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
 
-
-        /*var tokenFCM=getTokenFromPrefs()
-        if(tokenFCM!=null){
-            FirebaseInstanceId.getInstance().deleteInstanceId();
-        }
-
-        FirebaseInstanceId.getInstance().getToken();
-
-        Log.d("Firebase", "token MENU ACTIVITY:  "+ FirebaseInstanceId.getInstance().getToken());
-
-        var token= FirebaseInstanceId.getInstance().getToken()*/
-
-
-      //  if (checkPlayServices()) {
-       //     val intent = Intent(this, MyFirebaseInstanceIDService::class.java)
-        //    startService(intent)
-      //  }
-
-
-
-        /*
-        if (checkPlayServices()) {
-            if (Build.VERSION.SDK_INT >= 26) {
-                val intent = Intent(this, DeleteTokenService::class.java)
-                startForegroundService(intent)
-            }else{
-                val intent = Intent(this, DeleteTokenService::class.java)
-                startService(intent)
-            }
-        }*/
-
-
-        try {
-            // Check for current token
-            val originalToken = getTokenFromPrefs()
-            Log.d("TAG", "Token before deletion: $originalToken")
-
-            // Resets Instance ID and revokes all tokens.
-
-            Thread(Runnable {
-                try {
-                    FirebaseInstanceId.getInstance().deleteInstanceId()
-
-                    // Clear current saved token
-                    saveTokenToPrefs("")
-
-                    // Check for success of empty token
-                    val tokenCheck = getTokenFromPrefs()
-                    Log.d("TAG", "Token deleted. Proof: $tokenCheck")
-
-                    // Now manually call onTokenRefresh()
-                    Log.d("TAG", "Getting new token")
-                    FirebaseInstanceId.getInstance().token
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }).start()
-
-
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
     }
 
-     private fun saveTokenToPrefs(_token:String? )
-    {
-        // Access Shared Preferences
-        //var preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        //var editor = preferences.edit();
-
-        val preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-
-        // Save to SharedPreferences
-        //editor.putString("registration_id", _token);
-        //editor.apply();
-        preferences.edit().putString(Const.FIREBASE_TOKEN, _token).apply()
-    }
-
-    private fun  getTokenFromPrefs():String?
-    {
-        var preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        return preferences.getString(Const.FIREBASE_TOKEN, null);
-    }
 
 
 
@@ -944,13 +864,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         builder.setNegativeButton("Cancelar") { dialog, which -> Log.i("Dialogos", "Confirmacion Cancelada.") }
         builder.setMessage("¿Cerrar Sesión?")
         builder.setPositiveButton("Aceptar") { dialog, which ->
-
-            var userLogued=getLastUserLogued()
-            userLogued?.UsuarioRemembered = false
-            userLogued?.save()
-            presenter?.makeUserOffline()
+            val userLogued=getLastUserLogued()
+            //userLogued?.UsuarioRemembered = false
+            //userLogued?.save()
+            presenter?.makeUserOffline(this)
             presenter?.logOut(userLogued)
-
 
             startActivity(Intent(this, LoginActivity::class.java)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -1251,7 +1169,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         onMessageOk(R.color.colorPrimary, getString(R.string.on_connectividad))
 
 
-        presenter?.makeUserOnline()
+        presenter?.makeUserOnline(this)
 
         val usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
@@ -1276,7 +1194,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         retIntent.putExtra("state_conectivity", false)
         this?.sendBroadcast(retIntent)
         onMessageError(R.color.grey_luiyi, getString(R.string.off_connectividad))
-        presenter?.makeUserOffline()
+        presenter?.makeUserOffline(this)
 
     }
 
@@ -1318,11 +1236,19 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     override fun onDestroy() {
-        presenter?.onDestroy(this)
+
         isAppRunning = false;
+        presenter?.onDestroy(this)
+        Log.d("TAG SERVICE", "START RUN SERVICE")
         super.onDestroy()
     }
 
+    override fun onStart() {
+        super.onStart()
+        //mAuth.addAuthStateListener(mAuthListener);
+        //ServiceUtils.stopServiceFriendChat(getApplicationContext(), false);
+        ServiceUtils.startServiceFriendChat(getApplicationContext())
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

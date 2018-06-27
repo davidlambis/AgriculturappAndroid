@@ -138,12 +138,12 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
         interactor?.getListSyncEnfermedadesAndTratamiento()
     }
 
-    override fun makeUserOnline() {
-        interactor?.makeUserOnline(checkConnection()!!)
+    override fun makeUserOnline(context: Context) {
+        interactor?.makeUserOnline(checkConnection()!!,context)
     }
 
-    override fun makeUserOffline() {
-        interactor?.makeUserOffline(checkConnection()!!)
+    override fun makeUserOffline(context: Context) {
+        interactor?.makeUserOffline(checkConnection()!!,context)
     }
 
     //Online

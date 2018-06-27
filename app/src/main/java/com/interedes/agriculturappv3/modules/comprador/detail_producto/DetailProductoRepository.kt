@@ -19,9 +19,6 @@ import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida_
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.interedes.agriculturappv3.services.resources.CategoriaMediaResources
-import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
-import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.squareup.picasso.Picasso
@@ -33,9 +30,14 @@ import java.math.MathContext
 import java.text.SimpleDateFormat
 import java.util.*
 import android.R.attr.keySet
+import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
+import com.interedes.agriculturappv3.modules.models.Notification.DataPostNotifcation
+import com.interedes.agriculturappv3.modules.models.Notification.PostNotification
+import com.interedes.agriculturappv3.modules.models.Notification.ResponsePostNotification
 import com.interedes.agriculturappv3.modules.models.chat.Room
-import com.interedes.agriculturappv3.services.resources.Chat_Resources
+import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.*
 
 
 class DetailProductoRepository :IMainViewDetailProducto.Repository {
@@ -44,6 +46,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
     var eventBus: EventBus? = null
     var apiService: ApiInterface? = null
+    var apiServiceFcm: ApiInterface? = null
      var mUserDBRef: DatabaseReference? = null
     var mMessagesDBRef: DatabaseReference? = null
     var mRoomDBRef: DatabaseReference? = null
@@ -56,6 +59,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     init {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
+        apiServiceFcm= ApiInterface.getClienNotifcation()
         mUserDBRef = Chat_Resources.mUserDBRef
         mMessagesDBRef = Chat_Resources.mMessagesDBRef
         mRoomDBRef = Chat_Resources.mRoomDBRef
@@ -190,12 +194,13 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                             mCompradorSenderId=FirebaseAuth.getInstance().currentUser!!.uid
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                         }
-                       // if(user?.Status.equals(Status_Chat.ONLINE)){
-                               findRoomUser(user,oferta)
-                        // sendMessageToFirebase(message, senderId, mReceiverId)
-                       // }else{
-                        //    postEvenNotifySms(RequestEventDetalleProducto.OK_SEND_EVENT_SMS,oferta)
-                        //}
+
+                       if(user?.Status.equals(Status_Chat.ONLINE)){
+                               findRoomUser(user!!,oferta)
+                            //sendMessageToFirebase(message, senderId, mReceiverId)
+                        }else{
+                            postEvenNotifySms(RequestEventDetalleProducto.OK_SEND_EVENT_SMS,oferta)
+                        }
                     }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -207,7 +212,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         }
     }
 
-    private fun findRoomUser(user: UserFirebase?,oferta:Oferta) {
+    private fun findRoomUser(userFirebase: UserFirebase,oferta:Oferta) {
         //val query = mRoomDBRef?.child("/"+mCompradorSenderId+"/"+mProductorReceiverId)
         val query = mRoomDBRef?.child(mCompradorSenderId)?.orderByChild("user_To")?.equalTo(Chat_Resources.getRoomById(mProductorReceiverId))
         query?.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -220,9 +225,9 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                         roomId=room?.IdRoom
                     }
                     val message=getMessageOferta(oferta)
-                    sendMessageToFirebase(message)
+                    sendMessageToFirebase(message,oferta,userFirebase)
                 }else{
-                    createRoomUser(user,mProductorReceiverId,true,oferta)
+                    createRoomUser(userFirebase,mProductorReceiverId,true,oferta,userFirebase)
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {
@@ -237,7 +242,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         return format1.format(date)
     }
 
-    private fun createRoomUser(user: UserFirebase?,idProductor:String?,roomComprador:Boolean,oferta:Oferta) {
+    private fun createRoomUser(user: UserFirebase?,idProductor:String?,roomComprador:Boolean,oferta:Oferta,userFirebase:UserFirebase) {
         var date= Calendar.getInstance().time
         var dateString =getDateFormatApi(date)
 
@@ -249,7 +254,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                         var error = task.exception
                         postEventError(RequestEventDetalleProducto.ERROR_EVENT, error.toString())
                     } else {
-                        createRoomUser(user,mProductorReceiverId,false,oferta)
+                        createRoomUser(user,mProductorReceiverId,false,oferta,userFirebase)
                     }
                 })
             }else{
@@ -260,12 +265,13 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                         postEventError(RequestEventDetalleProducto.ERROR_EVENT, error.toString())
                         //error
                     } else {
-                        createRoomUser(user,null,false,oferta)
+                        createRoomUser(user,null,false,oferta,userFirebase)
                     }
                 })
             }
         }else{
             updateDatesRoomUser()
+
 
             var roomDateComprador= mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId)+"/date")
             roomDateComprador?.setValue(ServerValue.TIMESTAMP);
@@ -281,21 +287,19 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
              val message=getMessageOferta(oferta)
 
 
-            sendMessageToFirebase(message)
+            sendMessageToFirebase(message,oferta,userFirebase)
         }
     }
 
     private fun getMessageOferta(oferta: Oferta): String {
 
         var message= ""
-
         var disponibilidad = ""
         var precioOferta = ""
         var productoCantidad=""
         var calidad=""
 
         val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
-
 
         if (oferta?.Cantidad.toString().contains(".0")) {
             disponibilidad = String.format("%.0f",
@@ -308,21 +312,15 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         calidad= String.format("%s",producto?.NombreCalidad)
 
 
-
         precioOferta=String.format("$ %,.0f %2s",
                 oferta?.Valor_Oferta, oferta?.NombreUnidadMedidaPrecio)
 
-
         val usuarioTo= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
-
-
 
          message=String.format("%s %s te oferto %s a un precio de %s por el cultivo de %s de %s"
                 ,usuarioTo?.Nombre,usuarioTo?.Apellidos,productoCantidad,precioOferta,producto?.Nombre,calidad)
 
-
         return  message
-
     }
 
     private fun updateDatesRoomUser() {
@@ -344,7 +342,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         lastMessageRoomProductor?.setValue(message)
     }
 
-    private fun sendMessageToFirebase(message: String) {
+    private fun sendMessageToFirebase(message: String,oferta:Oferta,userFirebase: UserFirebase) {
         var time= System.currentTimeMillis()
         val dateFormat = SimpleDateFormat("MM/dd/yyyy")
         val date = Date()
@@ -363,9 +361,50 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
             } else {
                 updateDatesRoomUser()
                 updateLastMessageRoomUser(newMsg.message)
-                postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
+
+                val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
+
+                if(userFirebase.StatusTokenFcm!=null){
+                    if(userFirebase.StatusTokenFcm==true){
+                        var imagen=""
+                        if(producto?.Imagen!!.contains("Productos")){
+                            imagen=S3Resources.RootImage+"${producto.Imagen}"
+                        }else{
+                            imagen="https://s3.amazonaws.com/agriculturapp/Notification/notification_products.jpg"
+                        }
+                        sendNotifcationOferta(message,userFirebase.TokenFcm!!,imagen)
+                    }
+                }
             }
         }
+    }
+
+    fun sendNotifcationOferta(message:String, token:String,imageUrl:String){
+        val dataPostNotification= DataPostNotifcation(NotificationTypeResources.NOTIFYCATION_TYPE_OFERTA,message,imageUrl)
+        val postNotification = PostNotification(token,dataPostNotification
+                )
+
+
+
+
+
+
+        val call = apiServiceFcm?.postSendNotifcation("Key="+Const.FIREBASE_TOKEN,postNotification)
+        call?.enqueue(object : Callback<ResponsePostNotification> {
+            override fun onResponse(call: Call<ResponsePostNotification>?, response: Response<ResponsePostNotification>?) {
+                if (response != null && response.code() == 200) {
+                    val value = response.body()
+                    postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
+                    //postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
+                } else {
+                    postEventError(RequestEventDetalleProducto.ERROR_EVENT, "Comprueba tu conexión")
+                    Log.e("error", response?.message().toString())
+                }
+            }
+            override fun onFailure(call: Call<ResponsePostNotification>?, t: Throwable?) {
+                postEventError(RequestEventDetalleProducto.ERROR_EVENT, "Comprueba tu conexión")
+            }
+        })
     }
 
     override fun saveOfertaLocal(oferta: Oferta, detalleOferta: DetalleOferta){

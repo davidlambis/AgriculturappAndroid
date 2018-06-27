@@ -9,6 +9,7 @@ import android.content.Intent
 import android.preference.PreferenceManager
 import android.content.SharedPreferences
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.media.RingtoneManager
 import android.net.Uri
@@ -16,6 +17,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.BaseColumns
 import android.provider.ContactsContract
+import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.telephony.SmsMessage
@@ -29,6 +31,8 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
     val SMS_BUNDLE = "pdus"
     var mChannel: NotificationChannel? = null
     var notifManager: NotificationManager? = null
+
+    private val ADMIN_CHANNEL_ID = "admin_channel"
 
     /**
      * onReceive
@@ -107,7 +111,11 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
         if (notifManager == null) {
             notifManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         }
+        val notificationId = Random().nextInt(60000)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+
             val builder: NotificationCompat.Builder
             val intent = Intent(context, Chat_Sms_Activity::class.java)
 
@@ -117,19 +125,25 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
             intent.putExtra(TAG,smsAddress)
             intent.putExtra(TAG_USER_NAME,messageAdress)
 
+
+
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val pendingIntent: PendingIntent
+            setupChannels(context)
+            /*
             val importance = NotificationManager.IMPORTANCE_HIGH
             if (mChannel == null) {
                 mChannel = NotificationChannel("0", title, importance)
                 mChannel?.setDescription(description)
                 mChannel?.enableVibration(true)
                 notifManager?.createNotificationChannel(mChannel)
-            }
-            builder = NotificationCompat.Builder(context, "0")
+            }*/
+
+
+            builder = NotificationCompat.Builder(context, ADMIN_CHANNEL_ID)
 
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            pendingIntent = PendingIntent.getActivity(context, 1251, intent, PendingIntent.FLAG_ONE_SHOT)
+            pendingIntent = PendingIntent.getActivity(context, notificationId+1, intent, PendingIntent.FLAG_ONE_SHOT)
             builder.setContentTitle(title)
                     .setSmallIcon(getNotificationIcon()) // required
                     .setContentText(description)  // required
@@ -142,7 +156,7 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                     .setShowWhen(true)
                     .setWhen(Calendar.getInstance().getTimeInMillis())
             val notification = builder.build()
-            notifManager?.notify(0, notification)
+            notifManager?.notify(notificationId, notification)
         } else {
 
             val intent = Intent(context, Chat_Sms_Activity::class.java)
@@ -153,7 +167,7 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             var pendingIntent: PendingIntent? = null
 
-            pendingIntent = PendingIntent.getActivity(context, 1251, intent, PendingIntent.FLAG_ONE_SHOT)
+            pendingIntent = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_ONE_SHOT)
 
             val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             val notificationBuilder = NotificationCompat.Builder(context)
@@ -167,13 +181,30 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                     .setStyle(NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(description))
 
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(1251, notificationBuilder.build())
+            notificationManager.notify(notificationId, notificationBuilder.build())
         }
     }
 
     private fun getNotificationIcon(): Int {
         val useWhiteIcon = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
         return if (useWhiteIcon) R.mipmap.ic_launcher else R.mipmap.ic_launcher
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private fun setupChannels(context:Context) {
+        val adminChannelName = context.getString(R.string.notifications_admin_channel_name)
+        val adminChannelDescription = context.getString(R.string.notifications_admin_channel_description)
+
+        val adminChannel: NotificationChannel
+        adminChannel = NotificationChannel(ADMIN_CHANNEL_ID, adminChannelName, NotificationManager.IMPORTANCE_LOW)
+        adminChannel.description = adminChannelDescription
+        adminChannel.enableLights(true)
+        adminChannel.lightColor = Color.RED
+        adminChannel.enableVibration(true)
+        if (notifManager != null) {
+            notifManager!!.createNotificationChannel(adminChannel)
+        }
     }
 
 

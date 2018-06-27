@@ -1,5 +1,8 @@
 package com.interedes.agriculturappv3.activities.login.ui
 
+import android.content.Context
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+
 interface LoginView {
 
     fun showProgress()
@@ -10,7 +13,7 @@ interface LoginView {
     fun validarCampos(): Boolean?
     fun ingresar()
     fun errorIngresar(error: String?)
-    fun navigateToMainActivity()
+    fun navigateToMainActivity(usuario:Usuario?)
 
     fun onMessageOk(colorPrimary: Int, message: String?)
     fun onMessageError(colorPrimary: Int, message: String?)

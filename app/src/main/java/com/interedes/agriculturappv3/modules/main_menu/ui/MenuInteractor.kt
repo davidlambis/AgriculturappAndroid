@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.modules.main_menu.ui
 
+import android.content.Context
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 
 class MenuInteractor:MainViewMenu.Interactor {
@@ -31,12 +32,12 @@ class MenuInteractor:MainViewMenu.Interactor {
        repository?.getListSyncEnfermedadesAndTratamiento()
     }
 
-    override fun makeUserOnline(checkConection:Boolean) {
-      repository?.makeUserOnline(checkConection)
+    override fun makeUserOnline(checkConection:Boolean,context: Context) {
+      repository?.makeUserOnline(checkConection,context)
     }
 
-    override fun makeUserOffline(checkConection:Boolean) {
-        repository?.makeUserOffline(checkConection)
+    override fun makeUserOffline(checkConection:Boolean,context: Context) {
+        repository?.makeUserOffline(checkConection,context)
     }
 
     //Online
