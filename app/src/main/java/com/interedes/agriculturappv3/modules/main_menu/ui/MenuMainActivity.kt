@@ -15,6 +15,7 @@ import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.preference.PreferenceManager
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -44,8 +45,12 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
 import com.crashlytics.android.Crashlytics
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.interedes.agriculturappv3.AgriculturApplication
@@ -58,6 +63,8 @@ import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
+import com.interedes.agriculturappv3.services.notifications.DeleteTokenService
+import com.interedes.agriculturappv3.services.notifications.MyFirebaseInstanceIDService
 import com.interedes.agriculturappv3.services.resources.MenuBoomResources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.services.JobSyncService
@@ -133,6 +140,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private var IS_IMPORT = false
     private var IS_EXPORT = false
 
+
+    private val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
 
     companion object {
         var instance: MenuMainActivity? = null
@@ -247,6 +256,75 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     }
                 });
 
+
+
+
+
+        /*var tokenFCM=getTokenFromPrefs()
+        if(tokenFCM!=null){
+            FirebaseInstanceId.getInstance().deleteInstanceId();
+        }
+
+        FirebaseInstanceId.getInstance().getToken();
+
+        Log.d("Firebase", "token MENU ACTIVITY:  "+ FirebaseInstanceId.getInstance().getToken());
+
+        var token= FirebaseInstanceId.getInstance().getToken()*/
+
+
+      //  if (checkPlayServices()) {
+       //     val intent = Intent(this, MyFirebaseInstanceIDService::class.java)
+        //    startService(intent)
+      //  }
+
+
+
+        if (checkPlayServices()) {
+            if (Build.VERSION.SDK_INT >= 26) {
+                val intent = Intent(this, DeleteTokenService::class.java)
+                startForegroundService(intent)
+            }else{
+                val intent = Intent(this, DeleteTokenService::class.java)
+                startService(intent)
+            }
+        }
+    }
+
+
+    fun getTokenFromPrefs():String?
+    {
+        var  preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return preferences.getString(Const.FIREBASE_TOKEN, null);
+
+
+    }
+
+    fun registerWithNotificationHubs() {
+        //Log.i(FragmentActivity.TAG, " Registering with Notification Hubs")
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            //RegistrationIntentService(this@MenuActivity, user, NEW_LOGIN_USER)
+            //val intent = Intent(this, RegistrationIntentService::class.java)
+            //startService(intent)
+        }
+    }
+
+
+    fun  checkPlayServices():Boolean {
+        var apiAvailability = GoogleApiAvailability.getInstance();
+        var resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                //Log.i(TAG, "This device is not supported by Google Play Services.");
+                onMessageToast(R.color.red_900,"This device is not supported by Google Play Services.");
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     private fun septupInjection() {
@@ -822,6 +900,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             userLogued?.save()
             presenter?.makeUserOffline()
             presenter?.logOut(userLogued)
+
 
             startActivity(Intent(this, LoginActivity::class.java)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))

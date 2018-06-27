@@ -12,6 +12,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
+import android.view.Menu
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.interedes.agriculturappv3.R
@@ -31,7 +32,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
 
-        val notificationIntent = Intent(this, SplashActivity::class.java)
+        //validate,change for splash activity
+        val notificationIntent = Intent(this, MenuMainActivity::class.java)
         /*if (SplashTheme.instance?.isAppRunning!!) {
             //Some action
         } else {

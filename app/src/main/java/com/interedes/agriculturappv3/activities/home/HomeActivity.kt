@@ -129,7 +129,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
         var usuario= getLastUserLogued()
         if (usuario != null) {
             val i = Intent(this, MenuMainActivity::class.java)
-            i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            //i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(i)
         }
     }

@@ -104,7 +104,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
             R.id.tvRegistrarse -> {
                 tvRegistrarse.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
                 val i = Intent(this, RegisterRolActivity::class.java)
-                i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                //i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(i)
             }
             R.id.tvResetPassword -> {
@@ -229,11 +229,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
 
     override fun navigateToMainActivity() {
         val i = Intent(this, MenuMainActivity::class.java)
-
-
-
-
-        i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        //i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(i)
     }
 
