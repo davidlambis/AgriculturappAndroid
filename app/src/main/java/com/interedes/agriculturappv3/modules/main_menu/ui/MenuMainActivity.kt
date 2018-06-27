@@ -6,6 +6,7 @@ import android.app.*
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -87,6 +88,7 @@ import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.IOException
 import java.util.*
 
 
@@ -279,6 +281,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
 
+        /*
         if (checkPlayServices()) {
             if (Build.VERSION.SDK_INT >= 26) {
                 val intent = Intent(this, DeleteTokenService::class.java)
@@ -287,17 +290,64 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 val intent = Intent(this, DeleteTokenService::class.java)
                 startService(intent)
             }
+        }*/
+
+
+        try {
+            // Check for current token
+            val originalToken = getTokenFromPrefs()
+            Log.d("TAG", "Token before deletion: $originalToken")
+
+            // Resets Instance ID and revokes all tokens.
+
+            Thread(Runnable {
+                try {
+                    FirebaseInstanceId.getInstance().deleteInstanceId()
+
+                    // Clear current saved token
+                    saveTokenToPrefs("")
+
+                    // Check for success of empty token
+                    val tokenCheck = getTokenFromPrefs()
+                    Log.d("TAG", "Token deleted. Proof: $tokenCheck")
+
+                    // Now manually call onTokenRefresh()
+                    Log.d("TAG", "Getting new token")
+                    FirebaseInstanceId.getInstance().token
+
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }).start()
+
+
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
+
     }
 
-
-    fun getTokenFromPrefs():String?
+     private fun saveTokenToPrefs(_token:String? )
     {
-        var  preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return preferences.getString(Const.FIREBASE_TOKEN, null);
+        // Access Shared Preferences
+        //var preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //var editor = preferences.edit();
 
+        val preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
 
+        // Save to SharedPreferences
+        //editor.putString("registration_id", _token);
+        //editor.apply();
+        preferences.edit().putString(Const.FIREBASE_TOKEN, _token).apply()
     }
+
+    private fun  getTokenFromPrefs():String?
+    {
+        var preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return preferences.getString(Const.FIREBASE_TOKEN, null);
+    }
+
+
 
     fun registerWithNotificationHubs() {
         //Log.i(FragmentActivity.TAG, " Registering with Notification Hubs")
