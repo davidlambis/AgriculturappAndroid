@@ -11,8 +11,6 @@ import com.interedes.agriculturappv3.services.Const
 class ProgressIntentService: IntentService("ProgressIntentService") {
 
     private val TAG = ProgressIntentService::class.java.simpleName
-
-
     override fun onHandleIntent(intent: Intent?) {
         if (intent != null) {
             val action = intent.action
@@ -32,10 +30,6 @@ class ProgressIntentService: IntentService("ProgressIntentService") {
                     .setSmallIcon(android.R.drawable.stat_sys_download_done)
                     .setContentTitle("Servicio en segundo plano")
                     .setContentText("Procesando...")
-
-
-
-
             // Bucle de simulación
             for (i in 1..10) {
 

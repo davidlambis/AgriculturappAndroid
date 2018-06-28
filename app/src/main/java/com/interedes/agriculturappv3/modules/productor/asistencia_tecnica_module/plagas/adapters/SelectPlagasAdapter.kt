@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_modul
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Handler
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -76,7 +77,14 @@ class SelectPlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapt
                         val foto = firtsFoto.blobImagen?.blob
                         data.blobImagenEnfermedad= Blob(firtsFoto.blobImagen?.blob)
                         val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
-                        imgPlaga.setImageBitmap(bitmapBlob)
+                        //imgPlaga.setImageBitmap(bitmapBlob)
+
+                        val uiHandler = Handler()
+                        uiHandler.post( Runnable() {
+                            imgPlaga.setImageBitmap(bitmapBlob)
+                        });
+
+
                     }catch (ex:Exception){
                         var ss= ex.toString()
                         Log.d("Convert Image", "defaultValue = " + ss);

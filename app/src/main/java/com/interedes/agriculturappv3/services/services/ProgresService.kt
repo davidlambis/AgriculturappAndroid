@@ -86,7 +86,6 @@ class ProgresService: JobIntentService() {
         // Emisión para avisar que se terminó el servicio
         //val localIntent = Intent(Const.ACTION_PROGRESS_EXIT)
         //LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent)
-
         //Log.d(TAG, "Servicio destruido...")
     }
 
@@ -102,7 +101,6 @@ class ProgresService: JobIntentService() {
         val builder = NotificationCompat.Builder(this, "2")
                 .setContentTitle("")
                 .setContentText("")
-
         startForeground(1, builder.build())
     }
 }

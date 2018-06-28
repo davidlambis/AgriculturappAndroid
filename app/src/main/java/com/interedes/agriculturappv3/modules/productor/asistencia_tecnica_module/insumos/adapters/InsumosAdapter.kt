@@ -19,6 +19,10 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.insumos.Insumo_Table
 import com.interedes.agriculturappv3.modules.models.tratamiento.Tratamiento
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.interedes.agriculturappv3.R.id.imageView
+import android.graphics.Bitmap
+import android.os.Handler
+
 
 class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<InsumosAdapter.ViewHolder>() {
 
@@ -63,6 +67,8 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+
         fun bindItems(data: Tratamiento, pos: Int) = with(itemView) {
             val txt_nombre_insumo: TextView = itemView.findViewById(R.id.txtNombreComercial)
             val image_view_insumo: ImageView = itemView.findViewById(R.id.imageViewInsumo)
@@ -83,7 +89,13 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
                         val foto = firtsInsumo.blobImagen?.blob
                         //data.blobImagenEnfermedad= Blob(firtsFoto.blobImagen?.blob)
                         val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
-                        image_view_insumo.setImageBitmap(bitmapBlob)
+                       // image_view_insumo.setImageBitmap(bitmapBlob)
+
+
+                        val uiHandler = Handler()
+                        uiHandler.post( Runnable() {
+                            image_view_insumo.setImageBitmap(bitmapBlob)
+                        });
 
                     }catch (ex:Exception){
                         var ss= ex.toString()
@@ -104,6 +116,8 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
 
             txtrating_bar.setText(context.getString(R.string.calificacion_tratamiento,data?.CalificacionPromedio))
 
+
+
             /*
             expandable.setExpandingListener(object : ExpandingListener {
                 override fun onExpanded() {
@@ -122,6 +136,20 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
             }
         }
     }
+
+/*
+    //Used to display bitmap in the UI thread
+    class BitmapDisplayer(var bitmap: Bitmap?) : Runnable {
+        override fun run() {
+            if (imageViewReused(photoToLoad))
+                return
+            if (bitmap != null)
+                photoToLoad.imageView.setImageBitmap(bitmap)
+            else
+                photoToLoad.imageView.setImageResource(stub_id)
+        }
+    }*/
+
 
 
 }

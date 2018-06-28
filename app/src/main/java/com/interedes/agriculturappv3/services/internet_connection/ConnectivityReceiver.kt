@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.util.Log
 import com.interedes.agriculturappv3.AgriculturApplication
 
 class ConnectivityReceiver : BroadcastReceiver() {
@@ -25,6 +26,8 @@ class ConnectivityReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, p1: Intent?) {
         val isConnected = checkConnection(context)
         if (connectivityReceiverListener != null)
+            Log.d("CONECTION", "Refresh service conection: ")
+
             connectivityReceiverListener!!.onNetworkConnectionChanged(isConnected)
     }
 

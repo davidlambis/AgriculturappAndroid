@@ -8,6 +8,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -62,6 +63,8 @@ import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
+import com.interedes.agriculturappv3.modules.models.insumos.Insumo
+import com.interedes.agriculturappv3.modules.models.insumos.Insumo_Table
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.services.chat.ServiceUtils
@@ -69,6 +72,8 @@ import com.interedes.agriculturappv3.services.notifications.DeleteTokenService
 import com.interedes.agriculturappv3.services.notifications.MyFirebaseInstanceIDService
 import com.interedes.agriculturappv3.services.resources.MenuBoomResources
 import com.interedes.agriculturappv3.services.resources.RolResources
+import com.interedes.agriculturappv3.services.resources.S3Resources
+import com.interedes.agriculturappv3.services.services.InsumoService
 import com.interedes.agriculturappv3.services.services.JobSyncService
 import com.interedes.agriculturappv3.services.services.ProgresService
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -81,15 +86,15 @@ import com.nightonke.boommenu.Types.BoomType
 import com.nightonke.boommenu.Types.ButtonType
 import com.nightonke.boommenu.Types.PlaceType
 import com.nightonke.boommenu.Util
+import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import de.hdodenhof.circleimageview.CircleImageView
+import id.zelory.compressor.Compressor
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_sync_data.view.*
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 import java.util.*
 
 
@@ -144,12 +149,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private var IS_EXPORT = false
 
 
+
     private val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
 
     companion object {
         var instance: MenuMainActivity? = null
-
-
     }
 
 
@@ -215,12 +219,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         septupInjection()
 
-
-
         //var notificationManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        var channelId = "1";
-        var channel2 = "2";
+        //val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        //var channelId = "1";
+       // var channel2 = "2";
 
 
         /*
@@ -245,28 +247,16 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         }*/
 
-
-
-        FileLoader.with(this)
-                .load("https://upload.wikimedia.org/wikipedia/commons/3/3c/Enrique_Simonet_-_Marina_veneciana_6MB.jpg",false) //2nd parameter is optioal, pass true to force load from network
-                //.fromDirectory("test4", FileLoader.DIR_EXTERNAL_PUBLIC)
-                .fromDirectory(Environment.DIRECTORY_PICTURES, FileLoader.DIR_EXTERNAL_PUBLIC)
-                .asFile( object:FileRequestListener<File> {
-                    override fun onLoad(request: FileLoadRequest?, response: FileResponse<File>?) {
-                        var loadedFile = response?.getBody();
-                    }
-
-                    override fun onError(request: FileLoadRequest?, error : Throwable?) {
-                     var error = error.toString()
-                    }
-                });
-
-
-
-
+        ///loadImagesProductos()
     }
 
-
+    override fun syncFotosInsumos() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(Intent(this, InsumoService::class.java))
+        } else {
+            startService(Intent(this, InsumoService::class.java))
+        }
+    }
 
 
     fun registerWithNotificationHubs() {
@@ -303,8 +293,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
             }
         }
-
-
         /*var usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
             presenter?.syncQuantityData(true)
@@ -418,7 +406,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                                     if (response) {
                                         startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE_BACKUP)
                                     }
-
                                 }
                             } else {
                                 val response = doPermissionGrantedStuffs()

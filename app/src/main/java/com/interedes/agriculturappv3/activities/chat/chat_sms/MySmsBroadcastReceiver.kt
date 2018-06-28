@@ -75,7 +75,6 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                     }
 
 
-
                     displayCustomNotificationForOrders(messageAdress, messageContent, context,smsAddress,messageAdress)
                     val retIntent = Intent(Const.SERVICE_RECYVE_MESSAGE)
                     retIntent.putExtra("new_message", smsMessageStr)
@@ -126,7 +125,6 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
             intent.putExtra(TAG_USER_NAME,messageAdress)
 
 
-
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val pendingIntent: PendingIntent
             setupChannels(context)
@@ -138,8 +136,6 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                 mChannel?.enableVibration(true)
                 notifManager?.createNotificationChannel(mChannel)
             }*/
-
-
             builder = NotificationCompat.Builder(context, ADMIN_CHANNEL_ID)
 
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -149,6 +145,8 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                     .setContentText(description)  // required
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)
+                    .setStyle( NotificationCompat.BigTextStyle()
+                            .bigText(description))
                     .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_notification))
                     .setBadgeIconType(R.mipmap.ic_launcher_notification)
                     .setContentIntent(pendingIntent)

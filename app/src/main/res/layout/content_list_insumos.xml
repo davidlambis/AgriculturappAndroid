@@ -64,7 +64,7 @@
                             android:layout_centerInParent="true"
                             android:adjustViewBounds="true"
                             android:scaleType="centerInside"
-                            android:src="@drawable/aguacate" />
+                            android:src="@drawable/empty_insumo" />
 
                       <!--  <com.robertlevonyan.views.expandable.Expandable
                             android:id="@+id/expandable"

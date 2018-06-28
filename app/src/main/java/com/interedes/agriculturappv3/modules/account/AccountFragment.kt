@@ -590,6 +590,8 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     private fun saveDataUserLogued() {
         var usuario=presenter?.getUserLogued()
         if(imageAccountGlobal!=null){
+
+
             /*
             userLogued?.blobImagenUser = Blob(imageAccountGlobal)
             val stringBuilder = StringBuilder()

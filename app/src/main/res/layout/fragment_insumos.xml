@@ -38,6 +38,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <include layout="@layout/content_recyclerview" />
+    <include layout="@layout/content_list_recycler_view" />
 
 </LinearLayout>

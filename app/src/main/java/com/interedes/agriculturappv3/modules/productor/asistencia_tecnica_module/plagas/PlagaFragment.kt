@@ -24,13 +24,17 @@ import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.plagas.adapters.TipoProductosAdapter
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import kotlinx.android.synthetic.main.activity_menu_main.*
-import kotlinx.android.synthetic.main.content_recyclerview.*
-import kotlinx.android.synthetic.main.content_recyclerview.view.*
 import kotlinx.android.synthetic.main.dialog_list_general.view.*
 import kotlinx.android.synthetic.main.fragment_plaga.*
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.plagas.adapters.SelectPlagasAdapter
 import com.raizlabs.android.dbflow.data.Blob
 import kotlinx.android.synthetic.main.content_list_plagas.view.*
+import kotlinx.android.synthetic.main.content_list_recycler_view.*
+
+import kotlinx.android.synthetic.main.content_list_recycler_view.view.*
+
+
+
 import kotlinx.android.synthetic.main.dialog_description.view.*
 
 

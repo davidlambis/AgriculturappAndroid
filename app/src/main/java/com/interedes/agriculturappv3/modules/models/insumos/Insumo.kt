@@ -60,6 +60,9 @@ data class Insumo(@PrimaryKey
                   @Column(name = "NombreTipoInsumo")
                   var NombreTipoInsumo: String? = null,
 
+                  @Column(getterName = "getFotoLoaded")
+                  var FotoLoaded: Boolean? = false,
+
                   @SerializedName("Laboratorio")
                   var Laboratorio: Laboratorio?=Laboratorio(),
 

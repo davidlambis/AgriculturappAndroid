@@ -17,7 +17,7 @@ import com.interedes.agriculturappv3.modules.models.tratamiento.Tratamiento
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.insumos.adapters.InsumosAdapter
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.tratamiento.TratamientoFragment
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
-import kotlinx.android.synthetic.main.content_recyclerview.*
+import kotlinx.android.synthetic.main.content_list_recycler_view.*
 import kotlinx.android.synthetic.main.fragment_insumos.*
 class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
 

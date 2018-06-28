@@ -24,6 +24,11 @@ import com.robertlevonyan.views.expandable.ExpandingListener
 import kotlinx.android.synthetic.main.content_list_plagas.view.*
 import android.graphics.Bitmap
 import java.io.ByteArrayOutputStream
+import android.R.attr.bitmap
+import android.os.Handler
+import com.interedes.agriculturappv3.R.id.imageView
+
+
 
 
 class PlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapter<PlagasAdapter.ViewHolder>() {
@@ -94,7 +99,13 @@ class PlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapter<Pla
                         val foto = firtsFoto.blobImagen?.blob
                         data.blobImagenEnfermedad= Blob(firtsFoto.blobImagen?.blob)
                         val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
-                        image_enfermedad.setImageBitmap(bitmapBlob)
+
+
+                        val uiHandler = Handler()
+                        uiHandler.post( Runnable() {
+                            image_enfermedad.setImageBitmap(bitmapBlob)
+                        });
+
                         data.DescripcionTipoEnfermedad=firtsFoto.Descripcion
                         //txt_descripcion_enfermedad.text=firtsFoto.Descripcion
                     }catch (ex:Exception){
@@ -107,7 +118,12 @@ class PlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapter<Pla
                 val bos = ByteArrayOutputStream()
                 largeIcon.compress(Bitmap.CompressFormat.PNG, 100, bos)
                 data.blobImagenEnfermedad=Blob(bos.toByteArray())
-                image_enfermedad.setImageBitmap(largeIcon)
+                ///image_enfermedad.setImageBitmap(largeIcon)
+
+                val uiHandler = Handler()
+                uiHandler.post( Runnable() {
+                    image_enfermedad.setImageBitmap(largeIcon)
+                });
             }
            // image_enfermedad.setImageResource(data.Imagen!!)
            // txt_descripcion_enfermedad.text = data.Descripcion

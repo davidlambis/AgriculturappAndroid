@@ -15,7 +15,7 @@ data class RequestEventMainMenu (var eventType: Int,
 
         val SYNC_RESUME=3
         val SYNC_RESUME_AUTOMATIC=4
-
+        val SYNC_FOTOS_INSUMOS=5
 
 
     }

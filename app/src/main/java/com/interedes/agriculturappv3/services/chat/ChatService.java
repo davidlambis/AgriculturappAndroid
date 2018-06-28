@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.Binder;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.provider.Settings;
@@ -30,36 +31,52 @@ import java.util.Map;
 
 public class ChatService extends Service {
 
-    private static ServiceConnection connectionServiceFriendChatForStart = null;
-    private static ServiceConnection connectionServiceFriendChatForDestroy = null;
 
     private static String TAG = "FriendChatService";
     // Binder given to clients
     public final IBinder mBinder = new LocalBinder();
-    public Map<String, Boolean> mapMark;
-    public Map<String, Query> mapQuery;
-    public Map<String, ChildEventListener> mapChildEventListenerMap;
-    public Map<String, Bitmap> mapBitmap;
-    public ArrayList<String> listKey;
-    //public ListFriend listFriend;
-    //public ArrayList<Group> listGroup;
     public CountDownTimer updateOnline;
 
     public ChatService() {
     }
 
-
     @Override
     public void onCreate() {
         super.onCreate();
+        //startForeground(1,new Notification());
+    }
 
-        startForeground(1,new Notification());
-        mapMark = new HashMap<>();
-        mapQuery = new HashMap<>();
-        mapChildEventListenerMap = new HashMap<>();
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "OnStartService");
 
-        listKey = new ArrayList<>();
-        mapBitmap = new HashMap<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            Notification.Builder builder = new Notification.Builder(this, "")
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText("")
+                    .setAutoCancel(true);
+
+            Notification notification = builder.build();
+            startForeground(1, notification);
+
+        } else {
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText("")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true);
+
+            Notification notification = builder.build();
+
+            startForeground(1, notification);
+        }
+
+
+
+
+
         updateOnline = new CountDownTimer(System.currentTimeMillis(), Const.Companion.getTIME_TO_REFRESH()) {
             @Override
             public void onTick(long l) {
@@ -72,41 +89,6 @@ public class ChatService extends Service {
             }
         };
         updateOnline.start();
-    }
-
-
-    public void stopNotify(String id) {
-        mapMark.put(id, false);
-    }
-
-    public void createNotify(String name, String content, int id, Bitmap icon, boolean isGroup) {
-        Intent activityIntent = new Intent(this, MenuMainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_ONE_SHOT);
-        NotificationCompat.Builder notificationBuilder = new
-                NotificationCompat.Builder(this)
-                .setLargeIcon(icon)
-                .setContentTitle(name)
-                .setContentText(content)
-                .setContentIntent(pendingIntent)
-                .setVibrate(new long[] { 1000, 1000})
-                .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
-                .setAutoCancel(true);
-        if (isGroup) {
-            notificationBuilder.setSmallIcon(R.drawable.ic_icon_comercial);
-        } else {
-            notificationBuilder.setSmallIcon(R.drawable.ic_icon_comercial);
-        }
-        NotificationManager notificationManager =
-                (NotificationManager) this.getSystemService(
-                        Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(id);
-        notificationManager.notify(id,
-                notificationBuilder.build());
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "OnStartService");
         return START_STICKY;
     }
 
@@ -120,15 +102,11 @@ public class ChatService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        for (String id : listKey) {
-            mapQuery.get(id).removeEventListener(mapChildEventListenerMap.get(id));
-        }
-        mapQuery.clear();
-        mapChildEventListenerMap.clear();
-        mapBitmap.clear();
         updateOnline.cancel();
         Log.d(TAG, "OnDestroyService");
     }
+
+
 
     public class LocalBinder extends Binder {
         public ChatService getService() {

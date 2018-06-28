@@ -357,15 +357,17 @@ class MenuRepository: MainViewMenu.Repository {
                         item.DescripcionTipoEnfermedad=item.TipoEnfermedad?.Descripcion
 
                         item.save()
+
+
+
+
                         if(item.Fotos!=null){
                             for (itemFoto in item?.Fotos!!){
-
                                 try {
                                     val base64String = itemFoto?.Ruta
                                     val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
                                     val byte = Base64.decode(base64Image, Base64.DEFAULT)
                                     itemFoto.blobImagen = Blob(byte)
-
                                 }catch (ex:Exception){
                                     var ss= ex.toString()
                                     Log.d("Convert Image", "defaultValue = " + ss);
@@ -373,7 +375,11 @@ class MenuRepository: MainViewMenu.Repository {
                                 itemFoto.save()
                             }
                         }
+
+
                     }
+
+
                     loadTratamientos()
                 } else {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
@@ -402,7 +408,9 @@ class MenuRepository: MainViewMenu.Repository {
                         if(item.Insumo!=null){
                             item.Descripcion_Insumo=item.Insumo?.Descripcion
                             item.Nombre_Insumo=item.Insumo?.Nombre
-                            if(item?.Insumo?.Imagen!=null || item?.Insumo?.Imagen!=""){
+
+
+                            /*if(item?.Insumo?.Imagen!=null || item?.Insumo?.Imagen!=""){
                                 try {
                                     val base64String = item?.Insumo?.Imagen
                                     val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
@@ -412,7 +420,7 @@ class MenuRepository: MainViewMenu.Repository {
                                     var ss= ex.toString()
                                     Log.d("Convert Image", "defaultValue = " + ss);
                                 }
-                            }
+                            }*/
 
                             if(item.Insumo?.Laboratorio!=null){
                                 item.Insumo?.NombreLaboratorio=item.Insumo?.Laboratorio?.Nombre
@@ -448,6 +456,8 @@ class MenuRepository: MainViewMenu.Repository {
                         item.save()
 
                     }
+
+                    postEventOk(RequestEventMainMenu.SYNC_FOTOS_INSUMOS)
                     postEventOk(RequestEventMainMenu.SYNC_EVENT)
 
                 } else {

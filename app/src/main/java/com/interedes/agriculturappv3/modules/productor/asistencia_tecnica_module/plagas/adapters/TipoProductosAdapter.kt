@@ -12,6 +12,7 @@ import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import android.graphics.BitmapFactory
+import android.os.Handler
 import android.util.Log
 
 
@@ -90,7 +91,13 @@ class TipoProductosAdapter(val lista: ArrayList<TipoProducto>) : RecyclerView.Ad
                 try {
                     val foto = data.Imagen?.blob
                     val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
-                    imgTipoProducto.setImageBitmap(bitmapBlob)
+
+                    var uiHandler = Handler()
+                    uiHandler.post( Runnable() {
+                        imgTipoProducto.setImageBitmap(bitmapBlob)
+                    });
+
+
                 }catch (ex:Exception){
                     var ss= ex.toString()
                     Log.d("Convert Image", "defaultValue = " + ss);

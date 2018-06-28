@@ -104,6 +104,11 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
                 mainView?.verificateConnection()
             }
 
+
+            RequestEventMainMenu.SYNC_FOTOS_INSUMOS -> {
+                mainView?.syncFotosInsumos()
+            }
+
             RequestEventMainMenu.SYNC_RESUME -> {
                 var quantitySync = event.objectMutable as QuantitySync
                 mainView?.setQuantitySync(quantitySync)

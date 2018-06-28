@@ -43,6 +43,8 @@ interface MainViewMenu {
         fun setQuantitySyncAutomatic(quantitySync: QuantitySync?)
 
         fun getListasIniciales()
+
+        fun syncFotosInsumos()
     }
 
     interface Presenter {
