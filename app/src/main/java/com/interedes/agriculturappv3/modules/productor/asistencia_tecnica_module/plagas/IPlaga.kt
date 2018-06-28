@@ -12,7 +12,6 @@ interface IPlaga {
     interface View {
         fun showRefresh()
         fun hideRefresh()
-        fun getPlagasByTipoProducto(tipoProductoId: Long?)
         fun setListPlagas(list_plagas: ArrayList<Enfermedad>)
         fun setResults(plagas: Int)
         fun hideDialog(tipoProducto: TipoProducto)

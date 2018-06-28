@@ -6,9 +6,7 @@ import android.app.*
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.Drawable
@@ -17,7 +15,6 @@ import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
-import android.preference.PreferenceManager
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -46,13 +43,10 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
-import com.crashlytics.android.Crashlytics
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.interedes.agriculturappv3.AgriculturApplication
@@ -63,35 +57,19 @@ import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
-import com.interedes.agriculturappv3.modules.models.insumos.Insumo
-import com.interedes.agriculturappv3.modules.models.insumos.Insumo_Table
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.services.chat.ServiceUtils
-import com.interedes.agriculturappv3.services.notifications.DeleteTokenService
-import com.interedes.agriculturappv3.services.notifications.MyFirebaseInstanceIDService
 import com.interedes.agriculturappv3.services.resources.MenuBoomResources
 import com.interedes.agriculturappv3.services.resources.RolResources
-import com.interedes.agriculturappv3.services.resources.S3Resources
-import com.interedes.agriculturappv3.services.services.InsumoService
-import com.interedes.agriculturappv3.services.services.JobSyncService
-import com.interedes.agriculturappv3.services.services.ProgresService
+import com.interedes.agriculturappv3.services.services.JobDownloadFotosService
 import com.kaopiz.kprogresshud.KProgressHUD
-import com.krishna.fileloader.FileLoader
-import com.krishna.fileloader.listener.FileRequestListener
-import com.krishna.fileloader.pojo.FileResponse
-import com.krishna.fileloader.request.FileLoadRequest
 import com.nightonke.boommenu.BoomMenuButton
 import com.nightonke.boommenu.Types.BoomType
 import com.nightonke.boommenu.Types.ButtonType
 import com.nightonke.boommenu.Types.PlaceType
 import com.nightonke.boommenu.Util
-import com.raizlabs.android.dbflow.data.Blob
-import com.raizlabs.android.dbflow.kotlinextensions.save
-import com.raizlabs.android.dbflow.sql.language.SQLite
 import de.hdodenhof.circleimageview.CircleImageView
-import id.zelory.compressor.Compressor
-import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import java.io.*
@@ -250,14 +228,13 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         ///loadImagesProductos()
     }
 
-    override fun syncFotosInsumos() {
+    override fun syncFotosInsumosPlagas() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(Intent(this, InsumoService::class.java))
+            startForegroundService(Intent(this, JobDownloadFotosService::class.java))
         } else {
-            startService(Intent(this, InsumoService::class.java))
+            startService(Intent(this, JobDownloadFotosService::class.java))
         }
     }
-
 
     fun registerWithNotificationHubs() {
         //Log.i(FragmentActivity.TAG, " Registering with Notification Hubs")

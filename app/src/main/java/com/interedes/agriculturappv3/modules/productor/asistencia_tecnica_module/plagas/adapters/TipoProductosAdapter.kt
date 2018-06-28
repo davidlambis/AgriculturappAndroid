@@ -92,10 +92,9 @@ class TipoProductosAdapter(val lista: ArrayList<TipoProducto>) : RecyclerView.Ad
                     val foto = data.Imagen?.blob
                     val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
 
-                    var uiHandler = Handler()
-                    uiHandler.post( Runnable() {
+
                         imgTipoProducto.setImageBitmap(bitmapBlob)
-                    });
+
 
 
                 }catch (ex:Exception){

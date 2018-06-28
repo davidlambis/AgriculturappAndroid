@@ -88,43 +88,22 @@ class PlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapter<Pla
             txt_nombre_cientifico.text = data.NombreCientificoTipoEnfermedad
             txtDescripcionEnfermedad.text = data.Descripcion
 
-            //txt_descripcion_enfermedad.text=data.DescripcionTipoEnfermedad
+          //txt_descripcion_enfermedad.text=data.DescripcionTipoEnfermedad
+         //var firtsFoto= SQLite.select().from(FotoEnfermedad::class.java).where(FotoEnfermedad_Table.EnfermedadesId.eq(data.Id)).querySingle()
 
 
-            var firtsFoto= SQLite.select().from(FotoEnfermedad::class.java).where(FotoEnfermedad_Table.EnfermedadesId.eq(data.Id)).querySingle()
-            if(firtsFoto!=null){
-
-                if(firtsFoto.blobImagen!=null){
-                    try {
-                        val foto = firtsFoto.blobImagen?.blob
-                        data.blobImagenEnfermedad= Blob(firtsFoto.blobImagen?.blob)
-                        val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
-
-
-                        val uiHandler = Handler()
-                        uiHandler.post( Runnable() {
-                            image_enfermedad.setImageBitmap(bitmapBlob)
-                        });
-
-                        data.DescripcionTipoEnfermedad=firtsFoto.Descripcion
-                        //txt_descripcion_enfermedad.text=firtsFoto.Descripcion
-                    }catch (ex:Exception){
-                        var ss= ex.toString()
-                        Log.d("Convert Image", "defaultValue = " + ss);
-                    }
-                }
+            if(data.blobImagenEnfermedad!=null){
+                val foto = data.blobImagenEnfermedad?.blob
+                val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+                /// val uiHandler = Handler()
+                image_enfermedad.setImageBitmap(bitmapBlob)
+                // uiHandler.post( Runnable() {
+                /// });
             }else{
                 val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.emtpy_img_plaga)
-                val bos = ByteArrayOutputStream()
-                largeIcon.compress(Bitmap.CompressFormat.PNG, 100, bos)
-                data.blobImagenEnfermedad=Blob(bos.toByteArray())
-                ///image_enfermedad.setImageBitmap(largeIcon)
-
-                val uiHandler = Handler()
-                uiHandler.post( Runnable() {
-                    image_enfermedad.setImageBitmap(largeIcon)
-                });
+                image_enfermedad.setImageBitmap(largeIcon)
             }
+
            // image_enfermedad.setImageResource(data.Imagen!!)
            // txt_descripcion_enfermedad.text = data.Descripcion
 

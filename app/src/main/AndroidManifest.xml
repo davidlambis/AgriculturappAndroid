@@ -230,7 +230,7 @@
         </service>
 
         <!--SERVICE INSUMOS-->
-        <service android:name=".services.services.InsumoService"  android:exported="false">
+        <service android:name=".services.services.JobDownloadFotosService"  android:exported="false">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

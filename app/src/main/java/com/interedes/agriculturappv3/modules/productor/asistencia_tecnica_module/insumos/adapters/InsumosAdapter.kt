@@ -90,12 +90,8 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
                         //data.blobImagenEnfermedad= Blob(firtsFoto.blobImagen?.blob)
                         val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                        // image_view_insumo.setImageBitmap(bitmapBlob)
+                        image_view_insumo.setImageBitmap(bitmapBlob)
 
-
-                        val uiHandler = Handler()
-                        uiHandler.post( Runnable() {
-                            image_view_insumo.setImageBitmap(bitmapBlob)
-                        });
 
                     }catch (ex:Exception){
                         var ss= ex.toString()

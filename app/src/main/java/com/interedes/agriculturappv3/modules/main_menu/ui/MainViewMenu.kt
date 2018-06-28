@@ -44,7 +44,7 @@ interface MainViewMenu {
 
         fun getListasIniciales()
 
-        fun syncFotosInsumos()
+        fun syncFotosInsumosPlagas()
     }
 
     interface Presenter {

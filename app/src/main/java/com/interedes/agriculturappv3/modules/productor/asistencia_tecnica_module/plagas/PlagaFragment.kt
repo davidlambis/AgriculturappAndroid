@@ -32,14 +32,10 @@ import kotlinx.android.synthetic.main.content_list_plagas.view.*
 import kotlinx.android.synthetic.main.content_list_recycler_view.*
 
 import kotlinx.android.synthetic.main.content_list_recycler_view.view.*
-
-
-
 import kotlinx.android.synthetic.main.dialog_description.view.*
 
 
 class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
-
 
     //adapter
     var adapter: PlagasAdapter? = null
@@ -105,9 +101,6 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
 
     //region Métodos Interfaz
-    override fun getPlagasByTipoProducto(tipoProductoId: Long?) {
-        presenter?.getPlagasByTipoProducto(tipoProductoId)
-    }
 
     override fun setListPlagas(list_plagas: ArrayList<Enfermedad>) {
         dialogPlaga?.dismiss()
@@ -122,9 +115,18 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         val inflater = this.layoutInflater
         viewDialogPlagas = inflater.inflate(R.layout.dialog_list_general, null)
 
+
+
+
+
         viewDialogPlagas?.recyclerView?.layoutManager = LinearLayoutManager(activity)
-        val adapterLocal = SelectPlagasAdapter(list_plagas)
+        val lista: java.util.ArrayList<Enfermedad>? = java.util.ArrayList<Enfermedad>()
+        val adapterLocal = SelectPlagasAdapter(lista!!)
         viewDialogPlagas?.recyclerView?.adapter = adapterLocal
+
+
+        // adapterLocal.setItems(Listas.listaTipoProducto())
+        adapterLocal.setItems(list_plagas!!)
 
         //adapterLocal.setItems(Listas.listaTipoProducto())
         val results = String.format(getString(R.string.results_global_search), list_plagas.size)
@@ -216,11 +218,9 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         }
     }
 
-
     override fun setViewDialogDescriptionFoto(enfermedad: Enfermedad) {
         val inflater = this.layoutInflater
         var viewDialogDescripcion = inflater.inflate(R.layout.dialog_description, null)
-
 
 
         viewDialogDescripcion?.ivClosetDialogDescripcionControlPlaga?.setOnClickListener(this)
@@ -232,13 +232,10 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         viewDialogDescripcion?.logoPlaga?.setImageBitmap(bitmapBlob)
         viewDialogDescripcion?.txtDescripcionPlaga?.text=enfermedad.DescripcionTipoEnfermedad
 
-
-
         val dialog = AlertDialog.Builder(context!!)
                 .setView(viewDialogDescripcion!!)
                 .create()
         dialog.getWindow().setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.white_transaparent)))
-
 
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())

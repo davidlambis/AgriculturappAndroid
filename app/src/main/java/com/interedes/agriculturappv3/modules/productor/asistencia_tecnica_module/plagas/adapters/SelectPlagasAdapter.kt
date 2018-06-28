@@ -28,10 +28,19 @@ import java.io.ByteArrayOutputStream
 class SelectPlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapter<SelectPlagasAdapter.ViewHolder>() {
 
     companion object {
+
+        var eventBus: EventBus? = null
         var instance: SelectPlagasAdapter? = null
+
+        fun postEvent(type: Int, enfermedad: Enfermedad?) {
+            val tipoEnfermedad = enfermedad as Object
+            val event = PlagasEvent(type, null, tipoEnfermedad, null)
+            event.eventType = type
+            eventBus?.post(event)
+        }
     }
 
-    var eventBus: EventBus? = null
+
 
     init {
         eventBus = GreenRobotEventBus()
@@ -55,7 +64,6 @@ class SelectPlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapt
     fun setItems(newItems: List<Enfermedad>) {
         lista.addAll(newItems)
         notifyDataSetChanged()
-
     }
 
     fun clear() {
@@ -70,7 +78,18 @@ class SelectPlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapt
 
 
             txtNombrePlaga.text = data.NombreTipoEnfermedad
-            var firtsFoto= SQLite.select().from(FotoEnfermedad::class.java).where(FotoEnfermedad_Table.EnfermedadesId.eq(data.Id)).querySingle()
+            if(data.blobImagenEnfermedad!=null){
+                val foto = data.blobImagenEnfermedad?.blob
+                val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+               /// val uiHandler = Handler()
+                imgPlaga.setImageBitmap(bitmapBlob)
+               // uiHandler.post( Runnable() {
+               /// });
+            }else{
+                val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.emtpy_img_plaga)
+                imgPlaga.setImageBitmap(largeIcon)
+            }
+            /*val firtsFoto= SQLite.select().from(FotoEnfermedad::class.java).where(FotoEnfermedad_Table.EnfermedadesId.eq(data.Id)).querySingle()
             if(firtsFoto!=null){
                 if(firtsFoto.blobImagen!=null){
                     try {
@@ -102,16 +121,13 @@ class SelectPlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapt
                     e.printStackTrace()
                 }*/
             }
+            */
+
             itemView.setOnClickListener {
-                SelectPlagasAdapter.instance?.postEvent(PlagasEvent.ITEM_SELECT_PLAGA_EVENT, data)
+               postEvent(PlagasEvent.ITEM_SELECT_PLAGA_EVENT, data)
             }
         }
     }
 
-    fun postEvent(type: Int, enfermedad: Enfermedad?) {
-        val tipoEnfermedad = enfermedad as Object
-        val event = PlagasEvent(type, null, tipoEnfermedad, null)
-        event.eventType = type
-        eventBus?.post(event)
-    }
+
 }

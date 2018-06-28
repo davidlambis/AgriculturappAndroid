@@ -356,27 +356,23 @@ class MenuRepository: MainViewMenu.Repository {
                         item.NombreCientificoTipoEnfermedad=item.TipoEnfermedad?.NombreCientifico
                         item.DescripcionTipoEnfermedad=item.TipoEnfermedad?.Descripcion
 
-                        item.save()
-
-
-
-
                         if(item.Fotos!=null){
                             for (itemFoto in item?.Fotos!!){
-                                try {
+                                itemFoto.save()
+                                /*try {
                                     val base64String = itemFoto?.Ruta
                                     val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
                                     val byte = Base64.decode(base64Image, Base64.DEFAULT)
+
+                                    item.blobImagenEnfermedad= Blob(byte)
                                     itemFoto.blobImagen = Blob(byte)
                                 }catch (ex:Exception){
                                     var ss= ex.toString()
                                     Log.d("Convert Image", "defaultValue = " + ss);
-                                }
-                                itemFoto.save()
+                                }*/
                             }
                         }
-
-
+                        item.save()
                     }
 
 
@@ -457,7 +453,7 @@ class MenuRepository: MainViewMenu.Repository {
 
                     }
 
-                    postEventOk(RequestEventMainMenu.SYNC_FOTOS_INSUMOS)
+                    postEventOk(RequestEventMainMenu.SYNC_FOTOS_INSUMOS_PLAGAS)
                     postEventOk(RequestEventMainMenu.SYNC_EVENT)
 
                 } else {

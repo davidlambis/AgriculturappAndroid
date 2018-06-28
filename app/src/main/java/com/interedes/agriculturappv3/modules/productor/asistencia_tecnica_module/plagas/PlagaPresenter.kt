@@ -63,6 +63,7 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
                 view?.setDialogListPlagas(list_plagas)
                 //view?.setListPlagas(list_plagas)
             }
+
             PlagasEvent.SET_EVENT -> {
                 val list_plagas = plagasEvent.mutableList as ArrayList<Enfermedad>
                 view?.setListPlagas(list_plagas)
@@ -73,10 +74,6 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
                 view?.setViewDialogDescriptionFoto(enfermedad)
 
             }
-
-
-
-
 
             PlagasEvent.LOAD_LIST_TIPO_PRODUCTO -> {
                 val lista_tipo_producto = plagasEvent.mutableList as ArrayList<TipoProducto>
@@ -93,7 +90,7 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
             PlagasEvent.ITEM_EVENT -> {
                 val tipo_producto = plagasEvent.objectMutable as TipoProducto
                 view?.hideDialog(tipo_producto)
-                view?.getPlagasByTipoProducto(tipo_producto.Id)
+                getPlagasByTipoProducto(tipo_producto.Id)
             }
             PlagasEvent.ITEM_OPEN_EVENT -> {
                 val tipo_enfermedad = plagasEvent.objectMutable as Enfermedad

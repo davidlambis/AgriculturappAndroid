@@ -247,11 +247,9 @@ interface ApiInterface {
     @GET("odata/Agp2/Enfermedades?\$expand=TipoEnfermedad,TipoProducto(\$select=Nombre),Fotos")
     fun getEnfermedades(): Call<EnfermedadResponseApi>
 
-
    // @GET("odata/Agp2/Tratamientos?\$expand=Insumo(\$expand=Laboratorio,TipoInsumo),Calificacions")
     @GET("odata/Agp2/Tratamientos?\$expand=Insumo(\$expand=Laboratorio,TipoInsumo),Calificacions")
     fun getTratamientos(): Call<TratamientoResponse>
-
     //endregion
 
     //region Control Plagas
