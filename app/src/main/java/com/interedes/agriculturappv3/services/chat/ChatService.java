@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.services.chat;
 
 import android.app.ActivityManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -51,6 +52,8 @@ public class ChatService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        startForeground(1,new Notification());
         mapMark = new HashMap<>();
         mapQuery = new HashMap<>();
         mapChildEventListenerMap = new HashMap<>();

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -34,8 +35,16 @@ public class ServiceUtils {
 
     public static void startServiceFriendChat(Context context) {
         if (!isServiceFriendChatRunning(context)) {
-            Intent myIntent = new Intent(context, ChatService.class);
-            context.startService(myIntent);
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+                context.startForegroundService(new Intent(context, ChatService.class));
+            } else {
+                context.startService(new Intent(context, ChatService.class));
+            }
+
+
         } else {
             if (connectionServiceFriendChatForStart != null) {
                 context.unbindService(connectionServiceFriendChatForStart);
