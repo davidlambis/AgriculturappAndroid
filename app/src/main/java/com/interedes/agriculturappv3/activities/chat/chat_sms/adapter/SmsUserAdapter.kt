@@ -13,7 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.chat_sms.Chat_Sms_Activity
-import com.interedes.agriculturappv3.activities.chat.chat_sms.models.SmsUser
+import com.interedes.agriculturappv3.modules.models.sms.SmsUser
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import de.hdodenhof.circleimageview.CircleImageView

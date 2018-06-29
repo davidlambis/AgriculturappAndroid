@@ -1,8 +1,7 @@
-package com.interedes.agriculturappv3.activities.chat.chat_sms
+package com.interedes.agriculturappv3.services.sms
 
 import android.app.Service
 import android.content.Intent
-import android.os.Process.THREAD_PRIORITY_BACKGROUND
 import android.telephony.TelephonyManager
 import android.content.IntentFilter
 import android.os.*

@@ -1,27 +1,23 @@
-package com.interedes.agriculturappv3.activities.chat.chat_sms
+package com.interedes.agriculturappv3.services.sms
 
 import android.app.*
 import android.content.BroadcastReceiver
-import android.widget.Toast
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
-import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.provider.BaseColumns
 import android.provider.ContactsContract
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat
 import android.telephony.SmsMessage
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.activities.chat.chat_sms.Chat_Sms_Activity
+import com.interedes.agriculturappv3.activities.chat.chat_sms.SettingsActivity
 import com.interedes.agriculturappv3.services.Const
 import java.util.*
 

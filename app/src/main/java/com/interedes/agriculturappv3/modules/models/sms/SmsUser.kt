@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.activities.chat.chat_sms.models
+package com.interedes.agriculturappv3.modules.models.sms
 
 data class SmsUser(
                 var _id: String? = null,

@@ -23,16 +23,20 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsUserAdapter
-import com.interedes.agriculturappv3.activities.chat.chat_sms.models.Sms
-import com.interedes.agriculturappv3.activities.chat.chat_sms.models.SmsUser
+import com.interedes.agriculturappv3.modules.models.sms.Sms
+import com.interedes.agriculturappv3.modules.models.sms.SmsUser
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
+import com.interedes.agriculturappv3.services.sms.NotificationService
 import kotlinx.android.synthetic.main.activity_user_sms.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import java.util.*
 
-class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
+class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener,IMainViewChatSms.MainView {
 
+
+
+    //Permission
     var PERMISSIONS = arrayOf(
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -47,10 +51,9 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
     val PERMISSION_REQUEST_CODE = 1
     var PERMISSION_ALL = 1
 
+    var presenter: IMainViewChatSms.Presenter? = null
 
-    ///Adapters
-    var smsListUser:ArrayList<SmsUser> = ArrayList<SmsUser>()
-    var smsListMessage:ArrayList<Sms> = ArrayList<Sms>()
+
     private var adapter: SmsUserAdapter? = null
 
     companion object {
@@ -60,6 +63,8 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
 
     init {
         instance = this
+        presenter = ChatSms_Presenter(this)
+        presenter?.onCreate()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,17 +82,15 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
         if (Build.VERSION.SDK_INT >= 23) {
             if (!hasPermissions(applicationContext, *PERMISSIONS)) {
                 requestPermission()
+
             } else {
                 //Helper function
-                refreshSmsInbox()
+                presenter?.getListSms(this)
             }
         } else {
             //Helper function
-            refreshSmsInbox()
+            presenter?.getListSms(this)
         }
-
-
-
     }
 
     private fun setToolbarInjection() {
@@ -107,77 +110,7 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
             }
         }
 
-        val message = Uri.parse("content://sms/")
-        val cr = contentResolver
-        var c = cr.query(message, null, null, null, null)
-        val indexBody = c.getColumnIndex("body")
-        if (indexBody < 0 || !c.moveToFirst()) return
-        this.startManagingCursor(c)
-        val totalSMS = c.getCount()
-        if (c.moveToFirst()) {
-            for (i in 0 until totalSMS) {
 
-                var typeMessage:String?=""
-                if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
-                    typeMessage= MessageSmsType.MESSAGE_TYPE_INBOX
-                } else {
-                    typeMessage= MessageSmsType.MESSAGE_TYPE_SENT
-                }
-
-                var objSms = Sms(
-                        c.getString(c!!.getColumnIndexOrThrow("_id")),
-                        c.getString(c
-                                .getColumnIndexOrThrow("address")),
-                        c.getString(c.getColumnIndexOrThrow("body")),
-                        c.getString(c.getColumnIndex("read")),
-                        c.getString(c.getColumnIndexOrThrow("date")),
-                        typeMessage
-                )
-
-                smsListMessage.add(objSms)
-                c.moveToNext()
-            }
-
-            //Ordenar
-            Collections.sort(smsListMessage, object : Comparator<Sms> {
-                override fun compare(lhs: Sms, rhs: Sms): Int {
-                    // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
-                    return if (lhs._id?.toInt()!! > rhs._id?.toInt()!!) -1 else if (lhs._id?.toInt()!! < rhs._id?.toInt()!!) 1 else 0
-                }
-            })
-
-            //Reordenar Lista
-            Collections.reverse(smsListMessage)
-
-            for (objSms in smsListMessage){
-
-                if(objSms._msg?.contains(getString(R.string.idenfication_send_sms_app))!!){
-
-                    var verificateAddress = smsListUser?.filter { smsuser: SmsUser -> smsuser._address?.replace(" ","") == objSms._address?.replace(" ","") }
-                    if(verificateAddress.size>0){
-                        var item: SmsUser = verificateAddress.get(0)
-                        smsListUser?.remove(item)
-                    }
-
-                    var newMsg=objSms._msg?.replace(getString(R.string.idenfication_send_sms_app),"")
-                    val phoneNumber =  objSms._address
-                    val contactName = getContactDisplayNameByNumber(phoneNumber)
-                    var objSmsUser = SmsUser(
-                            objSms._id,
-                            objSms._address,
-                            contactName,
-                            newMsg,
-                            objSms._readState,
-                            objSms._time,
-                            objSms._folderName
-                    )
-                    smsListUser.add(objSmsUser)
-                }
-            }
-
-            setListSms(smsListUser)
-            swipeRefreshLayout.isRefreshing=false
-        }
     }
 
      fun setListSms(sms: List<SmsUser>) {
@@ -199,22 +132,6 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
     }
 
 
-    fun getContactDisplayNameByNumber(number: String?): String {
-        val uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number))
-        var name = "Desconocido"
-        val contentResolver = contentResolver
-        val contactLookup = contentResolver.query(uri, arrayOf(BaseColumns._ID, ContactsContract.PhoneLookup.DISPLAY_NAME), null, null, null)
-        try {
-            if (contactLookup != null && contactLookup.count > 0) {
-                contactLookup.moveToNext()
-                name = contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME))
-                //String contactId = contactLookup.getString(contactLookup.getColumnIndex(BaseColumns._ID));
-            }
-        } finally {
-            contactLookup?.close()
-        }
-        return name
-    }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -306,25 +223,68 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
     //endregion
 
 
-    private val mNotificationReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
-            if (extras != null) {
-               // if (extras.containsKey("new_message")) {
-                    refreshSmsInbox()
-               // }
-            }
-        }
+
+
+    //region IMPLEMNTS INTERFACE CHAT SMS
+
+    override fun showProgressHud() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun hideProgressHud() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showProgress() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun hideProgress() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun validarSendSms(): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun requestResponseOK() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun requestResponseError(error: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onMessageOk(colorPrimary: Int, msg: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onMessageError(colorPrimary: Int, msg: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
+
+
+    //endregion
+
+
+
+
+    //region OVERIDES METHODS
     override fun onResume() {
         super.onResume()
-        registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_RECYVE_MESSAGE))
+        presenter?.onResume(this)
     }
 
     override fun onPause() {
         super.onPause()
-        unregisterReceiver(this.mNotificationReceiver);
+        presenter?.onPause(this)
+
     }
 
     override fun onRefresh() {
@@ -332,4 +292,5 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
         refreshSmsInbox()
     }
 
+    //endregion
 }

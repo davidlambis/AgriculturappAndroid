@@ -25,7 +25,7 @@ import com.google.firebase.database.ValueEventListener
 import com.interedes.agriculturappv3.modules.models.chat.RoomConversation
 
 
-class ChatUsersActivity : AppCompatActivity() {
+class ConversationsUsersActivity : AppCompatActivity() {
 
     private var mAuth: FirebaseAuth? = null
     private var mUsersDBRef: DatabaseReference? = null

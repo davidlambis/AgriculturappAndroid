@@ -407,7 +407,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         onMessageOk(colorPrimary, message)
     }
 
-
     override fun verificateConnection(): AlertDialog? {
         var builder = AlertDialog.Builder(context!!)
         builder.setTitle(getString(R.string.alert));

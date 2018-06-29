@@ -17,6 +17,7 @@ import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import kotlinx.android.synthetic.main.activity_chat_message.*
 import android.os.Build
+import android.os.Message
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
 import android.view.MenuItem
@@ -27,6 +28,7 @@ import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ChatMessageActivity : AppCompatActivity() {
@@ -50,12 +52,13 @@ class ChatMessageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat_message)
 
         setToolbarInjection()
-
         messagesRecyclerView?.setHasFixedSize(true)
         // use a linear layout manager
         mLayoutManager = LinearLayoutManager(this)
         mLayoutManager?.setStackFromEnd(true)
+        //mLayoutManager?.setReverseLayout(true);
         messagesRecyclerView?.setLayoutManager(mLayoutManager)
+       // messagesRecyclerView.smoothScrollToPosition(0);
 
         //init Firebase
         mMessagesDBRef =  Chat_Resources.mMessagesDBRef
@@ -76,18 +79,11 @@ class ChatMessageActivity : AppCompatActivity() {
                 sendMessageToFirebase(message, senderId, mReceiverId)
             }
         })
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        /**Query and populate chat messages */
-
 
         querymessagesBetweenThisUserAndClickedUser()
-        /**sets title bar with recepient name */
         queryRecipientName(mReceiverId)
     }
+
 
     private fun sendMessageToFirebase(message: String, senderId: String, receiverId: String?) {
         mMessagesList.clear()
@@ -118,6 +114,7 @@ class ChatMessageActivity : AppCompatActivity() {
             if (!task.isSuccessful) {
                 //error
                 Toast.makeText(applicationContext, "Error " + task.exception!!.localizedMessage, Toast.LENGTH_SHORT).show()
+                //mLayoutManager?.scrollToPositionWithOffset(0, 0);
             } else {
                 Toast.makeText(applicationContext, "Message sent successfully!", Toast.LENGTH_SHORT).show()
                 messageEditText?.setText(null)
@@ -135,6 +132,33 @@ class ChatMessageActivity : AppCompatActivity() {
 
     private fun querymessagesBetweenThisUserAndClickedUser() {
         val query = mMessagesDBRef?.orderByChild("room_id")?.equalTo("${mReceiverRoom?.IdRoom}")
+        iniAdapter()
+        query?.addChildEventListener(object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError?) {
+
+            }
+            override fun onChildMoved(p0: DataSnapshot?, p1: String?) {
+            }
+            override fun onChildChanged(p0: DataSnapshot?, p1: String?) {
+            }
+            override fun onChildAdded(dataSnapshot: DataSnapshot?, p1: String?) {
+                if(dataSnapshot!=null){
+                    val chatMessage = dataSnapshot.getValue(ChatMessage::class.java)
+                    if (chatMessage!!.senderId.equals(FirebaseAuth.getInstance().currentUser!!.uid) && chatMessage.receiverId.equals(mReceiverId) ||
+                            chatMessage.senderId.equals(mReceiverId) && chatMessage.receiverId.equals(FirebaseAuth.getInstance().currentUser!!.uid)) {
+                        mMessagesList.add(chatMessage)
+                    }
+                    //populateMessagesRecyclerView()
+                    adapter?.add(chatMessage)
+                    messagesRecyclerView.smoothScrollToPosition(adapter?.getItemCount()!! - 1);
+                    //mLayoutManager?.scrollToPositionWithOffset(0, 0);
+                    //mLayoutManager?.scrollToPosition(mMessagesList.size - 1);
+                }
+            }
+            override fun onChildRemoved(p0: DataSnapshot?) {
+            }
+        })
+        /*
         query?.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 mMessagesList.clear()
@@ -147,15 +171,16 @@ class ChatMessageActivity : AppCompatActivity() {
                 }
                 /**populate messages */
                 populateMessagesRecyclerView()
+
+                iniAdapter()
             }
             override fun onCancelled(databaseError: DatabaseError) {
-
             }
-        })
+        })*/
     }
 
-    private fun populateMessagesRecyclerView() {
-        adapter = MessagesAdapter(mMessagesList)
+    private fun iniAdapter() {
+        adapter = MessagesAdapter(ArrayList<ChatMessage>())
         messagesRecyclerView?.setAdapter(adapter)
     }
 

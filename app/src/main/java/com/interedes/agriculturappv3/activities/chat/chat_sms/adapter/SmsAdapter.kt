@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.activities.chat.chat_sms.models.Sms
+import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
@@ -56,7 +56,7 @@ class SmsAdapter(var mMessagesList: ArrayList<Sms>) : RecyclerView.Adapter<SmsAd
 
     override fun getItemViewType(position: Int): Int {
 
-        return if (mMessagesList[position]._folderName.equals(MessageSmsType.MESSAGE_TYPE_SENT)) {
+        return if (mMessagesList[position].Folder_Name.equals(MessageSmsType.MESSAGE_TYPE_SENT)) {
             ITEM_TYPE_SENT
         } else {
             ITEM_TYPE_RECEIVED
@@ -92,8 +92,9 @@ class SmsAdapter(var mMessagesList: ArrayList<Sms>) : RecyclerView.Adapter<SmsAd
 
 
 
+
             try {
-                var strGotDate = data._time;
+                var strGotDate = data.FechaSms;
                 var longGotDate = strGotDate?.toLong()
                 // Format that date
                 var formattedGotDate =  SimpleDateFormat("h:mm a").format(longGotDate);
@@ -102,7 +103,6 @@ class SmsAdapter(var mMessagesList: ArrayList<Sms>) : RecyclerView.Adapter<SmsAd
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
-
 
             /*
             try {
@@ -119,7 +119,7 @@ class SmsAdapter(var mMessagesList: ArrayList<Sms>) : RecyclerView.Adapter<SmsAd
 
             }
 
-            messageTextView.setText(data._msg)
+            messageTextView.setText(data.Message)
         }
     }
 }

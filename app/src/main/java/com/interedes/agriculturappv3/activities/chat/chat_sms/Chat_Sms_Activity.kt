@@ -22,7 +22,8 @@ import android.telephony.SmsManager
 import android.view.MenuItem
 import android.widget.Toast
 import com.interedes.agriculturappv3.activities.chat.chat_sms.adapter.SmsAdapter
-import com.interedes.agriculturappv3.activities.chat.chat_sms.models.Sms
+import com.interedes.agriculturappv3.modules.account.IMainViewAccount
+import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -31,8 +32,7 @@ import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import java.util.*
 
 
-class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
-
+class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener,IMainViewChatSms.MainView {
 
     private val TAG = "SMSCHATAPP"
     val TAG_USER_NAME = "USER_NAME"
@@ -40,15 +40,15 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
     var contactUserName:String?=""
     var contactNumber:String?=""
 
+    var presenter: IMainViewChatSms.Presenter? = null
+
 
     //Progress
     private var hud: KProgressHUD?=null
 
 
-     var PERMISSION_ALL = 1
-
-
-
+    //permission
+    var PERMISSION_ALL = 1
     var PERMISSIONS = arrayOf(
             Manifest.permission.SEND_SMS,
             Manifest.permission.READ_SMS,
@@ -57,14 +57,9 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
 
     val PERMISSION_REQUEST_CODE = 1
 
-
-
     //private var sentStatusReceiver: BroadcastReceiver? = null
     //private var deliveredStatusReceiver: BroadcastReceiver? = null
     //private var mNotificationReceiver: BroadcastReceiver? = null
-
-
-
     ///
     private var mLayoutManager: LinearLayoutManager? = null
     var smsLisMessages = ArrayList<Sms>()
@@ -78,11 +73,15 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
 
     init {
         instance = this
+        presenter = ChatSms_Presenter(this)
+        presenter?.onCreate()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_chat__sms_)
+
         setToolbarInjection()
         initAdapter()
 
@@ -115,11 +114,11 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
                 requestPermission()
             } else {
                 //Helper function
-                refreshSmsInbox()
+                ///refreshSmsInbox()
             }
         } else {
             //Helper function
-            refreshSmsInbox()
+           /// refreshSmsInbox()
         }
     }
 
@@ -132,7 +131,7 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
         toolbar.title = getString(R.string.title_sms_text)
     }
 
-     fun showProgressHud(){
+     override fun showProgressHud(){
         hud = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setWindowColor(getResources().getColor(R.color.colorPrimary))
@@ -140,10 +139,12 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
         hud?.show()
     }
 
-     fun hideProgressHud(){
+    override fun hideProgressHud(){
         hud?.dismiss()
     }
 
+
+    /*
     fun refreshSmsInbox() {
 
         for (permission in PERMISSIONS) {
@@ -208,13 +209,13 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
                     return if (lhs._id?.toInt()!! > rhs._id?.toInt()!!) -1 else if (lhs._id?.toInt()!! < rhs._id?.toInt()!!) 1 else 0
                 }
             })
-
             //Reordenar Lista
             Collections.reverse(smsLisMessages)
-
             setListSms(smsLisMessages)
         }
     }
+
+    */
 
     fun setListSms(sms: List<Sms>) {
         adapter?.clear()
@@ -230,7 +231,7 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
     }
 
     fun updateList(smsMessage: String) {
-        refreshSmsInbox()
+        //refreshSmsInbox()
         //arrayAdapter?.insert(smsMessage, 0)
         //arrayAdapter?.notifyDataSetChanged()
     }
@@ -488,13 +489,53 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener {
     //endregion
 
 
+
+    //region IMPLEMNTS INTERFACE CHAT SMS
+
+    override fun showProgress() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun hideProgress() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun validarSendSms(): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun requestResponseOK() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun requestResponseError(error: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onMessageOk(colorPrimary: Int, msg: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onMessageError(colorPrimary: Int, msg: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
+
+
+    //endregion
+
+
+
+
+
+
     public override fun onResume() {
         super.onResume()
-
-
-
-
-
         registerReceiver(sentStatusReceiver, IntentFilter(Const.SERVICE_SMS_SENT))
         registerReceiver(deliveredStatusReceiver, IntentFilter(Const.SERVICE_SMS_DELIVERED))
         registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_RECYVE_MESSAGE))

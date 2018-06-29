@@ -51,7 +51,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.activities.chat.chat_sms.UserSmsActivity
-import com.interedes.agriculturappv3.activities.chat.online.ChatUsersActivity
+import com.interedes.agriculturappv3.activities.chat.online.ConversationsUsersActivity
 import com.interedes.agriculturappv3.activities.intro.PermissionsIntro
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
@@ -706,7 +706,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         // Handle item selection
         when (item.itemId) {
         /*R.id.action_menu_icon_chat -> {
-           ///startActivity(Intent(this, ChatUsersActivity::class.java))
+           ///startActivity(Intent(this, ConversationsUsersActivity::class.java))
            showAlertTypeChat()
            return true
        }
@@ -738,7 +738,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 0 -> {
                     DIALOG_SET_TYPE_CHAT=0
                     dialog.dismiss()
-                    startActivity(Intent(this, ChatUsersActivity::class.java))
+                    startActivity(Intent(this, ConversationsUsersActivity::class.java))
                     //scheduleDismiss();
                 }
             //Position State Location Manual
@@ -763,7 +763,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 startActivity(Intent(this, UserSmsActivity::class.java))
             }else{
                 dialog.dismiss()
-                startActivity(Intent(this, ChatUsersActivity::class.java))
+                startActivity(Intent(this, ConversationsUsersActivity::class.java))
             }
         })
 

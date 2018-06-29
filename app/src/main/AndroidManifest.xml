@@ -119,7 +119,7 @@
             android:name=".activities.MapsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.chat.online.ChatUsersActivity"
+            android:name=".activities.chat.online.ConversationsUsersActivity"
             android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -159,12 +159,12 @@
         </receiver>
 
         <service
-            android:name=".activities.chat.chat_sms.NotificationService"
+            android:name=".services.sms.NotificationService"
             android:enabled="true"
             android:exported="true" />
 
         <receiver
-            android:name=".activities.chat.chat_sms.MySmsBroadcastReceiver"
+            android:name=".services.sms.MySmsBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="999">

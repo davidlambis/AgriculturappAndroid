@@ -97,9 +97,10 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
         notifyItemRemoved(position)
     }
 
-    fun add(position: Int, person: ChatMessage) {
-        mMessagesList.add(position, person)
-        notifyItemInserted(position)
+    fun add( person: ChatMessage) {
+        mMessagesList.add(person)
+        notifyDataSetChanged()
+        //notifyItemInserted(position)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -118,12 +119,6 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
-
-
-
-
-
-
 
             if(getItemViewType()== ITEM_TYPE_RECEIVED){
                 var imageUser: CircleImageView = itemView.findViewById(R.id.imageView2)
