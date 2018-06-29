@@ -150,6 +150,7 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                     .setStyle( NotificationCompat.BigTextStyle()
                             .bigText(description))
                     .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_notification))
+                    //.setGroup(smsAddress)
                     .setBadgeIconType(R.mipmap.ic_launcher_notification)
                     .setContentIntent(pendingIntent)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
