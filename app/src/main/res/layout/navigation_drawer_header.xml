@@ -60,7 +60,7 @@
             android:background="@color/grey_luiyi" />
 
         <LinearLayout
-            android:id="@+id/itemProveedores"
+            android:id="@+id/itemSyncCloud"
             android:padding="@dimen/margin_5"
             android:foreground="?android:attr/selectableItemBackground"
             android:gravity="center|left"
@@ -70,7 +70,7 @@
 
             <ImageView
                 android:tint="@color/white_solid"
-                android:src="@drawable/ic_ic_proveedores"
+                android:src="@drawable/ic_cloud_upload"
                 android:layout_width="40dp"
                 android:layout_height="40dp" />
 

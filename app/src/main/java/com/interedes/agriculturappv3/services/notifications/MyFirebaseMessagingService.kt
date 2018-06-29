@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.services.notifications
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -80,6 +81,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 .addAction(R.drawable.ic_local_offer,
                         getString(R.string.notification_add_to_cart_button), likePendingIntent)
                 .setContentIntent(pendingIntent)
+
+
+        notificationBuilder.setDefaults(Notification.DEFAULT_SOUND)
+        notificationBuilder.setDefaults(Notification.DEFAULT_VIBRATE)
 
         notificationManager!!.notify(notificationId, notificationBuilder.build())
 

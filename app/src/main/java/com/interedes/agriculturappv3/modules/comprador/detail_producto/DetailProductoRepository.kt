@@ -380,7 +380,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     }
 
     fun sendNotifcationOferta(message:String, token:String,imageUrl:String){
-        val dataPostNotification= DataPostNotifcation(NotificationTypeResources.NOTIFYCATION_TYPE_OFERTA,message,imageUrl)
+        val dataPostNotification= DataPostNotifcation(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA,message,imageUrl)
         val postNotification = PostNotification(token,dataPostNotification
                 )
 
