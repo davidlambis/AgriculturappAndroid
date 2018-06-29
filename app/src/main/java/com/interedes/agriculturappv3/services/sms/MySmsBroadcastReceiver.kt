@@ -134,6 +134,8 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
             }*/
             builder = NotificationCompat.Builder(context, ADMIN_CHANNEL_ID)
 
+
+
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             pendingIntent = PendingIntent.getActivity(context, notificationId+1, intent, PendingIntent.FLAG_ONE_SHOT)
             builder.setContentTitle(title)
@@ -144,12 +146,15 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                     .setStyle( NotificationCompat.BigTextStyle()
                             .bigText(description))
                     .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_notification))
+                    //.setGroup(smsAddress)
                     .setBadgeIconType(R.mipmap.ic_launcher_notification)
                     .setContentIntent(pendingIntent)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setShowWhen(true)
                     .setWhen(Calendar.getInstance().getTimeInMillis())
             val notification = builder.build()
+            notification.defaults=(Notification.DEFAULT_SOUND)
+            notification.defaults=(Notification.DEFAULT_VIBRATE)
             notifManager?.notify(notificationId, notification)
         } else {
 
@@ -173,6 +178,9 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                     .setSmallIcon(getNotificationIcon())
                     .setContentIntent(pendingIntent)
                     .setStyle(NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(description))
+
+            notificationBuilder.setDefaults(Notification.DEFAULT_SOUND)
+            notificationBuilder.setDefaults(Notification.DEFAULT_VIBRATE)
 
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(notificationId, notificationBuilder.build())

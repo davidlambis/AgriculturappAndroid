@@ -225,6 +225,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         }*/
 
+        val phoneNo=3118932491
+        val dial = "tel:$phoneNo"
+        startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
+
         ///loadImagesProductos()
     }
 
@@ -634,10 +638,12 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         if (getLastUserLogued()?.RolNombre.equals(RolResources.PRODUCTOR)) {
             //Menu Lateral
             headerViewHolder.itemSyncronizarDatos.visibility=View.VISIBLE
+            headerViewHolder.itemSyncCloud.visibility=View.VISIBLE
 
         } else if (getLastUserLogued()?.RolNombre.equals(RolResources.COMPRADOR)) {
             //Menu Lateral
             headerViewHolder.itemSyncronizarDatos.visibility=View.GONE
+            headerViewHolder.itemSyncCloud.visibility=View.GONE
 
         }
 
@@ -650,7 +656,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         headerViewHolder.itemSyncronizarDatos.setOnClickListener(this)
         headerViewHolder.itemCerrarSesion.setOnClickListener(this)
         headerViewHolder.itemOfertas.setOnClickListener(this)
-        headerViewHolder.itemProveedores.setOnClickListener(this)
+        headerViewHolder.itemSyncCloud.setOnClickListener(this)
 
 
         // val header = navigationView.getHeaderView(0)
@@ -672,7 +678,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
 
-        val itemProveedores: LinearLayout = view.findViewById(R.id.itemProveedores)
+        val itemSyncCloud: LinearLayout = view.findViewById(R.id.itemSyncCloud)
         val itemOfertas: LinearLayout = view.findViewById(R.id.itemOfertas)
         val itemComprasRealizadas: LinearLayout = view.findViewById(R.id.itemComprasRealizadas)
         val itemSyncronizarDatos: LinearLayout = view.findViewById(R.id.itemSyncronizarDatos)
@@ -857,7 +863,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             R.id.itemCerrarSesion -> {
             showExit()
         }
-            R.id.itemProveedores -> {
+            R.id.itemSyncCloud -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
                 presenter?.syncQuantityData(false)
 
