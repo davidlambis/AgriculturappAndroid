@@ -83,7 +83,7 @@ class SmsUserAdapter(var lista: ArrayList<Sms>) : RecyclerView.Adapter<SmsUserAd
             var txtQuantity: TextView = itemView.findViewById(R.id.txtQuantity)
 
 
-            var btnAgregar: Button = itemView.findViewById(R.id.btnAgregar)
+            var btnAgregar: TextView = itemView.findViewById(R.id.btnAgregar)
 
             var personImageImgV: ImageView = itemView.findViewById(R.id.contentIcon)
             personImageImgV.visibility= View.GONE
@@ -106,9 +106,8 @@ class SmsUserAdapter(var lista: ArrayList<Sms>) : RecyclerView.Adapter<SmsUserAd
                 txtQuantity.visibility=View.GONE
 
             }else{
-
                 btnAgregar.visibility=View.GONE
-                txtQuantity.visibility=View.GONE
+                txtQuantity.visibility=View.VISIBLE
             }
 
             txtSmsAddress.setText(data.Address)

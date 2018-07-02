@@ -124,15 +124,21 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <Button
+
+                    <TextView
                         android:id="@+id/btnAgregar"
-                        android:textColor="@color/white_solid"
-                        android:background="@color/red_900"
-                        android:visibility="gone"
-                        android:text="@string/agregar"
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:background="?android:selectableItemBackground"
+                        android:drawableEnd="@drawable/ic_hand_selected"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="@string/agregar"
+                        android:textAlignment="center"
+                        android:textColor="@color/purple"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        android:textSize="@dimen/text_size_12" />
 
                     <TextView
 

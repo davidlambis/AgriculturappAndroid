@@ -96,13 +96,15 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
 
                 mainView?.onMessageToas("Mensage enviado correctamente", R.color.green)
                 mainView?.limpiarCampos()
+                mainView?.hideProgressHud()
                 mainView?.getListSms(false)
                 smsGlobal=null
             }else{
                 mainView?.onMessageToas("Mensage no enviado", R.color.red_900)
+                mainView?.hideProgressHud()
             }
 
-            mainView?.hideProgressHud()
+
         }
     }
 
