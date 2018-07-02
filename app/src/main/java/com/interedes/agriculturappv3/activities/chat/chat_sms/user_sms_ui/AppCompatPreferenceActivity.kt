@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.activities.chat.chat_sms
+package com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui
 
 import android.content.res.Configuration
 import android.os.Bundle

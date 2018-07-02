@@ -1,32 +1,30 @@
-package com.interedes.agriculturappv3.activities.chat.chat_sms
+package com.interedes.agriculturappv3.activities.chat.online.conversations_user
 
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import com.interedes.agriculturappv3.activities.chat.chat_sms.events.RequestEventChatSms
+import com.interedes.agriculturappv3.activities.chat.online.conversations_user.events.RequestEventChatOnline
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.models.chat.Room
+import com.interedes.agriculturappv3.modules.models.chat.RoomConversation
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
-import java.util.ArrayList
 
-class ChatSms_Presenter(var mainView:IMainViewChatSms.MainView?):IMainViewChatSms.Presenter {
+class Conversacion_Presenter (var mainView: IMainViewConversacion.MainView?): IMainViewConversacion.Presenter {
 
-    var interactor: IMainViewChatSms.Interactor? = null
+    var interactor: IMainViewConversacion.Interactor? = null
     var eventBus: EventBus? = null
 
-
-
     companion object {
-        var instance: ChatSms_Presenter? = null
+        var instance: Conversacion_Presenter? = null
     }
 
     init {
         instance = this
-        interactor = ChatSms_Interactor()
+        interactor = Conversacion_Interactor()
         eventBus = GreenRobotEventBus()
     }
 
@@ -38,19 +36,6 @@ class ChatSms_Presenter(var mainView:IMainViewChatSms.MainView?):IMainViewChatSm
     override fun onDestroy() {
         mainView = null
         eventBus?.unregister(this)
-    }
-
-    //SMS
-
-    private val mNotificationReceiverSms = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
-            if (extras != null) {
-                // if (extras.containsKey("new_message")) {
-                mainView?.onEventBroadcastReceiver(extras,intent)
-                // }
-            }
-        }
     }
 
     //region Conectividad
@@ -69,51 +54,43 @@ class ChatSms_Presenter(var mainView:IMainViewChatSms.MainView?):IMainViewChatSm
 
     override fun onResume(context: Context) {
         context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const.SERVICE_CONECTIVITY))
-        context.registerReceiver(mNotificationReceiverSms, IntentFilter(Const.SERVICE_RECYVE_MESSAGE))
-
     }
 
     override fun onPause(context: Context) {
         context.unregisterReceiver(this.mNotificationReceiverApp);
-        context.unregisterReceiver(this.mNotificationReceiverSms);
     }
 
     //endregion
 
     //region Suscribe Events
     @Subscribe
-    override fun onEventMainThread(event: RequestEventChatSms?) {
+    override fun onEventMainThread(event: RequestEventChatOnline?) {
         when (event?.eventType) {
 
-            RequestEventChatSms.UPDATE_EVENT -> {
+            RequestEventChatOnline.UPDATE_EVENT -> {
                 onMessageOk()
             }
 
-            RequestEventChatSms.ERROR_EVENT -> {
+            RequestEventChatOnline.ERROR_EVENT -> {
                 onMessageError(event.mensajeError)
             }
 
-            RequestEventChatSms.LIST_SMS_EVENT -> {
-                //listDetalleMetodo = event.mutableList as List<DetalleMetodoPago>
+            RequestEventChatOnline.LIST_ROOM_EVENT -> {
+                val list = event.mutableList as List<RoomConversation>
+                mainView?.setListRoom(list)
             }
+
         }
     }
     //endregion
 
-    //region Validations
-    override fun validarSendSms(): Boolean {
-        if (mainView?.validarSendSms() == true) {
-            return true
-        }
-        return false
-    }
-    //endregion
 
     //region METHODS
-
-    override fun getListSms(context: Activity) {
-        interactor?.getListSms(context)
+    override fun getListRoom() {
+       interactor?.getListRoom(checkConnection())
     }
+
+    //endregion
 
     //region Messages/Notificaciones
     private fun onMessageOk() {
@@ -134,4 +111,6 @@ class ChatSms_Presenter(var mainView:IMainViewChatSms.MainView?):IMainViewChatSm
 
 
     //endregion
+
+
 }

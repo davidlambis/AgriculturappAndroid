@@ -1,35 +1,38 @@
-package com.interedes.agriculturappv3.activities.chat.chat_sms.adapter
+package com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.adapter
 
-import android.content.Intent
+import android.graphics.Color
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import com.github.thunder413.datetimeutils.DateTimeUtils
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.activities.chat.chat_sms.Chat_Sms_Activity
-import com.interedes.agriculturappv3.modules.models.sms.SmsUser
+import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.events.RequestEventUserSms
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.models.sms.Sms
+import com.interedes.agriculturappv3.services.resources.TagSmsResources
 import de.hdodenhof.circleimageview.CircleImageView
-import java.text.SimpleDateFormat
+import java.util.*
 
 
-class SmsUserAdapter(var lista: ArrayList<SmsUser>) : RecyclerView.Adapter<SmsUserAdapter.ViewHolder>() {
+class SmsUserAdapter(var lista: ArrayList<Sms>) : RecyclerView.Adapter<SmsUserAdapter.ViewHolder>() {
 
     companion object {
         var eventBus: EventBus? = null
-        /*fun postEventc(type: Int, produccion: Produccion?) {
-            var produccionMutable= produccion as Object
-            val event = RequestEventProduccion(type,null, produccionMutable,null)
+        fun postEventc(type: Int, sms: Sms?) {
+            var smsMutable= sms as Object
+            val event = RequestEventUserSms(type, null, smsMutable, null)
             event.eventType = type
             eventBus?.post(event)
-        }*/
+        }
     }
 
     init {
@@ -52,7 +55,7 @@ class SmsUserAdapter(var lista: ArrayList<SmsUser>) : RecyclerView.Adapter<SmsUs
     }
 
 
-    fun setItems(newItems: List<SmsUser>) {
+    fun setItems(newItems: List<Sms>) {
         lista.addAll(newItems)
         notifyDataSetChanged()
     }
@@ -67,16 +70,21 @@ class SmsUserAdapter(var lista: ArrayList<SmsUser>) : RecyclerView.Adapter<SmsUs
         notifyItemRemoved(position)
     }
 
-    fun add(position: Int, person: SmsUser) {
+    fun add(position: Int, person: Sms) {
         lista.add(position, person)
         notifyItemInserted(position)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindItems(data: SmsUser, pos: Int) = with(itemView) {
+        fun bindItems(data: Sms, pos: Int) = with(itemView) {
 
             var personNameTxtV: TextView = itemView.findViewById(R.id.txtTitle)
             var txtDate: TextView = itemView.findViewById(R.id.txtDate)
+            var txtQuantity: TextView = itemView.findViewById(R.id.txtQuantity)
+
+
+            var btnAgregar: Button = itemView.findViewById(R.id.btnAgregar)
+
             var personImageImgV: ImageView = itemView.findViewById(R.id.contentIcon)
             personImageImgV.visibility= View.GONE
 
@@ -90,20 +98,42 @@ class SmsUserAdapter(var lista: ArrayList<SmsUser>) : RecyclerView.Adapter<SmsUs
             contentIconUser.visibility= View.VISIBLE
 
 
-            personNameTxtV.setText(data._user_name)
-            txtSmsAddress.setText(data._address)
+            personNameTxtV.setText(data.ContactName)
+
+            if(data.ContactName.equals(TagSmsResources.CONTACT_DESCONOCIDO)){
+
+                btnAgregar.visibility=View.VISIBLE
+                txtQuantity.visibility=View.GONE
+
+            }else{
+
+                btnAgregar.visibility=View.GONE
+                txtQuantity.visibility=View.GONE
+            }
+
+            txtSmsAddress.setText(data.Address)
 
             txtSmsAdditional.maxLines=1
             txtSmsAdditional.ellipsize=TextUtils.TruncateAt.END
             txtSmsAdditional.setTypeface(null, Typeface.NORMAL);
-            txtSmsAdditional.setText(data._msg)
+            txtSmsAdditional.setText(data.Message)
 
 
-            var strGotDate = data._time;
-            var longGotDate = strGotDate?.toLong()
-            // Format that date
-            var formattedGotDate =  SimpleDateFormat("MM/dd/yyyy h:mm a").format(longGotDate);
-            txtDate.setText(formattedGotDate)
+            try{
+                var strGotDate = data.FechaSms;
+                var longGotDate = strGotDate?.toLong()
+
+
+
+                // Format that date
+                //var formattedGotDate =  SimpleDateFormat("MM/dd/yyyy h:mm a").format(longGotDate);
+                txtDate.setText(DateTimeUtils.getTimeAgo(context, Date(longGotDate!!)))
+
+            }catch (ex:Exception){
+                var error = ex.toString()
+            }
+
+
             try {
                 contentIconUser.setImageResource(R.drawable.default_avata)
             } catch (e: Exception) {
@@ -112,14 +142,12 @@ class SmsUserAdapter(var lista: ArrayList<SmsUser>) : RecyclerView.Adapter<SmsUs
 
             itemView.setOnClickListener {
                 //postEventc(RequestEventProduccion.ITEM_EVENT,data)
-                val TAG = "SMSCHATAPP"
-                val TAG_USER_NAME = "USER_NAME"
-                val goToUpdate = Intent(context, Chat_Sms_Activity::class.java)
-                goToUpdate.putExtra(TAG, data._address)
-                goToUpdate.putExtra(TAG_USER_NAME, data._user_name)
-                context.startActivity(goToUpdate)
+                postEventc(RequestEventUserSms.ITEM_EVENTS_DETAIL_SMS, data)
+            }
 
-                Toast.makeText(context,"Chat Sms ",Toast.LENGTH_SHORT).show()
+            btnAgregar.setOnClickListener {
+                //postEventc(RequestEventProduccion.ITEM_EVENT,data)
+                postEventc(RequestEventUserSms.ITEM_EVENTS_ADD_CONTAT, data)
             }
         }
     }

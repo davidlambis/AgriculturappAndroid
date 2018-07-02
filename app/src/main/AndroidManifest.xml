@@ -119,26 +119,26 @@
             android:name=".activities.MapsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.chat.online.ConversationsUsersActivity"
+            android:name=".activities.chat.online.conversations_user.ConversationsUsersActivity"
             android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.chat.online.ChatMessageActivity"
+            android:name=".activities.chat.online.messages_chat.ChatMessageActivity"
             android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.chat.chat_sms.Chat_Sms_Activity"
-            android:parentActivityName=".activities.chat.chat_sms.UserSmsActivity"
+            android:name=".activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity"
+            android:parentActivityName=".activities.chat.chat_sms.user_sms_ui.UserSmsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.chat.chat_sms.SettingsActivity"
+            android:name=".activities.chat.chat_sms.user_sms_ui.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity" />
 
         <activity
             android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:name=".activities.chat.chat_sms.UserSmsActivity"></activity>
+            android:name=".activities.chat.chat_sms.user_sms_ui.UserSmsActivity"></activity>
 
         <!-- Maps -->
         <meta-data

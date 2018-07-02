@@ -1,10 +1,10 @@
-package com.interedes.agriculturappv3.activities.chat.chat_sms.events
+package com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.events
 
 
 
 
 
-data class RequestEventChatSms (var eventType: Int,
+data class RequestEventUserSms (var eventType: Int,
                                 var mutableList: MutableList<Object>? = null,
                                 var objectMutable: Object? = null,
                                 var mensajeError: String?
@@ -17,5 +17,9 @@ data class RequestEventChatSms (var eventType: Int,
         val ERROR_EVENT: Int = 4
 
         val LIST_SMS_EVENT: Int = 5
+
+        val ITEM_EVENTS_DETAIL_SMS: Int = 6
+
+        val ITEM_EVENTS_ADD_CONTAT: Int = 7
     }
 }

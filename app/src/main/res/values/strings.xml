@@ -421,6 +421,8 @@
     <string name="online">En linea</string>
     <string name="offline">Desconectado</string>
 
+    <string name="tittle_regiter_conact">Agregar a contactos</string>
+
 
     <string name="select_type_chat">¿Porfavor selecciona una opcion?</string>
 

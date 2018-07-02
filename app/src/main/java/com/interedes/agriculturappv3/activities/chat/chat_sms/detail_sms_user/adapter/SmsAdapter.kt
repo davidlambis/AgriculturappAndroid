@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.activities.chat.chat_sms.adapter
+package com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater

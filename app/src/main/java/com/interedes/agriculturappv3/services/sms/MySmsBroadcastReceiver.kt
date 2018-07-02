@@ -16,9 +16,10 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.telephony.SmsMessage
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.activities.chat.chat_sms.Chat_Sms_Activity
-import com.interedes.agriculturappv3.activities.chat.chat_sms.SettingsActivity
+import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
+import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.SettingsActivity
 import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.TagSmsResources
 import java.util.*
 
 
@@ -47,6 +48,7 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
             for (i in sms.indices) {
                 val smsMessage = SmsMessage.createFromPdu(sms[i] as ByteArray)
 
+
                 smsBody = smsMessage.getMessageBody()
                 smsAddress = smsMessage.getOriginatingAddress()
 
@@ -54,7 +56,7 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                 smsMessageStr += smsBody + "\n"
             }
 
-           // if(smsMessageStr.contains(context.getString(R.string.idenfication_sms_app))){
+            if(smsMessageStr.contains(context.getString(R.string.idenfication_sms_app))){
 
                 //Get the user's settings
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -73,13 +75,13 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
 
                     displayCustomNotificationForOrders(messageAdress, messageContent, context,smsAddress,messageAdress)
                     val retIntent = Intent(Const.SERVICE_RECYVE_MESSAGE)
-                    retIntent.putExtra("new_message", smsMessageStr)
+                    retIntent.putExtra("new_message_sms", smsMessageStr)
                     context.sendBroadcast(retIntent)
 
                     //Build the notification:
                 }
 
-           // }
+            }
         }
     }
 
@@ -110,15 +112,12 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-
             val builder: NotificationCompat.Builder
             val intent = Intent(context, Chat_Sms_Activity::class.java)
 
-            val TAG = "SMSCHATAPP"
-            val TAG_USER_NAME = "USER_NAME"
 
-            intent.putExtra(TAG,smsAddress)
-            intent.putExtra(TAG_USER_NAME,messageAdress)
+            intent.putExtra(TagSmsResources.PHONE_NUMBER,smsAddress)
+            intent.putExtra(TagSmsResources.CONTACT_NAME,messageAdress)
 
 
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -133,8 +132,6 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                 notifManager?.createNotificationChannel(mChannel)
             }*/
             builder = NotificationCompat.Builder(context, ADMIN_CHANNEL_ID)
-
-
 
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             pendingIntent = PendingIntent.getActivity(context, notificationId+1, intent, PendingIntent.FLAG_ONE_SHOT)
@@ -159,10 +156,9 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
         } else {
 
             val intent = Intent(context, Chat_Sms_Activity::class.java)
-            val TAG = "SMSCHATAPP"
-            val TAG_USER_NAME = "USER_NAME"
-            intent.putExtra(TAG,smsAddress)
-            intent.putExtra(TAG_USER_NAME,messageAdress)
+
+            intent.putExtra(TagSmsResources.PHONE_NUMBER,smsAddress)
+            intent.putExtra(TagSmsResources.CONTACT_NAME,messageAdress)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             var pendingIntent: PendingIntent? = null
 

@@ -12,7 +12,6 @@ import java.util.*
 
 @Table(database = DataSource::class)
 data class Usuario(
-
        /* @PrimaryKey(autoincrement = true)
         @SerializedName("UsuarioId")
         @Column(name = "UsuarioId")

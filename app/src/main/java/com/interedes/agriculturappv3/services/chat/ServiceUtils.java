@@ -100,11 +100,11 @@ public class ServiceUtils {
 
                 Log.d(TAG, "FIREBASE SERVICE SECOND PLANE: " + uid);
                 Chat_Resources.Companion.getMUserDBRef().child(uid+"/status").setValue(Status_Chat.Companion.getONLINE());
-                Chat_Resources.Companion.getMUserDBRef().child(uid+"/last_Online").setValue(ServerValue.TIMESTAMP);
+                //Chat_Resources.Companion.getMUserDBRef().child(uid+"/last_Online").setValue(ServerValue.TIMESTAMP);
 
 
                 Chat_Resources.Companion.getMUserDBRef().child(uid+"/status").onDisconnect().setValue(Status_Chat.Companion.getOFFLINE());
-                Chat_Resources.Companion.getMUserDBRef().child(uid+"/last_Online").onDisconnect().setValue(ServerValue.TIMESTAMP);
+                //Chat_Resources.Companion.getMUserDBRef().child(uid+"/last_Online").onDisconnect().setValue(ServerValue.TIMESTAMP);
 
                 //Chat_Resources.Companion.getMUserDBRef().child(uid+"/last_Online").setValue(System.currentTimeMillis());
                 //Chat_Resources.Companion.getMUserDBRef().child(uid+"/status").setValue(Status_Chat.Companion.getONLINE());

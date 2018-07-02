@@ -29,7 +29,6 @@ data class Tercero(@PrimaryKey
                    @Column(name = "Direccion")
                    var Direccion: String? = null,
 
-
                    @Column(getterName = "getEstado_Sincronizacion")
                    var Estado_Sincronizacion: Boolean? = false,
 
@@ -42,8 +41,6 @@ data class Tercero(@PrimaryKey
 
                    @Column(name = "Usuario_Id")
                    var Usuario_Id: UUID? = null
-
-
 ) {
 
     override fun toString(): String {

@@ -50,8 +50,8 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.interedes.agriculturappv3.AgriculturApplication
-import com.interedes.agriculturappv3.activities.chat.chat_sms.UserSmsActivity
-import com.interedes.agriculturappv3.activities.chat.online.ConversationsUsersActivity
+import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.UserSmsActivity
+import com.interedes.agriculturappv3.activities.chat.online.conversations_user.ConversationsUsersActivity
 import com.interedes.agriculturappv3.activities.intro.PermissionsIntro
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
@@ -63,6 +63,7 @@ import com.interedes.agriculturappv3.services.chat.ServiceUtils
 import com.interedes.agriculturappv3.services.resources.MenuBoomResources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.services.JobDownloadFotosService
+import com.interedes.agriculturappv3.services.sms.NotificationService
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nightonke.boommenu.BoomMenuButton
 import com.nightonke.boommenu.Types.BoomType
@@ -197,12 +198,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         septupInjection()
 
+        //Service SMS
+        val notificationServiceIntent = Intent(this, NotificationService::class.java)
+        startService(notificationServiceIntent)
+
         //var notificationManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         //var channelId = "1";
        // var channel2 = "2";
-
-
         /*
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             var notificationChannel =  NotificationChannel(channelId,
@@ -225,9 +228,12 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         }*/
 
+        /*
         val phoneNo=3118932491
         val dial = "tel:$phoneNo"
         startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
+
+        */
 
         ///loadImagesProductos()
     }
@@ -766,10 +772,21 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val adapter=MaterialSimpleListAdapter({dialog, index, item ->
             if(index==0){
                 dialog.dismiss()
-                startActivity(Intent(this, UserSmsActivity::class.java))
+
+
+
+                val chat = Intent(this, UserSmsActivity::class.java)
+                chat.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(chat)
+
+
             }else{
                 dialog.dismiss()
-                startActivity(Intent(this, ConversationsUsersActivity::class.java))
+
+                val chatOnline = Intent(this, ConversationsUsersActivity::class.java)
+                chatOnline.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(chatOnline)
+
             }
         })
 
@@ -839,6 +856,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             //userLogued?.save()
             presenter?.makeUserOffline(this)
             presenter?.logOut(userLogued)
+
+            var intent =  Intent(this, NotificationService::class.java);
+            stopService(intent)
 
             startActivity(Intent(this, LoginActivity::class.java)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))

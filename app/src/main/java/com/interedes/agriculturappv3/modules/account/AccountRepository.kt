@@ -214,13 +214,13 @@ class AccountRepository:IMainViewAccount.Repository {
     }
 
     private fun postEventOk(type: Int, lisUsurio: List<Usuario>?, usuario: Usuario?) {
-        val usuarioListMutable:MutableList<Object>? = null
+        var usuarioListMutable:MutableList<Object>? = null
         var usuarioMutable: Object? = null
         if (usuario != null) {
             usuarioMutable = usuario as Object
         }
         if (lisUsurio != null) {
-            usuarioListMutable as MutableList<Object>
+            usuarioListMutable=lisUsurio as MutableList<Object>
         }
 
         postEvent(type, usuarioListMutable, usuarioMutable, null)

@@ -1,13 +1,13 @@
-package com.interedes.agriculturappv3.activities.chat.chat_sms
+package com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import com.interedes.agriculturappv3.activities.chat.chat_sms.events.RequestEventChatSms
+import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.events.RequestEventUserSms
+import com.interedes.agriculturappv3.modules.models.sms.Sms
 
-interface IMainViewChatSms {
+interface IMainViewUserSms {
 
     interface MainView {
         //Progress and progress Hud
@@ -18,8 +18,18 @@ interface IMainViewChatSms {
 
         //Validaciones
         fun validarSendSms(): Boolean
+        fun limpiarCampos()
+
+        //list
+        fun setListSms(sms: List<Sms>)
+
+        //Navigate
+        fun navigateDetailSms(sms:Sms)
+
+        fun addContact(sms:Sms)
 
         //Response Notify
+        fun onMessageToas(message:String,color:Int)
         fun requestResponseOK()
         fun requestResponseError(error: String?)
         fun onMessageOk(colorPrimary: Int, msg: String?)
@@ -38,7 +48,7 @@ interface IMainViewChatSms {
         fun onPause(context: Context)
 
         //Events
-        fun onEventMainThread(requestEvent: RequestEventChatSms?)
+        fun onEventMainThread(requestEvent: RequestEventUserSms?)
 
 
         //Validacion
@@ -46,21 +56,21 @@ interface IMainViewChatSms {
 
 
         //Methods
-        fun getListSms(context:Activity)
+        fun getListSms(context:Activity,smsUser:Sms?)
 
         //Conecttion
         fun checkConnection(): Boolean
     }
 
     interface Interactor {
-        fun getListSms(context:Activity)
+        fun getListSms(context:Activity,smsUser:Sms?)
 
 
     }
 
     interface Repository {
 
-        fun getListSms(context:Activity)
+        fun getListSms(context:Activity,smsUser:Sms?)
     }
 
 }

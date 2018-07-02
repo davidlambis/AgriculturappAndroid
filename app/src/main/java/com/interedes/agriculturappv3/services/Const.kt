@@ -7,6 +7,8 @@ class Const {
 
     companion object {
 
+        var PAKAGE="com.interedes.agriculturappv3.services"
+
         var SERVICE_LOCATION="com.interedes.agriculturappv3.action.LOCATION"
         var SERVICE_CONECTIVITY="com.interedes.agriculturappv3.action.CONECTIVITY"
 

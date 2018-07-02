@@ -1,22 +1,12 @@
-package com.interedes.agriculturappv3.activities.chat.chat_sms
+package com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui
 
-import android.annotation.TargetApi
-import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
-import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.preference.ListPreference
-import android.preference.Preference
 import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
-import android.preference.PreferenceManager
-import android.preference.RingtonePreference
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
-import android.text.TextUtils
 import android.view.MenuItem
 import com.interedes.agriculturappv3.R
 

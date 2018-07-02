@@ -1,23 +1,16 @@
-package com.interedes.agriculturappv3.activities.chat.online.adapters
+package com.interedes.agriculturappv3.activities.chat.online.messages_chat.adapter
 
-import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.activities.chat.online.ChatMessageActivity
+import com.interedes.agriculturappv3.activities.chat.online.messages_chat.ChatMessageActivity
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
-import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.ParseException

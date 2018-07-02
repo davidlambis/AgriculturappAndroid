@@ -1,8 +1,8 @@
-package com.interedes.agriculturappv3.activities.chat.online
+package com.interedes.agriculturappv3.activities.chat.online.messages_chat
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -12,34 +12,32 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.activities.chat.online.adapters.MessagesAdapter
+import com.interedes.agriculturappv3.activities.chat.online.messages_chat.adapter.MessagesAdapter
 import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import kotlinx.android.synthetic.main.activity_chat_message.*
 import android.os.Build
-import android.os.Message
+import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
+import android.support.v4.content.ContextCompat
 import android.view.MenuItem
-import android.widget.ImageView
+import android.widget.TextView
 import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.services.resources.Chat_Resources
-import com.interedes.agriculturappv3.services.resources.S3Resources
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ChatMessageActivity : AppCompatActivity() {
+class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView {
+
 
     private var mLayoutManager: LinearLayoutManager? = null
-    private var mMessagesDBRef: DatabaseReference? = null
-
-
-
     private var mUsersRef: DatabaseReference? = null
-    private val mMessagesList = ArrayList<ChatMessage>()
     private var adapter: MessagesAdapter? = null
 
     private var mReceiverId: String? = null
@@ -47,9 +45,17 @@ class ChatMessageActivity : AppCompatActivity() {
     var mReceiverRoom: Room? = null
     private var mReceiverName: String? = null
 
+
+    var presenter: IMainViewChatMessages.Presenter? = null
+    private var hud: KProgressHUD?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_message)
+
+
+        presenter = ChatMessage_Presenter(this)
+        presenter?.onCreate()
 
         setToolbarInjection()
         messagesRecyclerView?.setHasFixedSize(true)
@@ -61,7 +67,6 @@ class ChatMessageActivity : AppCompatActivity() {
        // messagesRecyclerView.smoothScrollToPosition(0);
 
         //init Firebase
-        mMessagesDBRef =  Chat_Resources.mMessagesDBRef
         mUsersRef = Chat_Resources.mUserDBRef
 
         //get receiverId from intent
@@ -79,14 +84,15 @@ class ChatMessageActivity : AppCompatActivity() {
                 sendMessageToFirebase(message, senderId, mReceiverId)
             }
         })
-
-        querymessagesBetweenThisUserAndClickedUser()
+        iniAdapter()
+        //querymessagesBetweenThisUserAndClickedUser()
+        presenter?.getListMessagesByRoom(mReceiverRoom!!,mReceiverId!!)
         queryRecipientName(mReceiverId)
     }
 
 
     private fun sendMessageToFirebase(message: String, senderId: String, receiverId: String?) {
-        mMessagesList.clear()
+        //mMessagesList.clear()
         var time= System.currentTimeMillis()
         val dateFormat = SimpleDateFormat("MM/dd/yyyy")
         val date = Date()
@@ -98,29 +104,7 @@ class ChatMessageActivity : AppCompatActivity() {
         val newMsg = ChatMessage(mReceiverRoom?.IdRoom,message, senderId, receiverId,fecha,hora,time)
 
 
-        var roomDateComprador= Chat_Resources.mRoomDBRef?.child(mReceiverRoom?.User_From)?.child(Chat_Resources.getRoomById(mReceiverRoom?.User_To)+"/lastMessage")
-        roomDateComprador?.setValue(message);
-
-        var roomDateProductor= Chat_Resources.mRoomDBRef?.child(mReceiverRoom?.User_To)?.child(Chat_Resources.getRoomById(mReceiverRoom?.User_From)+"/lastMessage")
-        roomDateProductor?.setValue(message);
-
-        var roomDateCompradorDate= Chat_Resources.mRoomDBRef?.child(mReceiverRoom?.User_From)?.child(Chat_Resources.getRoomById(mReceiverRoom?.User_To)+"/date_Last")
-        roomDateCompradorDate?.setValue(ServerValue.TIMESTAMP);
-
-        var roomDateProductorDate= Chat_Resources.mRoomDBRef?.child(mReceiverRoom?.User_To)?.child(Chat_Resources.getRoomById(mReceiverRoom?.User_From)+"/date_Last")
-        roomDateProductorDate?.setValue(ServerValue.TIMESTAMP);
-
-        mMessagesDBRef?.push()?.setValue(newMsg)?.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                //error
-                Toast.makeText(applicationContext, "Error " + task.exception!!.localizedMessage, Toast.LENGTH_SHORT).show()
-                //mLayoutManager?.scrollToPositionWithOffset(0, 0);
-            } else {
-                Toast.makeText(applicationContext, "Message sent successfully!", Toast.LENGTH_SHORT).show()
-                messageEditText?.setText(null)
-                hideSoftKeyboard()
-            }
-        }
+        presenter?.sendMessage(newMsg,mReceiverRoom!!)
     }
 
     fun hideSoftKeyboard() {
@@ -128,55 +112,6 @@ class ChatMessageActivity : AppCompatActivity() {
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
-    }
-
-    private fun querymessagesBetweenThisUserAndClickedUser() {
-        val query = mMessagesDBRef?.orderByChild("room_id")?.equalTo("${mReceiverRoom?.IdRoom}")
-        iniAdapter()
-        query?.addChildEventListener(object : ChildEventListener {
-            override fun onCancelled(p0: DatabaseError?) {
-
-            }
-            override fun onChildMoved(p0: DataSnapshot?, p1: String?) {
-            }
-            override fun onChildChanged(p0: DataSnapshot?, p1: String?) {
-            }
-            override fun onChildAdded(dataSnapshot: DataSnapshot?, p1: String?) {
-                if(dataSnapshot!=null){
-                    val chatMessage = dataSnapshot.getValue(ChatMessage::class.java)
-                    if (chatMessage!!.senderId.equals(FirebaseAuth.getInstance().currentUser!!.uid) && chatMessage.receiverId.equals(mReceiverId) ||
-                            chatMessage.senderId.equals(mReceiverId) && chatMessage.receiverId.equals(FirebaseAuth.getInstance().currentUser!!.uid)) {
-                        mMessagesList.add(chatMessage)
-                    }
-                    //populateMessagesRecyclerView()
-                    adapter?.add(chatMessage)
-                    messagesRecyclerView.smoothScrollToPosition(adapter?.getItemCount()!! - 1);
-                    //mLayoutManager?.scrollToPositionWithOffset(0, 0);
-                    //mLayoutManager?.scrollToPosition(mMessagesList.size - 1);
-                }
-            }
-            override fun onChildRemoved(p0: DataSnapshot?) {
-            }
-        })
-        /*
-        query?.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                mMessagesList.clear()
-                for (snap in dataSnapshot.children) {
-                    val chatMessage = snap.getValue(ChatMessage::class.java)
-                    if (chatMessage!!.senderId.equals(FirebaseAuth.getInstance().currentUser!!.uid) && chatMessage.receiverId.equals(mReceiverId) ||
-                            chatMessage.senderId.equals(mReceiverId) && chatMessage.receiverId.equals(FirebaseAuth.getInstance().currentUser!!.uid)) {
-                        mMessagesList.add(chatMessage)
-                    }
-                }
-                /**populate messages */
-                populateMessagesRecyclerView()
-
-                iniAdapter()
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })*/
     }
 
     private fun iniAdapter() {
@@ -229,6 +164,98 @@ class ChatMessageActivity : AppCompatActivity() {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.title = getString(R.string.title_usuario)
     }
+
+
+    //region IMPLEMENTACION INTERFACE CHATMESSAGESMAIN VIEW
+
+
+
+    override fun showProgress() {
+        //  swipeRefreshLayout.setRefreshing(true);
+    }
+
+    override fun hideProgress() {
+        // swipeRefreshLayout.setRefreshing(false);
+    }
+
+    override fun showProgressHud(){
+        hud = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setWindowColor(getResources().getColor(R.color.colorPrimary))
+                .setLabel("Cargando...", resources.getColor(R.color.white))
+        hud?.show()
+    }
+
+    override fun hideProgressHud(){
+        hud?.dismiss()
+    }
+
+    override fun requestResponseOK() {
+        onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
+    }
+
+    override fun requestResponseError(error: String?) {
+        onMessageError(R.color.grey_luiyi, error)
+    }
+
+    override fun checkConectionInternet(){
+        onMessageToas(getString(R.string.verificate_conexion),R.color.red_900)
+    }
+
+    override fun onMessageToas(message: String, color: Int) {
+        val inflater = this.layoutInflater
+        var viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        viewToast.txtMessageToastCustom.setText(message)
+        viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(this, color))
+        var mytoast =  Toast(this);
+        mytoast.setView(viewToast);
+        mytoast.setDuration(Toast.LENGTH_SHORT);
+        mytoast.show();
+    }
+
+    override fun onMessageOk(colorPrimary: Int, message: String?) {
+        val color = Color.WHITE
+        val snackbar = Snackbar
+                .make(container, message!!, Snackbar.LENGTH_LONG)
+        val sbView = snackbar.view
+        sbView.setBackgroundColor(ContextCompat.getColor(applicationContext, colorPrimary))
+        val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.quantum_ic_cast_connected_white_24, 0, 0, 0)
+        // textView.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.activity_horizontal_margin));
+        textView.setTextColor(color)
+        snackbar.show()
+    }
+
+    override fun onMessageError(colorPrimary: Int, message: String?) {
+        onMessageOk(colorPrimary, message)
+    }
+
+    override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
+        if(extras!=null){
+            if (extras.containsKey("state_conectivity")) {
+                var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
+            }
+
+        }
+    }
+
+
+    override fun setListMessagesByRoom(sms: List<ChatMessage>) {
+
+    }
+
+    override fun setNewMessageByRoom(sms: ChatMessage) {
+        adapter?.add(sms)
+        messagesRecyclerView.smoothScrollToPosition(adapter?.getItemCount()!! - 1);
+    }
+
+    override fun limpiarCampos(){
+        messageEditText?.setText("")
+        hideSoftKeyboard()
+
+    }
+    //endregion
+
 
     //region MENU
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

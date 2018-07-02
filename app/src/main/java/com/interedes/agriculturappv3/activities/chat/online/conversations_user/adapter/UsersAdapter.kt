@@ -1,9 +1,7 @@
-package com.interedes.agriculturappv3.activities.chat.online.adapters
+package com.interedes.agriculturappv3.activities.chat.online.conversations_user.adapter
 
 import android.content.Intent
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -15,7 +13,7 @@ import android.widget.TextView
 import com.github.thunder413.datetimeutils.DateTimeUtils
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.R
-import com.interedes.agriculturappv3.activities.chat.online.ChatMessageActivity
+import com.interedes.agriculturappv3.activities.chat.online.messages_chat.ChatMessageActivity
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.chat.Room
@@ -45,7 +43,7 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
     }
 
     init {
-        instance=this
+        instance =this
         eventBus = GreenRobotEventBus()
         mUsersDBRef = Chat_Resources.mUserDBRef
         mRoomDBRef = Chat_Resources.mRoomDBRef
@@ -114,15 +112,15 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
             var imgStatus: ImageView = itemView.findViewById(R.id.imgStatus)
             imgStatus.visibility=View.VISIBLE
 
-            if(data.Status.equals(Status_Chat.ONLINE)){
+            if(data.UserFirebase?.Status.equals(Status_Chat.ONLINE)){
                 imgStatus.setImageResource(R.drawable.is_online_user)
                 txtDescripcionAdditional.setText( context.getString(R.string.online))
                 txtDate.setText("")
             }else{
                 imgStatus.setImageResource(R.drawable.is_offline_user)
                 txtDescripcionAdditional.setText( context.getString(R.string.offline))
-                if(data.Last_Online!=null){
-                    txtDate.setText(DateTimeUtils.getTimeAgo(context, Date(data.Last_Online!!)))
+                if(data.UserFirebase?.Last_Online!=null){
+                    txtDate.setText(DateTimeUtils.getTimeAgo(context, Date(data.UserFirebase?.Last_Online!!)))
                 }
             }
 
@@ -134,14 +132,14 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                 txtLastMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11F);
             }
 
-            personNameTxtV.setText(data.Nombre+" "+data.Apellido)
-            txtUserType.setText(data.Rol)
+            personNameTxtV.setText(data.UserFirebase?.Nombre+" "+data.UserFirebase?.Apellido)
+            txtUserType.setText(data.UserFirebase?.Rol)
             try {
                 //Picasso.with(context).load(data.Imagen).placeholder(R.drawable.default_avata).into(contentIconUser)
 
 
                     Picasso.get()
-                            .load(data?.Imagen)
+                            .load(data.UserFirebase?.Imagen)
                             .fit()
                             .centerCrop()
                             .placeholder(R.drawable.default_avata)
@@ -155,7 +153,7 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
 
 
             //Change State
-            mRoomDBRef?.child(data.User_Id)?.child(Chat_Resources.getRoomById(data.Room?.User_From))?.addValueEventListener(object : ValueEventListener {
+            mRoomDBRef?.child(data.UserFirebase?.User_Id)?.child(Chat_Resources.getRoomById(data.Room?.User_From))?.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError?) {
                 }
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -174,7 +172,7 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
 
 
             //Change State
-           mUsersDBRef?.child(data.User_Id)?.addValueEventListener(object : ValueEventListener {
+           mUsersDBRef?.child(data.UserFirebase?.User_Id)?.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError?) {
 
                 }
@@ -191,7 +189,7 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                         }else{
                             imgStatus.setImageResource(R.drawable.is_offline_user)
                             txtDescripcionAdditional.setText( context.getString(R.string.offline))
-                            if(data.Last_Online!=null){
+                            if(data.UserFirebase?.Last_Online!=null){
                                 txtDate.setText(DateTimeUtils.getTimeAgo(context, Date(user?.Last_Online!!)))
                             }
                         }
@@ -221,8 +219,8 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                 //postEventc(RequestEventProduccion.ITEM_EVENT,data)
                 val goToUpdate = Intent(context, ChatMessageActivity::class.java)
                 goToUpdate.putExtra("ROOM", data.Room)
-                goToUpdate.putExtra("USER_ID", data.User_Id)
-                goToUpdate.putExtra("FOTO", data.Imagen)
+                goToUpdate.putExtra("USER_ID", data.UserFirebase?.User_Id)
+                goToUpdate.putExtra("FOTO", data.UserFirebase?.Imagen)
                 context.startActivity(goToUpdate)
             }
 

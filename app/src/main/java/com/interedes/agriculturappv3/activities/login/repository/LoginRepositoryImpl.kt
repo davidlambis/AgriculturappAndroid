@@ -212,8 +212,6 @@ class LoginRepositoryImpl : LoginRepository {
                 usuario.save()
 
 
-
-
                 resetTokenFCM(context)
                 //val usuarioLoguedList = SQLite.select().from(Usuario::class.java).queryList()
                 postEventUsuarioOk(LoginEvent.SAVE_EVENT, usuario)

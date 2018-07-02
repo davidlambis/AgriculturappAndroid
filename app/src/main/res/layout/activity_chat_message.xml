@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/container"
     android:fitsSystemWindows="true"
-    tools:context=".activities.chat.online.ChatMessageActivity">
+    tools:context=".activities.chat.online.messages_chat.ChatMessageActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -63,24 +64,31 @@
             android:layout_marginBottom="60dp" />
 
         <LinearLayout
+            android:gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal"
-            android:weightSum="4">
+            >
 
             <EditText
                 android:id="@+id/messageEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:layout_weight="1"
+                android:gravity="bottom"
                 android:hint="Enter message..." />
 
-            <ImageButton
+
+
+            <android.support.design.widget.FloatingActionButton
                 android:id="@+id/sendMessageImagebutton"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                app:backgroundTint="@color/red_900"
+                app:fabCustomSize="@dimen/size_60"
+                android:tint="@color/white"
+                android:layout_weight="0"
                 android:src="@android:drawable/ic_menu_send" />
         </LinearLayout>
 
