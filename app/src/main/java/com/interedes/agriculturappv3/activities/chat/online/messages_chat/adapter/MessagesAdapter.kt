@@ -91,8 +91,11 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
     }
 
     fun add( person: ChatMessage) {
-        mMessagesList.add(person)
-        notifyDataSetChanged()
+
+        if(!mMessagesList.contains(person)){
+            mMessagesList.add(person)
+            notifyDataSetChanged()
+        }
         //notifyItemInserted(position)
     }
 

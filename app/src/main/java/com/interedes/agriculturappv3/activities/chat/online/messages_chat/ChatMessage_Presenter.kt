@@ -96,7 +96,6 @@ class ChatMessage_Presenter  (var mainView: IMainViewChatMessages.MainView?): IM
                 mainView?.sendSmsVerificate(newMessage)
 
             }
-
         }
     }
     //endregion

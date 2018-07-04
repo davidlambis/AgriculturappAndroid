@@ -51,7 +51,6 @@ public class ChatService extends Service {
         Log.d(TAG, "OnStartService");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
             Notification.Builder builder = new Notification.Builder(this, "")
                     .setContentTitle(getString(R.string.app_name))
                     .setContentText("")
@@ -72,9 +71,6 @@ public class ChatService extends Service {
 
             startForeground(1, notification);
         }
-
-
-
 
 
         updateOnline = new CountDownTimer(System.currentTimeMillis(), Const.Companion.getTIME_TO_REFRESH()) {
