@@ -844,7 +844,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 mProducto.blobImagen = Blob(byte)
                 val stringBuilder = StringBuilder()
                 stringBuilder.append("data:image/jpeg;base64,")
-                stringBuilder.append(android.util.Base64.encodeToString(byte, android.util.Base64.DEFAULT))
+                stringBuilder.append(android.util.Base64.encodeToString(byte, android.util.Base64.NO_WRAP))
                 mProducto.Imagen = stringBuilder.toString()
             }
 

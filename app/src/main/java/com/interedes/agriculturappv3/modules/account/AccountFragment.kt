@@ -587,7 +587,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     }
 
     private fun saveDataUserLogued() {
-        var usuario=presenter?.getUserLogued()
+        val usuario=presenter?.getUserLogued()
         if(imageAccountGlobal!=null){
 
 
@@ -603,7 +603,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
             usuario?.blobImagenUser = Blob(byte)
             val stringBuilder = StringBuilder()
             stringBuilder.append("data:image/jpeg;base64,")
-            stringBuilder.append(android.util.Base64.encodeToString(byte, android.util.Base64.DEFAULT))
+            stringBuilder.append(android.util.Base64.encodeToString(byte, android.util.Base64.NO_WRAP))
             usuario?.Fotopefil = stringBuilder.toString()
         }
 

@@ -183,10 +183,12 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                         var user = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
 
                         if(user?.Status.equals(Status_Chat.ONLINE)){
+                            data.UserFirebase?.Status=Status_Chat.ONLINE
                             imgStatus.setImageResource(R.drawable.is_online_user)
                             txtDescripcionAdditional.setText( context.getString(R.string.online))
                             txtDate.setText("")
                         }else{
+                            data.UserFirebase?.Status=Status_Chat.OFFLINE
                             imgStatus.setImageResource(R.drawable.is_offline_user)
                             txtDescripcionAdditional.setText( context.getString(R.string.offline))
                             if(data.UserFirebase?.Last_Online!=null){
@@ -204,11 +206,9 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                                     .error(R.drawable.default_avata)
                                     .into(contentIconUser);
 
-
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
-
 
                       //  UsersAdapter.instance.notifyDataSetChanged()
                     }
@@ -218,6 +218,7 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
             itemView.setOnClickListener {
                 //postEventc(RequestEventProduccion.ITEM_EVENT,data)
                 val goToUpdate = Intent(context, ChatMessageActivity::class.java)
+                goToUpdate.putExtra("USER_FIREBASE", data.UserFirebase)
                 goToUpdate.putExtra("ROOM", data.Room)
                 goToUpdate.putExtra("USER_ID", data.UserFirebase?.User_Id)
                 goToUpdate.putExtra("FOTO", data.UserFirebase?.Imagen)

@@ -78,6 +78,7 @@ class UpRepository() : IUnidadProductiva.Repo {
 
                 override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
                     if (response != null && response.code() == 201) {
+
                         val idUP = response.body()?.Id_Remote
                         mUnidadProductiva?.Id_Remote = idUP
 

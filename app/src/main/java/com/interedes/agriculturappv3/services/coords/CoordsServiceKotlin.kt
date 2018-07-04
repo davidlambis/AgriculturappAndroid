@@ -64,12 +64,21 @@ class CoordsServiceKotlin(): Service(), LocationListener {
             locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             gpsActivo = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
+           /* locationManager= activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val listaProviders = locationManager?.allProviders
+            val provider = locationManager?.getProvider(listaProviders!![0])
+            val precision = provider?.accuracy
+            val obtieneAltitud = provider?.supportsAltitude()
+            val consumoRecursos = provider?.powerRequirement*/
+
         } catch (ex: Exception) {
 
         }
 
         locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
         locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0f, this)
+
+
 
     }
 

@@ -28,13 +28,19 @@ import java.io.File
 import io.fabric.sdk.android.services.settings.IconRequest.build
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.support.v4.app.JobIntentService
 import android.support.v4.app.NotificationCompat
 import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad_Table
 import com.interedes.agriculturappv3.modules.models.plagas.FotoEnfermedad
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 
 
 class JobDownloadFotosService : Service() {
+
+
+
 
     private val ADMIN_CHANNEL_ID = "admin_channel"
     private var listInsmo: List<Insumo>? = null
@@ -80,8 +86,50 @@ class JobDownloadFotosService : Service() {
 
             startForeground(1, notification)
         }
-        getAllPlagasFoto(0)
+
+        getFotoPerfil()
+
         return START_STICKY
+    }
+
+    private fun getFotoPerfil(){
+        val user = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+
+        if(user!=null){
+            if(user.Fotopefil!=null){
+
+                FileLoader.with(this)
+                        .load(S3Resources.RootImage+"${user.Fotopefil}",false) //2nd parameter is optioal, pass true to force load from network
+                        //.fromDirectory("test4", FileLoader.DIR_EXTERNAL_PUBLIC)
+                        .fromDirectory(DIR_INSUMOS_PLAGAS, FileLoader.DIR_INTERNAL)
+                        .asFile( object: FileRequestListener<File> {
+                            override fun onLoad(request: FileLoadRequest?, response: FileResponse<File>?) {
+                                val loadedFile = response?.getBody();
+                                if(loadedFile?.length()!!>0){
+                                    val compressedImage = Compressor(applicationContext)
+                                            .setMaxHeight(300)
+                                            .setQuality(100)
+                                            .compressToBitmap(loadedFile)
+                                    val bitmap= convertBitmapToByte(compressedImage)
+                                    user.blobImagenUser = Blob(bitmap)
+                                    user.save()
+                                }
+                                getAllPlagasFoto(0)
+                            }
+                            override fun onError(request: FileLoadRequest?, error : Throwable?) {
+                                var error = error.toString()
+                                getAllPlagasFoto(0)
+                            }
+                        });
+            }
+            else{
+                getAllPlagasFoto(0)
+            }
+
+        }else{
+            getAllPlagasFoto(0)
+        }
+
     }
 
     private fun getAllInsumoFoto(index: Int) {

@@ -463,6 +463,9 @@
 
     <string name="content_sms_message">El señor(a) %1$s no se encuentra en linea desea enviarle un mensaje de texto para notificar su oferta ?</string>
 
+    <string name="content_sms_message_offline">El señor(a) %1$s no se encuentra en linea desea enviarle un mensaje de texto?</string>
+
+
     <string name="content_sms_tittle">Notifcacion Oferta</string>
 
     <string name="content_sms_verificate_phone_number">El Numero de telefono del usuario nos es valido</string>

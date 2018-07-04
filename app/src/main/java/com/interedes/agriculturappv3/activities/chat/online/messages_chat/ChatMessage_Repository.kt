@@ -93,7 +93,7 @@ class ChatMessage_Repository:IMainViewChatMessages.Repository {
                }
            }
        }else{
-           postEventError(RequestEventChatMessage.ERROR_VERIFICATE_CONECTION,null)
+           postEventOk(RequestEventChatMessage.ERROR_VERIFICATE_CONECTION,null,message)
        }
     }
 

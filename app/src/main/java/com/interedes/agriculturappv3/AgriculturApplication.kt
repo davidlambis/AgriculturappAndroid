@@ -63,6 +63,9 @@ class AgriculturApplication : Application() {
         //DbFlow
         //FlowManager.init(this)
         FlowManager.init(FlowConfig.Builder(this).build())
+
+
+
         //Avoiding Memory Leaks and code optimization
         val builder = StrictMode.VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())

@@ -229,6 +229,7 @@
             </intent-filter>-->
         </service>
 
+
         <!--SERVICE INSUMOS-->
         <service android:name=".services.services.JobDownloadFotosService"  android:exported="false">
             <!--<intent-filter>
@@ -237,6 +238,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </service>
+
+        <!--
+        <service android:name=".services.services.JobServiceExample"
+            android:permission="android.permission.BIND_JOB_SERVICE" />-->
 
 
     </application>

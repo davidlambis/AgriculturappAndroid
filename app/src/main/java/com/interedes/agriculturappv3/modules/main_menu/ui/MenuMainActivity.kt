@@ -3,6 +3,9 @@ package com.interedes.agriculturappv3.modules.productor.ui.main_menu
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -15,6 +18,8 @@ import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.preference.PreferenceManager
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -57,12 +62,16 @@ import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
+import com.interedes.agriculturappv3.modules.main_menu.ui.FileUtils
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.services.chat.ServiceUtils
+import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.resources.MenuBoomResources
 import com.interedes.agriculturappv3.services.resources.RolResources
+import com.interedes.agriculturappv3.services.resources.Status_Sync_Data_Resources
 import com.interedes.agriculturappv3.services.services.JobDownloadFotosService
+import com.interedes.agriculturappv3.services.services.JobServiceExample
 import com.interedes.agriculturappv3.services.sms.NotificationService
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nightonke.boommenu.BoomMenuButton
@@ -74,6 +83,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import java.io.*
+import java.text.Normalizer
 import java.util.*
 
 
@@ -129,7 +139,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
 
+
+
     private val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
+
+
+
+    var jobScheduler: JobScheduler?=null
+    val  MYJOBID:Int = 1;
 
     companion object {
         var instance: MenuMainActivity? = null
@@ -172,7 +189,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         setAdapterFragment()
         // this.coordsService = CoordsService(this)
         //fragmentManager.beginTransaction().add(R.id.container, AccountingFragment()).commit()
-
 
 
         //Firebase
@@ -236,6 +252,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         */
 
         ///loadImagesProductos()
+
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+          ///  jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler;
+        //}
     }
 
     override fun syncFotosInsumosPlagas() {
@@ -312,7 +332,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val usuarioLogued=getLastUserLogued()
 
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
-
 
             placeType=PlaceType.HAM_4_1
             //placeType=PlaceType.CIRCLE_4_1
@@ -490,10 +509,20 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
                 var usuario= presenter?.getLastUserLogued()
 
+               // val nombre= limpiarAcentos(usuario?.Nombre+"_"+usuario?.Apellidos)
+
+                val nombre= usuario?.Nombre+"_"+usuario?.Apellidos
+                val deleteSpaceNombre= nombre.replace(" ","")
+                val deletenMinuNombre= deleteSpaceNombre.replace("ñ","n")
+                val deletenMayuNombre= deletenMinuNombre.replace("Ñ","N")
+
                 val currentDBPath = String.format("%s%s", applicationContext.getDatabasePath(DataSource.NAME).toString(), ".db")
-                val backupDBPath = "$directory/${usuario?.Nombre}_${usuario?.Apellidos}_db_agricultur_app.db"
+                val backupDBPath = "$directory/$deletenMayuNombre"+"_db_agricultur_app.db"
+
                 val currentDB = File(currentDBPath)
                 val backupDB = File(sd, backupDBPath)
+
+
                 val src = FileInputStream(currentDB).channel
                 val dst = FileOutputStream(backupDB).channel
                 dst.transferFrom(src, 0, src.size())
@@ -511,10 +540,24 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         }
     }
 
+    fun limpiarAcentos( cadena:String):String {
+    var limpio:String ="";
+    if (cadena !=null) {
+        var valor = cadena;
+        valor = valor.toUpperCase();
+        // Normalizar texto para eliminar acentos, dieresis, cedillas y tildes
+        limpio = Normalizer.normalize(valor, Normalizer.Form.NFD) ;
+        // Quitar caracteres no ASCII excepto la enie, interrogacion que abre, exclamacion que abre, grados, U con dieresis.
+        limpio = limpio.replace("[^\\p{ASCII}(N\u0303)(n\u0303)(\u00A1)(\u00BF)(\u00B0)(U\u0308)(u\u0308)]", "");
+        // Regresar a la forma compuesta, para poder comparar la enie con la tabla de valores
+        limpio = Normalizer.normalize(limpio, Normalizer.Form.NFC);
+    }
+    return limpio;
+}
+
     //importing database
     private fun importDB(path: String) {
         // TODO Auto-generated method stub
-
         try {
             val posicion: Array<String>
             posicion = path.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -526,7 +569,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             val data = Environment.getDataDirectory()
             if (sd.canWrite()) {
 
-                val currentDBPath = String.format("%s%s", applicationContext.getDatabasePath(DataSource.NAME).toString(), ".db")
+                val currentDBPath = String.format("%s%s", applicationContext.getDatabasePath(DataSource.NAME).toString(),".db")
 
                 val file = File(currentDBPath)
                 var res = false
@@ -541,11 +584,23 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 val backupDB = File(currentDBPath)
                 val currentDB = File(sd, backupDBPath)
 
+               /* if (backupDB.exists()) {
+                    FileUtils.copyFile( FileInputStream(currentDBPath),  FileOutputStream(backupDB));
+                    // Access the copied database so SQLiteHelper will cache it and mark
+                    // it as created.
+                }*/
+
                 val src = FileInputStream(currentDB).channel
                 val dst = FileOutputStream(backupDB).channel
                 dst.transferFrom(src, 0, src.size())
                 src.close()
                 dst.close()
+
+                /*val src = FileInputStream(currentDB).channel
+                val dst = FileOutputStream(backupDB).channel
+                dst.transferFrom(src, 0, src.size())
+                src.close()
+                dst.close()*/
                 Toast.makeText(baseContext, backupDB.toString(),
                         Toast.LENGTH_LONG).show()
                 Toast.makeText(baseContext, "DB Imported Succesfult",
@@ -664,6 +719,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         headerViewHolder.itemOfertas.setOnClickListener(this)
         headerViewHolder.itemSyncCloud.setOnClickListener(this)
 
+       // headerViewHolder.itemStartJob.setOnClickListener(this)
+       // headerViewHolder.itemStopJob.setOnClickListener(this)
+
+
 
         // val header = navigationView.getHeaderView(0)
         // val headerViewHolder = HeaderViewHolder(header)
@@ -683,6 +742,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val tvIdentificacion: TextView = view.findViewById(R.id.tvIdentificacion)
 
 
+       // val itemStartJob: LinearLayout = view.findViewById(R.id.itemStartJobService)
+       //  val itemStopJob: LinearLayout = view.findViewById(R.id.itemStopJobService)
 
         val itemSyncCloud: LinearLayout = view.findViewById(R.id.itemSyncCloud)
         val itemOfertas: LinearLayout = view.findViewById(R.id.itemOfertas)
@@ -882,7 +943,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
             R.id.itemCerrarSesion -> {
             showExit()
-        }
+                }
             R.id.itemSyncCloud -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
                 presenter?.syncQuantityData(false)
@@ -913,6 +974,85 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 }*/
                 //NotificationManager.startServiceInForeground()
             }
+
+
+                /*
+            R.id.itemStartJobService -> {
+
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+
+
+
+
+
+
+                    var jobService = ComponentName(getPackageName(), JobServiceExample::class.java.name);
+                    var jobInfo = JobInfo.Builder(MYJOBID, jobService).setPeriodic(500).build();
+                    /*
+                     * setPeriodic(long intervalMillis)
+                     * Specify that this job should recur with the provided interval,
+                     * not more than once per period.
+                     */
+
+                    var jobId = jobScheduler?.schedule(jobInfo);
+                    if(jobScheduler?.schedule(jobInfo)!!>0){
+                        Toast.makeText(this,
+                                "Successfully scheduled job: " + jobId,
+                                Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(this,
+                                "RESULT_FAILURE: " + jobId,
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+
+
+
+                } else {
+                    TODO("VERSION.SDK_INT < LOLLIPOP")
+
+
+                }
+
+
+
+            }
+
+            R.id.itemStopJobService -> {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    jobScheduler?.cancelAll();
+
+                    /*
+                    val allPendingJobs = jobScheduler?.getAllPendingJobs()
+                    var s = "";
+                    if (allPendingJobs != null) {
+                        for( j in allPendingJobs){
+
+                            var jId = j.getId();
+                            jobScheduler?.cancel(jId);
+                            s += "jobScheduler.cancel(" + jId + " )";
+                        }
+                    }
+                    Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+
+                    */
+
+                } else {
+                    TODO("VERSION.SDK_INT < LOLLIPOP")
+
+
+                }
+
+
+                //or
+                //jobScheduler.cancelAll();
+
+
+
+            }*/
 
 
 
@@ -1120,7 +1260,23 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun setQuantitySyncAutomatic(quantitySync: QuantitySync?){
         if(quantitySync?.CantidadRegistrosSync!!.toInt()>0 || quantitySync?.CantidadUpdatesSync!!.toInt()>0 ){
             if(presenter?.checkConnection()!!){
-                AgriculturApplication.instance.showNotification(true)
+
+                val myTimerr = 2000
+                ///Mensage
+                Handler().postDelayed(Runnable {
+                    try {
+                        val preferences = SharedPreferenceHelper.getInstance(this)
+                        if(preferences.runingService.equals(Status_Sync_Data_Resources.STOP)){
+                            SharedPreferenceHelper.getInstance(this).savePostSyncData(Status_Sync_Data_Resources.RUNNING);
+                            AgriculturApplication.instance.showNotification(true)
+                        }
+
+                    } catch (e: Exception) {
+                    }
+                }, myTimerr.toLong())
+
+
+
             }else{
                 onMessageToast(R.color.red_900,"Tienes informacion por sincronizar verifca tu conexion")
                 //onMessageError(R.color.red_900,"Tienes informacion por sincronizar verifca tu conexion")
@@ -1163,6 +1319,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         val usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
+
             presenter?.syncQuantityData(true)
         }
     }

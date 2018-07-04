@@ -33,8 +33,10 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.interedes.agriculturappv3.services.resources.RolResources
+import com.interedes.agriculturappv3.services.resources.Status_Sync_Data_Resources
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.Delete
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -128,8 +130,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
         var list = SQLite.select().from(Usuario::class.java).queryList()
         var usuario= getLastUserLogued()
         if (usuario != null) {
+            SharedPreferenceHelper.getInstance(this).savePostSyncData(Status_Sync_Data_Resources.STOP);
             val i = Intent(this, MenuMainActivity::class.java)
-            //i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(i)
         }
     }

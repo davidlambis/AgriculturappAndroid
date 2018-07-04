@@ -230,10 +230,9 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
 
     override fun navigateToMainActivity(usuario: Usuario?) {
 
-
         SharedPreferenceHelper.getInstance(this).saveUserInfo(usuario);
         val i = Intent(this, MenuMainActivity::class.java)
-        //i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(i)
     }
 

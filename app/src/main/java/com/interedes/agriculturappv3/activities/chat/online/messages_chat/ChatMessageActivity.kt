@@ -23,17 +23,28 @@ import android.support.v4.app.TaskStackBuilder
 import android.support.v4.content.ContextCompat
 import android.view.MenuItem
 import android.widget.TextView
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.GravityEnum
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
+import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
 import com.interedes.agriculturappv3.modules.models.chat.Room
+import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.services.resources.Chat_Resources
+import com.interedes.agriculturappv3.services.resources.EmisorType_Message_Resources
+import com.interedes.agriculturappv3.services.resources.MessageSmsType
+import com.interedes.agriculturappv3.services.resources.TagSmsResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
+import kotlinx.android.synthetic.main.dialog_confirm.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView {
+
 
 
     private var mLayoutManager: LinearLayoutManager? = null
@@ -43,6 +54,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
     private var mReceiverId: String? = null
     var mReceiverFoto: String? = null
     var mReceiverRoom: Room? = null
+    var userFirebaeSelected: UserFirebase? = null
     private var mReceiverName: String? = null
 
 
@@ -73,6 +85,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
         mReceiverId = intent.getStringExtra("USER_ID")
         mReceiverFoto = intent.getStringExtra("FOTO")
         mReceiverRoom= intent.getParcelableExtra("ROOM")
+        userFirebaeSelected=intent.getParcelableExtra("USER_FIREBASE")
         /**listen to send message imagebutton click**/
         sendMessageImagebutton?.setOnClickListener(View.OnClickListener {
             val message = messageEditText?.getText().toString()
@@ -80,6 +93,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
             if (message.isEmpty()) {
                 Toast.makeText(applicationContext, "You must enter a message", Toast.LENGTH_SHORT).show()
             } else {
+
                 //message is entered, send
                 sendMessageToFirebase(message, senderId, mReceiverId)
             }
@@ -155,7 +169,6 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
     }
 
 
-
     private fun setToolbarInjection() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
@@ -168,7 +181,61 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
 
     //region IMPLEMENTACION INTERFACE CHATMESSAGESMAIN VIEW
 
+    override fun sendSmsVerificate(newMessage: ChatMessage){
+        val inflater = this.layoutInflater
+        var viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
 
+        viewDialogConfirm?.txtTitleConfirm?.setText("")
+        viewDialogConfirm?.txtTitleConfirm?.setText(userFirebaeSelected?.Nombre+" ${userFirebaeSelected?.Apellido}")
+
+
+        var content =String.format(getString(R.string.content_sms_message_offline),userFirebaeSelected?.Nombre+" ${userFirebaeSelected?.Apellido}")
+        viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
+
+        MaterialDialog.Builder(this)
+                .title(getString(R.string.content_sms_tittle))
+                .customView(viewDialogConfirm!!, true)
+                .positiveText(R.string.confirm)
+                .negativeText(R.string.cancel)
+                .positiveColorRes(R.color.light_green_800)
+                .negativeColorRes(R.color.light_green_800)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .backgroundColorRes(R.color.material_blue_grey_800)
+                .dividerColorRes(R.color.light_green_800)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                .positiveColor(Color.WHITE)
+                .negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .theme(Theme.DARK)
+                .onPositive(
+                        { dialog1, which ->
+                            dialog1.dismiss()
+                            val sms= Sms(0,
+                                    "",
+                                    userFirebaeSelected?.Telefono,
+                                    newMessage.message,
+                                    "",
+                                    System.currentTimeMillis().toString(),
+                                    MessageSmsType.MESSAGE_TYPE_SENT,
+                                    EmisorType_Message_Resources.MESSAGE_EMISOR_TYPE_SMS,
+                                    "Desconocido"
+                            )
+                            val goToUpdate = Intent(this, Chat_Sms_Activity::class.java)
+                            goToUpdate.putExtra(TagSmsResources.TAG_SMS_SEND, sms)
+                            goToUpdate.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            //goToUpdate.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(goToUpdate)
+                            //Toast.makeText(activity,"Enviar oferta",Toast.LENGTH_SHORT).show()
+                            // _dialogOferta?.dismiss()
+
+                        })
+                .onNegative({ dialog1, which ->
+                    dialog1.dismiss()
+                    onMessageToas(getString(R.string.content_sms_not_send),R.color.red_900)
+                })
+                .show()
+    }
 
     override fun showProgress() {
         //  swipeRefreshLayout.setRefreshing(true);

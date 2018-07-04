@@ -52,6 +52,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -59,31 +60,85 @@
             android:layout_marginBottom="@dimen/margin_5"
             android:background="@color/grey_luiyi" />
 
+
+        <!--
         <LinearLayout
-            android:id="@+id/itemSyncCloud"
-            android:padding="@dimen/margin_5"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:gravity="center|left"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+              android:id="@+id/itemStartJobService"
+              android:padding="@dimen/margin_5"
+              android:foreground="?android:attr/selectableItemBackground"
+              android:gravity="center|left"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
 
-            <ImageView
-                android:tint="@color/white_solid"
-                android:src="@drawable/ic_cloud_upload"
-                android:layout_width="40dp"
-                android:layout_height="40dp" />
+              <ImageView
+                  android:tint="@color/white_solid"
+                  android:src="@drawable/ic_cloud_upload"
+                  android:layout_width="40dp"
+                  android:layout_height="40dp" />
 
-            <TextView
-                android:textSize="@dimen/text_size_18"
-                android:textColor="@color/white_solid"
-                android:paddingStart="@dimen/margin_5"
-                android:textAlignment="textStart"
-                android:text="Sincronizacion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+              <TextView
+                  android:textSize="@dimen/text_size_18"
+                  android:textColor="@color/white_solid"
+                  android:paddingStart="@dimen/margin_5"
+                  android:textAlignment="textStart"
+                  android:text="START JOB SERVICE"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content" />
 
         </LinearLayout>
+
+        <LinearLayout
+              android:id="@+id/itemStopJobService"
+              android:padding="@dimen/margin_5"
+              android:foreground="?android:attr/selectableItemBackground"
+              android:gravity="center|left"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+              <ImageView
+                  android:tint="@color/white_solid"
+                  android:src="@drawable/ic_cloud_upload"
+                  android:layout_width="40dp"
+                  android:layout_height="40dp" />
+
+              <TextView
+                  android:textSize="@dimen/text_size_18"
+                  android:textColor="@color/white_solid"
+                  android:paddingStart="@dimen/margin_5"
+                  android:textAlignment="textStart"
+                  android:text="STOP JOB SERVICE"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content" />
+
+          </LinearLayout>-->
+
+          <LinearLayout
+              android:id="@+id/itemSyncCloud"
+              android:padding="@dimen/margin_5"
+              android:foreground="?android:attr/selectableItemBackground"
+              android:gravity="center|left"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+              <ImageView
+                  android:tint="@color/white_solid"
+                  android:src="@drawable/ic_cloud_upload"
+                  android:layout_width="40dp"
+                  android:layout_height="40dp" />
+
+              <TextView
+                  android:textSize="@dimen/text_size_18"
+                  android:textColor="@color/white_solid"
+                  android:paddingStart="@dimen/margin_5"
+                  android:textAlignment="textStart"
+                  android:text="Sincronizar Datos"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content" />
+
+          </LinearLayout>
 
         <LinearLayout
             android:id="@+id/itemOfertas"
@@ -155,7 +210,7 @@
                 android:textColor="@color/white_solid"
                 android:paddingStart="@dimen/margin_5"
                 android:textAlignment="textStart"
-                android:text="Actualizar Informacion"
+                android:text="Actualizar Plagas y Enfermedades"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

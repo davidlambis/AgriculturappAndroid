@@ -101,6 +101,11 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener, IMainViewDet
 
         //Bind the info to our listview
 
+
+
+
+
+
         val intent = intent
         if (intent.extras.containsKey(TagSmsResources.TAG_SMS)) {
             sms = intent.getParcelableExtra(TagSmsResources.TAG_SMS)
@@ -116,6 +121,15 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener, IMainViewDet
             contactUserName=sms?.ContactName
             getListSms(true)
         }
+
+        if (intent.extras.containsKey(TagSmsResources.TAG_SMS_SEND)) {
+            sms = intent.getParcelableExtra(TagSmsResources.TAG_SMS_SEND)
+            contactNumber=sms?.Address
+            contactUserName=sms?.ContactName
+            getListSms(false)
+            messageEditText.setText(sms?.Message)
+        }
+
 
         nameUserTo.setText(contactUserName)
         adressUserTo.setText(contactNumber)

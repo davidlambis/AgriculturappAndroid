@@ -55,7 +55,10 @@ class NotificationService: Service() {
         return null
     }
 
+
     override fun onDestroy() {
-        unregisterReceiver(receiver)
+        if (receiver!=null) {
+            unregisterReceiver(receiver)
+        }
     }
 }

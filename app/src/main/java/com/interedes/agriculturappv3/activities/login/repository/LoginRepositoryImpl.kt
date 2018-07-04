@@ -55,6 +55,7 @@ import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.resources.RolResources
+import com.interedes.agriculturappv3.services.resources.Status_Sync_Data_Resources
 import java.io.IOException
 
 
@@ -147,7 +148,7 @@ class LoginRepositoryImpl : LoginRepository {
 
 
 
-                                            if(userLoguedResponse.Fotopefil!=null){
+                                            /*if(userLoguedResponse.Fotopefil!=null){
                                                 try {
                                                     val base64String = userLoguedResponse.Fotopefil
                                                     val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
@@ -157,8 +158,9 @@ class LoginRepositoryImpl : LoginRepository {
                                                     var ss= ex.toString()
                                                     Log.d("Convert Image", "defaultValue = " + ss);
                                                 }
-                                            }
+                                            }*/
 
+                                            usuario.Fotopefil=userLoguedResponse.Fotopefil
                                             usuario.RolNombre = rol?.Nombre
                                             usuario.save()
 
@@ -447,6 +449,7 @@ class LoginRepositoryImpl : LoginRepository {
         //editor.putString("registration_id", _token);
         //editor.apply();
         preferences.edit().putString(Const.FIREBASE_TOKEN, _token).apply()
+        SharedPreferenceHelper.getInstance(context).savePostSyncData(Status_Sync_Data_Resources.STOP);
     }
 
     private fun  getTokenFromPrefs(context:Context):String?

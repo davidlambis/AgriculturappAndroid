@@ -3,11 +3,15 @@ package com.interedes.agriculturappv3.config
 import com.raizlabs.android.dbflow.annotation.Database
 
 
-@Database(name = DataSource.NAME, version = DataSource.VERSION, generatedClassSeparator = "_")
+@Database(name = DataSource.NAME, version = DataSource.VERSION, generatedClassSeparator = "_",backupEnabled = true)
 object DataSource {
     const val NAME: String = "db_agriculturapp"
     const val VERSION: Int = 7
+
+
 }
+
+
 
 /*
 @Database(name = DataSource.NAME, version = DataSource.VERSION)

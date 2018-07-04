@@ -91,8 +91,10 @@ class ChatMessage_Presenter  (var mainView: IMainViewChatMessages.MainView?): IM
             }
 
             RequestEventChatMessage.ERROR_VERIFICATE_CONECTION -> {
-
                 mainView?.checkConectionInternet()
+                val newMessage = event.objectMutable as ChatMessage
+                mainView?.sendSmsVerificate(newMessage)
+
             }
 
         }

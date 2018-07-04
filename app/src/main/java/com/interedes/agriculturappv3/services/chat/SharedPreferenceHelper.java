@@ -14,6 +14,7 @@ public class SharedPreferenceHelper {
     private static String SHARE_KEY_EMAIL = "email";
     private static String SHARE_KEY_AVATA = "avata";
     private static String SHARE_KEY_UID = "uid";
+    private static String SHARE_KEY_SERVICE_SYNC = "is_runing_service";
 
 
     private SharedPreferenceHelper() {}
@@ -35,6 +36,11 @@ public class SharedPreferenceHelper {
         editor.apply();
     }
 
+    public void savePostSyncData(String syncStatus) {
+        editor.putString(SHARE_KEY_SERVICE_SYNC, syncStatus);
+        editor.apply();
+    }
+
     public Usuario getUserInfo(){
         String userName = preferences.getString(SHARE_KEY_NAME, "");
         String email = preferences.getString(SHARE_KEY_EMAIL, "");
@@ -50,6 +56,10 @@ public class SharedPreferenceHelper {
 
     public String getUID(){
         return preferences.getString(SHARE_KEY_UID, "");
+    }
+
+    public String getRuningService(){
+        return preferences.getString(SHARE_KEY_SERVICE_SYNC, "");
     }
 
 }

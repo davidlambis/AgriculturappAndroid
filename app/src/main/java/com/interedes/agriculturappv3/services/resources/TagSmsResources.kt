@@ -7,6 +7,8 @@ class TagSmsResources {
         var CONTACT_NAME:String?="CONTACT_NAME"
         var TAG_SMS:String?="SMS"
 
+        var TAG_SMS_SEND:String?="TAG_SMS_SEND"
+
         //Contact Desconocido
         var CONTACT_DESCONOCIDO="Desconocido"
 

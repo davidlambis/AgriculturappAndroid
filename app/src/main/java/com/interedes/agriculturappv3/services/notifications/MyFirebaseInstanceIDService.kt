@@ -16,7 +16,6 @@ import org.greenrobot.eventbus.Subscribe
 
 class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
 
-
     var repository:
     IMainFirebaseInstance.Repository? = null
     var eventBus: EventBus? = null
@@ -77,15 +76,10 @@ class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
     }
     //endregion
 
-
     private fun sendRegistrationToServer(token: String) {
         // Add custom implementation, as needed.
         repository?.syncToken(token)
     }
-
-
-
-
 
     override fun onCreate() {
         //Log.d(TAG, "+onCreate()")
@@ -100,8 +94,4 @@ class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
         super.onDestroy()
         eventBus?.unregister(this)
     }
-
-
-
-
 }

@@ -37,6 +37,8 @@ interface IMainViewChatMessages {
 
         fun checkConectionInternet()
 
+        fun sendSmsVerificate(newMessage:ChatMessage)
+
 
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)

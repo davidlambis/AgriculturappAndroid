@@ -14,7 +14,10 @@ import android.app.NotificationChannel
 import android.os.Build
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
+import com.interedes.agriculturappv3.services.resources.Status_Sync_Data_Resources
 import com.interedes.agriculturappv3.services.services.Events.EventsService
 import com.interedes.agriculturappv3.services.services.request.RequestPostDataSync
 import org.greenrobot.eventbus.Subscribe
@@ -187,9 +190,12 @@ class JobSyncService : JobIntentService() {
         //Toast.makeText(this, "Servicio destruido...", Toast.LENGTH_SHORT).show()
         //PbLog.s(TAG, PbStringUtils.separateCamelCaseWords("onDestroy"));
         super.onDestroy()
+        SharedPreferenceHelper.getInstance(this).savePostSyncData(Status_Sync_Data_Resources.STOP);
         stopForeground(true)
         Log.d(TAG, "-onDestroy()")
         eventBus?.unregister(this)
+
+        //MenuMainActivity.instance?.RUNING_SYNC=false
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -214,6 +220,7 @@ class JobSyncService : JobIntentService() {
     //endregion
 
     //region Suscribe Events
+
     @Subscribe
     fun onEventMainThread(event: EventsService?) {
         when (event?.eventType) {
@@ -228,6 +235,7 @@ class JobSyncService : JobIntentService() {
             }
         }
     }
+
     //endregion
 
 }
