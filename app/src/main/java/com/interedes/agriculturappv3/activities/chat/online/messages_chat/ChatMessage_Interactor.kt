@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.activities.chat.online.messages_chat
 
 import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
 import com.interedes.agriculturappv3.modules.models.chat.Room
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 
 class ChatMessage_Interactor :IMainViewChatMessages.Interactor{
 
@@ -15,8 +16,8 @@ class ChatMessage_Interactor :IMainViewChatMessages.Interactor{
         repository?.getListMessagesByRoom(checkConection,room,mReceiverId)
     }
 
-    override fun sendMessage(message: ChatMessage, room: Room, checkConection: Boolean) {
-       repository?.sendMessage(message,room,checkConection)
+    override fun sendMessage(message: ChatMessage, room: Room,userSelected:UserFirebase, checkConection: Boolean) {
+       repository?.sendMessage(message,room,userSelected,checkConection)
     }
 
 }

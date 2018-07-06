@@ -1,16 +1,19 @@
 package com.interedes.agriculturappv3.services.notifications.repository
 
+import android.app.Notification
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ServerValue
 import com.interedes.agriculturappv3.libs.EventBus
+import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.notifications.events.RequestEventFirebaseService
 import com.interedes.agriculturappv3.services.resources.Chat_Resources
+import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
 
 class FirebaseInstanceRepository:IMainFirebaseInstance.Repository {
+
 
     var mUserDBRef: DatabaseReference? = null
     var eventBus: EventBus? = null
@@ -36,6 +39,27 @@ class FirebaseInstanceRepository:IMainFirebaseInstance.Repository {
             postEventError(RequestEventFirebaseService.ERROR_EVENT,"No existe un usuario logueado para el token: $token")
         }
     }
+
+
+    override fun saveNotification(notification: NotificationLocal) {
+        val lastNotification = getLastNotification()
+        if (lastNotification == null) {
+            notification.Id = 1
+        } else {
+            notification.Id = lastNotification.Id!! + 1
+        }
+        val lastUserLogued= getUserLogued()
+        notification.userLoguedId=lastUserLogued?.Id
+        notification.save()
+    }
+
+
+
+    override fun getLastNotification(): NotificationLocal? {
+        //val lastNotification = SQLite.select().from(Notification::class.java).orderBy(Notification_Table.Id, false).querySingle()
+        return null
+    }
+
 
     fun getUserLogued(): Usuario?{
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()

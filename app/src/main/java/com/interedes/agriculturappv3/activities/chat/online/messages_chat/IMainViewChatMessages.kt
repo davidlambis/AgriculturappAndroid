@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.interedes.agriculturappv3.activities.chat.online.messages_chat.events.RequestEventChatMessage
 import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
 import com.interedes.agriculturappv3.modules.models.chat.Room
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 
 interface IMainViewChatMessages {
 
@@ -56,7 +57,7 @@ interface IMainViewChatMessages {
 
         //Methods
         fun getListMessagesByRoom(room:Room,mReceiverId:String)
-        fun sendMessage(message:ChatMessage,room:Room)
+        fun sendMessage(message:ChatMessage,room:Room, userSelected:UserFirebase)
 
         //Conecttion
         fun checkConnection(): Boolean
@@ -64,13 +65,13 @@ interface IMainViewChatMessages {
 
     interface Interactor {
         fun getListMessagesByRoom(checkConection:Boolean,room:Room,mReceiverId:String)
-        fun sendMessage(message:ChatMessage,room:Room,checkConection: Boolean)
+        fun sendMessage(message:ChatMessage,room:Room,userSelected:UserFirebase,checkConection: Boolean)
 
     }
 
     interface Repository {
         fun getListMessagesByRoom(checkConection:Boolean,room:Room,mReceiverId:String)
-        fun sendMessage(message:ChatMessage,room:Room,checkConection: Boolean)
+        fun sendMessage(message:ChatMessage,room:Room,userSelected:UserFirebase,checkConection: Boolean)
 
     }
 }

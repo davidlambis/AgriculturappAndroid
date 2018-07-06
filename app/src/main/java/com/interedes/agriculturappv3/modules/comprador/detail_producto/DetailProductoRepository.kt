@@ -1,9 +1,7 @@
 package com.interedes.agriculturappv3.modules.comprador.detail_producto
 
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.comprador.detail_producto.events.RequestEventDetalleProducto
@@ -21,7 +19,6 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
-import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,14 +26,9 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.text.SimpleDateFormat
 import java.util.*
-import android.R.attr.keySet
-import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
-import com.interedes.agriculturappv3.modules.models.Notification.DataPostNotifcation
-import com.interedes.agriculturappv3.modules.models.Notification.PostNotification
-import com.interedes.agriculturappv3.modules.models.Notification.ResponsePostNotification
+import com.interedes.agriculturappv3.modules.models.Notification.FcmNotificationBuilder
 import com.interedes.agriculturappv3.modules.models.chat.Room
-import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.resources.*
 
 
@@ -220,9 +212,12 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                 if (dataSnapshot.exists()) {
                     //var room = dataSnapshot.value as HashMap<*, *>
                     //roomId=room.get("idRoom") as String;
+                    var roomFind=Room()
+
                     for (issue in dataSnapshot.children) {
                         var room = issue.getValue<Room>(Room::class.java)
                         roomId=room?.IdRoom
+                        roomFind= room!!
                     }
                     val message=getMessageOferta(oferta)
                     sendMessageToFirebase(message,oferta,userFirebase)
@@ -248,7 +243,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
          if(idProductor!= null){
             if(roomComprador){
-                var room = Room(Chat_Resources.getRoomByCompradorProductor(mCompradorSenderId,mProductorReceiverId), mCompradorSenderId, mProductorReceiverId, 0, 0,dateString,"")
+                val room = Room(Chat_Resources.getRoomByCompradorProductor(mCompradorSenderId,mProductorReceiverId), mCompradorSenderId, mProductorReceiverId, 0, 0,dateString,"")
                 mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId))?.setValue(room)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
                     if (!task.isSuccessful) {
                         var error = task.exception
@@ -258,7 +253,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                     }
                 })
             }else{
-                var room = Room(Chat_Resources.getRoomByCompradorProductor(mCompradorSenderId,mProductorReceiverId), mProductorReceiverId, mCompradorSenderId, 0, 0,dateString,"")
+                val room = Room(Chat_Resources.getRoomByCompradorProductor(mCompradorSenderId,mProductorReceiverId), mProductorReceiverId, mCompradorSenderId, 0, 0,dateString,"")
                 mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId))?.setValue(room)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
                     if (!task.isSuccessful) {
                         var error = task.exception
@@ -361,34 +356,44 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
             } else {
                 updateDatesRoomUser()
                 updateLastMessageRoomUser(newMsg.message)
-
                 val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
-
                 if(userFirebase.StatusTokenFcm!=null){
                     if(userFirebase.StatusTokenFcm==true){
                         var imagen=""
                         if(producto?.Imagen!!.contains("Productos")){
                             imagen=S3Resources.RootImage+"${producto.Imagen}"
                         }else{
-                            imagen="https://s3.amazonaws.com/agriculturapp/Notification/notification_products.jpg"
+                            imagen="https://s3.amazonaws.com/agriculturapp/NotificationLocal/notification_products.jpg"
                         }
-                        sendNotifcationOferta(message,userFirebase.TokenFcm!!,imagen)
+                        //sendNotifcationOferta(message,userFirebase.TokenFcm!!,imagen)
+                        sendPushNotificationToReceiver(message,userFirebase,imagen)
+
                     }
                 }
+                postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
             }
         }
     }
 
+
+    private fun sendPushNotificationToReceiver(message: String,userSelected:UserFirebase,imagen:String) {
+        val fcmNotificationBuilder= FcmNotificationBuilder()
+        fcmNotificationBuilder.title=userSelected.Nombre+" ${userSelected.Apellido}"
+        fcmNotificationBuilder.image_url=imagen
+        fcmNotificationBuilder.message=message
+        fcmNotificationBuilder.user_name=userSelected.Nombre+" ${userSelected.Apellido}"
+        fcmNotificationBuilder.ui=userSelected.User_Id
+        fcmNotificationBuilder.receiver_firebase_token=userSelected.TokenFcm
+        fcmNotificationBuilder.room_id=roomId
+        fcmNotificationBuilder.type_notification=NotificationTypeResources.NOTIFICATION_TYPE_OFERTA
+        fcmNotificationBuilder.send()
+    }
+
+    /*
     fun sendNotifcationOferta(message:String, token:String,imageUrl:String){
-        val dataPostNotification= DataPostNotifcation(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA,message,imageUrl)
+        val dataPostNotification= FcmNotificationBuilder(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA,message,imageUrl)
         val postNotification = PostNotification(token,dataPostNotification
                 )
-
-
-
-
-
-
         val call = apiServiceFcm?.postSendNotifcation("Key="+Const.FIREBASE_TOKEN,postNotification)
         call?.enqueue(object : Callback<ResponsePostNotification> {
             override fun onResponse(call: Call<ResponsePostNotification>?, response: Response<ResponsePostNotification>?) {
@@ -406,7 +411,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
             }
         })
     }
-
+*/
     override fun saveOfertaLocal(oferta: Oferta, detalleOferta: DetalleOferta){
 
         val last_oferta = getLastOferta()

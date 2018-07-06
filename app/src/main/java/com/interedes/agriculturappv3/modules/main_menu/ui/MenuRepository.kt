@@ -22,6 +22,8 @@ import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
+import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal
+import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal_Table
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
 import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPlaga
@@ -115,10 +117,18 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
 
+    //Notifications
+    override fun getCountNotifications(): Int {
+        val lisNotificationsPending = SQLite.select().from(NotificationLocal::class.java).where(NotificationLocal_Table.ReadNotification.eq(false)).queryList()
+        return  lisNotificationsPending.size
+    }
+
     override fun verificateUserLoguedFirebaseFirebase(): FirebaseUser?
     {
         return  FirebaseAuth.getInstance().currentUser
     }
+
+
 
     override fun makeUserOnline(checkConection:Boolean,context: Context) {
         val userLogued=getLastUserLogued()

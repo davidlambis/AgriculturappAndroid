@@ -54,7 +54,7 @@ class JobDownloadFotosService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        //startForeground(1, Notification())
+        //startForeground(1, NotificationLocal())
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

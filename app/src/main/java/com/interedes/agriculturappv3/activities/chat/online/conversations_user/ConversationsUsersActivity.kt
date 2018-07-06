@@ -76,14 +76,10 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
 
 
     //region IMPLMENTS METHODS INTERFACE
-
-
-
     override fun setListRoom(sms: List<RoomConversation>) {
         adapter?.clear()
         adapter?.setItems(sms)
     }
-
 
     override fun showProgress() {
         //  swipeRefreshLayout.setRefreshing(true);
@@ -112,9 +108,6 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
     override fun requestResponseError(error: String?) {
         onMessageError(R.color.grey_luiyi, error)
     }
-
-
-
 
     override fun onMessageToas(message: String, color: Int) {
         val inflater = this.layoutInflater
@@ -154,8 +147,6 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
     }
 
     //endregion
-
-
 
     override fun onStart() {
         super.onStart()

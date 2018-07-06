@@ -29,11 +29,13 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
+import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.*
+import android.widget.FrameLayout
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
@@ -143,6 +145,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     private val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
 
+    var  notificationCount:TextView?=null
 
 
     var jobScheduler: JobScheduler?=null
@@ -208,11 +211,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         //Status Chat
         presenter?.makeUserOnline(this)
+
         getListasIniciales()
 
         setupMenuFloating()
 
         septupInjection()
+
+
 
         //Service SMS
         val notificationServiceIntent = Intent(this, NotificationService::class.java)
@@ -267,7 +273,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     fun registerWithNotificationHubs() {
-        //Log.i(FragmentActivity.TAG, " Registering with Notification Hubs")
+        //Log.i(FragmentActivity.TAG, " Registering with NotificationLocal Hubs")
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.
             //RegistrationIntentService(this@MenuActivity, user, NEW_LOGIN_USER)
@@ -300,6 +306,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
             }
         }
+
+        val countNotifications= presenter?.getCountNotifications()
+        notificationCount?.setText(countNotifications.toString())
         /*var usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
             presenter?.syncQuantityData(true)
@@ -764,6 +773,18 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         menuItemGlobal?.isVisible = false
 
 
+
+        val notificatioItem = menu?.findItem(R.id.action_cartNotification)?.getActionView()
+        notificationCount=  notificatioItem?.findViewById<View>(R.id.cart_badgeNotification) as TextView;
+
+
+
+        //contentCountNotifications=notificatioItem?.findViewById<View>(R.id.contentCountNotifications) as FrameLayout;
+
+        //val item1 = menu?.findItem(R.id.action_cartNotification);
+       // MenuItemCompat.setActionView(item1, R.layout.custom_action_item_layout_notification);
+        ///var content  = MenuItemCompat.getActionView(item1) as FrameLayout;
+
        /* var itemSync=menu?.findItem(R.id.action_menu_sync)
         if (getLastUserLogued()?.RolNombre.equals(RolResources.PRODUCTOR)) {
             itemSync?.isVisible = true
@@ -771,13 +792,36 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             itemSync?.isVisible = false
         }*/
 
+        notificatioItem.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                //onOptionsItemSelected(menuItem)
+            }
+        })
+
         return true
-        //return super.onCreateOptionsMenu(menu)
+
+        return super.onCreateOptionsMenu(menu);
+        //return true
+       // return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
         when (item.itemId) {
+            R.id.action_cartNotification -> {
+                ///startActivity(Intent(this, ConversationsUsersActivity::class.java))
+                Toast.makeText(this,
+                        "Successfully notification ",
+                        Toast.LENGTH_SHORT).show();
+
+                return true
+            }
+            R.id.action_menu_sync -> {
+                Toast.makeText(this,
+                        "Successfully notification ",
+                        Toast.LENGTH_SHORT).show();
+                return true
+            }
         /*R.id.action_menu_icon_chat -> {
            ///startActivity(Intent(this, ConversationsUsersActivity::class.java))
            showAlertTypeChat()
@@ -974,6 +1018,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 }*/
                 //NotificationManager.startServiceInForeground()
             }
+
 
 
                 /*
@@ -1394,7 +1439,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         super.onStart()
         //mAuth.addAuthStateListener(mAuthListener);
         //ServiceUtils.stopServiceFriendChat(getApplicationContext(), false);
-        ServiceUtils.startServiceFriendChat(getApplicationContext())
+       // ServiceUtils.startServiceFriendChat(getApplicationContext())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

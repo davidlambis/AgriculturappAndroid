@@ -24,7 +24,7 @@ class Conversacion_Repository:IMainViewConversacion.Repository {
 
 
     //Listas
-    private var listRoom: ArrayList<Room>? = null
+    private val listRoom= ArrayList<Room>()
     private val mUsersList = ArrayList<RoomConversation>()
 
 
@@ -66,14 +66,14 @@ class Conversacion_Repository:IMainViewConversacion.Repository {
         }
     }
 
-
     private fun queryUsersAndAddthemToList() {
         mRoomDBRef?.child(mAuth?.currentUser?.uid)?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                 if (dataSnapshot.value != null) {
-                    listRoom = ArrayList<Room>()
+
                     if (dataSnapshot.childrenCount > 0) {
+                        listRoom.clear()
                         mUsersList.clear()
                         for (snap in dataSnapshot.children) {
 
@@ -88,8 +88,11 @@ class Conversacion_Repository:IMainViewConversacion.Repository {
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                             try {
-                                room!!.save()
-                                listRoom?.add(room)
+
+                                var roomNew= Room()
+                                roomNew= room!!
+                                roomNew.save()
+                                listRoom.add(room)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }

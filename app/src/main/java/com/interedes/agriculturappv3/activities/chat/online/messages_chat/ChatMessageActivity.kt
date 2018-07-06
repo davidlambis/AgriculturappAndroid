@@ -93,7 +93,6 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
             if (message.isEmpty()) {
                 Toast.makeText(applicationContext, "You must enter a message", Toast.LENGTH_SHORT).show()
             } else {
-
                 //message is entered, send
                 sendMessageToFirebase(message, senderId, mReceiverId)
             }
@@ -101,8 +100,9 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
         iniAdapter()
         //querymessagesBetweenThisUserAndClickedUser()
         presenter?.getListMessagesByRoom(mReceiverRoom!!,mReceiverId!!)
-        queryRecipientName(mReceiverId)
+        listenerChangesUserSelected(mReceiverId)
     }
+
 
 
     private fun sendMessageToFirebase(message: String, senderId: String, receiverId: String?) {
@@ -118,7 +118,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
         val newMsg = ChatMessage(mReceiverRoom?.IdRoom,message, senderId, receiverId,fecha,hora,time)
 
 
-        presenter?.sendMessage(newMsg,mReceiverRoom!!)
+        presenter?.sendMessage(newMsg,mReceiverRoom!!,userFirebaeSelected!!)
     }
 
     fun hideSoftKeyboard() {
@@ -133,29 +133,22 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
         messagesRecyclerView?.setAdapter(adapter)
     }
 
-    private fun queryRecipientName(receiverId: String?) {
+
+    private fun listenerChangesUserSelected(receiverId: String?) {
         mUsersRef?.child(receiverId)?.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val recepient = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
+                userFirebaeSelected=recepient
                 mReceiverName = recepient!!.Nombre+" "+recepient!!.Apellido
                 try {
                     nameUserTo.setText(mReceiverName)
-
-                    /*try {
-                        Picasso.with(applicationContext).load(recepient.Imagen).placeholder(R.drawable.default_avata).into(imgUserTo)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }*/
                     Picasso.get()
                             .load(recepient.Imagen)
-                            .into( imgUserTo, object : com.squareup.picasso.Callback {
-                                override fun onError(e: java.lang.Exception?) {
-                                    imgUserTo.setImageResource(R.drawable.default_avata)
-                                }
-                                override fun onSuccess() {
-                                    // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
-                                }
-                            })
+                            .fit()
+                            .centerCrop()
+                            .placeholder(R.drawable.default_avata)
+                            .error(R.drawable.default_avata)
+                            .into(imgUserTo);
                     //supportActionBar!!.setTitle(mReceiverName)
                     //actionBar!!.title = mReceiverName
                 } catch (e: Exception) {
@@ -191,6 +184,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
 
         var content =String.format(getString(R.string.content_sms_message_offline),userFirebaeSelected?.Nombre+" ${userFirebaeSelected?.Apellido}")
         viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
+
 
         MaterialDialog.Builder(this)
                 .title(getString(R.string.content_sms_tittle))

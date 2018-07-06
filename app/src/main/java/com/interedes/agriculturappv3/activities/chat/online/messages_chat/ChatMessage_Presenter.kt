@@ -9,6 +9,7 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
 import com.interedes.agriculturappv3.modules.models.chat.Room
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -106,8 +107,8 @@ class ChatMessage_Presenter  (var mainView: IMainViewChatMessages.MainView?): IM
         interactor?.getListMessagesByRoom(checkConnection(),room, mReceiverId)
     }
 
-    override fun sendMessage(message: ChatMessage, room: Room) {
-        interactor?.sendMessage(message,room,checkConnection())
+    override fun sendMessage(message: ChatMessage, room: Room,userSelected: UserFirebase) {
+        interactor?.sendMessage(message,room,userSelected,checkConnection())
     }
 
     //endregion

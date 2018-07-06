@@ -69,6 +69,8 @@ interface MainViewMenu {
         fun getListSyncEnfermedadesAndTratamiento()
 
 
+        //Notifications
+        fun getCountNotifications():Int
 
 
     }
@@ -80,6 +82,9 @@ interface MainViewMenu {
         fun syncQuantityData(automatic:Boolean)
         fun getLastUserLogued(): Usuario?
         fun getListSyncEnfermedadesAndTratamiento()
+
+        //Notifications
+        fun getCountNotifications():Int
 
 
         fun logOut(usuario: Usuario?)
@@ -94,6 +99,9 @@ interface MainViewMenu {
         fun loginFirebase(usuario:Usuario,context: Context)
         fun logOut(usuario: Usuario?)
 
+
+        //Notifications
+        fun getCountNotifications():Int
 
 
         fun getListasIniciales()

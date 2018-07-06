@@ -13,6 +13,11 @@ import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import kotlinx.android.synthetic.main.activity_chat_message.*
 import java.util.ArrayList
+import com.interedes.agriculturappv3.R.string.send
+import com.interedes.agriculturappv3.modules.models.Notification.FcmNotificationBuilder
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
+import com.interedes.agriculturappv3.services.resources.NotificationTypeResources
+
 
 class ChatMessage_Repository:IMainViewChatMessages.Repository {
 
@@ -66,7 +71,12 @@ class ChatMessage_Repository:IMainViewChatMessages.Repository {
         //}
     }
 
-    override fun sendMessage(message: ChatMessage,room:Room,checkConection: Boolean) {
+
+
+
+
+
+    override fun sendMessage(message: ChatMessage,room:Room,userSelected:UserFirebase,checkConection: Boolean) {
        if(checkConection){
            var roomDateComprador= Chat_Resources.mRoomDBRef?.child(room?.User_From)?.child(Chat_Resources.getRoomById(room?.User_To)+"/lastMessage")
            roomDateComprador?.setValue(message.message);
@@ -81,14 +91,13 @@ class ChatMessage_Repository:IMainViewChatMessages.Repository {
            roomDateProductorDate?.setValue(ServerValue.TIMESTAMP);
 
 
-
-
            mMessagesDBRef?.push()?.setValue(message)?.addOnCompleteListener { task ->
                if (!task.isSuccessful) {
                    //error
                    postEventError(RequestEventChatMessage.ERROR_EVENT,task.exception.toString())
                    //mLayoutManager?.scrollToPositionWithOffset(0, 0);
                } else {
+                   sendPushNotificationToReceiver(message,room,userSelected)
                    postEventOk(RequestEventChatMessage.SEND_MESSAGE_EVENT_OK,null,null)
                }
            }
@@ -96,6 +105,21 @@ class ChatMessage_Repository:IMainViewChatMessages.Repository {
            postEventOk(RequestEventChatMessage.ERROR_VERIFICATE_CONECTION,null,message)
        }
     }
+
+
+    private fun sendPushNotificationToReceiver(message: ChatMessage,room:Room,userSelected:UserFirebase) {
+        val fcmNotificationBuilder=FcmNotificationBuilder()
+        fcmNotificationBuilder.title=userSelected.Nombre+" ${userSelected.Apellido}"
+        fcmNotificationBuilder.image_url=userSelected.Imagen
+        fcmNotificationBuilder.message=message.message
+        fcmNotificationBuilder.user_name=userSelected.Nombre+" ${userSelected.Apellido}"
+        fcmNotificationBuilder.ui=userSelected.User_Id
+        fcmNotificationBuilder.receiver_firebase_token=userSelected.TokenFcm
+        fcmNotificationBuilder.room_id=room.IdRoom
+        fcmNotificationBuilder.type_notification=NotificationTypeResources.NOTIFICATION_TYPE_MESSAGE_ONLINE
+        fcmNotificationBuilder.send()
+    }
+
 
     //region Events
     private fun postEventOk(type: Int, list: List<ChatMessage>?, message: ChatMessage?) {

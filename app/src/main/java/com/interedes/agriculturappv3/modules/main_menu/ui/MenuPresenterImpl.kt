@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.Subscribe
 class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityReceiver.connectivityReceiverListener, MainViewMenu.Presenter {
 
 
+
     private var INSTANCE_CONECTION: Boolean = false
 
     var eventBus: EventBus? = null
@@ -157,6 +158,9 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
     }
 
 
+    override fun getCountNotifications(): Int {
+       return  interactor?.getCountNotifications()!!
+    }
     //endregion
 
     private fun onMessageOk() {

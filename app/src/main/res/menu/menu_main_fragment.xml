@@ -8,7 +8,7 @@
 
 
     <item
-        android:id="@+id/action_cart"
+        android:id="@+id/action_cartNotification"
         android:icon="@drawable/ic_action_notifications"
         android:title="Cart"
         app:actionLayout="@layout/custom_action_item_layout_notification"
@@ -27,11 +27,11 @@
     </item>-->
 
 
-   <!-- <item
+    <item
         android:id="@+id/action_menu_sync"
         android:title=""
         android:icon="@drawable/ic_action_backup"
-        app:showAsAction="always" />-->
+        app:showAsAction="always" />
 
     <!--<item
         android:id="@+id/action_menu_email"

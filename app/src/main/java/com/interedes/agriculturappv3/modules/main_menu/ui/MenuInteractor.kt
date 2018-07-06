@@ -45,4 +45,9 @@ class MenuInteractor:MainViewMenu.Interactor {
         repository?.logOut(usuario)
     }
 
+
+    //Notifications
+    override fun getCountNotifications(): Int {
+        return  repository?.getCountNotifications()!!
+    }
 }

@@ -16,8 +16,8 @@ import org.greenrobot.eventbus.Subscribe
 
 class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
 
-    var repository:
-    IMainFirebaseInstance.Repository? = null
+
+    var repository: IMainFirebaseInstance.Repository? = null
     var eventBus: EventBus? = null
 
     init {
@@ -64,13 +64,10 @@ class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
     fun onEventMainThread(event: RequestEventFirebaseService?) {
         when (event?.eventType) {
             RequestEventFirebaseService.POST_SYNC_EVENT_TOKEN -> {
-
                 Toast.makeText(this, "Token Efectuado...", Toast.LENGTH_SHORT).show()
             }
             RequestEventFirebaseService.ERROR_EVENT -> {
-
                 Toast.makeText(this, event.mensajeError, Toast.LENGTH_SHORT).show()
-
             }
         }
     }
