@@ -40,7 +40,6 @@ class FirebaseInstanceRepository:IMainFirebaseInstance.Repository {
         }
     }
 
-
     override fun saveNotification(notification: NotificationLocal) {
         val lastNotification = getLastNotification()
         if (lastNotification == null) {
@@ -52,7 +51,6 @@ class FirebaseInstanceRepository:IMainFirebaseInstance.Repository {
         notification.userLoguedId=lastUserLogued?.Id
         notification.save()
     }
-
 
 
     override fun getLastNotification(): NotificationLocal? {

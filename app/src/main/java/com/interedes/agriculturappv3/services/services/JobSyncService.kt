@@ -27,9 +27,7 @@ import org.greenrobot.eventbus.Subscribe
 class JobSyncService : JobIntentService() {
 
     companion object {
-
         lateinit var instance: JobSyncService
-
         var runnableService:Boolean=false
 
         //SYNC
@@ -37,7 +35,6 @@ class JobSyncService : JobIntentService() {
         var eventBus: EventBus? = null
         var apiService: ApiInterface? = null
         var repository: IMainViewService.RepositoryPost? = null
-
 
         //region NOTIFCATION
         private const val TAG = "MainService"

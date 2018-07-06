@@ -69,6 +69,7 @@ class NotificationPresenter(var mainView:IMainViewNotification.MainView?):IMainV
             RequestEventsNotification.UPDATE_EVENT -> {
                 onMessageOk()
             }
+
             RequestEventsNotification.ITEM_NEW_EVENT -> {
                 val notification = event.objectMutable as NotificationLocal
                 mainView?.setNewNotification(notification)
@@ -80,6 +81,17 @@ class NotificationPresenter(var mainView:IMainViewNotification.MainView?):IMainV
 
             RequestEventsNotification.ERROR_VERIFICATE_CONECTION -> {
                 mainView?.checkConectionInternet()
+            }
+
+            RequestEventsNotification.LIST_EVENT_NOTIFICATION -> {
+                val notification = event.mutableList as MutableList<NotificationLocal>
+                mainView?.setListNotification(notification)
+            }
+
+            //ON ITEM CLICK
+            RequestEventsNotification.ITEM_READ_EVENT -> {
+                val notification = event.objectMutable as NotificationLocal
+                mainView?.onNavigationdetailNotification(notification)
             }
         }
     }
@@ -120,7 +132,6 @@ class NotificationPresenter(var mainView:IMainViewNotification.MainView?):IMainV
     //region Messages/Notificaciones
     private fun onMessageOk() {
         mainView?.hideProgress()
-        mainView?.limpiarCampos()
         mainView?.requestResponseOK()
     }
 

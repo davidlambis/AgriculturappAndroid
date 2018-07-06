@@ -50,6 +50,8 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.auth.FirebaseAuth
@@ -66,14 +68,16 @@ import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.main_menu.ui.FileUtils
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
+import com.interedes.agriculturappv3.modules.notification.NotificationActivity
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
+import com.interedes.agriculturappv3.services.chat.ChatRunJob
 import com.interedes.agriculturappv3.services.chat.ServiceUtils
 import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
+import com.interedes.agriculturappv3.services.jobs.DataSyncJob
+import com.interedes.agriculturappv3.services.jobs.FotosEnfermedadesInsumosjob
 import com.interedes.agriculturappv3.services.resources.MenuBoomResources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.resources.Status_Sync_Data_Resources
-import com.interedes.agriculturappv3.services.services.JobDownloadFotosService
-import com.interedes.agriculturappv3.services.services.JobServiceExample
 import com.interedes.agriculturappv3.services.sms.NotificationService
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nightonke.boommenu.BoomMenuButton
@@ -90,7 +94,6 @@ import java.util.*
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu.MainView,View.OnClickListener {
-
 
     var isAppRunning: Boolean = false
 
@@ -155,8 +158,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         var instance: MenuMainActivity? = null
     }
 
-
-
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_songs -> {
@@ -176,7 +177,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         setContentView(R.layout.activity_menu_main)
 
         //Fabric.with(this,  Crashlytics());
-
         instance=this
         //Presenter
         presenter = MenuPresenterImpl(this)
@@ -224,52 +224,19 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val notificationServiceIntent = Intent(this, NotificationService::class.java)
         startService(notificationServiceIntent)
 
-        //var notificationManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        //val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        //var channelId = "1";
-       // var channel2 = "2";
-        /*
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            var notificationChannel =  NotificationChannel(channelId,
-                    "Channel 1",NotificationManager.IMPORTANCE_HIGH);
 
-            notificationChannel.setDescription("This is BNT");
-            notificationChannel.setLightColor(Color.RED);
-            notificationChannel.enableVibration(true);
-            notificationChannel.setShowBadge(true);
-            notificationManager.createNotificationChannel(notificationChannel);
-
-            var notificationChannel2 =  NotificationChannel(channel2,
-                    "Channel 2",NotificationManager.IMPORTANCE_MIN);
-
-            notificationChannel.setDescription("This is bTV");
-            notificationChannel.setLightColor(Color.RED);
-            notificationChannel.enableVibration(true);
-            notificationChannel.setShowBadge(true);
-            notificationManager.createNotificationChannel(notificationChannel2);
-
-        }*/
-
-        /*
-        val phoneNo=3118932491
-        val dial = "tel:$phoneNo"
-        startActivity(Intent(Intent.ACTION_DIAL, Uri.parse(dial)))
-
-        */
+        //Schedule Note Syncing
+        DataSyncJob.scheduleJob();
+        ChatRunJob.scheduleJobChat()
 
         ///loadImagesProductos()
-
         //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
           ///  jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler;
         //}
     }
 
     override fun syncFotosInsumosPlagas() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(Intent(this, JobDownloadFotosService::class.java))
-        } else {
-            startService(Intent(this, JobDownloadFotosService::class.java))
-        }
+        FotosEnfermedadesInsumosjob.scheduleFotosJob();
     }
 
     fun registerWithNotificationHubs() {
@@ -307,8 +274,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             }
         }
 
-        val countNotifications= presenter?.getCountNotifications()
-        notificationCount?.setText(countNotifications.toString())
+
         /*var usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
             presenter?.syncQuantityData(true)
@@ -774,10 +740,19 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
 
+        val menuItemNotification = menu?.findItem(R.id.action_cartNotification)
         val notificatioItem = menu?.findItem(R.id.action_cartNotification)?.getActionView()
         notificationCount=  notificatioItem?.findViewById<View>(R.id.cart_badgeNotification) as TextView;
 
-
+        val countNotifications= presenter?.getCountNotifications()
+        if(countNotifications!!>0){
+            if(notificationCount!=null){
+                YoYo.with(Techniques.Pulse)
+                        .repeat(5)
+                        .playOn(notificationCount)
+            }
+        }
+        notificationCount?.setText(countNotifications.toString())
 
         //contentCountNotifications=notificatioItem?.findViewById<View>(R.id.contentCountNotifications) as FrameLayout;
 
@@ -794,13 +769,13 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         notificatioItem.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View) {
-                //onOptionsItemSelected(menuItem)
+                onOptionsItemSelected(menuItemNotification!!)
             }
         })
 
         return true
 
-        return super.onCreateOptionsMenu(menu);
+        //return super.onCreateOptionsMenu(menu);
         //return true
        // return super.onCreateOptionsMenu(menu)
     }
@@ -810,18 +785,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         when (item.itemId) {
             R.id.action_cartNotification -> {
                 ///startActivity(Intent(this, ConversationsUsersActivity::class.java))
-                Toast.makeText(this,
-                        "Successfully notification ",
-                        Toast.LENGTH_SHORT).show();
+
+                val notificationIntent = Intent(this, NotificationActivity::class.java)
+                notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(notificationIntent)
 
                 return true
             }
-            R.id.action_menu_sync -> {
-                Toast.makeText(this,
-                        "Successfully notification ",
-                        Toast.LENGTH_SHORT).show();
-                return true
-            }
+
         /*R.id.action_menu_icon_chat -> {
            ///startActivity(Intent(this, ConversationsUsersActivity::class.java))
            showAlertTypeChat()
@@ -962,8 +933,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             presenter?.makeUserOffline(this)
             presenter?.logOut(userLogued)
 
-            var intent =  Intent(this, NotificationService::class.java);
+            val intent =  Intent(this, NotificationService::class.java);
             stopService(intent)
+
+            //
+            DataSyncJob.cancel();
+            ChatRunJob.cancel()
+            FotosEnfermedadesInsumosjob.cancel();
+
 
             startActivity(Intent(this, LoginActivity::class.java)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -1268,7 +1245,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             viewDialogSync?.txtconectividad?.setText(getString(R.string.off_connectividad));
         }
 
-        var builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this)
                 .setView(viewDialogSync)
                 .setTitle(getString(R.string.alert))
                 .setMessage(message)
@@ -1284,7 +1261,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     }
 
                 })
-
                 .setNegativeButton(getString(R.string.cancel), DialogInterface.OnClickListener { dialog, which ->
                     dialog.dismiss()
                 })
@@ -1296,16 +1272,13 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         return _dialogSync
     }
 
-
     override fun setQuantitySync(quantitySync: QuantitySync?){
         verificateSync(quantitySync)
     }
 
-
     override fun setQuantitySyncAutomatic(quantitySync: QuantitySync?){
         if(quantitySync?.CantidadRegistrosSync!!.toInt()>0 || quantitySync?.CantidadUpdatesSync!!.toInt()>0 ){
             if(presenter?.checkConnection()!!){
-
                 val myTimerr = 2000
                 ///Mensage
                 Handler().postDelayed(Runnable {
@@ -1319,9 +1292,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     } catch (e: Exception) {
                     }
                 }, myTimerr.toLong())
-
-
-
             }else{
                 onMessageToast(R.color.red_900,"Tienes informacion por sincronizar verifca tu conexion")
                 //onMessageError(R.color.red_900,"Tienes informacion por sincronizar verifca tu conexion")
@@ -1364,8 +1334,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         val usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
-
-            presenter?.syncQuantityData(true)
+           // presenter?.syncQuantityData(true)
         }
     }
 

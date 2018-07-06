@@ -160,6 +160,8 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
 
 
+    //JOB
+    implementation 'com.evernote:android-job:1.2.4'
 
 
     def SupportLibVersion = '27.1.0'

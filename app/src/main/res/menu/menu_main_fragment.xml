@@ -24,14 +24,14 @@
             android:layout_centerVertical="true"
             app:boom_inActionBar="true"
             />
-    </item>-->
+    </item>
 
 
     <item
         android:id="@+id/action_menu_sync"
         android:title=""
         android:icon="@drawable/ic_action_backup"
-        app:showAsAction="always" />
+        app:showAsAction="always" />-->
 
     <!--<item
         android:id="@+id/action_menu_email"

@@ -60,7 +60,6 @@ public class ChatService extends Service {
             startForeground(1, notification);
 
         } else {
-
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                     .setContentTitle(getString(R.string.app_name))
                     .setContentText("")
@@ -68,10 +67,8 @@ public class ChatService extends Service {
                     .setAutoCancel(true);
 
             Notification notification = builder.build();
-
             startForeground(1, notification);
         }
-
 
         updateOnline = new CountDownTimer(System.currentTimeMillis(), Const.Companion.getTIME_TO_REFRESH()) {
             @Override
@@ -110,7 +107,4 @@ public class ChatService extends Service {
             return ChatService.this;
         }
     }
-
-
-
 }

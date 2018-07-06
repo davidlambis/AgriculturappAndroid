@@ -35,16 +35,11 @@ public class ServiceUtils {
 
     public static void startServiceFriendChat(Context context) {
         if (!isServiceFriendChatRunning(context)) {
-
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
                 context.startForegroundService(new Intent(context, ChatService.class));
             } else {
                 context.startService(new Intent(context, ChatService.class));
             }
-
-
         } else {
             if (connectionServiceFriendChatForStart != null) {
                 context.unbindService(connectionServiceFriendChatForStart);

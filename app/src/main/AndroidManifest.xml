@@ -122,6 +122,13 @@
             android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
+
+
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
+            android:name=".modules.notification.NotificationActivity"></activity>
+
         <!-- Maps -->
         <meta-data
             android:name="com.google.android.gms.version"
@@ -194,40 +201,20 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <!-- CHAT SERVICE -->
-        <service
+        <!--<service
             android:name=".services.chat.ChatService"
             android:exported="false"
             android:persistent="true">
-
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </service>
-
-        <!-- SERVICE INSUMOS -->
+        </service>-->
+        <!-- SERVICE INSUMOS
         <service
             android:name=".services.services.JobDownloadFotosService"
             android:exported="false">
 
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </service>
-
+        </service>-->
         <!--
         <service android:name=".services.services.JobServiceExample"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         -->
-
-        <activity android:name=".modules.notification.NotificationActivity"></activity>
     </application>
-
 </manifest>

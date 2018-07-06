@@ -23,6 +23,10 @@ import com.raizlabs.android.dbflow.config.FlowManager
 
 import android.support.v4.app.NotificationCompat.Builder
 import com.interedes.agriculturappv3.services.services.JobSyncService
+import com.evernote.android.job.JobManager
+import com.interedes.agriculturappv3.services.chat.ChatJobCreator
+import com.interedes.agriculturappv3.services.jobs.FotosEnfermedadesJobCreator
+import com.interedes.agriculturappv3.services.jobs.SyncJobCreator
 
 
 class AgriculturApplication : Application() {
@@ -70,6 +74,12 @@ class AgriculturApplication : Application() {
         val builder = StrictMode.VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
 
+
+
+        //Create JOBS SERVICES
+        JobManager.create(this).addJobCreator(SyncJobCreator())
+        JobManager.create(this).addJobCreator(ChatJobCreator())
+        JobManager.create(this).addJobCreator(FotosEnfermedadesJobCreator())
 
 
 

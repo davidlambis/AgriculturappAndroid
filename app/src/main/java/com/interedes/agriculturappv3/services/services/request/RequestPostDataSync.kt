@@ -55,10 +55,8 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
     }
-
     //region POST  DATASYNC
     override fun syncData() {
-
         val usuario= getLastUserLogued()
         val mUnidadProductiva= SQLite.select()
                 .from(Unidad_Productiva::class.java)

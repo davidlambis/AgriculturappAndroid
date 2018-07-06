@@ -27,5 +27,7 @@ data class RequestEventsNotification (var eventType: Int,
         //Error Connection
         val ERROR_VERIFICATE_CONECTION: Int = 9
 
+        val LIST_EVENT_NOTIFICATION: Int = 11
+
     }
 }

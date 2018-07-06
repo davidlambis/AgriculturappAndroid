@@ -480,6 +480,10 @@
     <!--Notification Messages-->
     <string name="pref_notifications">Notificacion</string>
 
+
+    <!--ACTIVITY NOTIFICATION-->
+    <string name="tittle_notification">Notificaciones</string>
+
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

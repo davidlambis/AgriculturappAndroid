@@ -49,7 +49,10 @@ data class NotificationLocal(
         var ReadNotification: Boolean = false,
 
         @Column(name = "userLoguedId")
-        var userLoguedId: UUID? = null
+        var userLoguedId: UUID? = null,
+
+        @Column(name = "time")
+        var time: Long? = null
 
         ) {
 }

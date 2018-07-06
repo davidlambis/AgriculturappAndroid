@@ -40,8 +40,6 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 class JobDownloadFotosService : Service() {
 
 
-
-
     private val ADMIN_CHANNEL_ID = "admin_channel"
     private var listInsmo: List<Insumo>? = null
     private var listFotoEnfermedad: List<FotoEnfermedad>? = null
@@ -92,12 +90,11 @@ class JobDownloadFotosService : Service() {
         return START_STICKY
     }
 
+
     private fun getFotoPerfil(){
         val user = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
-
         if(user!=null){
             if(user.Fotopefil!=null){
-
                 FileLoader.with(this)
                         .load(S3Resources.RootImage+"${user.Fotopefil}",false) //2nd parameter is optioal, pass true to force load from network
                         //.fromDirectory("test4", FileLoader.DIR_EXTERNAL_PUBLIC)
@@ -125,11 +122,9 @@ class JobDownloadFotosService : Service() {
             else{
                 getAllPlagasFoto(0)
             }
-
         }else{
             getAllPlagasFoto(0)
         }
-
     }
 
     private fun getAllInsumoFoto(index: Int) {

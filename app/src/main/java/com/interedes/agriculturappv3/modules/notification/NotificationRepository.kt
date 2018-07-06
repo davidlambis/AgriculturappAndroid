@@ -25,6 +25,8 @@ class NotificationRepository:IMainViewNotification.Repository {
         for (item in listNotification){
             postEventOk(RequestEventsNotification.ITEM_NEW_EVENT,null,item)
         }
+
+        postEventOk(RequestEventsNotification.LIST_EVENT_NOTIFICATION,listNotification,null)
     }
 
 

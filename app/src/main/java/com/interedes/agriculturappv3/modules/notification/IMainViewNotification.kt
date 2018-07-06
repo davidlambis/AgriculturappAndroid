@@ -14,13 +14,15 @@ interface IMainViewNotification {
         fun showProgressHud()
         fun hideProgressHud()
 
-        fun limpiarCampos()
+
+        fun setResults(notifications: Int)
 
 
         //list
         fun setListNotification(listNotification:List<NotificationLocal>?)
         fun setNewNotification(notification: NotificationLocal)
 
+        fun onNavigationdetailNotification(notification: NotificationLocal)
 
 
         //Response Notify

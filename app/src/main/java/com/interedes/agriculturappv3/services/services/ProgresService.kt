@@ -26,9 +26,6 @@ class ProgresService: JobIntentService() {
     private var StartService=false
     private var Count=0
 
-
-
-
     override fun onHandleWork(intent: Intent) {
         if (intent != null) {
             val action = intent.action
@@ -51,9 +48,6 @@ class ProgresService: JobIntentService() {
 
         startForeground(-1, mBuilder.build())
         stopForeground(true)
-
-
-
 
         for (i in 1..10) {
 
