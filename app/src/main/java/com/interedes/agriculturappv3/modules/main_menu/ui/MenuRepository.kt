@@ -19,6 +19,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
+import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
@@ -33,6 +34,7 @@ import com.interedes.agriculturappv3.modules.models.cultivo.PostCultivo
 import com.interedes.agriculturappv3.modules.models.departments.Ciudad
 import com.interedes.agriculturappv3.modules.models.departments.DeparmentsResponse
 import com.interedes.agriculturappv3.modules.models.departments.Departamento
+import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.lote.PostLote
@@ -55,6 +57,7 @@ import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Cal
 import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento_Table
 import com.interedes.agriculturappv3.modules.models.unidad_medida.CategoriaMedida
 import com.interedes.agriculturappv3.modules.models.unidad_medida.CategoriaMedidaResponse
+import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.PostUnidadProductiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
@@ -71,11 +74,14 @@ import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
+import com.raizlabs.android.dbflow.config.DatabaseDefinition
+import com.raizlabs.android.dbflow.config.FlowManager
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
@@ -497,9 +503,7 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     override fun getListasIniciales() {
-
         var usuario= getLastUserLogued()
-
         //LISTAS ROL PRODUCTOR
         /*-----------------------------------------------------------------------------------------------------------------*/
         if(usuario?.RolNombre?.equals(RolResources.PRODUCTOR)!!){
@@ -508,7 +512,6 @@ class MenuRepository: MainViewMenu.Repository {
             for (user in users){
                 user.delete()
             }
-
             val query = Listas.queryGeneral("UsuarioId",usuario?.Id.toString())
             val callInformacionSinronized = apiService?.getSyncInformacionUsuario(query)
             callInformacionSinronized?.enqueue(object : Callback<GetSincronizacionResponse> {
@@ -751,6 +754,8 @@ class MenuRepository: MainViewMenu.Repository {
                             }
                         }
 
+                        Log.d("SYNC DATA", "UP, Lotes, Cultivos,Produccion,ControlPlagas Loaded" )
+
                         loadTransacciones(usuario)
 
                     } else {
@@ -763,57 +768,10 @@ class MenuRepository: MainViewMenu.Repository {
             })
 
 
-            //Categorias Puk
-            val categoriaspuk = apiService?.getCategoriasPuc()
-            categoriaspuk?.enqueue(object : Callback<CategoriaPucResponse> {
-                override fun onResponse(call: Call<CategoriaPucResponse>?, response: Response<CategoriaPucResponse>?) {
-                    if (response != null && response.code() == 200) {
-                        val categorias: MutableList<CategoriaPuk> = response.body()?.value!!
-                        for (item in categorias) {
-                            item.save()
-                            for (puk in item.Pucs!!) {
-                                puk.save()
-                            }
-                        }
-                    } else {
-                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                    }
-                }
-                override fun onFailure(call: Call<CategoriaPucResponse>?, t: Throwable?) {
-                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                }
-            })
-
-            //Estados de  transaccion
-            val estadoTransaccion = SQLite.select().from(Estado_Transaccion::class.java).queryList()
-            if(estadoTransaccion.size>0){
-
-            }else{
-                val estadosTransaccion = apiService?.getEstadosTransaccion()
-                estadosTransaccion?.enqueue(object : Callback<EstadoTransaccionResponse> {
-                    override fun onResponse(call: Call<EstadoTransaccionResponse>?, response: Response<EstadoTransaccionResponse>?) {
-                        if (response != null && response.code() == 200) {
-                            val estadostransaccion: MutableList<Estado_Transaccion> = response.body()?.value!!
-                            for (item in estadostransaccion) {
-                                item.save()
-                            }
-                        } else {
-                            postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                        }
-                    }
-                    override fun onFailure(call: Call<EstadoTransaccionResponse>?, t: Throwable?) {
-                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                    }
-                })
-
-            }
         }
-
-
         //LISTAS ROL COMPRADOR
         /*-----------------------------------------------------------------------------------------------------------------*/
         else if(usuario?.RolNombre?.equals(RolResources.COMPRADOR)!!){
-
             //Limpiar BD con informacion de un productor
             //TODO Delete information in local, add new remote
             SQLite.delete<Oferta>(Oferta::class.java)
@@ -827,14 +785,96 @@ class MenuRepository: MainViewMenu.Repository {
             loadOfertas(usuario)
 
         }
-
-
-
         //LISTAS PARA AMBOS ROLES
         /*------------------------------------------------------------------------------------------------------------------*/
         //Tipos de Producto
         //val listTipoProducto: ArrayList<TipoProducto> = Listas.listaTipoProducto()
 
+        //Categorías de Producto
+        //getLastUserLogued
+        //
+    }
+
+    fun getCategoriaPuk(){
+        //Categorias Puk
+        val categoriaspuk = apiService?.getCategoriasPuc()
+        categoriaspuk?.enqueue(object : Callback<CategoriaPucResponse> {
+            override fun onResponse(call: Call<CategoriaPucResponse>?, response: Response<CategoriaPucResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val categorias: MutableList<CategoriaPuk> = response.body()?.value!!
+                    /*val fastStoreModelTransactionCategorias=FastStoreModelTransaction
+                            .insertBuilder(FlowManager.getModelAdapter(CategoriaPuk::class.java))
+                            .addAll(categorias)
+                            .build()
+                    val databaseCategorias = FlowManager.getDatabase(DataSource::class.java)
+                    val transactionCategorias = databaseCategorias.beginTransactionAsync(fastStoreModelTransactionCategorias).build();
+                    transactionCategorias.execute()*/
+                    for (item in categorias) {
+                        /*val fastStoreModelTransactionDetalleCategorias=FastStoreModelTransaction
+                                .insertBuilder(FlowManager.getModelAdapter(Puk::class.java))
+                                .addAll(item.Pucs)
+                                .build()
+                        val databasedetalleCategorias = FlowManager.getDatabase(DataSource::class.java)
+                        val transaction = databasedetalleCategorias.beginTransactionAsync(fastStoreModelTransactionDetalleCategorias).build();
+                        transaction.execute()*/
+                        item.save()
+                        for (puk in item.Pucs!!) {
+                            puk.save()
+                        }
+                    }
+
+                    Log.d("SYNC DATA", "Categorias Puk Loaded" )
+                    getEstadosTransaccion()
+
+                } else {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<CategoriaPucResponse>?, t: Throwable?) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+    }
+
+
+    fun getEstadosTransaccion(){
+        //Estados de  transaccion
+        val estadoTransaccion = SQLite.select().from(Estado_Transaccion::class.java).queryList()
+        if(estadoTransaccion.size>0){
+
+        }else{
+            val estadosTransaccion = apiService?.getEstadosTransaccion()
+            estadosTransaccion?.enqueue(object : Callback<EstadoTransaccionResponse> {
+                override fun onResponse(call: Call<EstadoTransaccionResponse>?, response: Response<EstadoTransaccionResponse>?) {
+                    if (response != null && response.code() == 200) {
+
+                        val estadostransaccion: MutableList<Estado_Transaccion> = response.body()?.value!!
+                        /*
+                        val fastStoreModelTransactionEstadoTransaccion=FastStoreModelTransaction
+                                .insertBuilder(FlowManager.getModelAdapter(Estado_Transaccion::class.java))
+                                .addAll(estadostransaccion)
+                                .build()
+                        val databaseEstadotransacion = FlowManager.getDatabase(DataSource::class.java)
+                        val transactionCategorias = databaseEstadotransacion.beginTransactionAsync(fastStoreModelTransactionEstadoTransaccion).build();
+                        transactionCategorias.execute()*/
+                        for (item in estadostransaccion) {
+                            item.save()
+                        }
+                        Log.d("SYNC DATA", "Estados Transaccion  Loaded" )
+                        getdetalleProducto()
+                    } else {
+                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    }
+                }
+                override fun onFailure(call: Call<EstadoTransaccionResponse>?, t: Throwable?) {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            })
+        }
+    }
+
+
+    fun getdetalleProducto(){
         //val tipoProducto = SQLite.select().from(TipoProducto::class.java).queryList()
         val callTipoProducto = apiService?.getTipoAndDetalleTipoProducto()
         callTipoProducto?.enqueue(object : Callback<TipoProductoResponse> {
@@ -843,23 +883,32 @@ class MenuRepository: MainViewMenu.Repository {
                     val tiposProducto = response.body()?.value as MutableList<TipoProducto>
 
                     for (item in tiposProducto) {
-
                         try {
                             val base64String = item?.Icono
                             val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
                             val byte = Base64.decode(base64Image, Base64.DEFAULT)
                             item.Imagen = Blob(byte)
-
                         }catch (ex:Exception){
-                            var ss= ex.toString()
+                            val ss= ex.toString()
                             Log.d("Convert Image", "defaultValue = " + ss);
                         }
 
                         item.save()
+
+                        /*val fastStoreModelTransactionDetalleTipoProducto=FastStoreModelTransaction
+                                .insertBuilder(FlowManager.getModelAdapter(DetalleTipoProducto::class.java))
+                                .addAll(item.DetalleTipoProductos)
+                                .build()
+                        val databaseDetalleTipoProducto = FlowManager.getDatabase(DataSource::class.java)
+                        val transactionDetalleTipoProducto = databaseDetalleTipoProducto.beginTransactionAsync(fastStoreModelTransactionDetalleTipoProducto).build();
+                        transactionDetalleTipoProducto.execute()*/
                         for (detalleTipoProducto in item.DetalleTipoProductos!!) {
                             detalleTipoProducto.save()
                         }
                     }
+
+                    Log.d("SYNC DATA", "Detalle Productos  Loaded" )
+                    loadDepartmentsCities()
                 } else {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
@@ -868,8 +917,9 @@ class MenuRepository: MainViewMenu.Repository {
                 postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
         })
+    }
 
-
+    fun loadDepartmentsCities(){
         //Departamentos y Ciudades
         val lista_departamentos = SQLite.select().from(Departamento::class.java).queryList()
         val lista_ciudades = SQLite.select().from(Ciudad::class.java).queryList()
@@ -879,12 +929,29 @@ class MenuRepository: MainViewMenu.Repository {
                 override fun onResponse(call: Call<DeparmentsResponse>?, response: Response<DeparmentsResponse>?) {
                     if (response != null && response.code() == 200) {
                         val departamentos: MutableList<Departamento> = response.body()?.value!!
+
+                        val fastStoreModelTransactionDepartamentos=FastStoreModelTransaction
+                                .insertBuilder(FlowManager.getModelAdapter(Departamento::class.java))
+                                .addAll(departamentos)
+                                .build()
+                        val databaseDepart = FlowManager.getDatabase(DataSource::class.java)
+                         val transactionDepartamentos = databaseDepart.beginTransactionAsync(fastStoreModelTransactionDepartamentos).build();
+                        transactionDepartamentos.execute()
                         for (item in departamentos) {
-                            item.save()
-                            for (ciudad in item.ciudades!!) {
+                            val municipe=FastStoreModelTransaction
+                                    .insertBuilder(FlowManager.getModelAdapter(Ciudad::class.java))
+                                    .addAll(item.ciudades)
+                                    .build()
+                            val databaseCiudad = FlowManager.getDatabase(DataSource::class.java)
+                            val transactionCiudad = databaseCiudad.beginTransactionAsync(municipe).build();
+                            transactionCiudad.execute()
+                            //item.save()
+                            /* for (ciudad in item.ciudades!!) {
                                 ciudad.save()
-                            }
+                            }*/
                         }
+                        Log.d("SYNC DATA", "Departamentos y Ciudades  Loaded" )
+                        loadCategoriasMedidas()
                     } else {
                         postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
                     }
@@ -894,21 +961,42 @@ class MenuRepository: MainViewMenu.Repository {
                 }
             })
         }
+    }
 
-
-
+    fun loadCategoriasMedidas(){
         //Categorías Medida
         val callCategoriaMedida = apiService?.getCategoriasMedida()
         callCategoriaMedida?.enqueue(object : Callback<CategoriaMedidaResponse> {
             override fun onResponse(call: Call<CategoriaMedidaResponse>?, response: Response<CategoriaMedidaResponse>?) {
                 if (response != null && response.code() == 200) {
                     val categoriasMedida = response.body()?.value as MutableList<CategoriaMedida>
+
+
+                    /*val fastStoreModelTransactionCategoriaMedida=FastStoreModelTransaction
+                            .insertBuilder(FlowManager.getModelAdapter(CategoriaMedida::class.java))
+                            .addAll(categoriasMedida)
+                            .build()
+
+                    val databaseCategoriaMedida = FlowManager.getDatabase(DataSource::class.java)
+                    val transactionCategoriasMedidas = databaseCategoriaMedida.beginTransactionAsync(fastStoreModelTransactionCategoriaMedida).build();
+                    transactionCategoriasMedidas.execute()*/
                     for (item in categoriasMedida) {
+                        /*val fastStoreModelTransactionUnidadMedidas=FastStoreModelTransaction
+                                .insertBuilder(FlowManager.getModelAdapter(Unidad_Medida::class.java))
+                                .addAll(item.UnidadMedidas)
+                                .build()
+                        val databaseUnidadMedidas = FlowManager.getDatabase(DataSource::class.java)
+                        val transactionUnidadMedidas = databaseUnidadMedidas.beginTransactionAsync(fastStoreModelTransactionUnidadMedidas).build();
+                        transactionUnidadMedidas.execute()*/
                         item.save()
                         for (itemUnidadmedida in item?.UnidadMedidas!!){
                             itemUnidadmedida.save()
                         }
                     }
+
+                    Log.d("SYNC DATA", "Categorias  y Unidades de Medida  Loaded" )
+                    loadEstadoOfertas()
+
                 } else {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
@@ -918,8 +1006,40 @@ class MenuRepository: MainViewMenu.Repository {
             }
         })
 
+    }
+
+    fun loadEstadoOfertas(){
+        //Calidades de Producto
+        val callEstadoOfertas = apiService?.getEstadosOfertas()
+        callEstadoOfertas?.enqueue(object : Callback<EstadoOfertaResponse> {
+            override fun onResponse(call: Call<EstadoOfertaResponse>?, response: Response<EstadoOfertaResponse>?) {
+                if (response != null && response.code() == 200) {
+                    val listEstadosOfertas = response.body()?.value as MutableList<EstadoOferta>
+                   /* val fastStoreModelTransactionEstadoOfertas=FastStoreModelTransaction
+                            .insertBuilder(FlowManager.getModelAdapter(EstadoOferta::class.java))
+                            .addAll(listEstadosOfertas)
+                            .build()
+                    val databaseEstadoOferta = FlowManager.getDatabase(DataSource::class.java)
+                    val transactionEstadoOferta = databaseEstadoOferta.beginTransactionAsync(fastStoreModelTransactionEstadoOfertas).build();
+                    transactionEstadoOferta.execute()*/
+                    for (item in listEstadosOfertas) {
+                        item.save()
+                    }
+
+                    Log.d("SYNC DATA", "Estados de Oferta  Loaded" )
+                    getCalidadesProductos()
+                } else {
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<EstadoOfertaResponse>?, t: Throwable?) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
+    }
 
 
+    fun getCalidadesProductos(){
         //Calidades de Producto
         val callCalidadProducto = apiService?.getCalidadesProducto()
         callCalidadProducto?.enqueue(object : Callback<CalidadProductoResponse> {
@@ -929,39 +1049,15 @@ class MenuRepository: MainViewMenu.Repository {
                     for (item in calidadesProducto) {
                         item.save()
                     }
+                    Log.d("SYNC DATA", "Calidades de producto  Loaded" )
                 } else {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
             }
-
             override fun onFailure(call: Call<CalidadProductoResponse>?, t: Throwable?) {
                 postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
-
         })
-
-
-
-        //Calidades de Producto
-        val callEstadoOfertas = apiService?.getEstadosOfertas()
-        callEstadoOfertas?.enqueue(object : Callback<EstadoOfertaResponse> {
-            override fun onResponse(call: Call<EstadoOfertaResponse>?, response: Response<EstadoOfertaResponse>?) {
-                if (response != null && response.code() == 200) {
-                    val listEstadosOfertas = response.body()?.value as MutableList<EstadoOferta>
-                    for (item in listEstadosOfertas) {
-                        item.save()
-                    }
-                } else {
-                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-                }
-            }
-            override fun onFailure(call: Call<EstadoOfertaResponse>?, t: Throwable?) {
-                postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
-            }
-        })
-        //Categorías de Producto
-        //getLastUserLogued
-        //
     }
 
     fun loadTransacciones(usuario: Usuario?) {
@@ -1005,7 +1101,6 @@ class MenuRepository: MainViewMenu.Repository {
                             } else {
                                 item.TransaccionId = lastTransaccion.TransaccionId!! + 1
                             }
-
 
                             item.UsuarioId=usuario?.Id
                             item.Nombre_Tercero= if (item.Tercero!=null) item.Tercero?.Nombre else null
@@ -1057,6 +1152,7 @@ class MenuRepository: MainViewMenu.Repository {
                         }
                     }
 
+                    Log.d("SYNC DATA", "Transacciones Loaded" )
                     loadProductos(usuario)
                 } else {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
@@ -1067,7 +1163,6 @@ class MenuRepository: MainViewMenu.Repository {
             }
         })
     }
-
 
     fun loadProductos(usuario:Usuario?){
         //Get Productos by user
@@ -1137,53 +1232,13 @@ class MenuRepository: MainViewMenu.Repository {
 
                             */
 
-
-
-
-
                             producto.save()
                         }
                     }
-
-
-                   // if(producto.Imagen!=null){
-                     //   if(producto.Imagen!!.contains("Productos")){
-
-                           /* try{
-                                Picasso.get()
-                                        //.load(S3Resources.RootImage+""+producto?.Imagen)
-                                        .load("https://s3.amazonaws.com/agriculturapp/Productos/7ea3bcfc-4e4a-484d-9727-31f106b998297e0c69fe-1753-44b5-ac80-e939afd27d2e.jpg")
-                                        .into(object : com.squareup.picasso.Target {
-                                            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                                            }
-                                            override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {
-                                                var error= e.toString()
-                                            }
-                                            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                                                if(bitmap!=null){
-                                                    try {
-                                                        var imgByteArray=convertBitmapToByte(bitmap!!)
-                                                        /* val base64String = producto?.Imagen
-                                                         val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
-                                                         val byte = Base64.decode(base64Image, Base64.DEFAULT)*/
-                                                        // producto.blobImagen = Blob(imgByteArray)
-                                                    }catch (ex:Exception){
-                                                        var ss= ex.toString()
-                                                        Log.d("Convert Image", "defaultValue = " + ss);
-                                                    }
-                                                }
-
-                                            }
-
-                                        })
-                            }catch (ex:Exception){
-                                var message=ex.toString()
-                            }
-
-                            */
-
                     //    }
                   //  }
+
+                    Log.d("SYNC DATA", "Productos Loaded" )
                     loadOfertas(usuario)
                 } else {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
@@ -1413,7 +1468,7 @@ class MenuRepository: MainViewMenu.Repository {
                                 //producto.NombreDetalleTipoProducto=detalleTipoProducto.Nombre
                                 //producto.Estado_Sincronizacion=true
                                 //producto.Estado_SincronizacionUpdate=true
-                                try {
+                                /*try {
                                     val base64String = producto?.Imagen
                                     val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
                                     val byte = Base64.decode(base64Image, Base64.DEFAULT)
@@ -1421,7 +1476,7 @@ class MenuRepository: MainViewMenu.Repository {
                                 } catch (ex: Exception) {
                                     var ss = ex.toString()
                                     Log.d("Convert Image", "defaultValue = " + ss);
-                                }
+                                }*/
                                 producto.save()
                             }
                         } else if (usuario?.RolNombre.equals(RolResources.PRODUCTOR)) {
@@ -1440,20 +1495,26 @@ class MenuRepository: MainViewMenu.Repository {
                                 detalleoferta.Oferta?.Usuario!!.save()
                             }
                         }
-
                     }
+
+
+                    if (usuario?.RolNombre.equals(RolResources.PRODUCTOR)) {
+                        Log.d("SYNC DATA", "Ofertas Loaded" )
+                        getCategoriaPuk()
+                    }else if (usuario?.RolNombre.equals(RolResources.COMPRADOR)) {
+                        Log.d("SYNC DATA", "Ofertas Loaded" )
+                        getdetalleProducto()
+                    }
+
                 } else {
                     postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
             }
-
             override fun onFailure(call: Call<OfertaResponse>?, t: Throwable?) {
                 postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
             }
         })
     }
-
-
 
 
     //region Events

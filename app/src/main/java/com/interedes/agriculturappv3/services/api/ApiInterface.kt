@@ -161,6 +161,7 @@ interface ApiInterface {
     fun getDepartamentos(): Call<DeparmentsResponse>
 
 
+
     @Headers("Content-Type: application/json")
     @DELETE("odata/Agp2/UnidadProductivas({Id})")
     fun deleteUnidadProductiva(@Path("Id") Id: Long?): Call<Unidad_Productiva>

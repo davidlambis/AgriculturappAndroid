@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.services.jobs.repository
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
+import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
@@ -10,6 +11,7 @@ import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.insumos.Insumo
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
+import com.interedes.agriculturappv3.modules.models.ofertas.EstadoOferta
 import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.modules.models.plagas.EnfermedadResponseApi
 import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad_Table
@@ -37,9 +39,11 @@ import com.krishna.fileloader.FileLoader
 import com.krishna.fileloader.listener.FileRequestListener
 import com.krishna.fileloader.pojo.FileResponse
 import com.krishna.fileloader.request.FileLoadRequest
+import com.raizlabs.android.dbflow.config.FlowManager
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction
 import id.zelory.compressor.Compressor
 import retrofit2.Call
 import retrofit2.Callback
@@ -54,7 +58,6 @@ class JobSyncRepository: IMainViewJob.Repository {
         apiService = ApiInterface.create()
     }
 
-
     private var listInsmo: List<Insumo>? = null
     private var listFotoEnfermedad: List<FotoEnfermedad>? = null
     private val TAG_INSUMOS = "INSUMOS"
@@ -62,14 +65,11 @@ class JobSyncRepository: IMainViewJob.Repository {
     private val TAG_FIREBASE = "FIREBASE UIID"
 
 
-
     fun getLastUserLogued(): Usuario? {
 
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
         return usuarioLogued
     }
-
-
 
     //region CHAT
 
@@ -172,8 +172,6 @@ class JobSyncRepository: IMainViewJob.Repository {
     //endregion
 
     //region  FOTOS DE PERFIL, PLAGAS Y ENFERMEDADES, INSUMOS
-
-
     override fun getListSyncEnfermedadesAndTratamiento(context: Context) {
         //Enfermedades
         val callEnfermedades = apiService?.getEnfermedades()
@@ -186,11 +184,20 @@ class JobSyncRepository: IMainViewJob.Repository {
                         item.NombreTipoProducto=item.TipoProducto?.Nombre
                         item.NombreCientificoTipoEnfermedad=item.TipoEnfermedad?.NombreCientifico
                         item.DescripcionTipoEnfermedad=item.TipoEnfermedad?.Descripcion
-
                         if(item.Fotos!=null){
-                            for (itemFoto in item?.Fotos!!){
+                            val fastStoreModelTransactionFotos= FastStoreModelTransaction
+                                    .insertBuilder(FlowManager.getModelAdapter(FotoEnfermedad::class.java))
+                                    .addAll(item.Fotos)
+                                    .build()
+
+                            val databaseFotoEnfermedad = FlowManager.getDatabase(DataSource::class.java)
+                            val transactionFotoEnfermedad = databaseFotoEnfermedad.beginTransactionAsync(fastStoreModelTransactionFotos).build();
+                            transactionFotoEnfermedad.execute()
+
+                            /*
+                            for (itemFoto in item.Fotos!!){
                                 itemFoto.save()
-                                /*try {
+                               try {
                                     val base64String = itemFoto?.Ruta
                                     val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
                                     val byte = Base64.decode(base64Image, Base64.DEFAULT)
@@ -200,12 +207,11 @@ class JobSyncRepository: IMainViewJob.Repository {
                                 }catch (ex:Exception){
                                     var ss= ex.toString()
                                     Log.d("Convert Image", "defaultValue = " + ss);
-                                }*/
-                            }
+                                }
+                            }*/
                         }
                         item.save()
                     }
-
 
                     loadTratamientos(context)
                 } else {
@@ -218,9 +224,6 @@ class JobSyncRepository: IMainViewJob.Repository {
                 Log.e("JOB SYNC ENFERMEDADES", t?.toString())
             }
         })
-
-
-
     }
 
     private fun loadTratamientos(context: Context) {
@@ -237,8 +240,6 @@ class JobSyncRepository: IMainViewJob.Repository {
                         if(item.Insumo!=null){
                             item.Descripcion_Insumo=item.Insumo?.Descripcion
                             item.Nombre_Insumo=item.Insumo?.Nombre
-
-
                             /*if(item?.Insumo?.Imagen!=null || item?.Insumo?.Imagen!=""){
                                 try {
                                     val base64String = item?.Insumo?.Imagen
@@ -263,7 +264,7 @@ class JobSyncRepository: IMainViewJob.Repository {
                             item.Insumo!!.save()
                         }
 
-                        if(item?.Calificacions!!.size==0){
+                        if(item.Calificacions!!.size==0){
                             SQLite.delete<Calificacion_Tratamiento>(Calificacion_Tratamiento::class.java)
                                     .where(Calificacion_Tratamiento_Table.TratamientoId.eq(item.Id))
                                     .async()
@@ -274,16 +275,21 @@ class JobSyncRepository: IMainViewJob.Repository {
                                     .async()
                                     .execute()
 
-                            for (calification in item?.Calificacions!!){
-                                calification.save()
+                            val fastStoreModelCalificacion= FastStoreModelTransaction
+                                    .insertBuilder(FlowManager.getModelAdapter(Calificacion_Tratamiento::class.java))
+                                    .addAll(item.Calificacions)
+                                    .build()
+                            val databaseCalificaciones = FlowManager.getDatabase(DataSource::class.java)
+                            val transactionCalificacion = databaseCalificaciones.beginTransactionAsync(fastStoreModelCalificacion).build();
+                            transactionCalificacion.execute()
+                            for (calification in item.Calificacions!!){
+                                //calification.save()
                                 sumacalificacion=sumacalificacion!!+ calification.Valor!!
                             }
-                            promedioCalificacion= sumacalificacion!! /item?.Calificacions!!.size
+                            promedioCalificacion= sumacalificacion!! /item.Calificacions!!.size
                         }
-
                         item.CalificacionPromedio=promedioCalificacion
                         item.save()
-
                     }
 
                     syncFotos(context)
@@ -291,7 +297,6 @@ class JobSyncRepository: IMainViewJob.Repository {
                     //postEventOk(RequestEventMainMenu.SYNC_EVENT)
 
                 } else {
-
                     Log.e("JOB SYNC TRATAMIENTOS", tratamientoResponse?.message().toString())
                     //postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
@@ -330,7 +335,7 @@ class JobSyncRepository: IMainViewJob.Repository {
                                             .setMaxHeight(300)
                                             .setQuality(100)
                                             .compressToBitmap(loadedFile)
-                                    val bitmap= convertBitmapToByte(compressedImage)
+                                    val bitmap= convertBitmapToBytePlagasAndFotoPerfil(compressedImage)
                                     user.blobImagenUser = Blob(bitmap)
                                     user.save()
                                 }
@@ -419,7 +424,7 @@ class JobSyncRepository: IMainViewJob.Repository {
                                             .setMaxHeight(300)
                                             .setQuality(100)
                                             .compressToBitmap(loadedFile)
-                                    val bitmap= convertBitmapToByte(compressedImage)
+                                    val bitmap= convertBitmapToBytePlagasAndFotoPerfil(compressedImage)
 
                                     SQLite.update(Enfermedad::class.java)
                                             .set(Enfermedad_Table.blobImagenEnfermedad.eq(Blob(bitmap)))
@@ -428,7 +433,6 @@ class JobSyncRepository: IMainViewJob.Repository {
                                             .async()
                                             .execute(); // non-UI blocking
                                 }
-
                                 getAllPlagasFoto(index+1,context)
                             }
                             override fun onError(request: FileLoadRequest?, error : Throwable?) {
@@ -445,6 +449,14 @@ class JobSyncRepository: IMainViewJob.Repository {
     fun convertBitmapToByte(bitmapCompressed: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()
         bitmapCompressed.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
+        //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
+    }
+
+
+    fun convertBitmapToBytePlagasAndFotoPerfil(bitmapCompressed: Bitmap): ByteArray? {
+        val stream = ByteArrayOutputStream()
+        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 50, stream)
         return stream.toByteArray()
         //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }

@@ -91,11 +91,11 @@
                                     android:id="@+id/imageViewInsumo"
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/height_200"
+                                    android:layout_alignParentStart="true"
                                     android:layout_below="@+id/txtNombreComercial"
-                                    android:layout_centerInParent="true"
                                     android:adjustViewBounds="true"
                                     android:scaleType="centerInside"
-                                    android:src="@drawable/aguacate" />
+                                    android:src="@drawable/empty_insumo" />
 
                                 <com.robertlevonyan.views.expandable.Expandable
                                     android:id="@+id/expandableDescripcionInsumo"
