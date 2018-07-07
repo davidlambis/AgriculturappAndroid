@@ -339,6 +339,8 @@ class JobSyncRepository: IMainViewJob.Repository {
                                     user.blobImagenUser = Blob(bitmap)
                                     user.save()
                                 }
+
+                                Log.d("SYNC DATA", "Foto perfil Loaded" )
                                 getAllPlagasFoto(0,context)
                             }
                             override fun onError(request: FileLoadRequest?, error : Throwable?) {
@@ -359,8 +361,9 @@ class JobSyncRepository: IMainViewJob.Repository {
         if (index >= listInsmo!!.size) {
             //onMessageToast(R.color.green,"Imagenes Cargadas.");
             //Toast.makeText(this,"Insumos cargados",Toast.LENGTH_LONG).show()
+            Log.d("SYNC DATA", "Fotografias de insumos y plagas Loaded" )
 
-            Log.d(TAG_INSUMOS, "Fotografias de insumos y plagas cargados")
+            //Log.d(TAG_INSUMOS, "Fotografias de insumos y plagas cargados")
             FileLoader.deleteWith (context) .fromDirectory ( DIR_INSUMOS_PLAGAS , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
             ///FileLoader.deleteWith(this).fromDirectory(Environment.DIRECTORY_DOWNLOADS, FileLoader.DIR_EXTERNAL_PUBLIC).deleteFiles(uris);
             //this.stopSelf()
@@ -408,6 +411,9 @@ class JobSyncRepository: IMainViewJob.Repository {
 
     private fun getAllPlagasFoto(index: Int,context: Context) {
         if (index >= listFotoEnfermedad!!.size) {
+
+
+            Log.d("SYNC DATA", "Plagas y Enfermedades Loaded" )
             getAllInsumoFoto(0,context)
         } else {
             val fotoEnfermedad = listFotoEnfermedad?.get(index)
@@ -448,7 +454,7 @@ class JobSyncRepository: IMainViewJob.Repository {
 
     fun convertBitmapToByte(bitmapCompressed: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()
-        bitmapCompressed.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        bitmapCompressed.compress(Bitmap.CompressFormat.PNG, 80, stream)
         return stream.toByteArray()
         //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }
@@ -456,7 +462,7 @@ class JobSyncRepository: IMainViewJob.Repository {
 
     fun convertBitmapToBytePlagasAndFotoPerfil(bitmapCompressed: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()
-        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 60, stream)
         return stream.toByteArray()
         //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }
