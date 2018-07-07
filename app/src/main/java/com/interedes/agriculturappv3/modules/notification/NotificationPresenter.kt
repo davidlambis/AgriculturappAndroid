@@ -14,6 +14,7 @@ import org.greenrobot.eventbus.Subscribe
 
 class NotificationPresenter(var mainView:IMainViewNotification.MainView?):IMainViewNotification.Presenter {
 
+
     var interactor: IMainViewNotification.Interactor? = null
     var eventBus: EventBus? = null
 
@@ -67,7 +68,14 @@ class NotificationPresenter(var mainView:IMainViewNotification.MainView?):IMainV
         when (event?.eventType) {
 
             RequestEventsNotification.UPDATE_EVENT -> {
-                onMessageOk()
+                val notification = event.objectMutable as NotificationLocal
+                mainView?.onChangeNotification(notification)
+                //onMessageOk()
+            }
+
+            RequestEventsNotification.DELETE_EVENT -> {
+                val notification = event.objectMutable as NotificationLocal
+               mainView?.onRemoveNotification(notification)
             }
 
             RequestEventsNotification.ITEM_NEW_EVENT -> {
@@ -85,6 +93,7 @@ class NotificationPresenter(var mainView:IMainViewNotification.MainView?):IMainV
 
             RequestEventsNotification.LIST_EVENT_NOTIFICATION -> {
                 val notification = event.mutableList as MutableList<NotificationLocal>
+                mainView?.hideProgress()
                 mainView?.setListNotification(notification)
             }
 
@@ -92,6 +101,15 @@ class NotificationPresenter(var mainView:IMainViewNotification.MainView?):IMainV
             RequestEventsNotification.ITEM_READ_EVENT -> {
                 val notification = event.objectMutable as NotificationLocal
                 mainView?.onNavigationdetailNotification(notification)
+            }
+
+            RequestEventsNotification.ITEM_DELETE_EVENT -> {
+                val notification = event.objectMutable as NotificationLocal
+                mainView?.confirmDelete(notification)
+            }
+
+            RequestEventsNotification.RELOAD_LIST_NOTIFICATION -> {
+                getListNotification()
             }
         }
     }
@@ -107,6 +125,10 @@ class NotificationPresenter(var mainView:IMainViewNotification.MainView?):IMainV
 
     override fun updateNotifications(notification: NotificationLocal) {
       interactor?.updateNotifications(notification)
+    }
+
+    override fun deleteNotification(notification: NotificationLocal) {
+       interactor?.deleteNotification(notification)
     }
 
 

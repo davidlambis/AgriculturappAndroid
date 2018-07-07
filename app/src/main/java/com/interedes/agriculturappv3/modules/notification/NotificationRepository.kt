@@ -8,6 +8,7 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.notification.events.RequestEventsNotification
 import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
 
@@ -25,7 +26,6 @@ class NotificationRepository:IMainViewNotification.Repository {
         for (item in listNotification){
             postEventOk(RequestEventsNotification.ITEM_NEW_EVENT,null,item)
         }
-
         postEventOk(RequestEventsNotification.LIST_EVENT_NOTIFICATION,listNotification,null)
     }
 
@@ -40,6 +40,16 @@ class NotificationRepository:IMainViewNotification.Repository {
        notification.update()
         postEventOk(RequestEventsNotification.UPDATE_EVENT,null,notification)
     }
+
+    override fun deleteNotification(notification: NotificationLocal) {
+       notification.delete()
+
+        val userlogued= getLastUserLogued()
+        val listNotification= SQLite.select().from(NotificationLocal::class.java).where(NotificationLocal_Table.userLoguedId.eq(userlogued?.Id)).queryList()
+        postEventOk(RequestEventsNotification.LIST_EVENT_NOTIFICATION,listNotification,null)
+        postEventOk(RequestEventsNotification.DELETE_EVENT,null,notification)
+    }
+
 
     //region Events
     private fun postEventOk(type: Int, list: List<NotificationLocal>?, notification: NotificationLocal?) {
@@ -57,6 +67,8 @@ class NotificationRepository:IMainViewNotification.Repository {
     private fun postEventError(type: Int,messageError:String?) {
         postEvent(type, null,null,messageError)
     }
+
+
 
     //Main Post Event
     private fun postEvent(type: Int, listModel1:MutableList<Object>?,model:Object?,errorMessage: String?) {

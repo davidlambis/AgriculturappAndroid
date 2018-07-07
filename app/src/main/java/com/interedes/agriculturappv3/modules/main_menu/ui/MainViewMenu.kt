@@ -42,9 +42,11 @@ interface MainViewMenu {
         fun setQuantitySync(quantitySync: QuantitySync?)
         fun setQuantitySyncAutomatic(quantitySync: QuantitySync?)
 
+        fun updateCountNotifications()
+
         fun getListasIniciales()
 
-        fun syncFotosInsumosPlagas()
+        ///fun syncFotosInsumosPlagas()
     }
 
     interface Presenter {
@@ -66,7 +68,7 @@ interface MainViewMenu {
         //
         fun getListasIniciales()
         fun getLastUserLogued(): Usuario?
-        fun getListSyncEnfermedadesAndTratamiento()
+        //fun getListSyncEnfermedadesAndTratamiento()
 
 
         //Notifications
@@ -81,7 +83,7 @@ interface MainViewMenu {
         fun getListasIniciales()
         fun syncQuantityData(automatic:Boolean)
         fun getLastUserLogued(): Usuario?
-        fun getListSyncEnfermedadesAndTratamiento()
+        //fun getListSyncEnfermedadesAndTratamiento()
 
         //Notifications
         fun getCountNotifications():Int
@@ -107,6 +109,6 @@ interface MainViewMenu {
         fun getListasIniciales()
         fun syncQuantityData(automatic:Boolean)
         fun getLastUserLogued(): Usuario?
-        fun getListSyncEnfermedadesAndTratamiento()
+       // fun getListSyncEnfermedadesAndTratamiento()
     }
 }

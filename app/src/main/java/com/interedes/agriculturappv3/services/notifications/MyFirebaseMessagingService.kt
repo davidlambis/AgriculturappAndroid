@@ -22,6 +22,10 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 import android.media.AudioAttributes
+import com.interedes.agriculturappv3.libs.EventBus
+import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
+import com.interedes.agriculturappv3.modules.notification.events.RequestEventsNotification
 import com.interedes.agriculturappv3.services.notifications.repository.FirebaseInstanceRepository
 import com.interedes.agriculturappv3.services.notifications.repository.IMainFirebaseInstance
 
@@ -33,8 +37,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private var notificationSum= 1
 
     var repository: IMainFirebaseInstance.Repository? = null
+    var eventBus: EventBus? = null
     init {
         repository = FirebaseInstanceRepository()
+        eventBus = GreenRobotEventBus()
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
@@ -51,6 +57,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         if (!fcmNotificationBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_MESSAGE_ONLINE)) {
             repository?.saveNotification(fcmNotificationBuilder)
+            postEventMenu(RequestEventMainMenu.UPDATE_BADGE_NOTIIFCATIONS,null,null,null)
+            postEventNotifications(RequestEventsNotification.RELOAD_LIST_NOTIFICATION,null,null,null)
         }
 
         displayCustomNotificationBigTex(fcmNotificationBuilder,this)
@@ -103,6 +111,18 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager!!.notify(notificationId, notificationBuilder.build())
         */
     }
+
+    private fun postEventNotifications(type: Int, listModel1:MutableList<Object>?,model:Object?,errorMessage: String?) {
+        val event = RequestEventsNotification(type, listModel1, model, errorMessage)
+        event.eventType = type
+        eventBus?.post(event)
+    }
+    private fun postEventMenu(type: Int, listModel1:MutableList<Object>?,model:Object?,errorMessage: String?) {
+        val event = RequestEventMainMenu(type, listModel1, model, errorMessage)
+        event.eventType = type
+        eventBus?.post(event)
+    }
+
     fun getBitmapfromUrl(imageUrl: String): Bitmap? {
         try {
             val url = URL(imageUrl)

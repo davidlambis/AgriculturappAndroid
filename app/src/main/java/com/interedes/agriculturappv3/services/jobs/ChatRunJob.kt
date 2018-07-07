@@ -1,28 +1,29 @@
-package com.interedes.agriculturappv3.services.chat
+package com.interedes.agriculturappv3.services.jobs
 
 import com.evernote.android.job.Job
 import com.evernote.android.job.JobManager
 import com.evernote.android.job.JobRequest
-import com.interedes.agriculturappv3.AgriculturApplication
+import com.interedes.agriculturappv3.services.jobs.repository.IMainViewJob
+import com.interedes.agriculturappv3.services.jobs.repository.JobSyncRepository
 import java.util.concurrent.TimeUnit
 
 class ChatRunJob : Job() {
 
 
-    var repository: IMainViewJobChat.Repository? = null
+    var repository: IMainViewJob.Repository? = null
     init {
-        repository=ChatJobRepository()
+        repository= JobSyncRepository()
     }
 
     companion object {
 
         val TAG = "job_chat"
         fun scheduleJobChat() {
-            val jobRequests = JobManager.instance().getAllJobRequestsForTag(ChatRunJob.TAG)
+            val jobRequests = JobManager.instance().getAllJobRequestsForTag(TAG)
             if (!jobRequests.isEmpty()) {
                 return
             }
-            JobRequest.Builder(ChatRunJob.TAG)
+            JobRequest.Builder(TAG)
                     .setPeriodic(TimeUnit.MINUTES.toMillis(15), TimeUnit.MINUTES.toMillis(5))
                     .setUpdateCurrent(true) // calls cancelAllForTag(NoteSyncJob.TAG) for you
                     .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
@@ -38,9 +39,6 @@ class ChatRunJob : Job() {
 
     override fun onRunJob(params: Job.Params): Job.Result {
         repository?.updateUserStatus()
-
-
-
         return Job.Result.SUCCESS
     }
 }

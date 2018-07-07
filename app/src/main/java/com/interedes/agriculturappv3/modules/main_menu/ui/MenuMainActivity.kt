@@ -3,9 +3,7 @@ package com.interedes.agriculturappv3.modules.productor.ui.main_menu
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
-import android.app.job.JobInfo
 import android.app.job.JobScheduler
-import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -19,7 +17,6 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.preference.PreferenceManager
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -29,13 +26,11 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
-import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.*
-import android.widget.FrameLayout
 import android.widget.TextView
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
@@ -66,12 +61,10 @@ import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
-import com.interedes.agriculturappv3.modules.main_menu.ui.FileUtils
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.notification.NotificationActivity
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
-import com.interedes.agriculturappv3.services.chat.ChatRunJob
-import com.interedes.agriculturappv3.services.chat.ServiceUtils
+import com.interedes.agriculturappv3.services.jobs.ChatRunJob
 import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.jobs.DataSyncJob
 import com.interedes.agriculturappv3.services.jobs.FotosEnfermedadesInsumosjob
@@ -94,6 +87,7 @@ import java.util.*
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu.MainView,View.OnClickListener {
+
 
     var isAppRunning: Boolean = false
 
@@ -226,18 +220,25 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
         //Schedule Note Syncing
-        DataSyncJob.scheduleJob();
-        ChatRunJob.scheduleJobChat()
 
+        val usuarioLogued=getLastUserLogued()
+
+        if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
+            DataSyncJob.scheduleJob();
+            ChatRunJob.scheduleJobChat()
+            FotosEnfermedadesInsumosjob.scheduleFotosJob()
+        } else if (usuarioLogued?.RolNombre.equals(RolResources.COMPRADOR)) {
+            ChatRunJob.scheduleJobChat()
+        }
         ///loadImagesProductos()
         //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
           ///  jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler;
         //}
     }
 
-    override fun syncFotosInsumosPlagas() {
+    /*override fun syncFotosInsumosPlagas() {
         FotosEnfermedadesInsumosjob.scheduleFotosJob();
-    }
+    }*/
 
     fun registerWithNotificationHubs() {
         //Log.i(FragmentActivity.TAG, " Registering with NotificationLocal Hubs")
@@ -608,7 +609,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     //endregion
 
-
     override fun getListasIniciales() {
         presenter?.getListasIniciales()
     }
@@ -738,22 +738,16 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         menuItemGlobal = menu?.findItem(R.id.action_menu_icon)
         menuItemGlobal?.isVisible = false
 
-
-
         val menuItemNotification = menu?.findItem(R.id.action_cartNotification)
         val notificatioItem = menu?.findItem(R.id.action_cartNotification)?.getActionView()
         notificationCount=  notificatioItem?.findViewById<View>(R.id.cart_badgeNotification) as TextView;
-
-        val countNotifications= presenter?.getCountNotifications()
-        if(countNotifications!!>0){
-            if(notificationCount!=null){
-                YoYo.with(Techniques.Pulse)
-                        .repeat(5)
-                        .playOn(notificationCount)
+        notificatioItem.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                onOptionsItemSelected(menuItemNotification!!)
             }
-        }
-        notificationCount?.setText(countNotifications.toString())
+        })
 
+        updateCountNotifications()
         //contentCountNotifications=notificatioItem?.findViewById<View>(R.id.contentCountNotifications) as FrameLayout;
 
         //val item1 = menu?.findItem(R.id.action_cartNotification);
@@ -767,11 +761,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             itemSync?.isVisible = false
         }*/
 
-        notificatioItem.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View) {
-                onOptionsItemSelected(menuItemNotification!!)
-            }
-        })
 
         return true
 
@@ -849,8 +838,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             if(index==0){
                 dialog.dismiss()
 
-
-
                 val chat = Intent(this, UserSmsActivity::class.java)
                 chat.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chat)
@@ -920,7 +907,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         return true
     }
 
-
     fun showExit(): Dialog {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Confirmación")
@@ -942,8 +928,16 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             FotosEnfermedadesInsumosjob.cancel();
 
 
-            startActivity(Intent(this, LoginActivity::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
+            //startActivity(Intent(this, LoginActivity::class.java)
+             //       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
+
+             val intentLogin =  Intent(this, LoginActivity::class.java)
+            intentLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                     or Intent.FLAG_ACTIVITY_NEW_TASK
+                     or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intentLogin);
+
+
             finish()
         }
         builder.setIcon(R.mipmap.ic_launcher)
@@ -1159,13 +1153,21 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         fragmentTransaction.commit()
 
     }
-
-
-
     //endregion
 
     //region Implemetacion Interfaz ViewMenu
+    override fun updateCountNotifications() {
+        val countNotifications= presenter?.getCountNotifications()
+        if(countNotifications!!>0){
+            if(notificationCount!=null){
+                YoYo.with(Techniques.Pulse)
+                        .repeat(10)
+                        .playOn(notificationCount)
+            }
+        }
+        notificationCount?.setText(countNotifications.toString())
 
+    }
 
     override fun showProgressHud(){
         hud = KProgressHUD.create(this)
@@ -1210,7 +1212,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 .onPositive(
                         { dialog1, which ->
                             dialog1.dismiss()
-                            presenter?.getListSyncEnfermedadesAndTratamiento()
+                            ///presenter?.getListSyncEnfermedadesAndTratamiento()
+                            FotosEnfermedadesInsumosjob.scheduleFotosJob()
+                            onMessageToast(R.color.green_900,"Sincronizando informacion de plagas,enfermedades y tratamientos")
                         })
                 .onNegative({ dialog1, which ->
                     dialog1.dismiss()
@@ -1293,7 +1297,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     }
                 }, myTimerr.toLong())
             }else{
-                onMessageToast(R.color.red_900,"Tienes informacion por sincronizar verifca tu conexion")
+                onMessageToast(R.color.red_900,"Tienes informacion por sincronizar verifica tu conexion")
                 //onMessageError(R.color.red_900,"Tienes informacion por sincronizar verifca tu conexion")
             }
         }
@@ -1331,10 +1335,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
         presenter?.makeUserOnline(this)
-
         val usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
-           // presenter?.syncQuantityData(true)
+            presenter?.syncQuantityData(true)
         }
     }
 

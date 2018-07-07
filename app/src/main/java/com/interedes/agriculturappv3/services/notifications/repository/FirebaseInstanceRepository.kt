@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal
+import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.notifications.events.RequestEventFirebaseService
@@ -47,6 +48,8 @@ class FirebaseInstanceRepository:IMainFirebaseInstance.Repository {
         } else {
             notification.Id = lastNotification.Id!! + 1
         }
+
+        notification.time= System.currentTimeMillis()
         val lastUserLogued= getUserLogued()
         notification.userLoguedId=lastUserLogued?.Id
         notification.save()
@@ -54,8 +57,8 @@ class FirebaseInstanceRepository:IMainFirebaseInstance.Repository {
 
 
     override fun getLastNotification(): NotificationLocal? {
-        //val lastNotification = SQLite.select().from(Notification::class.java).orderBy(Notification_Table.Id, false).querySingle()
-        return null
+        val lastNotification = SQLite.select().from(NotificationLocal::class.java).orderBy(NotificationLocal_Table.Id, false).querySingle()
+        return lastNotification
     }
 
 

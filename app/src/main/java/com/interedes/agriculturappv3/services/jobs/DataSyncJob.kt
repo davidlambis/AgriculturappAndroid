@@ -2,22 +2,17 @@ package com.interedes.agriculturappv3.services.jobs
 
 import com.evernote.android.job.Job
 import com.evernote.android.job.JobRequest
-import javax.xml.datatype.DatatypeConstants.MINUTES
 import com.evernote.android.job.JobManager
-import android.provider.ContactsContract.CommonDataKinds.Note
 import com.interedes.agriculturappv3.AgriculturApplication
-import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
-import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
-import com.interedes.agriculturappv3.services.notifications.repository.IMainFirebaseInstance
-import com.raizlabs.android.dbflow.kotlinextensions.save
-import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.interedes.agriculturappv3.services.jobs.repository.IMainViewJob
+import com.interedes.agriculturappv3.services.jobs.repository.JobSyncRepository
 import java.util.concurrent.TimeUnit
 
 
 class DataSyncJob: Job() {
     var repository: IMainViewJob.Repository? = null
     init {
-        repository=JobSyncRepository()
+        repository= JobSyncRepository()
     }
 
     companion object {

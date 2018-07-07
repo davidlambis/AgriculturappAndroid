@@ -29,5 +29,8 @@ data class RequestEventsNotification (var eventType: Int,
 
         val LIST_EVENT_NOTIFICATION: Int = 11
 
+
+        val RELOAD_LIST_NOTIFICATION: Int = 12
+
     }
 }

@@ -1,4 +1,4 @@
-package com.interedes.agriculturappv3.services.jobs
+package com.interedes.agriculturappv3.services.jobs.repository
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -11,6 +11,7 @@ import com.interedes.agriculturappv3.modules.models.insumos.Insumo
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad
+import com.interedes.agriculturappv3.modules.models.plagas.EnfermedadResponseApi
 import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad_Table
 import com.interedes.agriculturappv3.modules.models.plagas.FotoEnfermedad
 import com.interedes.agriculturappv3.modules.models.produccion.Produccion
@@ -18,13 +19,20 @@ import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
+import com.interedes.agriculturappv3.modules.models.tratamiento.Tratamiento
+import com.interedes.agriculturappv3.modules.models.tratamiento.TratamientoResponse
+import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento
+import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
 import com.interedes.agriculturappv3.modules.models.ventas.Transaccion_Table
+import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.S3Resources
+import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.krishna.fileloader.FileLoader
 import com.krishna.fileloader.listener.FileRequestListener
 import com.krishna.fileloader.pojo.FileResponse
@@ -33,18 +41,55 @@ import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import id.zelory.compressor.Compressor
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
 
-class JobSyncRepository:IMainViewJob.Repository {
+class JobSyncRepository: IMainViewJob.Repository {
+    var apiService: ApiInterface? = null
+
+    init {
+        apiService = ApiInterface.create()
+    }
 
 
     private var listInsmo: List<Insumo>? = null
     private var listFotoEnfermedad: List<FotoEnfermedad>? = null
     private val TAG_INSUMOS = "INSUMOS"
     private val DIR_INSUMOS_PLAGAS = "INSUMOS_PLAGAS"
+    private val TAG_FIREBASE = "FIREBASE UIID"
 
 
+
+    fun getLastUserLogued(): Usuario? {
+
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
+
+
+
+    //region CHAT
+
+    override fun updateUserStatus() {
+        val userLogued= getLastUserLogued()
+        if(userLogued!=null){
+            val uid= userLogued.IdFirebase
+            if(uid!=""){
+                Log.d(TAG_FIREBASE, "FIREBASE SERVICE SECOND PLANE: $uid")
+                Chat_Resources.mUserDBRef.child("$uid/status").setValue(Status_Chat.ONLINE)
+                //Chat_Resources.Companion.getMUserDBRef().child(uid+"/last_Online").setValue(ServerValue.TIMESTAMP);
+                Chat_Resources.mUserDBRef.child("$uid/status").onDisconnect().setValue(Status_Chat.OFFLINE)
+            }
+        }
+    }
+
+
+    //endregion
+
+    //region POST DATA SYNC
     override fun syncQuantityData(): QuantitySync {
         var usuarioLogued=getLastUserLogued()
         var counRegisterUnidadesProductivas= SQLite.select().from(Unidad_Productiva::class.java)
@@ -124,11 +169,139 @@ class JobSyncRepository:IMainViewJob.Repository {
 
     }
 
+    //endregion
 
-     fun getLastUserLogued(): Usuario? {
+    //region  FOTOS DE PERFIL, PLAGAS Y ENFERMEDADES, INSUMOS
 
-        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
-        return usuarioLogued
+
+    override fun getListSyncEnfermedadesAndTratamiento(context: Context) {
+        //Enfermedades
+        val callEnfermedades = apiService?.getEnfermedades()
+        callEnfermedades?.enqueue(object : Callback<EnfermedadResponseApi> {
+            override fun onResponse(call: Call<EnfermedadResponseApi>?, enfermedadResponse: Response<EnfermedadResponseApi>?) {
+                if (enfermedadResponse != null && enfermedadResponse.code() == 200) {
+                    val enfermedades = enfermedadResponse.body()?.value as MutableList<Enfermedad>
+                    for (item in enfermedades){
+                        item.NombreTipoEnfermedad=item.TipoEnfermedad?.Nombre
+                        item.NombreTipoProducto=item.TipoProducto?.Nombre
+                        item.NombreCientificoTipoEnfermedad=item.TipoEnfermedad?.NombreCientifico
+                        item.DescripcionTipoEnfermedad=item.TipoEnfermedad?.Descripcion
+
+                        if(item.Fotos!=null){
+                            for (itemFoto in item?.Fotos!!){
+                                itemFoto.save()
+                                /*try {
+                                    val base64String = itemFoto?.Ruta
+                                    val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                    val byte = Base64.decode(base64Image, Base64.DEFAULT)
+
+                                    item.blobImagenEnfermedad= Blob(byte)
+                                    itemFoto.blobImagen = Blob(byte)
+                                }catch (ex:Exception){
+                                    var ss= ex.toString()
+                                    Log.d("Convert Image", "defaultValue = " + ss);
+                                }*/
+                            }
+                        }
+                        item.save()
+                    }
+
+
+                    loadTratamientos(context)
+                } else {
+                    //postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    Log.e("JOB SYNC ENFERMEDADES", enfermedadResponse?.message().toString())
+                }
+            }
+            override fun onFailure(call: Call<EnfermedadResponseApi>?, t: Throwable?) {
+                //postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                Log.e("JOB SYNC ENFERMEDADES", t?.toString())
+            }
+        })
+
+
+
+    }
+
+    private fun loadTratamientos(context: Context) {
+        //Tratamientos, Calificaciones e Insumos
+        val callTrtamientos = apiService?.getTratamientos()
+        callTrtamientos?.enqueue(object : Callback<TratamientoResponse> {
+            override fun onResponse(call: Call<TratamientoResponse>?, tratamientoResponse: Response<TratamientoResponse>?) {
+                if (tratamientoResponse != null && tratamientoResponse.code() == 200) {
+                    val tratamientos = tratamientoResponse.body()?.value as MutableList<Tratamiento>
+                    //Update Informacion
+                    for (item in tratamientos){
+                        var sumacalificacion:Double?=0.0
+                        var promedioCalificacion:Double?=0.0
+                        if(item.Insumo!=null){
+                            item.Descripcion_Insumo=item.Insumo?.Descripcion
+                            item.Nombre_Insumo=item.Insumo?.Nombre
+
+
+                            /*if(item?.Insumo?.Imagen!=null || item?.Insumo?.Imagen!=""){
+                                try {
+                                    val base64String = item?.Insumo?.Imagen
+                                    val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
+                                    val byte = Base64.decode(base64Image, Base64.DEFAULT)
+                                    item.Insumo?.blobImagen = Blob(byte)
+                                }catch (ex:Exception){
+                                    var ss= ex.toString()
+                                    Log.d("Convert Image", "defaultValue = " + ss);
+                                }
+                            }*/
+
+                            if(item.Insumo?.Laboratorio!=null){
+                                item.Insumo?.NombreLaboratorio=item.Insumo?.Laboratorio?.Nombre
+                                item.Insumo?.Laboratorio?.save()
+                            }
+
+                            if(item.Insumo?.TipoInsumo!=null){
+                                item.Insumo?.NombreTipoInsumo=item.Insumo?.TipoInsumo?.Nombre
+                                item.Insumo?.TipoInsumo?.save()
+                            }
+                            item.Insumo!!.save()
+                        }
+
+                        if(item?.Calificacions!!.size==0){
+                            SQLite.delete<Calificacion_Tratamiento>(Calificacion_Tratamiento::class.java)
+                                    .where(Calificacion_Tratamiento_Table.TratamientoId.eq(item.Id))
+                                    .async()
+                                    .execute()
+                        }else{
+                            SQLite.delete<Calificacion_Tratamiento>(Calificacion_Tratamiento::class.java)
+                                    .where(Calificacion_Tratamiento_Table.TratamientoId.eq(item.Id))
+                                    .async()
+                                    .execute()
+
+                            for (calification in item?.Calificacions!!){
+                                calification.save()
+                                sumacalificacion=sumacalificacion!!+ calification.Valor!!
+                            }
+                            promedioCalificacion= sumacalificacion!! /item?.Calificacions!!.size
+                        }
+
+                        item.CalificacionPromedio=promedioCalificacion
+                        item.save()
+
+                    }
+
+                    syncFotos(context)
+                    //postEventOk(RequestEventMainMenu.SYNC_FOTOS_INSUMOS_PLAGAS)
+                    //postEventOk(RequestEventMainMenu.SYNC_EVENT)
+
+                } else {
+
+                    Log.e("JOB SYNC TRATAMIENTOS", tratamientoResponse?.message().toString())
+                    //postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                }
+            }
+            override fun onFailure(call: Call<TratamientoResponse>?, t: Throwable?) {
+                Log.e("JOB SYNC TRATAMIENTOS", t?.toString())
+
+                //postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+            }
+        })
     }
 
 
@@ -275,4 +448,7 @@ class JobSyncRepository:IMainViewJob.Repository {
         return stream.toByteArray()
         //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }
+
+    //endregion
+
 }

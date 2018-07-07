@@ -483,6 +483,8 @@
 
     <!--ACTIVITY NOTIFICATION-->
     <string name="tittle_notification">Notificaciones</string>
+    <string name="alert_delete_notification">¿Está seguro que desea eliminar la notificacion?</string>
+
 
     <!-- Strings related to Settings -->
 

@@ -28,9 +28,9 @@ class MenuInteractor:MainViewMenu.Interactor {
        return  repository?.getLastUserLogued()
     }
 
-    override fun getListSyncEnfermedadesAndTratamiento() {
+    /*override fun getListSyncEnfermedadesAndTratamiento() {
        repository?.getListSyncEnfermedadesAndTratamiento()
-    }
+    }*/
 
     override fun makeUserOnline(checkConection:Boolean,context: Context) {
       repository?.makeUserOnline(checkConection,context)

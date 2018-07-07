@@ -78,11 +78,60 @@ class Notification_Adapter(var list: ArrayList<NotificationLocal>) : RecyclerVie
     }
 
     fun add( notification: NotificationLocal) {
-        if(!list.contains(notification)){
+        /*if(!list.contains(notification)){
             list.add(notification)
             notifyDataSetChanged()
+        }*/
+
+        if (!alreadyInAdapter(notification)) {
+            //list.add(notification)
+            //notifyDataSetChanged()
+
+            this.list.add(0, notification);
+            notifyItemInserted(0)
+            notifyDataSetChanged()
+
+
         }
+
         //notifyItemInserted(position)
+    }
+
+    fun getPositionNotificationById(id: Long): Int {
+        var position = 0
+        for (usenotificationr in list) {
+            if (usenotificationr.Id!!.equals(id)) {
+                break
+            }
+            position++
+        }
+
+        return position
+    }
+
+    private fun alreadyInAdapter(newNotification: NotificationLocal): Boolean {
+        var alreadyInAdapter = false
+        for (notification in this.list) {
+            if (notification.Id!!.equals(newNotification.Id)) {
+                alreadyInAdapter = true
+                break
+            }
+        }
+        return alreadyInAdapter
+    }
+
+
+    fun remove(notification: NotificationLocal) {
+        val pos = getPositionNotificationById(notification.Id!!)
+        list.removeAt(pos)
+        this.notifyDataSetChanged()
+    }
+
+
+    fun update(notification: NotificationLocal) {
+        val pos = getPositionNotificationById(notification.Id!!)
+        list.set(pos, notification)
+        this.notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

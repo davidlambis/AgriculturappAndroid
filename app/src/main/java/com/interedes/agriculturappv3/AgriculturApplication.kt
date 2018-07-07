@@ -5,7 +5,6 @@ import android.app.Application
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.job.JobService
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -24,9 +23,9 @@ import com.raizlabs.android.dbflow.config.FlowManager
 import android.support.v4.app.NotificationCompat.Builder
 import com.interedes.agriculturappv3.services.services.JobSyncService
 import com.evernote.android.job.JobManager
-import com.interedes.agriculturappv3.services.chat.ChatJobCreator
-import com.interedes.agriculturappv3.services.jobs.FotosEnfermedadesJobCreator
-import com.interedes.agriculturappv3.services.jobs.SyncJobCreator
+import com.interedes.agriculturappv3.services.jobs.creators.ChatJobCreator
+import com.interedes.agriculturappv3.services.jobs.creators.FotosEnfermedadesJobCreator
+import com.interedes.agriculturappv3.services.jobs.creators.SyncJobCreator
 
 
 class AgriculturApplication : Application() {

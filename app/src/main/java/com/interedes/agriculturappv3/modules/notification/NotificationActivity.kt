@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.modules.notification
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -9,6 +10,8 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.content.ContextCompat
+import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
@@ -22,16 +25,22 @@ import kotlinx.android.synthetic.main.activity_notification.*
 import kotlinx.android.synthetic.main.content_list_recycler_view.*
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 
-class NotificationActivity : AppCompatActivity(),IMainViewNotification.MainView {
+class NotificationActivity : AppCompatActivity(),IMainViewNotification.MainView ,SwipeRefreshLayout.OnRefreshListener{
+
+
 
     var presenter: IMainViewNotification.Presenter? = null
     var adapter: Notification_Adapter? = null
     private var hud: KProgressHUD? = null
+    private var mLayoutManager: LinearLayoutManager? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notification)
         setToolbarInjection()
+        swipeRefreshLayout.setOnRefreshListener(this)
+
         presenter = NotificationPresenter(this)
         presenter?.onCreate()
         initAdapter()
@@ -49,13 +58,49 @@ class NotificationActivity : AppCompatActivity(),IMainViewNotification.MainView 
     }
 
     private fun initAdapter() {
-        recyclerView?.layoutManager = LinearLayoutManager(this)
+
+        //recyclerView?.setHasFixedSize(true)
+        // use a linear layout manager
+        //mLayoutManager = LinearLayoutManager(this)
+        //mLayoutManager?.setStackFromEnd(false)
+        //mLayoutManager?.setReverseLayout(true);
+        //mLayoutManager?.setStackFromEnd(false);
+
+       // mLayoutManager?.setOrientation(LinearLayoutManager.VERTICAL);
+        //mLayoutManager?.setStackFromEnd(true);
+        //mLayoutManager?.setSmoothScrollbarEnabled(true);
+        //mLayoutManager?.setReverseLayout(true);
+
+        mLayoutManager = LinearLayoutManager(this)
+        recyclerView?.setLayoutManager(mLayoutManager)
+        ///recyclerView.getLayoutManager().scrollToPosition(0)
+
+
+
+        //recyclerView?.layoutManager = LinearLayoutManager(this)
         adapter = Notification_Adapter(ArrayList<NotificationLocal>())
         recyclerView?.adapter = adapter
-       setResults(0)
+        //recyclerView.smoothScrollToPosition(0);
+
+        setResults(0)
     }
 
     //region IMPLEMENTS IMAIN VIEW NOTIFICATION
+    override fun confirmDelete(notification: NotificationLocal): AlertDialog? {
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.confirmation));
+        builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
+
+        })
+        builder.setMessage(getString(R.string.alert_delete_notification));
+        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+            presenter?.deleteNotification(notification)
+        })
+        builder.setIcon(R.drawable.ic_ic_notificacion_app);
+        return builder.show();
+    }
+
+
     override fun onNavigationdetailNotification(notification: NotificationLocal) {
 
     }
@@ -82,11 +127,23 @@ class NotificationActivity : AppCompatActivity(),IMainViewNotification.MainView 
 
 
     override fun setListNotification(listNotification: List<NotificationLocal>?) {
-       setResult(listNotification?.size!!)
+
+       setResults(listNotification?.size!!)
     }
 
     override fun setNewNotification(notification: NotificationLocal) {
         adapter?.add(notification)
+        ///recyclerView.smoothScrollToPosition(0);
+        recyclerView.smoothScrollToPosition(0);
+
+    }
+
+    override fun onRemoveNotification(notification: NotificationLocal) {
+       adapter?.remove(notification)
+    }
+
+    override fun onChangeNotification(notification: NotificationLocal) {
+        adapter?.update(notification)
     }
 
     override fun onMessageToas(message:String,color:Int){
@@ -194,6 +251,28 @@ class NotificationActivity : AppCompatActivity(),IMainViewNotification.MainView 
 
     //endregion
 
+
+    //region OVERRIDE METHODS
+
+
+    override fun onResume() {
+        super.onResume()
+        presenter?.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter?.onPause(this)
+
+    }
+
+    override fun onRefresh() {
+        swipeRefreshLayout.isRefreshing=true
+        presenter?.getListNotification()
+    }
+
+
+    //endregion
 
 
 }

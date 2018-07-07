@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.modules.notification
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal
 import com.interedes.agriculturappv3.modules.notification.events.RequestEventsNotification
 
@@ -21,6 +22,8 @@ interface IMainViewNotification {
         //list
         fun setListNotification(listNotification:List<NotificationLocal>?)
         fun setNewNotification(notification: NotificationLocal)
+        fun onRemoveNotification(notification: NotificationLocal)
+        fun onChangeNotification(notification: NotificationLocal)
 
         fun onNavigationdetailNotification(notification: NotificationLocal)
 
@@ -33,6 +36,7 @@ interface IMainViewNotification {
         fun onMessageError(colorPrimary: Int, msg: String?)
 
         fun checkConectionInternet()
+        fun confirmDelete(notification: NotificationLocal): AlertDialog?
 
 
         //Events
@@ -52,6 +56,7 @@ interface IMainViewNotification {
         //Methods
         fun getListNotification()
         fun updateNotifications(notification:NotificationLocal)
+        fun deleteNotification(notification:NotificationLocal)
 
         //Conecttion
         fun checkConnection(): Boolean
@@ -60,11 +65,13 @@ interface IMainViewNotification {
     interface Interactor {
         fun getListNotification()
         fun updateNotifications(notification:NotificationLocal)
+        fun deleteNotification(notification:NotificationLocal)
 
     }
 
     interface Repository {
         fun getListNotification()
         fun updateNotifications(notification:NotificationLocal)
+        fun deleteNotification(notification:NotificationLocal)
     }
 }

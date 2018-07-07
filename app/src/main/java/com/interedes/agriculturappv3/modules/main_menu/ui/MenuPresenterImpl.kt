@@ -99,16 +99,19 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
                 mainView?.setQuantitySyncAutomatic(quantitySync)
             }
 
-
+            RequestEventMainMenu.UPDATE_BADGE_NOTIIFCATIONS -> {
+                //onMessageError(event.mensajeError)
+                mainView?.updateCountNotifications()
+            }
 
             RequestEventMainMenu.ERROR_VERIFICATE_CONECTION -> {
                 mainView?.verificateConnection()
             }
 
 
-            RequestEventMainMenu.SYNC_FOTOS_INSUMOS_PLAGAS -> {
+            /*RequestEventMainMenu.SYNC_FOTOS_INSUMOS_PLAGAS -> {
                 mainView?.syncFotosInsumosPlagas()
-            }
+            }*/
 
             RequestEventMainMenu.SYNC_RESUME -> {
                 var quantitySync = event.objectMutable as QuantitySync
@@ -139,10 +142,10 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
         return  interactor?.getLastUserLogued()
     }
 
-    override fun getListSyncEnfermedadesAndTratamiento() {
+    /*override fun getListSyncEnfermedadesAndTratamiento() {
         mainView?.showProgressBar()
         interactor?.getListSyncEnfermedadesAndTratamiento()
-    }
+    }*/
 
     override fun makeUserOnline(context: Context) {
         interactor?.makeUserOnline(checkConnection()!!,context)
