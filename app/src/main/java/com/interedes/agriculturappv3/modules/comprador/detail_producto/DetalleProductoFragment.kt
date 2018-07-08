@@ -38,7 +38,9 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.database.*
+import com.interedes.agriculturappv3.libs.GlideApp
 import com.interedes.agriculturappv3.modules.comprador.productores.adapter.ProductorMoreAdapter
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
@@ -196,6 +198,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                             }
                         })*/
 
+
                 Picasso.get()
                         .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
                         .fit()
@@ -232,14 +235,19 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                             var user = issue.getValue<UserFirebase>(UserFirebase::class.java)
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                             try {
-
-                                Picasso.get()
+                                /*Picasso.get()
                                         .load(user?.Imagen)
                                         .fit()
                                         .centerCrop()
                                         .placeholder(R.drawable.ic_account_box_green)
                                         .error(R.drawable.ic_account_box_green)
-                                        .into(contentIcon);
+                                        .into(contentIcon);*/
+
+                                GlideApp.with(activity)
+                                        .load(user?.Imagen)
+                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                        .productorPhoto()
+                                        .into(contentIcon)
 
                             } catch (e: Exception) {
                                 e.printStackTrace()

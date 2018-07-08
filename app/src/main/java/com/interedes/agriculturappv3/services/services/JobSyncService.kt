@@ -17,6 +17,7 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
+import com.interedes.agriculturappv3.services.jobs.DataSyncJob
 import com.interedes.agriculturappv3.services.resources.Status_Sync_Data_Resources
 import com.interedes.agriculturappv3.services.services.Events.EventsService
 import com.interedes.agriculturappv3.services.services.request.RequestPostDataSync
@@ -188,6 +189,7 @@ class JobSyncService : JobIntentService() {
         //PbLog.s(TAG, PbStringUtils.separateCamelCaseWords("onDestroy"));
         super.onDestroy()
         SharedPreferenceHelper.getInstance(this).savePostSyncData(Status_Sync_Data_Resources.STOP);
+        DataSyncJob.scheduleJob()
         stopForeground(true)
         Log.d(TAG, "-onDestroy()")
         eventBus?.unregister(this)

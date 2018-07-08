@@ -28,6 +28,7 @@ import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMai
 import com.interedes.agriculturappv3.modules.notification.events.RequestEventsNotification
 import com.interedes.agriculturappv3.services.notifications.repository.FirebaseInstanceRepository
 import com.interedes.agriculturappv3.services.notifications.repository.IMainFirebaseInstance
+import com.interedes.agriculturappv3.services.resources.TagNavigationResources
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
@@ -166,13 +167,28 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
 
+        //var intent:Intent?=null
+        var intent = Intent(context, MenuMainActivity::class.java)
+
+        if(fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA) ||
+                fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_CONFIRM_OFERTA) ||
+                fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_REFUSED_OFERTA)){
+            intent.putExtra(TagNavigationResources.TAG_NAVIGATE_OFERTAS,TagNavigationResources.NAVIGATE_OFERTAS)
+
+        }else if(fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_MESSAGE_ONLINE)){
+
+            intent.putExtra(TagNavigationResources.TAG_NAVIGATE_CHAT_ONLINE,TagNavigationResources.NAVIGATE_CHAT_ONLINE)
+
+        }
+
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             val ticker = "Ver"
             val notificationId = Random().nextInt(60000)
 
             val builder: NotificationCompat.Builder
-            val intent = Intent(context, MenuMainActivity::class.java)
             //intent.putExtra(TagSmsResources.PHONE_NUMBER,smsAddress)
             //intent.putExtra(TagSmsResources.CONTACT_NAME,messageAdress)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -211,7 +227,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             if (fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_MESSAGE_ONLINE)) {
                 builder.setStyle( NotificationCompat.BigTextStyle()
                         .bigText(fcmNotificationLocalBuilder.message))
-            }else if(fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA)){
+            }else if(fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA) ||
+                    fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_CONFIRM_OFERTA) ||
+                            fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_REFUSED_OFERTA)){
                 builder.setStyle(NotificationCompat.BigPictureStyle()
                         .bigPicture(bitmap).setSummaryText(fcmNotificationLocalBuilder.message))
             }
@@ -226,7 +244,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             val notificationId = 237
             notificationSum=notificationSum+1
-            val intent = Intent(context, MenuMainActivity::class.java)
+
             //intent.putExtra(TagSmsResources.PHONE_NUMBER,smsAddress)
             //intent.putExtra(TagSmsResources.CONTACT_NAME,messageAdress)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -256,7 +274,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     .setContentInfo(fcmNotificationLocalBuilder.message)
                     //.setFullScreenIntent(pendingIntent, true)
                     //API Level min 16 is required
-                    .setStyle(NotificationCompat.BigTextStyle().setBigContentTitle(fcmNotificationLocalBuilder.title).bigText(fcmNotificationLocalBuilder.message))
+                    //.setStyle(NotificationCompat.BigTextStyle().setBigContentTitle(fcmNotificationLocalBuilder.title).bigText(fcmNotificationLocalBuilder.message))
 
             if (android.os.Build.VERSION.SDK_INT >= 21) {
                 notificationBuilder.setColor(context.getResources().getColor(R.color.green_900))

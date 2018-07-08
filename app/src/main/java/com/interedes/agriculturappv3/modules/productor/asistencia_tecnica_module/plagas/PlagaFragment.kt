@@ -66,7 +66,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     var Enfermedad_Id: Long? = 0
 
 
-    var ImagePlagaGlobal:String?=null
+    //var ImagePlagaGlobal:String?=null
 
     companion object {
         var instance: PlagaFragment? = null
@@ -226,20 +226,24 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
 
     override fun setViewDialogDescriptionFoto(enfermedad: Enfermedad) {
 
-        val inflater = this.layoutInflater
-        var viewDialogDescripcion = inflater.inflate(R.layout.dialog_description, null)
+        val fileFoto1 = File(enfermedad.RutaImagenEnfermedad)
+        val uriFoto1 = Uri.fromFile(fileFoto1)
+        val viewFoto1 = Intent(android.content.Intent.ACTION_VIEW, uriFoto1)
+        viewFoto1.setDataAndType(uriFoto1, "image/*")
+        startActivity(viewFoto1)
 
+
+       /* val inflater = this.layoutInflater
+        var viewDialogDescripcion = inflater.inflate(R.layout.dialog_description, null)
 
         viewDialogDescripcion?.ivClosetDialogDescripcionControlPlaga?.setOnClickListener(this)
         viewDialogDescripcion?.titlePlaga?.text=enfermedad.NombreTipoEnfermedad
 
 
+        //val foto = enfermedad.blobImagenEnfermedad?.blob
+        //val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+        //viewDialogDescripcion?.logoPlaga?.setImageBitmap(bitmapBlob)
 
-        /*val foto = enfermedad.blobImagenEnfermedad?.blob
-        val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
-        viewDialogDescripcion?.logoPlaga?.setImageBitmap(bitmapBlob)
-
-        */
 
         viewDialogDescripcion?.txtDescripcionPlaga?.text=enfermedad.DescripcionTipoEnfermedad
 
@@ -271,7 +275,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         }
 
 
-        ImagePlagaGlobal=enfermedad.RutaImagenEnfermedad
+        ///ImagePlagaGlobal=enfermedad.RutaImagenEnfermedad
 
         viewDialogDescripcion?.logoPlaga?.setOnClickListener(this)
 
@@ -287,6 +291,8 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         dialog.show()
         dialog.getWindow().setAttributes(lp)
         dialogDescripcionPlaga = dialog
+
+        */
 
 
     }

@@ -68,9 +68,7 @@ import com.interedes.agriculturappv3.services.jobs.ChatRunJob
 import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.jobs.DataSyncJob
 import com.interedes.agriculturappv3.services.jobs.FotosEnfermedadesInsumosjob
-import com.interedes.agriculturappv3.services.resources.MenuBoomResources
-import com.interedes.agriculturappv3.services.resources.RolResources
-import com.interedes.agriculturappv3.services.resources.Status_Sync_Data_Resources
+import com.interedes.agriculturappv3.services.resources.*
 import com.interedes.agriculturappv3.services.sms.NotificationService
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nightonke.boommenu.BoomMenuButton
@@ -105,8 +103,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     //Firebase
     //FIREBASE
-     var mUserDBRef: DatabaseReference? = null
-     var mStorageRef: StorageReference? = null
+
      var mCurrentUserID: String? = null
     var mAuth: FirebaseAuth? = null
 
@@ -126,19 +123,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     internal var PERMISSIONS = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
 
 
-    //BACKUP DATABASE
-    private val Directori_Backup_DataBase = "BackupDatatake"
-    private val Directori_Restore_DataBase = "RestoreDatatake"
-
     private val READ_REQUEST_CODE_BACKUP = 10
 
 
     private var IS_IMPORT = false
     private var IS_EXPORT = false
-
-
-
-
 
     private val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
 
@@ -194,14 +183,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             mCurrentUserID=getLastUserLogued()?.IdFirebase
         }
 
-
-        //init firebase
-        mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
-        mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
-
-
         val bottomNavigation: BottomNavigationView = findViewById(R.id.navigationViewBotom)
-
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         //Status Chat
         presenter?.makeUserOnline(this)
@@ -211,29 +193,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         setupMenuFloating()
 
         septupInjection()
-
-
-
-        //Service SMS
-        val notificationServiceIntent = Intent(this, NotificationService::class.java)
-        startService(notificationServiceIntent)
-
-
-        //Schedule Note Syncing
-
-        val usuarioLogued=getLastUserLogued()
-
-        if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
-            DataSyncJob.scheduleJob();
-            ChatRunJob.scheduleJobChat()
-            FotosEnfermedadesInsumosjob.scheduleFotosJob()
-        } else if (usuarioLogued?.RolNombre.equals(RolResources.COMPRADOR)) {
-            ChatRunJob.scheduleJobChat()
-        }
-        ///loadImagesProductos()
-        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          ///  jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler;
-        //}
     }
 
     /*override fun syncFotosInsumosPlagas() {
@@ -275,6 +234,35 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             }
         }
 
+
+        //Service SMS
+        val notificationServiceIntent = Intent(this, NotificationService::class.java)
+        startService(notificationServiceIntent)
+
+        val usuarioLogued=getLastUserLogued()
+        if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
+            DataSyncJob.scheduleJob();
+            ChatRunJob.scheduleJobChat()
+            FotosEnfermedadesInsumosjob.scheduleFotosJob()
+        } else if (usuarioLogued?.RolNombre.equals(RolResources.COMPRADOR)) {
+            ChatRunJob.scheduleJobChat()
+        }
+
+
+        var extras = intent.extras
+        if (extras != null) {
+            if (extras.containsKey(TagNavigationResources.TAG_NAVIGATE_CHAT_ONLINE)) {
+                val chatOnline = Intent(this, ConversationsUsersActivity::class.java)
+                chatOnline.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(chatOnline)
+            }else if(extras.containsKey(TagNavigationResources.TAG_NAVIGATE_OFERTAS)){
+                replaceFragment(OfertasFragment())
+            }else if(extras.containsKey(TagNavigationResources.TAG_NAVIGATE_CHAT_SMS)){
+                val chat = Intent(this, UserSmsActivity::class.java)
+                chat.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(chat)
+            }
+        }
 
         /*var usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
@@ -1289,6 +1277,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     try {
                         val preferences = SharedPreferenceHelper.getInstance(this)
                         if(preferences.runingService.equals(Status_Sync_Data_Resources.STOP)){
+
+                            DataSyncJob.cancel()
                             SharedPreferenceHelper.getInstance(this).savePostSyncData(Status_Sync_Data_Resources.RUNNING);
                             AgriculturApplication.instance.showNotification(true)
                         }

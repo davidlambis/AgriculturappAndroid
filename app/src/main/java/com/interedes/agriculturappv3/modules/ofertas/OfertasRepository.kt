@@ -2,8 +2,16 @@ package com.interedes.agriculturappv3.modules.ofertas
 
 import android.util.Base64
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.models.Notification.FcmNotificationBuilder
+import com.interedes.agriculturappv3.modules.models.chat.Room
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.lote.Lote
@@ -19,8 +27,7 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.listas.Listas
-import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
-import com.interedes.agriculturappv3.services.resources.RolResources
+import com.interedes.agriculturappv3.services.resources.*
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
@@ -36,9 +43,18 @@ class OfertasRepository : IOfertas.Repository {
     var eventBus: EventBus? = null
     var apiService: ApiInterface? = null
 
+     var mUserDBRef: DatabaseReference? = null
+     var mRoomDBRef: DatabaseReference? = null
+
+    private var mProductorReceiverId: String? = null
+    private var mCompradorSenderId: String? = null
+
     init {
         eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
+
+        mUserDBRef = Chat_Resources.mUserDBRef
+        mRoomDBRef = Chat_Resources.mRoomDBRef
     }
 
     override fun getUserLogued():Usuario?{
@@ -422,7 +438,6 @@ class OfertasRepository : IOfertas.Repository {
                     postEventError(OfertasEvent.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
             })
-
         }
 
         //TODO Sin conexion a internet
@@ -553,6 +568,8 @@ class OfertasRepository : IOfertas.Repository {
                     override fun onResponse(call: Call<PostOferta>?, response: Response<PostOferta>?) {
                         if (response != null && response.code() == 200) {
                             oferta.update()
+                            val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioId)).querySingle()
+                            sendMessageNotificationUser(usuario,oferta)
                             postEventOk(OfertasEvent.UPDATE_EVENT, getOfertas(productoId), oferta)
                         } else {
                             postEventError(OfertasEvent.ERROR_EVENT, "Comprueba tu conexión")
@@ -567,6 +584,113 @@ class OfertasRepository : IOfertas.Repository {
         else{
             postEventError(OfertasEvent.ERROR_VERIFICATE_CONECTION, null)
         }
+    }
+
+
+
+    private fun sendMessageNotificationUser(usuarioFrom: Usuario?,oferta:Oferta) {
+        if(usuarioFrom!=null){
+            val query = mUserDBRef?.orderByChild("correo")?.equalTo(usuarioFrom?.Email)
+            query?.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // dataSnapshot is the "issue" node with all children with id 0
+                        var user: UserFirebase?=null
+                        for (issue in dataSnapshot.children) {
+                            // do something with the individual "issues"
+                            user = issue.getValue<UserFirebase>(UserFirebase::class.java)
+                            mProductorReceiverId=FirebaseAuth.getInstance().currentUser!!.uid
+                            mCompradorSenderId= user?.User_Id
+                            //if not current user, as we do not want to show ourselves then chat with ourselves lol
+                        }
+                        if(user?.Status.equals(Status_Chat.ONLINE)){
+                            findRoomUser(user!!,oferta)
+                            //sendMessageToFirebase(message, senderId, mReceiverId)
+                        }
+                    }
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
+                    var error = databaseError.message
+                    postEventError(OfertasEvent.ERROR_EVENT, error)
+                    //postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
+                }
+            })
+        }
+    }
+
+    private fun findRoomUser(userFirebase: UserFirebase,oferta:Oferta) {
+        //val query = mRoomDBRef?.child("/"+mCompradorSenderId+"/"+mProductorReceiverId)
+        val query = mRoomDBRef?.child(mProductorReceiverId)?.orderByChild("user_To")?.equalTo(Chat_Resources.getRoomById(mCompradorSenderId))
+        query?.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    //var room = dataSnapshot.value as HashMap<*, *>
+                    //roomId=room.get("idRoom") as String;
+                    var roomFind= Room()
+                    for (issue in dataSnapshot.children) {
+                        var room = issue.getValue<Room>(Room::class.java)
+                        //roomId=room?.IdRoom
+                        roomFind= room!!
+                    }
+                    val message=getMessageOferta(oferta,userFirebase)
+                    val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
+                    sendPushNotificationToReceiver(message,userFirebase,producto?.Imagen,roomFind,oferta)
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                var error = databaseError.message
+                postEventError(OfertasEvent.ERROR_EVENT, error)
+            }
+        })
+    }
+
+
+    private fun sendPushNotificationToReceiver(message: String,userSelected:UserFirebase,imagen:String?,room:Room,oferta:Oferta) {
+
+        var NOTIFICATION_TYPE_CONFIRM_OFERTA=""
+        if(oferta.Nombre_Estado_Oferta.equals(EstadosOfertasResources.RECHAZADO_STRING)){
+            NOTIFICATION_TYPE_CONFIRM_OFERTA=NotificationTypeResources.NOTIFICATION_TYPE_REFUSED_OFERTA
+        }else if(oferta.Nombre_Estado_Oferta.equals(EstadosOfertasResources.CONFIRMADO_STRING)){
+            NOTIFICATION_TYPE_CONFIRM_OFERTA=NotificationTypeResources.NOTIFICATION_TYPE_CONFIRM_OFERTA
+        }
+
+        val fcmNotificationBuilder= FcmNotificationBuilder()
+        fcmNotificationBuilder.title=userSelected.Nombre+" ${userSelected.Apellido}"
+        fcmNotificationBuilder.image_url=imagen
+        fcmNotificationBuilder.message=message
+        fcmNotificationBuilder.user_name=userSelected.Nombre+" ${userSelected.Apellido}"
+        fcmNotificationBuilder.ui=userSelected.User_Id
+        fcmNotificationBuilder.receiver_firebase_token=userSelected.TokenFcm
+        fcmNotificationBuilder.room_id=room.IdRoom
+        fcmNotificationBuilder.type_notification= NOTIFICATION_TYPE_CONFIRM_OFERTA
+        fcmNotificationBuilder.send()
+    }
+
+
+    private fun getMessageOferta(oferta: Oferta,userFirebase: UserFirebase): String {
+
+        var message= ""
+        var disponibilidad = ""
+        var productoCantidad=""
+        var calidad=""
+
+        val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
+
+        if (oferta?.Cantidad.toString().contains(".0")) {
+            disponibilidad = String.format("%.0f",
+                    oferta?.Cantidad)
+        } else {
+            disponibilidad = oferta?.Cantidad.toString()
+        }
+
+        productoCantidad= String.format("%s %s ", disponibilidad, producto?.NombreUnidadMedidaCantidad)
+        calidad= String.format("%s",producto?.NombreCalidad)
+
+
+        message=String.format("El productor %s %s ha  %s tu oferta de %s de  %s de %s"
+                ,userFirebase.Nombre,userFirebase.Apellido,oferta.Nombre_Estado_Oferta,productoCantidad,producto?.Nombre,calidad)
+
+        return  message
     }
 
     override fun getProducto(productoId: Long?) {

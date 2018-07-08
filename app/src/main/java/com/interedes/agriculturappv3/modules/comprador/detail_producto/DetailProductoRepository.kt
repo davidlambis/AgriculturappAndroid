@@ -39,7 +39,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     var eventBus: EventBus? = null
     var apiService: ApiInterface? = null
     var apiServiceFcm: ApiInterface? = null
-     var mUserDBRef: DatabaseReference? = null
+    var mUserDBRef: DatabaseReference? = null
     var mMessagesDBRef: DatabaseReference? = null
     var mRoomDBRef: DatabaseReference? = null
     private var mProductorReceiverId: String? = null
@@ -367,7 +367,6 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                         }
                         //sendNotifcationOferta(message,userFirebase.TokenFcm!!,imagen)
                         sendPushNotificationToReceiver(message,userFirebase,imagen)
-
                     }
                 }
                 postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)

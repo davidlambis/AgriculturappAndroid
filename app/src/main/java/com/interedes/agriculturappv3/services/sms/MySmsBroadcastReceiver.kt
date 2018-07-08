@@ -115,11 +115,8 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
             val builder: NotificationCompat.Builder
             val intent = Intent(context, Chat_Sms_Activity::class.java)
 
-
             intent.putExtra(TagSmsResources.PHONE_NUMBER,smsAddress)
             intent.putExtra(TagSmsResources.CONTACT_NAME,messageAdress)
-
-
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val pendingIntent: PendingIntent
             setupChannels(context)

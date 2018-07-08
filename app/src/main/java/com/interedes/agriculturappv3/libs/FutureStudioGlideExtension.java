@@ -23,6 +23,17 @@ public class FutureStudioGlideExtension {
         options
 
                 .placeholder(R.drawable.ic_account_box_green)
+                .error(R.drawable.ic_account_box_green)
+                .centerCrop()
+                .fitCenter();
+    }
+
+
+    @GlideOption
+    public static void productoPhoto(RequestOptions options) {
+        options
+                .placeholder(R.drawable.ic_foto_producto)
+                .error(R.drawable.ic_foto_producto)
                 .centerInside()
                 .fitCenter();
     }
