@@ -1,36 +1,32 @@
 package com.interedes.agriculturappv3.modules.comprador.productores.adapter
 
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
-import com.interedes.agriculturappv3.modules.models.departments.Ciudad
 import com.interedes.agriculturappv3.modules.models.producto.Producto
-import com.raizlabs.android.dbflow.sql.language.SQLite
-import kotlinx.android.synthetic.main.fragment_ofertas.view.*
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ValueEventListener
+import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
-import com.squareup.picasso.Picasso
 
 
 class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<ProductorAdapter.ViewHolder>() {
 
 
         companion object {
+
             private var mUsersDBRef: DatabaseReference? = null
             var eventBus: EventBus? = null
             fun postEvento(type: Int, producto: Producto) {
@@ -44,6 +40,7 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
         init {
             mUsersDBRef=FirebaseDatabase.getInstance().reference
             eventBus = GreenRobotEventBus()
+
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -128,14 +125,40 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
                                     try {
                                         //Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.default_avata).into(imgProductor)
 
-                                        val builder = Picasso.Builder(context)
+                                        //imageLoader?.load(imgProductor, user?.Imagen!!);
+
+                                        /*GlideApp.with(context)
+                                                .load("http://via.placeholder.com/300.png")
+                                                .override(300, 200)
+                                                .into(ivImg);*/
+
+                                       /* Glide.with(context)
+                                                .load( user?.Imagen)
+                                                .transition( DrawableTransitionOptions.withCrossFade())
+                                                .into(imgProductor);*/
+
+
+
+
+
+                                        /*Glide.with(context)
+                                                .load(user?.Imagen)
+                                                .apply(centerCropTransform()
+                                                        .placeholder(R.drawable.ic_asistencia_tecnica_color_500)
+                                                        .error(R.drawable.ic_asistencia_tecnica_color_500)
+                                                        .priority(Priority.HIGH))
+                                                .into(imgProductor);*/
+
+
+
+                                       /* val builder = Picasso.Builder(context)
                                         builder.listener(object : Picasso.Listener {
                                             override fun onImageLoadFailed(picasso: Picasso, uri: Uri, exception: Exception) {
                                                 imgProductor.setImageResource(R.drawable.default_avata)
                                                 imgProductor.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                                             }
                                         })
-                                        builder.build().load(user?.Imagen).into(imgProductor)
+                                        builder.build().load(user?.Imagen).into(imgProductor)*/
 
                                     } catch (e: Exception) {
                                         e.printStackTrace()

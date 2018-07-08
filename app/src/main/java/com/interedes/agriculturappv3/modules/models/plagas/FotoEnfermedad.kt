@@ -25,18 +25,28 @@ data class FotoEnfermedad(@PrimaryKey
                           @SerializedName("Hora")
                           @Column(name = "Hora")
                           var Hora: String? = null,
+
                           @SerializedName("Ruta")
                           @Column(name = "Ruta")
                           var Ruta: String? = null,
+
+                          @Column(name = "RutaLocal")
+                          var RutaLocal: String? = null,
+
                           @SerializedName("Titulo")
                           @Column(name = "Titulo")
                           var Titulo: String? = null,
+
                           @SerializedName("EnfermedadesId")
                           @Column(name = "EnfermedadesId")
                           var EnfermedadesId: Long? = 0,
 
                           @Column(name = "blobImagen")
-                          var blobImagen: Blob? = null
+                          var blobImagen: Blob? = null,
+
+
+                          @Column(getterName = "getFotoLoaded")
+                          var FotoLoaded: Boolean? = false
 
                           ) {
 }

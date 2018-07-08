@@ -54,6 +54,7 @@ import com.interedes.agriculturappv3.modules.models.ventas.Tercero
 import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
 import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
+import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.resources.Status_Sync_Data_Resources
 import java.io.IOException
@@ -213,6 +214,12 @@ class LoginRepositoryImpl : LoginRepository {
                 usuario.IdFirebase=mCurrentUserID
                 usuario.save()
 
+                val reference: DatabaseReference?  = Chat_Resources.mUserDBRef
+                val userPassword= reference?.child(mCurrentUserID+"/token_Account")
+                userPassword?.setValue(usuario.Contrasena);
+
+                val id_Account_Remote= reference?.child(mCurrentUserID+"/id_Account_Remote")
+                id_Account_Remote?.setValue(usuario.Id);
 
                 resetTokenFCM(context)
                 //val usuarioLoguedList = SQLite.select().from(Usuario::class.java).queryList()

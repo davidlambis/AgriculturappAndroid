@@ -22,6 +22,8 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.interedes.agriculturappv3.R.id.imageView
 import android.graphics.Bitmap
 import android.os.Handler
+import com.squareup.picasso.Picasso
+import java.io.File
 
 
 class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<InsumosAdapter.ViewHolder>() {
@@ -84,7 +86,34 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
             txt_nombre_insumo.text = data.Nombre_Insumo
             var firtsInsumo= SQLite.select().from(Insumo::class.java).where(Insumo_Table.Id.eq(data.InsumoId)).querySingle()
             if(firtsInsumo!=null){
-                if(firtsInsumo.blobImagen!=null){
+
+
+                if(firtsInsumo.ImagenLocal!=null){
+                    val imgFile =   File(firtsInsumo.ImagenLocal);
+                    if(imgFile.exists()){
+                        //var myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        // imgPlaga.setImageBitmap(myBitmap);
+                        Picasso.get()
+                                .load(imgFile)
+                                .fit()
+                                .centerInside()
+                                .placeholder(R.drawable.empty_insumo)
+                                .error(R.drawable.empty_insumo)
+                                .into(image_view_insumo);
+
+                    }else{
+                        val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.empty_insumo)
+                        image_view_insumo.setImageBitmap(largeIcon)
+                    }
+                    // uiHandler.post( Runnable() {
+                    /// });
+                }else{
+                    val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.empty_insumo)
+                    image_view_insumo.setImageBitmap(largeIcon)
+                    //imgPlaga.setImageBitmap(largeIcon)
+                }
+
+                /*if(firtsInsumo.blobImagen!=null){
                     try {
                         val foto = firtsInsumo.blobImagen?.blob
                         //data.blobImagenEnfermedad= Blob(firtsFoto.blobImagen?.blob)
@@ -97,9 +126,8 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
                         var ss= ex.toString()
                         Log.d("Convert Image", "defaultValue = " + ss);
                     }
-                }
+                }*/
             }
-
 
             text_descripcion_insumo.text = data.Desc_Formulacion
             text_descripcion_insumo.maxLines=2

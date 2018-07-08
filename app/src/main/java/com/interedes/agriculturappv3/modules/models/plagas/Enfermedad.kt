@@ -40,8 +40,12 @@ data class Enfermedad(@PrimaryKey
                       @Column(name = "DescripcionTipoEnfermedad")
                       var DescripcionTipoEnfermedad: String? = null,
 
+
                       @Column(name = "blobImagenEnfermedad")
                       var blobImagenEnfermedad: Blob? = null,
+
+                      @Column(name = "RutaImagenEnfermedad")
+                      var RutaImagenEnfermedad: String? = null,
 
 
                       @SerializedName("TipoEnfermedad")

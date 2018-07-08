@@ -2,6 +2,7 @@ package com.interedes.agriculturappv3.services.jobs.repository
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Environment
 import android.util.Log
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
@@ -61,8 +62,15 @@ class JobSyncRepository: IMainViewJob.Repository {
     private var listInsmo: List<Insumo>? = null
     private var listFotoEnfermedad: List<FotoEnfermedad>? = null
     private val TAG_INSUMOS = "INSUMOS"
-    private val DIR_INSUMOS_PLAGAS = "INSUMOS_PLAGAS"
+    private val DIR_PLAGAS = "DIR_PLAGAS"
+    private val DIR_FOTO_PERFIL = "DIR_FOTO_PERFIL"
+    private val DIR_INSUMOS = "DIR_INSUMOS"
     private val TAG_FIREBASE = "FIREBASE UIID"
+
+
+    private val DIR_PLAGAS_PUBLIC = "Enfermedades"
+    private val DIR_INSUMO_PUBLIC = "Insumos"
+    private val DIR_AGRICULTUR_APP_PUBLIC = "AgriculturApp"
 
 
     fun getLastUserLogued(): Usuario? {
@@ -185,19 +193,16 @@ class JobSyncRepository: IMainViewJob.Repository {
                         item.NombreCientificoTipoEnfermedad=item.TipoEnfermedad?.NombreCientifico
                         item.DescripcionTipoEnfermedad=item.TipoEnfermedad?.Descripcion
                         if(item.Fotos!=null){
-                            val fastStoreModelTransactionFotos= FastStoreModelTransaction
+                            /*val fastStoreModelTransactionFotos= FastStoreModelTransaction
                                     .insertBuilder(FlowManager.getModelAdapter(FotoEnfermedad::class.java))
                                     .addAll(item.Fotos)
                                     .build()
-
                             val databaseFotoEnfermedad = FlowManager.getDatabase(DataSource::class.java)
                             val transactionFotoEnfermedad = databaseFotoEnfermedad.beginTransactionAsync(fastStoreModelTransactionFotos).build();
-                            transactionFotoEnfermedad.execute()
-
-                            /*
+                            transactionFotoEnfermedad.execute()*/
                             for (itemFoto in item.Fotos!!){
                                 itemFoto.save()
-                               try {
+                               /*try {
                                     val base64String = itemFoto?.Ruta
                                     val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
                                     val byte = Base64.decode(base64Image, Base64.DEFAULT)
@@ -207,12 +212,11 @@ class JobSyncRepository: IMainViewJob.Repository {
                                 }catch (ex:Exception){
                                     var ss= ex.toString()
                                     Log.d("Convert Image", "defaultValue = " + ss);
-                                }
-                            }*/
+                                }*/
+                            }
                         }
                         item.save()
                     }
-
                     loadTratamientos(context)
                 } else {
                     //postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
@@ -326,15 +330,20 @@ class JobSyncRepository: IMainViewJob.Repository {
                 FileLoader.with(context)
                         .load(S3Resources.RootImage+"${user.Fotopefil}",false) //2nd parameter is optioal, pass true to force load from network
                         //.fromDirectory("test4", FileLoader.DIR_EXTERNAL_PUBLIC)
-                        .fromDirectory(DIR_INSUMOS_PLAGAS, FileLoader.DIR_INTERNAL)
+                        .fromDirectory(DIR_FOTO_PERFIL, FileLoader.DIR_INTERNAL)
                         .asFile( object: FileRequestListener<File> {
                             override fun onLoad(request: FileLoadRequest?, response: FileResponse<File>?) {
                                 val loadedFile = response?.getBody();
                                 if(loadedFile?.length()!!>0){
                                     val compressedImage = Compressor(context)
+                                            .setMaxWidth(300)
                                             .setMaxHeight(300)
-                                            .setQuality(100)
+                                            .setQuality(75)
+                                            //.setCompressFormat(Bitmap.CompressFormat.WEBP)
+                                            //.setQuality(80)
+                                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
                                             .compressToBitmap(loadedFile)
+
                                     val bitmap= convertBitmapToBytePlagasAndFotoPerfil(compressedImage)
                                     user.blobImagenUser = Blob(bitmap)
                                     user.save()
@@ -362,9 +371,11 @@ class JobSyncRepository: IMainViewJob.Repository {
             //onMessageToast(R.color.green,"Imagenes Cargadas.");
             //Toast.makeText(this,"Insumos cargados",Toast.LENGTH_LONG).show()
             Log.d("SYNC DATA", "Fotografias de insumos y plagas Loaded" )
-
             //Log.d(TAG_INSUMOS, "Fotografias de insumos y plagas cargados")
-            FileLoader.deleteWith (context) .fromDirectory ( DIR_INSUMOS_PLAGAS , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
+            FileLoader.deleteWith (context) .fromDirectory ( DIR_FOTO_PERFIL , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
+            FileLoader.deleteWith (context) .fromDirectory ( DIR_INSUMOS , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
+            FileLoader.deleteWith (context) .fromDirectory ( DIR_PLAGAS , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
+         //   FileLoader.deleteWith (context) .fromDirectory ( DI , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
             ///FileLoader.deleteWith(this).fromDirectory(Environment.DIRECTORY_DOWNLOADS, FileLoader.DIR_EXTERNAL_PUBLIC).deleteFiles(uris);
             //this.stopSelf()
             //stopForeground(true); //true will remove notification
@@ -380,18 +391,30 @@ class JobSyncRepository: IMainViewJob.Repository {
                 FileLoader.with(context)
                         .load(S3Resources.RootImage+"${insumo?.Imagen}",false) //2nd parameter is optioal, pass true to force load from network
                         //.fromDirectory("test4", FileLoader.DIR_EXTERNAL_PUBLIC)
-                        .fromDirectory(DIR_INSUMOS_PLAGAS, FileLoader.DIR_INTERNAL)
+                        .fromDirectory(DIR_INSUMOS, FileLoader.DIR_INTERNAL)
                         .asFile( object: FileRequestListener<File> {
                             override fun onLoad(request: FileLoadRequest?, response: FileResponse<File>?) {
-                                val loadedFile = response?.getBody();
+                                val loadedFile = response?.getBody()
+
+                                val direct = File(Environment.getExternalStorageDirectory().toString() + "/$DIR_AGRICULTUR_APP_PUBLIC"+"/$DIR_INSUMO_PUBLIC")
+                                if (!direct.exists()) {
+                                    direct.mkdir() //directory is created;
+                                }
+
                                 if(loadedFile?.length()!!>0){
                                     val compressedImage = Compressor(context)
+                                            .setMaxWidth(300)
                                             .setMaxHeight(300)
-                                            .setQuality(100)
-                                            .compressToBitmap(loadedFile)
-                                    val bitmap= convertBitmapToByte(compressedImage)
-                                    insumo.blobImagen = Blob(bitmap)
+                                            .setQuality(75)
+
+
+                                            .setCompressFormat(Bitmap.CompressFormat.PNG)
+                                            .setDestinationDirectoryPath(direct.absolutePath)
+                                            .compressToFile(loadedFile)
+                                    //val bitmap= convertBitmapToByte(compressedImage)
+                                    //insumo.blobImagen = Blob(bitmap)
                                     insumo.FotoLoaded=true
+                                    insumo.ImagenLocal=compressedImage.path
                                     insumo.save()
                                 }
                                 getAllInsumoFoto(index+1,context)
@@ -421,21 +444,35 @@ class JobSyncRepository: IMainViewJob.Repository {
                 FileLoader.with(context)
                         .load(S3Resources.RootImage+"${fotoEnfermedad?.Ruta}",false) //2nd parameter is optioal, pass true to force load from network
                         //.fromDirectory("test4", FileLoader.DIR_EXTERNAL_PUBLIC)
-                        .fromDirectory(DIR_INSUMOS_PLAGAS, FileLoader.DIR_INTERNAL)
+                        .fromDirectory(DIR_PLAGAS, FileLoader.DIR_INTERNAL)
+
                         .asFile( object: FileRequestListener<File> {
                             override fun onLoad(request: FileLoadRequest?, response: FileResponse<File>?) {
                                 val loadedFile = response?.getBody();
                                 if(loadedFile?.length()!!>0){
+
+                                    val direct = File(Environment.getExternalStorageDirectory().toString() + "/$DIR_AGRICULTUR_APP_PUBLIC"+"/$DIR_PLAGAS_PUBLIC")
+                                    if (!direct.exists()) {
+                                        direct.mkdir() //directory is created;
+                                    }
+
                                     val compressedImage = Compressor(context)
                                             .setMaxHeight(300)
                                             .setQuality(100)
-                                            .compressToBitmap(loadedFile)
-                                    val bitmap= convertBitmapToBytePlagasAndFotoPerfil(compressedImage)
+                                            //.setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+                                                  //  Environment.DIRECTORY_PICTURES).getAbsolutePath())
+                                            .setDestinationDirectoryPath(direct.absolutePath)
+                                            .compressToFile(loadedFile)
 
+                                    fotoEnfermedad.FotoLoaded=true
+                                    fotoEnfermedad.save()
+                                   // val bitmap= convertBitmapToBytePlagasAndFotoPerfil(compressedImage)
                                     SQLite.update(Enfermedad::class.java)
-                                            .set(Enfermedad_Table.blobImagenEnfermedad.eq(Blob(bitmap)))
-                                            .where(Enfermedad_Table.Id.eq(fotoEnfermedad?.EnfermedadesId))
-                                            //   .and(Usuario_Table.IsRemembered.is(true))
+                                            //.set(Enfermedad_Table.blobImagenEnfermedad.eq(Blob(bitmap)))
+                                            .set(Enfermedad_Table.RutaImagenEnfermedad.eq(compressedImage.path)
+                                                 )
+                                            .where(Enfermedad_Table.Id.eq(fotoEnfermedad.EnfermedadesId))
+                                            //.and(Usuario_Table.IsRemembered.is(true))
                                             .async()
                                             .execute(); // non-UI blocking
                                 }
@@ -462,7 +499,7 @@ class JobSyncRepository: IMainViewJob.Repository {
 
     fun convertBitmapToBytePlagasAndFotoPerfil(bitmapCompressed: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()
-        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 60, stream)
+        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         return stream.toByteArray()
         //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }

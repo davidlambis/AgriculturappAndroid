@@ -4,6 +4,7 @@ package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_modul
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -28,11 +29,13 @@ import kotlinx.android.synthetic.main.dialog_list_general.view.*
 import kotlinx.android.synthetic.main.fragment_plaga.*
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.plagas.adapters.SelectPlagasAdapter
 import com.raizlabs.android.dbflow.data.Blob
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.content_list_plagas.view.*
 import kotlinx.android.synthetic.main.content_list_recycler_view.*
 
 import kotlinx.android.synthetic.main.content_list_recycler_view.view.*
 import kotlinx.android.synthetic.main.dialog_description.view.*
+import java.io.File
 
 
 class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
@@ -61,6 +64,9 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     var Tipo_Producto_Nombre: String? = null
     var Tipo_Enfermedad_id: Long? = 0
     var Enfermedad_Id: Long? = 0
+
+
+    var ImagePlagaGlobal:String?=null
 
     companion object {
         var instance: PlagaFragment? = null
@@ -219,6 +225,7 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     }
 
     override fun setViewDialogDescriptionFoto(enfermedad: Enfermedad) {
+
         val inflater = this.layoutInflater
         var viewDialogDescripcion = inflater.inflate(R.layout.dialog_description, null)
 
@@ -226,11 +233,47 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         viewDialogDescripcion?.ivClosetDialogDescripcionControlPlaga?.setOnClickListener(this)
         viewDialogDescripcion?.titlePlaga?.text=enfermedad.NombreTipoEnfermedad
 
-        val foto = enfermedad.blobImagenEnfermedad?.blob
 
+
+        /*val foto = enfermedad.blobImagenEnfermedad?.blob
         val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
         viewDialogDescripcion?.logoPlaga?.setImageBitmap(bitmapBlob)
+
+        */
+
         viewDialogDescripcion?.txtDescripcionPlaga?.text=enfermedad.DescripcionTipoEnfermedad
+
+        //val imgContent=viewDialogDescripcion?.logoPlaga
+
+        if(enfermedad.RutaImagenEnfermedad!=null){
+            val imgFile =   File(enfermedad.RutaImagenEnfermedad);
+            if(imgFile.exists()){
+                //var myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                // imgPlaga.setImageBitmap(myBitmap);
+                Picasso.get()
+                        .load(imgFile)
+                        .fit()
+                        .centerCrop()
+                        .placeholder(R.drawable.emtpy_img_plaga)
+                        .error(R.drawable.emtpy_img_plaga)
+                        .into(viewDialogDescripcion?.logoPlaga);
+
+            }else{
+                val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.emtpy_img_plaga)
+                viewDialogDescripcion?.logoPlaga?.setImageBitmap(largeIcon)
+            }
+            // uiHandler.post( Runnable() {
+            /// });
+        }else{
+            val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.emtpy_img_plaga)
+            viewDialogDescripcion?.logoPlaga?.setImageBitmap(largeIcon)
+            //imgPlaga.setImageBitmap(largeIcon)
+        }
+
+
+        ImagePlagaGlobal=enfermedad.RutaImagenEnfermedad
+
+        viewDialogDescripcion?.logoPlaga?.setOnClickListener(this)
 
         val dialog = AlertDialog.Builder(context!!)
                 .setView(viewDialogDescripcion!!)
@@ -244,6 +287,8 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         dialog.show()
         dialog.getWindow().setAttributes(lp)
         dialogDescripcionPlaga = dialog
+
+
     }
 
     //endregion
@@ -363,6 +408,10 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
             R.id.ivClosetDialogDescripcionControlPlaga -> {
                 dialogDescripcionPlaga?.dismiss()
             }
+
+            /*R.id.logoPlaga->{
+
+            }*/
         }
     }
     //endregion

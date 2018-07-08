@@ -12,9 +12,14 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RatingBar
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.libs.EventBus
+import com.interedes.agriculturappv3.libs.GlideApp
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
@@ -171,13 +176,45 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                                     })
                                     builder.build().load(user?.Imagen).into(imgProductor)
                                     */
-                                    Picasso.get()
+
+
+                                    /*Picasso.get()
                                             .load(user?.Imagen)
                                             .fit()
                                             .centerCrop()
                                             .placeholder(R.drawable.ic_account_box_green)
                                             .error(R.drawable.ic_account_box_green)
+                                            .into(imgProductor);*/
+
+                                    /*GlideApp.with(context)
+                                            .load(user?.Imagen)
+                                            .placeholder(R.drawable.ic_asistencia_tecnica_color_500)
+                                            .fitCenter()
+                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .into(imgProductor);
+
+                                              GlideApp
+                                                .with(context)
+                                                .load(UsageExampleListViewAdapter.eatFoodyImages[0])
+                                                .profilePhoto()
+                                                .into(imageView1);
+                                            */
+
+                                    GlideApp.with(contextLocal)
+                                            .load(user?.Imagen)
+                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                            .profilePhoto()
+                                            .into(imgProductor);
+
+
+                                    /*Glide.with(contextLocal!!)
+                                            .load(user?.Imagen)
+                                            .apply(RequestOptions.centerCropTransform()
+                                                    .placeholder(R.drawable.ic_account_box_green)
+                                                    .error(R.drawable.ic_account_box_green)
+                                                    .priority(Priority.HIGH))
+                                            .into(imgProductor);*/
+
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }

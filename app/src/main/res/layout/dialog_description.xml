@@ -41,7 +41,7 @@
             android:layout_below="@+id/titlePlaga"
             android:layout_marginRight="@dimen/margin_3"
             android:layout_height="150dp"
-            android:src="@drawable/default_avata" />
+            android:src="@drawable/ic_plagas" />
 
         <View
             android:id="@+id/division"

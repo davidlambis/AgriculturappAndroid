@@ -34,11 +34,13 @@ import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.robertlevonyan.views.expandable.ExpandingListener
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.dialog_calificacion_tratamiento.view.*
 import kotlinx.android.synthetic.main.dialog_form_control_plaga.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_tratamiento.*
+import java.io.File
 import java.util.*
 
 
@@ -312,10 +314,32 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
       //  txtPrecioAprox?.setText(String.format(getString(R.string.precio_aproximado, tratamiento?.precioAproximado)))
     }
 
-
-
     override fun setInsumo(insumo: Insumo?) {
         if(insumo!=null){
+            if(insumo.ImagenLocal!=null){
+                val imgFile =   File(insumo.ImagenLocal);
+                if(imgFile.exists()){
+                    //var myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    // imgPlaga.setImageBitmap(myBitmap);
+                    Picasso.get()
+                            .load(imgFile)
+                            .fit()
+                            .centerInside()
+                            .placeholder(R.drawable.empty_insumo)
+                            .error(R.drawable.empty_insumo)
+                            .into(imageViewInsumo);
+                }else{
+                    val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.empty_insumo)
+                    imageViewInsumo.setImageBitmap(largeIcon)
+                }
+                // uiHandler.post( Runnable() {
+                /// });
+            }else{
+                val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.empty_insumo)
+                imageViewInsumo.setImageBitmap(largeIcon)
+                //imgPlaga.setImageBitmap(largeIcon)
+            }
+            /*
             if(insumo.blobImagen!=null){
                 try {
                     val foto = insumo.blobImagen?.blob
@@ -326,7 +350,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
                     var ss= ex.toString()
                     Log.d("Convert Image", "defaultValue = " + ss);
                 }
-            }
+            }*/
         }
     }
 

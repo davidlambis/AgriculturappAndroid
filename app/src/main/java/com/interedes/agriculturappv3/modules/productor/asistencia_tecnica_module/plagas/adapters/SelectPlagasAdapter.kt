@@ -21,6 +21,7 @@ import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.squareup.picasso.Picasso
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 /**
  * Created by MAKERS on 26/03/2018.
@@ -78,7 +79,7 @@ class SelectPlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapt
 
 
             txtNombrePlaga.text = data.NombreTipoEnfermedad
-            if(data.blobImagenEnfermedad!=null){
+           /* if(data.blobImagenEnfermedad!=null){
                 val foto = data.blobImagenEnfermedad?.blob
                 val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                /// val uiHandler = Handler()
@@ -88,7 +89,34 @@ class SelectPlagasAdapter(val lista: ArrayList<Enfermedad>) : RecyclerView.Adapt
             }else{
                 val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.emtpy_img_plaga)
                 imgPlaga.setImageBitmap(largeIcon)
+            }*/
+
+           if(data.RutaImagenEnfermedad!=null){
+                val imgFile =   File(data.RutaImagenEnfermedad);
+
+               if(imgFile.exists()){
+                   //var myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                   // imgPlaga.setImageBitmap(myBitmap);
+                   Picasso.get()
+                           .load(imgFile)
+                           .fit()
+                           .centerCrop()
+                           .placeholder(R.drawable.emtpy_img_plaga)
+                           .error(R.drawable.emtpy_img_plaga)
+                           .into(imgPlaga);
+
+               }else{
+                   val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.emtpy_img_plaga)
+                   imgPlaga.setImageBitmap(largeIcon)
+               }
+                // uiHandler.post( Runnable() {
+                /// });
+            }else{
+                val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.emtpy_img_plaga)
+                imgPlaga.setImageBitmap(largeIcon)
+                //imgPlaga.setImageBitmap(largeIcon)
             }
+
             /*val firtsFoto= SQLite.select().from(FotoEnfermedad::class.java).where(FotoEnfermedad_Table.EnfermedadesId.eq(data.Id)).querySingle()
             if(firtsFoto!=null){
                 if(firtsFoto.blobImagen!=null){

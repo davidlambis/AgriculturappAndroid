@@ -82,6 +82,8 @@ class AgriculturApplication : Application() {
 
 
 
+
+
         if (Build.VERSION.SDK_INT >= 26) {
             val appName = getString(R.string.app_name)
             val channelName = "$appName channel name"

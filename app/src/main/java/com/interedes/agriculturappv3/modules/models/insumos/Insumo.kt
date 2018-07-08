@@ -52,6 +52,10 @@ data class Insumo(@PrimaryKey
                   @Column(name = "blobImagen")
                   var blobImagen: Blob? = null,
 
+
+                  @Column(name = "ImagenLocal")
+                  var ImagenLocal: String? = null,
+
                   @SerializedName("NombreLaboratorio")
                   @Column(name = "NombreLaboratorio")
                   var NombreLaboratorio: String? = null,
