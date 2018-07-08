@@ -23,7 +23,8 @@ public class FutureStudioGlideExtension {
         options
 
                 .placeholder(R.drawable.ic_account_box_green)
-                .centerInside();
+                .centerInside()
+                .fitCenter();
     }
 
     @GlideOption

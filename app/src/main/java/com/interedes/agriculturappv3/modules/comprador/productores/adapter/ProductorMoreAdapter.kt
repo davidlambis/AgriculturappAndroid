@@ -203,9 +203,8 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                                     GlideApp.with(contextLocal)
                                             .load(user?.Imagen)
                                             .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                            .profilePhoto()
+                                            .productorPhoto()
                                             .into(imgProductor);
-
 
                                     /*Glide.with(contextLocal!!)
                                             .load(user?.Imagen)
