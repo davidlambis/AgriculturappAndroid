@@ -651,7 +651,7 @@ class OfertasRepository : IOfertas.Repository {
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                     var error = databaseError.message
-                    postEventError(OfertasEvent.ERROR_EVENT, error)
+                    //postEventError(OfertasEvent.ERROR_EVENT, error)
                     //postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
                 }
             })
@@ -684,7 +684,7 @@ class OfertasRepository : IOfertas.Repository {
             }
             override fun onCancelled(databaseError: DatabaseError) {
                 var error = databaseError.message
-                postEventError(OfertasEvent.ERROR_EVENT, error)
+                //postEventError(OfertasEvent.ERROR_EVENT, error)
             }
         })
     }
@@ -719,21 +719,24 @@ class OfertasRepository : IOfertas.Repository {
         var productoCantidad=""
         var calidad=""
 
-        val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
+        //val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
 
-        if (oferta?.Cantidad.toString().contains(".0")) {
-            disponibilidad = String.format("%.0f",
-                    oferta?.Cantidad)
-        } else {
-            disponibilidad = oferta?.Cantidad.toString()
+        if(oferta.DetalleOfertaSingle!=null){
+            if (oferta.DetalleOfertaSingle?.Cantidad.toString().contains(".0")) {
+                disponibilidad = String.format("%.0f",
+                        oferta.DetalleOfertaSingle?.Cantidad)
+            } else {
+                disponibilidad = oferta.DetalleOfertaSingle?.Cantidad.toString()
+            }
         }
 
-        productoCantidad= String.format("%s %s ", disponibilidad, producto?.NombreUnidadMedidaCantidad)
-        calidad= String.format("%s",producto?.NombreCalidad)
-
+        if(oferta.Producto!=null){
+            productoCantidad= String.format("%s %s ", disponibilidad, oferta.Producto?.NombreUnidadMedidaCantidad)
+            calidad= String.format("%s",oferta.Producto?.NombreCalidad)
+        }
 
         message=String.format("El productor %s %s ha  %s tu oferta de %s de  %s de %s"
-                ,userFirebase.Nombre,userFirebase.Apellido,oferta.Nombre_Estado_Oferta,productoCantidad,producto?.Nombre,calidad)
+                ,userFirebase.Nombre,userFirebase.Apellido,oferta.Nombre_Estado_Oferta,productoCantidad, oferta.Producto?.Nombre,calidad)
 
         return  message
     }

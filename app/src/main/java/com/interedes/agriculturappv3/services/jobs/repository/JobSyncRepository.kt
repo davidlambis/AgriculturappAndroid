@@ -5,6 +5,9 @@ import android.graphics.Bitmap
 import android.os.Environment
 import android.util.Log
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.libs.EventBus
+import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
@@ -54,8 +57,9 @@ import java.io.File
 
 class JobSyncRepository: IMainViewJob.Repository {
     var apiService: ApiInterface? = null
-
+    var eventBus: EventBus? = null
     init {
+        eventBus = GreenRobotEventBus()
         apiService = ApiInterface.create()
     }
 
@@ -375,6 +379,7 @@ class JobSyncRepository: IMainViewJob.Repository {
             FileLoader.deleteWith (context) .fromDirectory ( DIR_FOTO_PERFIL , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
             FileLoader.deleteWith (context) .fromDirectory ( DIR_INSUMOS , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
             FileLoader.deleteWith (context) .fromDirectory ( DIR_PLAGAS , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
+            postEventMainMenu(RequestEventMainMenu.SYNC_EVENT,null,null,null)
          //   FileLoader.deleteWith (context) .fromDirectory ( DI , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
             ///FileLoader.deleteWith(this).fromDirectory(Environment.DIRECTORY_DOWNLOADS, FileLoader.DIR_EXTERNAL_PUBLIC).deleteFiles(uris);
             //this.stopSelf()
@@ -396,10 +401,18 @@ class JobSyncRepository: IMainViewJob.Repository {
                             override fun onLoad(request: FileLoadRequest?, response: FileResponse<File>?) {
                                 val loadedFile = response?.getBody()
 
-                                val direct = File(Environment.getExternalStorageDirectory().toString() + "/$DIR_AGRICULTUR_APP_PUBLIC"+"/$DIR_INSUMO_PUBLIC")
-                                if (!direct.exists()) {
-                                    direct.mkdir() //directory is created;
-                                }
+
+                                    val directAgriculturAppFolder = File(Environment.getExternalStorageDirectory().toString() + "/$DIR_AGRICULTUR_APP_PUBLIC")
+                                    if (!directAgriculturAppFolder.exists()) {
+                                        directAgriculturAppFolder.mkdir() //directory is created;
+                                        Log.d("DIRECT AGRICULTURAPP", "Created" )
+                                    }
+
+                                    val directInsumo = File(directAgriculturAppFolder.path+"/$DIR_INSUMO_PUBLIC")
+                                    if (!directInsumo.exists()) {
+                                        directInsumo.mkdir() //directory is created;
+                                        Log.d("DIRECT Insumo", "Created" )
+                                    }
 
                                 if(loadedFile?.length()!!>0){
                                     val compressedImage = Compressor(context)
@@ -407,9 +420,8 @@ class JobSyncRepository: IMainViewJob.Repository {
                                             .setMaxHeight(300)
                                             .setQuality(75)
 
-
                                             .setCompressFormat(Bitmap.CompressFormat.PNG)
-                                            .setDestinationDirectoryPath(direct.absolutePath)
+                                            .setDestinationDirectoryPath(directInsumo.absolutePath)
                                             .compressToFile(loadedFile)
                                     //val bitmap= convertBitmapToByte(compressedImage)
                                     //insumo.blobImagen = Blob(bitmap)
@@ -451,9 +463,19 @@ class JobSyncRepository: IMainViewJob.Repository {
                                 val loadedFile = response?.getBody();
                                 if(loadedFile?.length()!!>0){
 
-                                    val direct = File(Environment.getExternalStorageDirectory().toString() + "/$DIR_AGRICULTUR_APP_PUBLIC"+"/$DIR_PLAGAS_PUBLIC")
-                                    if (!direct.exists()) {
-                                        direct.mkdir() //directory is created;
+                                    val directAgriculturAppFolder = File(Environment.getExternalStorageDirectory().toString() + "/$DIR_AGRICULTUR_APP_PUBLIC")
+
+
+                                    if (!directAgriculturAppFolder.exists()) {
+                                        directAgriculturAppFolder.mkdir() //directory is created;
+                                        Log.d("DIRECT AGRICULTURAPP", "Created" )
+                                    }
+
+                                    val directPlaga = File(directAgriculturAppFolder.path+"/$DIR_PLAGAS_PUBLIC")
+
+                                    if (!directPlaga.exists()) {
+                                        directPlaga.mkdir() //directory is created;
+                                        Log.d("DIRECT PLAGAS", "Created" )
                                     }
 
                                     val compressedImage = Compressor(context)
@@ -461,7 +483,7 @@ class JobSyncRepository: IMainViewJob.Repository {
                                             .setQuality(100)
                                             //.setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
                                                   //  Environment.DIRECTORY_PICTURES).getAbsolutePath())
-                                            .setDestinationDirectoryPath(direct.absolutePath)
+                                            .setDestinationDirectoryPath(directPlaga.absolutePath)
                                             .compressToFile(loadedFile)
 
                                     fotoEnfermedad.FotoLoaded=true
@@ -504,6 +526,15 @@ class JobSyncRepository: IMainViewJob.Repository {
         //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }
 
+    //endregion
+
+
+    //Main Post Event
+    private fun postEventMainMenu(type: Int, listModel1:MutableList<Object>?,model:Object?,errorMessage: String?) {
+        val event = RequestEventMainMenu(type, listModel1, model, errorMessage)
+        event.eventType = type
+        eventBus?.post(event)
+    }
     //endregion
 
 }

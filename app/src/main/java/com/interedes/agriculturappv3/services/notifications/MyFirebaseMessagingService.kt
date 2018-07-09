@@ -173,12 +173,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         if(fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA) ||
                 fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_CONFIRM_OFERTA) ||
                 fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_REFUSED_OFERTA)){
-            intent.putExtra(TagNavigationResources.TAG_NAVIGATE_OFERTAS,TagNavigationResources.NAVIGATE_OFERTAS)
+               intent.putExtra(TagNavigationResources.TAG_NAVIGATE_OFERTAS,TagNavigationResources.NAVIGATE_OFERTAS)
 
         }else if(fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_MESSAGE_ONLINE)){
 
             intent.putExtra(TagNavigationResources.TAG_NAVIGATE_CHAT_ONLINE,TagNavigationResources.NAVIGATE_CHAT_ONLINE)
-
         }
 
 

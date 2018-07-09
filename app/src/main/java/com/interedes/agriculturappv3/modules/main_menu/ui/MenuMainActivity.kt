@@ -42,7 +42,10 @@ import com.interedes.agriculturappv3.modules.main_menu.ui.MainViewMenu
 import com.interedes.agriculturappv3.services.Const
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
 import com.daimajia.androidanimations.library.Techniques
@@ -54,6 +57,7 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.interedes.agriculturappv3.AgriculturApplication
+import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
 import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.UserSmsActivity
 import com.interedes.agriculturappv3.activities.chat.online.conversations_user.ConversationsUsersActivity
 import com.interedes.agriculturappv3.activities.intro.PermissionsIntro
@@ -62,6 +66,7 @@ import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
+import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.modules.notification.NotificationActivity
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.services.jobs.ChatRunJob
@@ -78,6 +83,7 @@ import com.nightonke.boommenu.Types.PlaceType
 import com.nightonke.boommenu.Util
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
+import kotlinx.android.synthetic.main.dialog_confirm.view.*
 import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import java.io.*
 import java.text.Normalizer
@@ -95,6 +101,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     var usuario_logued: Usuario? = null
     var inflaterGlobal: MenuInflater? = null
     var menuItemGlobal: MenuItem? = null
+    var menuItemNotificationsGlobal: View? = null
     var mPhoneNumber: String? = null
 
 
@@ -111,8 +118,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     //Alert Dialog Sync
     var viewDialogSync:View?= null
     var _dialogSync: AlertDialog? = null
-
     //Chat Type
+
     //private var DIALOG_SET_TYPE_CHAT: Int = -1
 
 
@@ -195,6 +202,48 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         septupInjection()
     }
 
+
+    fun navigationVerificateDownloadPlagasyEnfermedades(){
+
+        val inflater = this.layoutInflater
+        var viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
+        viewDialogConfirm?.txtTitleConfirm?.setText("")
+        //viewDialogConfirm?.txtTitleConfirm?.setText(usuario?.Nombre+" ${usuario?.Apellidos}")
+
+        var content =String.format(getString(R.string.verifcate_download_info))
+        viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
+
+        MaterialDialog.Builder(this)
+                .title(getString(R.string.tittle_dowload_plagas))
+                .customView(viewDialogConfirm!!, true)
+                .positiveText(R.string.confirm)
+                .negativeText(R.string.cancel)
+                .positiveColorRes(R.color.light_green_800)
+                .negativeColorRes(R.color.light_green_800)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .backgroundColorRes(R.color.material_blue_grey_800)
+                .dividerColorRes(R.color.light_green_800)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                .positiveColor(Color.WHITE)
+                .negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                .theme(Theme.DARK)
+                .onPositive(
+                        { dialog1, which ->
+                            showProgressBar()
+                            FotosEnfermedadesInsumosjob.scheduleFotosJob()
+                            dialog1.dismiss()
+                            //Toast.makeText(activity,"Enviar oferta",Toast.LENGTH_SHORT).show()
+                            // _dialogOferta?.dismiss()
+                        })
+                .onNegative({ dialog1, which ->
+                    dialog1.dismiss()
+                    //onMessageToas(getString(R.string.content_sms_not_send),R.color.red_900)
+                })
+                .show()
+
+    }
     /*override fun syncFotosInsumosPlagas() {
         FotosEnfermedadesInsumosjob.scheduleFotosJob();
     }*/
@@ -233,8 +282,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
             }
         }
-
-
         //Service SMS
         val notificationServiceIntent = Intent(this, NotificationService::class.java)
         startService(notificationServiceIntent)
@@ -243,13 +290,21 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
             DataSyncJob.scheduleJob();
             ChatRunJob.scheduleJobChat()
-            FotosEnfermedadesInsumosjob.scheduleFotosJob()
+            if(presenter?.checkConnection()!!){
+                val myTimerr = 5000
+                ///Mensage
+                Handler().postDelayed(Runnable {
+                    try {
+                        navigationVerificateDownloadPlagasyEnfermedades()
+                    } catch (e: Exception) {
+                    }
+                }, myTimerr.toLong())
+            }
         } else if (usuarioLogued?.RolNombre.equals(RolResources.COMPRADOR)) {
             ChatRunJob.scheduleJobChat()
         }
 
-
-        var extras = intent.extras
+        val extras = intent.extras
         if (extras != null) {
             if (extras.containsKey(TagNavigationResources.TAG_NAVIGATE_CHAT_ONLINE)) {
                 val chatOnline = Intent(this, ConversationsUsersActivity::class.java)
@@ -263,7 +318,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 startActivity(chat)
             }
         }
-
         /*var usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
             presenter?.syncQuantityData(true)
@@ -726,10 +780,12 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         menuItemGlobal = menu?.findItem(R.id.action_menu_icon)
         menuItemGlobal?.isVisible = false
 
+
+
+
         val menuItemNotification = menu?.findItem(R.id.action_cartNotification)
-        val notificatioItem = menu?.findItem(R.id.action_cartNotification)?.getActionView()
-        notificationCount=  notificatioItem?.findViewById<View>(R.id.cart_badgeNotification) as TextView;
-        notificatioItem.setOnClickListener(object : View.OnClickListener {
+        menuItemNotificationsGlobal = menu?.findItem(R.id.action_cartNotification)?.getActionView()
+        menuItemNotificationsGlobal?.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View) {
                 onOptionsItemSelected(menuItemNotification!!)
             }
@@ -1145,16 +1201,22 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     //region Implemetacion Interfaz ViewMenu
     override fun updateCountNotifications() {
+        notificationCount=  menuItemNotificationsGlobal?.findViewById<View>(R.id.cart_badgeNotification) as TextView;
         val countNotifications= presenter?.getCountNotifications()
         if(countNotifications!!>0){
             if(notificationCount!=null){
-                YoYo.with(Techniques.Pulse)
-                        .repeat(10)
-                        .playOn(notificationCount)
+                try {
+                    runOnUiThread {
+                        notificationCount?.setText(countNotifications.toString())
+                        YoYo.with(Techniques.Pulse)
+                                .repeat(10)
+                                .playOn(notificationCount)
+                    }
+                }catch (ex:Exception){
+                    var error =ex.toString()
+                }
             }
         }
-        notificationCount?.setText(countNotifications.toString())
-
     }
 
     override fun showProgressHud(){

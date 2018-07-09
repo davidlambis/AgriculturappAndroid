@@ -219,7 +219,7 @@ class LoginRepositoryImpl : LoginRepository {
                 userPassword?.setValue(usuario.Contrasena);
 
                 val id_Account_Remote= reference?.child(mCurrentUserID+"/id_Account_Remote")
-                id_Account_Remote?.setValue(usuario.Id);
+                id_Account_Remote?.setValue(usuario.Id.toString());
 
                 resetTokenFCM(context)
                 //val usuarioLoguedList = SQLite.select().from(Usuario::class.java).queryList()

@@ -78,6 +78,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+
+
+
     <!-- MAPS API -->
     <string name="maps">AIzaSyA8ttTHUZLtDLvxcRY56H8iVcTt9Fofo3U</string>
 
@@ -186,6 +189,11 @@
 
     <string name="title_sync_data_enfermedades">Sincronizacion</string>
     <string name="content_message_syn_data_enfermedades">Continuar con la actualizacion de datos, para enfermedades y tratamiento</string>
+
+
+    <string name="tittle_dowload_plagas">Notifcacion</string>
+    <string name="verifcate_download_info">Desea descargar informacion de plagas y enfermedades, esto tomara unos minutos?</string>
+
 
     <!-- Insumos -->
     <string name="ver_insumos">Ver Insumos</string>

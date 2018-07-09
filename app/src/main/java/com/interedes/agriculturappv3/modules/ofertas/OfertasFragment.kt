@@ -24,12 +24,12 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
-import com.google.android.gms.games.multiplayer.realtime.Room
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
 import com.interedes.agriculturappv3.activities.chat.online.messages_chat.ChatMessageActivity
 import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
+import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.lote.Lote
@@ -411,7 +411,6 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
     }
 
     override fun onMessageError(colorPrimary: Int, message: String?) {
-
         onMessageOk(colorPrimary, message)
     }
 
@@ -425,7 +424,6 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
             }
         }
     }
-
 
     override fun confirmResusedOferta(oferta: Oferta): AlertDialog?{
         var builder = AlertDialog.Builder(activity!!)

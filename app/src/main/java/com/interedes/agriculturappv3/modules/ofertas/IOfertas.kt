@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.afollestad.materialdialogs.MaterialDialog
-import com.google.android.gms.games.multiplayer.realtime.Room
+import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.lote.Lote
@@ -37,7 +37,7 @@ interface IOfertas {
         fun setResults(ofertas: Int)
 
         //Navigation Chat
-        fun navigationChatOnline(room: Room?,userFirebase: UserFirebase?)
+        fun navigationChatOnline(room: Room?, userFirebase: UserFirebase?)
         fun navigationChatSms(usuario: Usuario?)
 
 

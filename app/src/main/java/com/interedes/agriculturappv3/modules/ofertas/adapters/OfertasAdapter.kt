@@ -101,14 +101,7 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
             val circleView: CircleImageView =itemView.findViewById(R.id.circleView)
             val btnStatusOferta: Button =itemView.findViewById(R.id.btnStatusOferta)
 
-            val btnChatItem: Button =itemView.findViewById(R.id.btnChatItem)
-
-
-
-
-
-
-
+            val btnChatItem: LinearLayout =itemView.findViewById(R.id.btnChatItem)
 
 
 

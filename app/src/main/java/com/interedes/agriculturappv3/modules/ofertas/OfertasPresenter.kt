@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import com.google.android.gms.games.multiplayer.realtime.Room
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.lote.Lote
@@ -132,7 +132,7 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
 
             OfertasEvent.NAVIGATION_CHAT_ONLINE -> {
                 var room = event.objectMutable as Room
-                var userFirebase = event.objectMutable as UserFirebase
+                var userFirebase = event.objectMutable2 as UserFirebase
                 view?.navigationChatOnline(room,userFirebase)
 
             }
@@ -235,6 +235,7 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
 
     private fun onMessageError(error: String?) {
         view?.hideProgress()
+        view?.hideProgressHud()
         view?.requestResponseError(error)
     }
 
