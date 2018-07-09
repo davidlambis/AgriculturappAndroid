@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.afollestad.materialdialogs.MaterialDialog
+import com.google.android.gms.games.multiplayer.realtime.Room
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
@@ -34,6 +36,9 @@ interface IOfertas {
         fun setListOfertas(listOfertas: List<Oferta>)
         fun setResults(ofertas: Int)
 
+        //Navigation Chat
+        fun navigationChatOnline(room: Room?,userFirebase: UserFirebase?)
+        fun navigationChatSms(usuario: Usuario?)
 
 
         //Listas
@@ -74,8 +79,13 @@ interface IOfertas {
         fun getListOfertas(productoId: Long?)
         fun getProducto(productoId: Long?)
 
+        //Methods
+
         fun getUserLogued():Usuario?
         fun updateOferta(oferta: Oferta,productoId:Long?)
+
+
+        fun navigationChat(oferta: Oferta)
     }
 
     interface Interactor {
@@ -85,6 +95,9 @@ interface IOfertas {
         fun getProducto(productoId: Long?)
 
         fun updateOferta(oferta: Oferta,productoId:Long?,checkConection:Boolean)
+
+
+        fun navigationChat(oferta: Oferta,checkConection: Boolean)
     }
 
     interface Repository {
@@ -93,6 +106,8 @@ interface IOfertas {
         fun getListOfertas(productoId: Long?,checkConection: Boolean)
         fun getOfertas(productoId: Long?): List<Oferta>
         fun getProducto(productoId: Long?)
+
+        fun navigationChat(oferta: Oferta,checkConection: Boolean)
 
         fun updateOferta(oferta: Oferta,productoId:Long?,checkConection:Boolean)
     }

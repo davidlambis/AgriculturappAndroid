@@ -66,26 +66,33 @@ android:layout_margin="@dimen/margin_10"
                 android:textColor="@color/grey_luiyi"
                 android:textSize="14sp" />
 
-            <ImageView
-                android:id="@+id/comment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
+            <LinearLayout
+                android:id="@+id/btnChatItem"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
                 android:layout_marginLeft="20dp"
                 android:layout_toEndOf="@+id/publisher_name"
                 android:layout_toRightOf="@+id/publisher_name"
-                android:contentDescription="Place holder"
-                android:tint="@color/orange"
-                android:src="@android:drawable/sym_action_email" />
-
-            <TextView
-                android:id="@+id/comment_number"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/header_text"
-                android:text="Chat"
-                android:textColor="@color/grey_luiyi"
-                android:textSize="14sp" />
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tint="@color/orange"
+                    android:src="@android:drawable/sym_action_email" />
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:id="@+id/comment_number"
+                    android:layout_width="wrap_content"
+                    android:text="Chat"
+                    android:textColor="@color/grey_luiyi"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <TextView

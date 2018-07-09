@@ -43,7 +43,7 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
         var eventBus: EventBus? = null
         fun postEvent(type: Int, oferta: Oferta?) {
             val ofertaMutable = oferta as Object
-            val event = OfertasEvent(type, null, ofertaMutable, null)
+            val event = OfertasEvent(type, null, ofertaMutable, null,null)
             event.eventType = type
             eventBus?.post(event)
         }
@@ -100,6 +100,10 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
 
             val circleView: CircleImageView =itemView.findViewById(R.id.circleView)
             val btnStatusOferta: Button =itemView.findViewById(R.id.btnStatusOferta)
+
+            val btnChatItem: Button =itemView.findViewById(R.id.btnChatItem)
+
+
 
 
 
@@ -202,9 +206,6 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
             }else{
 
             }
-
-
-
 
             if(data.Usuario!=null){
 
@@ -345,11 +346,17 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
                 postEvent(OfertasEvent.REQUEST_REFUSED_ITEM_EVENT, data)
             }
 
+            btnAction1.setOnClickListener {
+                postEvent(OfertasEvent.REQUEST_REFUSED_ITEM_EVENT, data)
+            }
 
             btnAction3.setOnClickListener {
                 postEvent(OfertasEvent.REQUEST_CONFIRM_ITEM_EVENT, data)
             }
 
+            btnChatItem.setOnClickListener{
+                postEvent(OfertasEvent.REQUEST_CHAT_ITEM_EVENT, data)
+            }
         }
     }
 }

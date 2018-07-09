@@ -24,18 +24,29 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
+import com.google.android.gms.games.multiplayer.realtime.Room
 
 import com.interedes.agriculturappv3.R
+import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
+import com.interedes.agriculturappv3.activities.chat.online.messages_chat.ChatMessageActivity
+import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
+import com.interedes.agriculturappv3.modules.models.sms.Sms
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.ofertas.adapters.OfertasAdapter
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.services.resources.EmisorType_Message_Resources
 import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
+import com.interedes.agriculturappv3.services.resources.MessageSmsType
+import com.interedes.agriculturappv3.services.resources.TagSmsResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
+import kotlinx.android.synthetic.main.dialog_confirm.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_ofertas.*
 import java.util.ArrayList
@@ -458,6 +469,78 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         txtPrecio?.setText(getString(R.string.title_adapter_precio_producto, producto?.Precio))
         //txtNombreProducto?.setText(producto?.Nom)
     }
+
+    override fun navigationChatOnline(room: Room?, userFirebase: UserFirebase?){
+        val goToUpdate = Intent(activity, ChatMessageActivity::class.java)
+        goToUpdate.putExtra("USER_FIREBASE", userFirebase)
+        goToUpdate.putExtra("ROOM", room)
+        goToUpdate.putExtra("USER_ID", userFirebase?.User_Id)
+        goToUpdate.putExtra("FOTO", userFirebase?.Imagen)
+        startActivity(goToUpdate)
+    }
+
+    override  fun navigationChatSms(usuario: Usuario?){
+
+
+            val inflater = this.layoutInflater
+            var viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
+
+            viewDialogConfirm?.txtTitleConfirm?.setText("")
+            viewDialogConfirm?.txtTitleConfirm?.setText(usuario?.Nombre+" ${usuario?.Apellidos}")
+
+
+            var content =String.format(getString(R.string.user_navigation_chat_sms),usuario?.Nombre+" ${usuario?.Apellidos}")
+            viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
+
+
+            MaterialDialog.Builder(activity!!)
+                    .title(getString(R.string.content_sms_tittle))
+                    .customView(viewDialogConfirm!!, true)
+                    .positiveText(R.string.confirm)
+                    .negativeText(R.string.cancel)
+                    .positiveColorRes(R.color.light_green_800)
+                    .negativeColorRes(R.color.light_green_800)
+                    .titleGravity(GravityEnum.CENTER)
+                    .titleColorRes(R.color.colorPrimary)
+                    .contentColorRes(android.R.color.white)
+                    .backgroundColorRes(R.color.material_blue_grey_800)
+                    .dividerColorRes(R.color.light_green_800)
+                    .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                    .positiveColor(Color.WHITE)
+                    .negativeColorAttr(android.R.attr.textColorSecondaryInverse)
+                    .theme(Theme.DARK)
+                    .onPositive(
+                            { dialog1, which ->
+                                dialog1.dismiss()
+                                val sms= Sms(0,
+                                        "",
+                                        usuario?.PhoneNumber,
+                                        "",
+                                        "",
+                                        System.currentTimeMillis().toString(),
+                                        MessageSmsType.MESSAGE_TYPE_SENT,
+                                        EmisorType_Message_Resources.MESSAGE_EMISOR_TYPE_SMS,
+                                        "Desconocido"
+                                )
+
+                                val goToUpdate = Intent(activity, Chat_Sms_Activity::class.java)
+                                goToUpdate.putExtra(TagSmsResources.TAG_SMS_SEND, sms)
+                                goToUpdate.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                //goToUpdate.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                startActivity(goToUpdate)
+                                //Toast.makeText(activity,"Enviar oferta",Toast.LENGTH_SHORT).show()
+                                // _dialogOferta?.dismiss()
+
+                            })
+                    .onNegative({ dialog1, which ->
+                        dialog1.dismiss()
+                        //onMessageToas(getString(R.string.content_sms_not_send),R.color.red_900)
+                    })
+                    .show()
+
+    }
+
+
     //endregion
 
     //region Methods

@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import com.google.android.gms.games.multiplayer.realtime.Room
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
@@ -125,8 +127,21 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
 
             OfertasEvent.REQUEST_CHAT_ITEM_EVENT -> {
                 var oferta = event.objectMutable as Oferta
+                navigationChat(oferta)
+            }
+
+            OfertasEvent.NAVIGATION_CHAT_ONLINE -> {
+                var room = event.objectMutable as Room
+                var userFirebase = event.objectMutable as UserFirebase
+                view?.navigationChatOnline(room,userFirebase)
 
             }
+
+            OfertasEvent.NAVIGATION_CHAT_SMS -> {
+                var usuario = event.objectMutable as Usuario
+                view?.navigationChatSms(usuario)
+            }
+
 
             OfertasEvent.REQUEST_REFUSED_ITEM_EVENT -> {
                 var oferta = event.objectMutable as Oferta
@@ -165,6 +180,11 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
         return interactor?.getUserLogued()
     }
 
+
+    override fun navigationChat(oferta: Oferta) {
+        interactor?.navigationChat(oferta,checkConnection())
+    }
+
     //SET Listas
     override fun setListSpinnerUnidadProductiva() {
         view?.setListUnidadProductiva(listUnidadProductivaGlobal)
@@ -184,6 +204,8 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
         val list = listProductosGlobal?.filter { producto: Producto -> producto.cultivoId == cultivo_id }
         view?.setListProductos(list)
     }
+
+
 
 
     //endregion

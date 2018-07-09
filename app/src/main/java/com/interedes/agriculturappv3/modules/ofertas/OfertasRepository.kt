@@ -37,6 +37,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
+import java.util.*
 
 class OfertasRepository : IOfertas.Repository {
 
@@ -46,8 +47,8 @@ class OfertasRepository : IOfertas.Repository {
      var mUserDBRef: DatabaseReference? = null
      var mRoomDBRef: DatabaseReference? = null
 
-    private var mProductorReceiverId: String? = null
-    private var mCompradorSenderId: String? = null
+    private var mReceiverId: String? = null
+    private var mSenderId: String? = null
 
     init {
         eventBus = GreenRobotEventBus()
@@ -551,6 +552,35 @@ class OfertasRepository : IOfertas.Repository {
         return listResponse;
     }
 
+    override fun navigationChat(oferta: Oferta,checkConection: Boolean) {
+
+        if(checkConection){
+
+            val userLogued= getLastUserLogued()
+            var usuario:Usuario?=null
+            if(userLogued?.RolNombre.equals(RolResources.COMPRADOR)){
+                usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+            }else{
+                usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioId)).querySingle()
+            }
+
+
+            sendMessageNotificationUser(usuario,oferta,true)
+        }else{
+
+            val userLogued= getLastUserLogued()
+
+            var usuario:Usuario?=null
+            if(userLogued?.RolNombre.equals(RolResources.COMPRADOR)){
+                 usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+            }else{
+                 usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioId)).querySingle()
+            }
+
+            postEventNavigationToChatSMS(OfertasEvent.NAVIGATION_CHAT_SMS,usuario)
+        }
+    }
+
     override fun updateOferta(oferta: Oferta,productoId:Long?,checkConection:Boolean){
         //TODO si existe coneccion a internet
         if(checkConection){
@@ -569,7 +599,7 @@ class OfertasRepository : IOfertas.Repository {
                         if (response != null && response.code() == 200) {
                             oferta.update()
                             val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioId)).querySingle()
-                            sendMessageNotificationUser(usuario,oferta)
+                            sendMessageNotificationUser(usuario,oferta,false)
                             postEventOk(OfertasEvent.UPDATE_EVENT, getOfertas(productoId), oferta)
                         } else {
                             postEventError(OfertasEvent.ERROR_EVENT, "Comprueba tu conexión")
@@ -588,9 +618,9 @@ class OfertasRepository : IOfertas.Repository {
 
 
 
-    private fun sendMessageNotificationUser(usuarioFrom: Usuario?,oferta:Oferta) {
+    private fun sendMessageNotificationUser(usuarioFrom: Usuario?,oferta:Oferta?,navigateChat:Boolean) {
         if(usuarioFrom!=null){
-            val query = mUserDBRef?.orderByChild("correo")?.equalTo(usuarioFrom?.Email)
+            val query = mUserDBRef?.orderByChild("correo")?.equalTo(usuarioFrom.Email)
             query?.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
@@ -599,14 +629,24 @@ class OfertasRepository : IOfertas.Repository {
                         for (issue in dataSnapshot.children) {
                             // do something with the individual "issues"
                             user = issue.getValue<UserFirebase>(UserFirebase::class.java)
-                            mProductorReceiverId=FirebaseAuth.getInstance().currentUser!!.uid
-                            mCompradorSenderId= user?.User_Id
+
+
+                            val userLogued= getLastUserLogued()
+                            if(userLogued?.RolNombre.equals(RolResources.COMPRADOR)){
+                                mReceiverId=user?.User_Id
+                                mSenderId=FirebaseAuth.getInstance().currentUser!!.uid
+
+                            }else{
+                                mReceiverId=FirebaseAuth.getInstance().currentUser!!.uid
+                                mSenderId= user?.User_Id
+                            }
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                         }
-                        if(user?.Status.equals(Status_Chat.ONLINE)){
-                            findRoomUser(user!!,oferta)
+
+                        //if(user?.Status.equals(Status_Chat.ONLINE)){
+                        findRoomUser(user!!,oferta,navigateChat)
                             //sendMessageToFirebase(message, senderId, mReceiverId)
-                        }
+                       // }
                     }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -618,9 +658,9 @@ class OfertasRepository : IOfertas.Repository {
         }
     }
 
-    private fun findRoomUser(userFirebase: UserFirebase,oferta:Oferta) {
+    private fun findRoomUser(userFirebase: UserFirebase,oferta:Oferta?,navigateChat:Boolean) {
         //val query = mRoomDBRef?.child("/"+mCompradorSenderId+"/"+mProductorReceiverId)
-        val query = mRoomDBRef?.child(mProductorReceiverId)?.orderByChild("user_To")?.equalTo(Chat_Resources.getRoomById(mCompradorSenderId))
+        val query = mRoomDBRef?.child(mSenderId)?.orderByChild("user_To")?.equalTo(Chat_Resources.getRoomById(mReceiverId))
         query?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -632,9 +672,14 @@ class OfertasRepository : IOfertas.Repository {
                         //roomId=room?.IdRoom
                         roomFind= room!!
                     }
-                    val message=getMessageOferta(oferta,userFirebase)
-                    val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
-                    sendPushNotificationToReceiver(message,userFirebase,producto?.Imagen,roomFind,oferta)
+                    if(navigateChat){
+                        postEventNavigationToChat(OfertasEvent.NAVIGATION_CHAT_ONLINE,roomFind,userFirebase)
+
+                    }else{
+                        val message=getMessageOferta(oferta!!,userFirebase)
+                        val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
+                        sendPushNotificationToReceiver(message,userFirebase,producto?.Imagen,roomFind,oferta!!)
+                    }
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {
@@ -707,32 +752,56 @@ class OfertasRepository : IOfertas.Repository {
     //endregion
 
     //region Events
+
+    private fun postEventNavigationToChatSMS(type: Int, usuario: Usuario?) {
+        var usuarioMutable: Object? = null
+        if (usuario!= null) {
+            usuarioMutable = usuario as Object
+        }
+
+
+        postEvent(type, null, usuarioMutable, null,null)
+    }
+
+    private fun postEventNavigationToChat(type: Int, room: Room?,userFirebase: UserFirebase?) {
+        var roomMutable: Object? = null
+        if (room != null) {
+            roomMutable = room as Object
+        }
+        var userFirebaseMutable: Object? = null
+        if (userFirebase != null) {
+            userFirebaseMutable = userFirebase as Object
+        }
+
+        postEvent(type, null, roomMutable, userFirebaseMutable,null)
+    }
+
     private fun postEventOkProducto(type: Int, producto: Producto?) {
         var productoMutable: Object? = null
         if (producto != null) {
             productoMutable = producto as Object
         }
-        postEvent(type, null, productoMutable, null)
+        postEvent(type, null, productoMutable, null,null)
     }
 
     private fun postEventListUnidadProductiva(type: Int, listUp: List<Unidad_Productiva>?, messageError: String?) {
         val upMutable = listUp as MutableList<Object>
-        postEvent(type, upMutable, null, messageError)
+        postEvent(type, upMutable, null,null, messageError)
     }
 
     private fun postEventListLotes(type: Int, listLote: List<Lote>?, messageError: String?) {
         val loteMutable = listLote as MutableList<Object>
-        postEvent(type, loteMutable, null, messageError)
+        postEvent(type, loteMutable, null, null,messageError)
     }
 
     private fun postEventListCultivos(type: Int, listCultivo: List<Cultivo>?, messageError: String?) {
         val cultivoMutable = listCultivo as MutableList<Object>
-        postEvent(type, cultivoMutable, null, messageError)
+        postEvent(type, cultivoMutable, null,null, messageError)
     }
 
     private fun postEventListProductos(type: Int, listProductos: List<Producto>?, messageError: String?) {
         val productoMutable = listProductos as MutableList<Object>
-        postEvent(type, productoMutable, null, messageError)
+        postEvent(type, productoMutable, null,null, messageError)
     }
 
     private fun postEventOk(type: Int, ofertas: List<Oferta>?, oferta: Oferta?) {
@@ -741,17 +810,17 @@ class OfertasRepository : IOfertas.Repository {
         if (oferta != null) {
             ofertaMutable = oferta as Object
         }
-        postEvent(type, ofertaListMitable, ofertaMutable, null)
+        postEvent(type, ofertaListMitable, ofertaMutable, null,null)
     }
 
     private fun postEventError(type: Int,messageError:String?) {
-        postEvent(type, null,null,messageError)
+        postEvent(type, null,null,null,messageError)
     }
 
 
     //Main Post Event
-    private fun postEvent(type: Int, listModel1: MutableList<Object>?, model: Object?, errorMessage: String?) {
-        val event = OfertasEvent(type, listModel1, model, errorMessage)
+    private fun postEvent(type: Int, listModel1: MutableList<Object>?, model: Object?,model2:Object?, errorMessage: String?) {
+        val event = OfertasEvent(type, listModel1, model,model2, errorMessage)
         event.eventType = type
         eventBus?.post(event)
     }

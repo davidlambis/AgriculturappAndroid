@@ -469,6 +469,10 @@
     <string name="content_sms_verificate_phone_number">El Numero de telefono del usuario nos es valido</string>
     <string name="content_sms_not_send">el mensaje no se envio, pero la oferta se ha registrado exitosamente</string>
 
+
+    <string name="user_navigation_chat_sms">No tienes conexion a internet, desea enviar un mensaje de texto al señor(a) %1$s</string>
+
+
     <!--Lista de productos-->
     <string name="tittle_ubicacion">Ubicacion</string>
     <string name="tittle_date_avalilable">Fecha Disponibilidad</string>

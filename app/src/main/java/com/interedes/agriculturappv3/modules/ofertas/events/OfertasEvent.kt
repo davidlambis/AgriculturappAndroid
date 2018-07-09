@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.modules.ofertas.events
 data class OfertasEvent(var eventType: Int,
                         var mutableList: MutableList<Object>? = null,
                         var objectMutable: Object? = null,
+                        var objectMutable2: Object? = null,
                         var mensajeError: String?
 ) {
 
@@ -19,6 +20,12 @@ data class OfertasEvent(var eventType: Int,
         val REQUEST_CHAT_ITEM_EVENT: Int = 9
 
         val UPDATE_EVENT: Int = 10
+
+
+        //Navigation
+        val NAVIGATION_CHAT_ONLINE: Int = 13
+        val NAVIGATION_CHAT_SMS: Int = 14
+
         //Error Connection
         val ERROR_VERIFICATE_CONECTION: Int = 11
         val ERROR_EVENT: Int = 12
