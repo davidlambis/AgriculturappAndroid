@@ -811,8 +811,8 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
 //call this method in your onCreateMethod
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         presenter?.onDestroy()
     }
 

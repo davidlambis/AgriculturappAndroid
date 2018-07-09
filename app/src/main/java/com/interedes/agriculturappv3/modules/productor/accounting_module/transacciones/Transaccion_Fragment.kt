@@ -46,7 +46,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.OnRefreshListener, IMainViewTransacciones.MainView {
+class
+Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.OnRefreshListener, IMainViewTransacciones.MainView {
 
     var presenter: IMainViewTransacciones.Presenter? = null
     var adapter: TrannsaccionAdapter?=null

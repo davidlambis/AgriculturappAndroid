@@ -27,9 +27,12 @@ import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import io.reactivex.android.schedulers.AndroidSchedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import rx.Subscriber
+import rx.schedulers.Schedulers
 
 class ProductorRepository:IMainViewProductor.Repository {
 
@@ -53,35 +56,33 @@ class ProductorRepository:IMainViewProductor.Repository {
             //Get Productos by user
             val queryProductos = Listas.queryGeneralLong("tipo_producto_id",tipoProductoId)
             val callProductos = apiService?.getProductosByTipoProductos(queryProductos,top,skip)
+
+            //callProductos?.subscribeOn(Schedulers.newThread())?.observeOn(AndroidSchedulers.mainThread())
+
+            callProductos?.subscribe(object : Subscriber<GetProductosByTipoResponse>() {
+                        override fun onError(e: Throwable?) {
+
+
+                            val error= e.toString()
+                        }
+                        override fun onCompleted() {
+                            val complete= ""
+                        }
+                        override fun onNext(repositories: GetProductosByTipoResponse) {
+                            val on= repositories
+
+                        }
+                    })
            // val callProductos = apiService?.getProductosByTipoOffPaginate(queryProductos)
+
+
+
+            /*
             callProductos?.enqueue(object : Callback<GetProductosByTipoResponse> {
-
-
                 override fun onResponse(call: Call<GetProductosByTipoResponse>?, response: Response<GetProductosByTipoResponse>?) {
                     if (response != null && response.code() == 200) {
 
                         //TODO Delete information in local, add new remote
-                        /*SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
-                                .async()
-                                .execute()
-
-                        SQLite.delete<Lote>(Lote::class.java)
-                                .async()
-                                .execute()
-
-                        SQLite.delete<Cultivo>(Cultivo::class.java)
-                                .async()
-                                .execute()
-
-                        SQLite.delete<Produccion>(Produccion::class.java)
-                                .async()
-                                .execute()
-
-                        SQLite.delete<ControlPlaga>(ControlPlaga::class.java)
-                                .async()
-                                .execute()*/
-
-
                         val list = response.body()?.value as MutableList<ViewProducto>
                         var listProductos=ArrayList<Producto>()
 
@@ -103,14 +104,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                             usuario.save()
 
 
-                            //TODO Detalle Producto
-                            /*var detalleTipoProducto= DetalleTipoProducto(
-                                    item.detalle_tipo_productoid,
-                                    item.descripcion_detalle_tipoproducto,
-                                    item.nombre_detalle_tipoproducto,
-                                    item.tipo_producto_id
-                            )
-                            detalleTipoProducto.save()*/
+
 
                             //TODO Unidades Productivas
                             val unidaProductiva= Unidad_Productiva()
@@ -142,18 +136,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                             unidaProductiva.Nombre_Departamento=item.nombre_departamento
 
                             //Localizacion UP
-                            /*if(unidaProductiva.LocalizacionUps?.size!!>0){
-                                for (localizacion in unidaProductiva.LocalizacionUps!!){
-                                    unidaProductiva.DireccionAproximadaGps=localizacion.DireccionAproximadaGps
-                                    unidaProductiva.Latitud=localizacion.Latitud
-                                    unidaProductiva.Longitud=localizacion.Longitud
-                                    unidaProductiva.Coordenadas=localizacion.Coordenadas
-                                    unidaProductiva.Direccion=localizacion.Direccion
-                                    unidaProductiva.Configuration_Point=true
-                                    unidaProductiva.Configuration_Poligon=false
-                                    unidaProductiva.LocalizacionUpId=localizacion.Id
-                                }
-                            }*/
+
 
                             unidaProductiva.Estado_Sincronizacion=false
                             unidaProductiva.Estado_SincronizacionUpdate=false
@@ -331,6 +314,8 @@ class ProductorRepository:IMainViewProductor.Repository {
                     postEventError(RequestEventProductor.ERROR_EVENT, "Comprueba tu conexión a Internet")
                 }
             })
+
+            */
 
 
             /*

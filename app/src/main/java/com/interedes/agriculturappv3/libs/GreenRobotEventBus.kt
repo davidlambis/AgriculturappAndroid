@@ -19,5 +19,4 @@ class GreenRobotEventBus : EventBus {
     override fun post(event: Any) {
         eventBus?.post(event)
     }
-
 }

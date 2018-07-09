@@ -714,8 +714,11 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     //endregion
 
     //region Ciclo de vida Fragment
-    override fun onDestroy() {
-        super.onDestroy()
+
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
         presenter?.onDestroy()
     }
 

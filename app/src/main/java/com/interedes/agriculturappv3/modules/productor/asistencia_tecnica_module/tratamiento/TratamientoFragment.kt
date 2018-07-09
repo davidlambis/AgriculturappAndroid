@@ -662,8 +662,8 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
     //endregion
 
     //region ciclo de vida
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         presenter?.onDestroy()
     }
 

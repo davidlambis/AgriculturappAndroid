@@ -708,8 +708,8 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
     //region Overrides Methods
     //call this method in your onCreateMethod
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         presenter?.onDestroy()
     }
 

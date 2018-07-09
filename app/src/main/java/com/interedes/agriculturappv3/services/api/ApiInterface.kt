@@ -22,11 +22,8 @@ import com.interedes.agriculturappv3.modules.models.unidad_productiva.PostUnidad
 import com.interedes.agriculturappv3.modules.models.usuario.*
 import okhttp3.OkHttpClient
 import retrofit2.Call
-import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
 import java.util.concurrent.TimeUnit
-import retrofit2.http.GET
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.interedes.agriculturappv3.modules.models.Notification.PostNotification
@@ -48,12 +45,27 @@ import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.CategoriaP
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.EstadoTransaccionResponse
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.PostTercero
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.PostTransaccion
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.http.*
 import java.util.*
+import okhttp3.ResponseBody
+import retrofit2.http.POST
+import retrofit2.http.GET
+
+import rx.Observable;
+
+
 
 
 interface ApiInterface {
 
     //region Peticiones
+
+
+
+
+
 
 
     //Get Roles
@@ -71,6 +83,7 @@ interface ApiInterface {
     //Get Tipo Productos
     @GET("odata/Agp2/TipoProductos?\$expand=DetalleTipoProductos")
     fun getTipoAndDetalleTipoProducto(): Call<TipoProductoResponse>
+
 
     @GET("odata/Agp2/DetalleTipoProductos")
     fun getDetalleTiposProducto(): Call<DetalleTipoProductoResponse>
@@ -357,8 +370,14 @@ interface ApiInterface {
 
 
     //@GET("odata/Agp2/ViewProductos?\$select= id, nombre_producto,descripcion_producto, fechalimite_disponibilidad, unidadmedida_id_producto, nombre_unidadmedida_producto, sigla_unidadmedida_producto, imagen_producto, is_enabled_producto, precio_producto, precio_escpecial_producto, stock_producto, precio_unidadmedida_producto, usuarioid_producto, calidad_id, nombre_calidad, descripcion_calidad, cultivoid, descripcion_cultivo, estimado_cosecha, fechainicio_cultivo, fechafin_cultivo, nombre_cultivo, siembratotal_cultivo, unidadmedida_id_cultivo, descripcion_unidadmedida_cultivo, detalle_tipo_productoid, descripcion_detalle_tipoproducto, nombre_detalle_tipoproducto, tipo_producto_id, nombre_tipoproducto, lote_id, area_lote, localizacion_lote, localizacion_poligono_lote, descripcion_lote, nombre_lote, unidadmedida_id_lote, descripcion_unidadmedida_lote, unidad_productiva_id, area_up, codigo_up, descripcion_up, nombre_up, unidadmedida_id_up, descripcion_unidadmedida_up, ciudad_id, nombre_ciudad, departamento_id, nombre_departamento, usuario_id, apellido_usuario, email_usuario, estado_usuario, fecharegistro_usuario, identificacion_usuario, nombre_usuario, nro_movil_usuario, numero_cuenta_usuario, phone_number_usuario, username_usuario, detalle_metodopago_id, nombre_detallemetodo_pago, metodopago_id, nombre_metodopago")
+    //@GET("odata/Agp2/ViewProductos")
+    //fun getProductosByTipoProductos( @Query("\$filter") filter: String,@Query("\$top") top: Int,@Query("\$skip") skip: Int): Call<GetProductosByTipoResponse>
+
+
+
     @GET("odata/Agp2/ViewProductos")
-    fun getProductosByTipoProductos( @Query("\$filter") filter: String,@Query("\$top") top: Int,@Query("\$skip") skip: Int): Call<GetProductosByTipoResponse>
+    fun getProductosByTipoProductos(@Query("\$filter") filter: String,@Query("\$top") top: Int,@Query("\$skip") skip: Int): Observable<GetProductosByTipoResponse>
+
 
     @GET("odata/Agp2/ViewProductos")
     fun getProductosByTipoOffPaginate( @Query("\$filter") filter: String): Call<GetProductosByTipoResponse>
@@ -399,6 +418,10 @@ interface ApiInterface {
 
 
 
+    //@GET("odata/Agp2/DetalleOferta?\$expand=UnidadMedida,Oferta(\$expand=EstadoOfertum,Usuario)")
+    //fun getOfertasProductor(@Path("user") user: String): Observable<OfertaResponse>
+
+
 
     @GET("odata/Agp2/Productos")
     fun getProductoOfertas( @Query("\$filter") filter: String): Call<Producto>
@@ -423,14 +446,7 @@ interface ApiInterface {
 
 
     //endregion
-
-
-
-
     companion object Factory {
-
-
-
 
         internal val okHttpClient = OkHttpClient.Builder()
                 .readTimeout(5, TimeUnit.MINUTES) //Tiempo de respuesta del servicio
@@ -446,12 +462,14 @@ interface ApiInterface {
         .create();
 
 
+
         val BASE_URL = "http://18.233.87.16/"
         fun create(): ApiInterface {
             val retrofit = Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build()
 
             return retrofit.create(ApiInterface::class.java);
@@ -467,6 +485,8 @@ interface ApiInterface {
                         .build()
             return retrofitNotifcation.create(ApiInterface::class.java);
         }
+
+
 
     }
 

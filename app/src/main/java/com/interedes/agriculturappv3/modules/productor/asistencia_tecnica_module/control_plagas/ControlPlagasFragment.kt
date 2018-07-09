@@ -419,10 +419,11 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         presenter?.getListControlPlaga(Cultivo_Id)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         presenter?.onDestroy()
     }
+
 
     override fun onPause() {
         super.onPause()

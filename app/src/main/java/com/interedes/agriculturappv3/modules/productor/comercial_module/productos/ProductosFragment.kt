@@ -1014,11 +1014,15 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         presenter?.getListProductos(Cultivo_Id)
     }
 
-    override fun onDestroy() {
+
+
+    override fun onDestroyView() {
         EasyImage.clearConfiguration(activity);
-        super.onDestroy()
+        super.onDestroyView()
         presenter?.onDestroy()
     }
+
+
 
     override fun onPause() {
         super.onPause()
