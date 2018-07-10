@@ -13,5 +13,5 @@ class GetProductosByTipoResponse {
 
 
     @SerializedName("value")
-    var value: MutableList<ViewProducto>? = null
+    var value: List<ViewProducto>? = null
 }

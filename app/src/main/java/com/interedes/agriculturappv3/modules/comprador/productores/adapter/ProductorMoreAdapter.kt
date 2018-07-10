@@ -166,7 +166,6 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
 
                                 try {
                                     //Picasso.with(contextLocal).load(user?.Imagen).placeholder(R.drawable.ic_account_box_green).into(imgProductor)
-
                                     /*val builder = Picasso.Builder(contextLocal!!)
                                     builder.listener(object : Picasso.Listener {
                                         override fun onImageLoadFailed(picasso: Picasso, uri: Uri, exception: Exception) {
@@ -176,8 +175,6 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                                     })
                                     builder.build().load(user?.Imagen).into(imgProductor)
                                     */
-
-
                                     /*Picasso.get()
                                             .load(user?.Imagen)
                                             .fit()
@@ -185,34 +182,11 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                                             .placeholder(R.drawable.ic_account_box_green)
                                             .error(R.drawable.ic_account_box_green)
                                             .into(imgProductor);*/
-
-                                    /*GlideApp.with(context)
-                                            .load(user?.Imagen)
-                                            .placeholder(R.drawable.ic_asistencia_tecnica_color_500)
-                                            .fitCenter()
-                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                            .into(imgProductor);
-
-                                              GlideApp
-                                                .with(context)
-                                                .load(UsageExampleListViewAdapter.eatFoodyImages[0])
-                                                .profilePhoto()
-                                                .into(imageView1);
-                                            */
-
                                     GlideApp.with(contextLocal)
                                             .load(user?.Imagen)
                                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .productorPhoto()
                                             .into(imgProductor);
-
-                                    /*Glide.with(contextLocal!!)
-                                            .load(user?.Imagen)
-                                            .apply(RequestOptions.centerCropTransform()
-                                                    .placeholder(R.drawable.ic_account_box_green)
-                                                    .error(R.drawable.ic_account_box_green)
-                                                    .priority(Priority.HIGH))
-                                            .into(imgProductor);*/
 
                                 } catch (e: Exception) {
                                     e.printStackTrace()

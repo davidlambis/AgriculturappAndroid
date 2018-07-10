@@ -19,8 +19,12 @@ data class RequestEventProductor (var eventType: Int,
         val ITEM_READ_EVENT: Int = 6
         val ITEM_EDIT_EVENT: Int = 7
         val ITEM_DELETE_EVENT: Int = 8
+        val ITEM_NEW_EVENT: Int = 10
 
         val LOAD_DATA_FIRTS: Int = 9
+
+        //List
+        val LIST_EVENT: Int = 11
 
 
     }

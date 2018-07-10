@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ValueEventListener
 import com.interedes.agriculturappv3.AgriculturApplication
+import com.interedes.agriculturappv3.libs.GlideApp
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 
 
@@ -72,44 +73,102 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
             notifyDataSetChanged()
         }
 
+    fun add( producto: Producto) {
+        /*if(!list.contains(notification)){
+            list.add(notification)
+            notifyDataSetChanged()
+        }*/
+
+        if (!alreadyInAdapter(producto)) {
+            //list.add(notification)
+            //notifyDataSetChanged()
+            this.lista.add(0, producto);
+            notifyItemInserted(0)
+            notifyDataSetChanged()
+        }
+
+        //notifyItemInserted(position)
+    }
+
+    fun getPositionNotificationById(id: Long): Int {
+        var position = 0
+        for (usenotificationr in lista) {
+            if (usenotificationr.ProductoId!!.equals(id)) {
+                break
+            }
+            position++
+        }
+
+        return position
+    }
+
+    private fun alreadyInAdapter(newProducto: Producto): Boolean {
+        var alreadyInAdapter = false
+        for (notification in this.lista) {
+            if (notification.ProductoId!!.equals(newProducto.ProductoId)) {
+                alreadyInAdapter = true
+                break
+            }
+        }
+        return alreadyInAdapter
+    }
+
+
+    fun remove(producto: Producto) {
+        val pos = getPositionNotificationById(producto.ProductoId!!)
+        lista.removeAt(pos)
+        this.notifyDataSetChanged()
+    }
+
+
+    fun update(producto: Producto) {
+        val pos = getPositionNotificationById(producto.ProductoId!!)
+        lista.set(pos, producto)
+        this.notifyDataSetChanged()
+    }
+
+
+
+
         class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
             fun bindItems(data: Producto, pos: Int) = with(itemView) {
 
 
+                var txtNombreProductor: TextView = itemView.findViewById(R.id.txtNombreProductor)
+                var imgProductor: ImageView = itemView.findViewById(R.id.imgProductor)
 
-                val txtNombreProductor: TextView = itemView.findViewById(R.id.txtNombreProductor)
-                val imgProductor: ImageView = itemView.findViewById(R.id.imgProductor)
-
-                val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
-                val txtProducto: TextView = itemView.findViewById(R.id.txtProducto)
-                val txtUbicacion: TextView = itemView.findViewById(R.id.txtUbicacion)
-                val txtFechaDisponibilidad: TextView = itemView.findViewById(R.id.txtFechaDisponibilidad)
-                val txtDisponibilidad: TextView = itemView.findViewById(R.id.txtDisponibilidad)
-                val txtPrecio: TextView = itemView.findViewById(R.id.txtPrecio)
+                var ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
+                var txtProducto: TextView = itemView.findViewById(R.id.txtProducto)
+                var txtUbicacion: TextView = itemView.findViewById(R.id.txtUbicacion)
+                var txtFechaDisponibilidad:TextView = itemView.findViewById(R.id.txtFechaDisponibilidad)
+                var txtDisponibilidad: TextView = itemView.findViewById(R.id.txtDisponibilidad)
+                var txtPrecio: TextView = itemView.findViewById(R.id.txtPrecio)
 
 
-                txtProducto.setText(data.Nombre)
 
-                var disponibilidad=""
+                txtProducto?.setText(data.Nombre)
 
-                if(data.Stock.toString().contains(".0")){
-                    disponibilidad=String.format(context!!.getString(R.string.price_empty_signe),
+                var disponibilidad = ""
+
+                if (data.Stock.toString().contains(".0")) {
+                    disponibilidad = String.format(context.getString(R.string.price_empty_signe)!!,
                             data.Stock)
-                }else{
-                    disponibilidad=data.Stock.toString()
+                } else {
+                    disponibilidad = data.Stock.toString()
                 }
 
-                ratingBar.rating = 3.5f
+                ratingBar?.rating = 3.5f
 
-                txtNombreProductor.setText(data.NombreProductor)
-                txtDisponibilidad.setText(String.format("%s: %s %s", data.NombreCalidad,disponibilidad,data.NombreUnidadMedidaCantidad))
-                txtFechaDisponibilidad.setText(data.getFechaLimiteDisponibilidadFormat())
+                txtNombreProductor?.setText(data.NombreProductor)
+                txtDisponibilidad?.setText(String.format("%s: %s %s", data.NombreCalidad, disponibilidad, data.NombreUnidadMedidaCantidad))
+                txtFechaDisponibilidad?.setText(data.getFechaLimiteDisponibilidadFormat())
 
-                txtPrecio?.setText(String.format(context!!.getString(R.string.price_producto),
-                        data.Precio,data.PrecioUnidadMedida))
+                txtPrecio?.setText(String.format(context.getString(R.string.price_producto),
+                        data.Precio, data.PrecioUnidadMedida))
 
-               txtUbicacion.setText(String.format("%s / %s", data.Ciudad, data.Departamento))
-                txtFechaDisponibilidad.setText(data.getFechaLimiteDisponibilidadFormat())
+                txtUbicacion?.setText(String.format("%s / %s", data.Ciudad, data.Departamento))
+                txtFechaDisponibilidad?.setText(data.getFechaLimiteDisponibilidadFormat())
 
 
                 val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(data.EmailProductor)
@@ -121,51 +180,35 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
                                 // do something with the individual "issues"
                                 var user = issue.getValue<UserFirebase>(UserFirebase::class.java)
                                 //if not current user, as we do not want to show ourselves then chat with ourselves lol
+
                                 try {
-                                    try {
-                                        //Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.default_avata).into(imgProductor)
+                                    //Picasso.with(contextLocal).load(user?.Imagen).placeholder(R.drawable.ic_account_box_green).into(imgProductor)
+                                    /*val builder = Picasso.Builder(contextLocal!!)
+                                    builder.listener(object : Picasso.Listener {
+                                        override fun onImageLoadFailed(picasso: Picasso, uri: Uri, exception: Exception) {
+                                            imgProductor?.setImageResource(R.drawable.ic_account_box_green)
+                                            imgProductor?.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                                        }
+                                    })
+                                    builder.build().load(user?.Imagen).into(imgProductor)
+                                    */
+                                    /*Picasso.get()
+                                            .load(user?.Imagen)
+                                            .fit()
+                                            .centerCrop()
+                                            .placeholder(R.drawable.ic_account_box_green)
+                                            .error(R.drawable.ic_account_box_green)
+                                            .into(imgProductor);*/
+                                    GlideApp.with(context)
+                                            .load(user?.Imagen)
+                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                            .productorPhoto()
+                                            .into(imgProductor);
 
-                                        //imageLoader?.load(imgProductor, user?.Imagen!!);
-
-                                        /*GlideApp.with(context)
-                                                .load("http://via.placeholder.com/300.png")
-                                                .override(300, 200)
-                                                .into(ivImg);*/
-
-                                       /* Glide.with(context)
-                                                .load( user?.Imagen)
-                                                .transition( DrawableTransitionOptions.withCrossFade())
-                                                .into(imgProductor);*/
-
-
-
-
-
-                                        /*Glide.with(context)
-                                                .load(user?.Imagen)
-                                                .apply(centerCropTransform()
-                                                        .placeholder(R.drawable.ic_asistencia_tecnica_color_500)
-                                                        .error(R.drawable.ic_asistencia_tecnica_color_500)
-                                                        .priority(Priority.HIGH))
-                                                .into(imgProductor);*/
-
-
-
-                                       /* val builder = Picasso.Builder(context)
-                                        builder.listener(object : Picasso.Listener {
-                                            override fun onImageLoadFailed(picasso: Picasso, uri: Uri, exception: Exception) {
-                                                imgProductor.setImageResource(R.drawable.default_avata)
-                                                imgProductor.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                                            }
-                                        })
-                                        builder.build().load(user?.Imagen).into(imgProductor)*/
-
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
                                 } catch (e: Exception) {
                                     e.printStackTrace()
                                 }
+
                             }
                         }
                     }
@@ -174,22 +217,6 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
 
                     }
                 })
-
-
-                /*
-                if(data.Imagen!=null){
-                    // val bitmap = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
-                    // imgTipoProducto.setImageBitmap(bitmap)
-                    try {
-                        val foto = data.Imagen?.blob
-                        val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
-                        imgTipoProducto.setImageBitmap(bitmapBlob)
-                    }catch (ex:Exception){
-                        var ss= ex.toString()
-                        Log.d("Convert Image", "defaultValue = " + ss);
-                    }
-                }*/
-
 
                 itemView.setOnClickListener {
                     postEvento(RequestEventProductor.ITEM_EVENT, data)

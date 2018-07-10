@@ -298,7 +298,10 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
             precioOferta=String.format(activity.getString(R.string.price_producto),
                     detalleOferta?.Valor_Oferta, detalleOferta?.NombreUnidadMedidaPrecio)
 
-            var message=String.format(activity.getString(R.string.descripcion_oferta_productor)
+
+            val idSms=activity.getString(R.string.idenfication_send_sms_app)
+
+            var message="$idSms "+String.format(activity.getString(R.string.descripcion_oferta_productor)
                     ,user?.Nombre,user.Apellidos,productoCantidad,precioOferta,producto?.Nombre,calidad)
 
             val sms = SmsManager.getDefault()

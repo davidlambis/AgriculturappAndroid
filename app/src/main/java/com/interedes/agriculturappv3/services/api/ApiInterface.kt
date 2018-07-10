@@ -53,8 +53,8 @@ import okhttp3.ResponseBody
 import retrofit2.http.POST
 import retrofit2.http.GET
 
-import rx.Observable;
 
+import io.reactivex.Observable;
 
 
 
@@ -375,8 +375,13 @@ interface ApiInterface {
 
 
 
+    //@GET("odata/Agp2/ViewProductos")
+    //fun getProductosByTipoProductos(@Query("\$filter") filter: String,@Query("\$top") top: Int,@Query("\$skip") skip: Int): Observable<GetProductosByTipoResponse>
+
+
     @GET("odata/Agp2/ViewProductos")
-    fun getProductosByTipoProductos(@Query("\$filter") filter: String,@Query("\$top") top: Int,@Query("\$skip") skip: Int): Observable<GetProductosByTipoResponse>
+    fun getProductosByTipoProductos(@Query("\$filter") filter: String): Observable<GetProductosByTipoResponse>
+
 
 
     @GET("odata/Agp2/ViewProductos")
@@ -482,6 +487,7 @@ interface ApiInterface {
                         .baseUrl(BASE_URL_NOTIFICATIONS_FCM)
                         .client(okHttpClient)
                         .addConverterFactory(GsonConverterFactory.create(gson))
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                         .build()
             return retrofitNotifcation.create(ApiInterface::class.java);
         }

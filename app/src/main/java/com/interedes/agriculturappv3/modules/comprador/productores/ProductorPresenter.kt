@@ -89,6 +89,19 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
                 mainView?.navigateDetalleTipoProductoUser(producto)
             }
 
+
+            RequestEventProductor.ITEM_NEW_EVENT -> {
+                var producto = event.objectMutable as Producto
+                mainView?.addNewItem(producto)
+                mainView?.hideProgressHud()
+            }
+
+            RequestEventProductor.LIST_EVENT -> {
+                var listProducto = event.mutableList as List<Producto>
+                mainView?.setListProducto(listProducto)
+                mainView?.hideProgressHud()
+            }
+
             RequestEventProductor.LOAD_DATA_FIRTS -> {
                 var list = event.mutableList as List<Producto>
                 listTipoProducto=list

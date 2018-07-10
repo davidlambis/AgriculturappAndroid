@@ -33,10 +33,11 @@ import com.interedes.agriculturappv3.modules.comprador.productores.adapter.*
 class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.MainView, SwipeRefreshLayout.OnRefreshListener {
 
 
+
     var tipoProductoIdGlobal:Long=0
     var presenter: IMainViewProductor.Presenter? = null
-    var adapter: ProductorMoreAdapter?=null
-    var productosList:ArrayList<Producto>?=ArrayList<Producto>()
+    var adapter: ProductorAdapter?=null
+    var productosList:List<Producto>?=ArrayList<Producto>()
 
     val TAG = ProductoresFragment::class.java!!.getSimpleName()
     //Progress
@@ -85,6 +86,13 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             loadFirstPageProducts()
             loadedFragment=true
         }else{
+            //setListProducto(list)
+            if(productosList!=null){
+                for (item in productosList!!){
+                    adapter?.add(item)
+                }
+            }
+
             setResults(productosList?.size!!)
         }
 
@@ -116,10 +124,13 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     //region ADAPTER
     private fun initAdapter() {
 
-       /*recyclerView.layoutManager = LinearLayoutManager(activity)
-        adapter = ProductorMoreAdapter(recyclerView, productosList, activity!!)
-        recyclerView.adapter = adapter*/
+       recyclerView.layoutManager = LinearLayoutManager(activity)
+        adapter = ProductorAdapter(ArrayList<Producto>())
+        recyclerView.adapter = adapter
+        recyclerView.addItemDecoration(VerticalLineDecorator(2))
 
+
+        /*For Load More Pagination
        adapter = ProductorMoreAdapter(productosList, activity)
         adapter?.setLoadMoreListener(object : ProductorMoreAdapter.OnLoadMoreListener {
             override fun onLoadMore() {
@@ -139,12 +150,13 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.addItemDecoration(VerticalLineDecorator(2))
         recyclerView.adapter = adapter
-
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0)
+        */
     }
 
+
     private fun loadMore(index: Int) {
-        productosList?.add(Producto(Enabled = false))
+        //productosList?.add(Producto(Enabled = false))
         adapter?.notifyItemInserted(productosList?.size!! - 1)
         presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,index,false)
     }
@@ -154,6 +166,10 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     }
 
     //region IMPLEMENTS METHODS INTERFACE
+
+    override fun addNewItem(producto: Producto) {
+        adapter?.add(producto)
+    }
     override fun showProgress() {
 
         //  swipeRefreshLayout.setRefreshing(true);
@@ -172,12 +188,15 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     }
 
     override fun hideProgressHud(){
-        hud?.dismiss()
+        if(hud?.isShowing!!){
+            hud?.dismiss()
+        }
     }
 
 
+
     override fun setListProductoFirts(listProducto: List<Producto>) {
-        productosList?.clear()
+       /* productosList?.clear()
         productosList?.addAll(listProducto)
         adapter?.notifyDataChanged()
         setResults(productosList?.size!!)
@@ -190,12 +209,14 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         }else{
             pastVisiblesItems=0
         }
+
+        */
     }
 
     override fun setListProducto(listProducto: List<Producto>) {
 
+        /*
             productosList?.removeAt(productosList?.size!! - 1)
-
             if (listProducto.size > 0) {
                 //add loaded data
                 productosList?.addAll(listProducto!!)
@@ -206,9 +227,10 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             }
             adapter?.notifyDataChanged()
             pastVisiblesItems=listProducto.size
-
             setResults(productosList?.size!!)
-
+        */
+        productosList=listProducto
+        setResults(listProducto.size)
     }
 
     override fun setResults(listProduccion: Int) {

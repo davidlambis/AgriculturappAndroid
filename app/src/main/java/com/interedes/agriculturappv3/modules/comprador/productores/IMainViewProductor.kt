@@ -21,6 +21,7 @@ interface IMainViewProductor {
         fun setListProducto(listTipoProducto: List<Producto>)
         fun setListProductoFirts(listTipoProducto: List<Producto>)
         fun setResults(productos:Int)
+        fun addNewItem(producto:Producto)
 
         //Response Notify
         fun requestResponseOK()
