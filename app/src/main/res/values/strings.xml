@@ -193,6 +193,8 @@
 
     <string name="tittle_dowload_plagas">Notifcacion</string>
     <string name="verifcate_download_info">Desea descargar informacion de plagas y enfermedades, esto tomara unos minutos?</string>
+    <string name="verifcate_conection_info">Verifica tu conexion a internet e intenta nuevamente</string>
+
 
 
     <!-- Insumos -->
@@ -224,7 +226,13 @@
     <string name="title_erradicada">Erradicada</string>
     <string name="title_alert_erradicar_plaga">¿Confirma la erradicación de esta plaga?</string>
 
+    <string name="message_downloa_plaga">Señor(a) usuario %s recuerde que podra descargar o actualizar la informacion de plagas como se muestra en el siguiente figura:</string>
+    <string name="message_conection_plaga">al parecer no cuentas con conexión a a internet,</string>
 
+    <string name="search_plaga">Buscar Plaga</string>
+    <string name="tittle_notification_control_plaga">Control Plagas.</string>
+
+    <string name="description_control_pending">Tienes un control de plagas pendiente por aplicar.</string>
     <!--Productos -->
     <string name="title_productos">Productos</string>
     <string name="title_select_producto">Selecciona el Cultivo para agregar el producto</string>

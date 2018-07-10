@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.Subscribe
 
 
 class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
+
     var interactor: IPlaga.Interactor? = null
     var eventBus: EventBus? = null
 
@@ -98,6 +99,11 @@ class PlagaPresenter(var view: IPlaga.View?) : IPlaga.Presenter {
             }
         }
     }
+
+    override fun checkListPlagas(): Long {
+       return interactor?.checkListPlagas()!!
+    }
+
 
     override fun getPlagasByTipoProducto(tipoProductoId: Long?) {
         interactor?.getPlagasByTipoProducto(tipoProductoId)

@@ -21,6 +21,12 @@ import com.google.firebase.database.ValueEventListener
 import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.libs.GlideApp
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
+import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.S3Resources
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 
 class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<ProductorAdapter.ViewHolder>() {
@@ -170,6 +176,32 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
                 txtUbicacion?.setText(String.format("%s / %s", data.Ciudad, data.Departamento))
                 txtFechaDisponibilidad?.setText(data.getFechaLimiteDisponibilidadFormat())
 
+                GlideApp.with(context)
+                        .load(S3Resources.RootImage+"${data.Usuario?.Fotopefil}")
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .productorPhoto()
+                        .into(imgProductor);
+
+               /* val apiService = ApiInterface.create()
+                val queryCustom = Listas.queryGeneral("Email",data.EmailProductor!!)
+                val callusuario = apiService.getUserByEmail(queryCustom)
+                callusuario.delay(500, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
+                    //Log.d("search", searchString)
+                    val usuario =searchResponse.value
+                    if(usuario!=null){
+                        for (item in usuario){
+                            GlideApp.with(context)
+                                    .load(S3Resources.RootImage+"${item.Fotopefil}")
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .productorPhoto()
+                                    .into(imgProductor);
+                        }
+                    }
+                },{ throwable ->{
+                    val error= throwable.toString()
+                }
+                })*/
+
 
                 val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(data.EmailProductor)
                 query?.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -199,11 +231,7 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
                                             .placeholder(R.drawable.ic_account_box_green)
                                             .error(R.drawable.ic_account_box_green)
                                             .into(imgProductor);*/
-                                    GlideApp.with(context)
-                                            .load(user?.Imagen)
-                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                            .productorPhoto()
-                                            .into(imgProductor);
+
 
                                 } catch (e: Exception) {
                                     e.printStackTrace()

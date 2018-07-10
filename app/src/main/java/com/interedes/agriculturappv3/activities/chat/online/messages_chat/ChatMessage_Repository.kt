@@ -40,7 +40,6 @@ class ChatMessage_Repository:IMainViewChatMessages.Repository {
         mUsersDBRef = Chat_Resources.mUserDBRef
         mRoomDBRef = Chat_Resources.mRoomDBRef
         mMessagesDBRef =  Chat_Resources.mMessagesDBRef
-
     }
 
     override fun getListMessagesByRoom(checkConection:Boolean,room:Room,mReceiverId:String) {
@@ -57,7 +56,6 @@ class ChatMessage_Repository:IMainViewChatMessages.Repository {
                 override fun onChildAdded(dataSnapshot: DataSnapshot?, p1: String?) {
                     if(dataSnapshot!=null){
                         val chatMessage = dataSnapshot.getValue(ChatMessage::class.java)
-
                         /*if (chatMessage!!.senderId.equals(FirebaseAuth.getInstance().currentUser!!.uid) && chatMessage.receiverId.equals(mReceiverId) ||
                                 chatMessage.senderId.equals(mReceiverId) && chatMessage.receiverId.equals(FirebaseAuth.getInstance().currentUser!!.uid)) {
                             mMessagesList.add(chatMessage)
@@ -70,11 +68,6 @@ class ChatMessage_Repository:IMainViewChatMessages.Repository {
             })
         //}
     }
-
-
-
-
-
 
     override fun sendMessage(message: ChatMessage,room:Room,userSelected:UserFirebase,checkConection: Boolean) {
        if(checkConection){
@@ -89,7 +82,6 @@ class ChatMessage_Repository:IMainViewChatMessages.Repository {
 
            var roomDateProductorDate= Chat_Resources.mRoomDBRef?.child(room?.User_To)?.child(Chat_Resources.getRoomById(room?.User_From)+"/date_Last")
            roomDateProductorDate?.setValue(ServerValue.TIMESTAMP);
-
 
            mMessagesDBRef?.push()?.setValue(message)?.addOnCompleteListener { task ->
                if (!task.isSuccessful) {

@@ -58,8 +58,5 @@ data class UserResponseImage(
         @SerializedName("Rol")
         var Rol: Rol?=null
 
-
-
-
 ) {
 }

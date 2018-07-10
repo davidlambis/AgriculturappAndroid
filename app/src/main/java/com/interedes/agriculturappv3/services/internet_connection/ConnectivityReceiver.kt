@@ -25,6 +25,8 @@ class ConnectivityReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, p1: Intent?) {
         val isConnected = checkConnection(context)
+
+        Log.d("CONECTION", "Refresh service conection: ")
         if (connectivityReceiverListener != null){
             Log.d("CONECTION", "Refresh service conection: ")
             connectivityReceiverListener?.onNetworkConnectionChanged(isConnected)

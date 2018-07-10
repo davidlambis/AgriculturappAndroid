@@ -11,10 +11,16 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 
 class PlagaRepository : IPlaga.Repository {
 
+
     var eventBus: EventBus? = null
 
     init {
         eventBus = GreenRobotEventBus()
+    }
+
+    override fun checkListPlagas(): Long {
+        val list= SQLite.select().from(Enfermedad::class.java).queryList()
+        return list.size.toLong()
     }
 
     //region Interfaz

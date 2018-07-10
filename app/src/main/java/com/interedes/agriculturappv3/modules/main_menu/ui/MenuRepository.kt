@@ -123,6 +123,12 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
 
+
+    override fun checkListPlagas(): Long {
+        val list= SQLite.select().from(Enfermedad::class.java).queryList()
+        return list.size.toLong()
+    }
+
     //Notifications
     override fun getCountNotifications(): Int {
         val lisNotificationsPending = SQLite.select().from(NotificationLocal::class.java).where(NotificationLocal_Table.ReadNotification.eq(false)).queryList()

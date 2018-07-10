@@ -28,35 +28,19 @@ import kotlinx.android.synthetic.main.custom_message_toast.view.*
 
 
 class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.MainView{
-
-    private var mAuth: FirebaseAuth? = null
-    private var mUsersDBRef: DatabaseReference? = null
-    private var mLayoutManager: RecyclerView.LayoutManager? = null
     private var adapter: UsersAdapter? = null
-
-
-
     //Progress
     private var hud: KProgressHUD?=null
     var presenter: IMainViewConversacion.Presenter? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_users)
-
         presenter = Conversacion_Presenter(this)
         presenter?.onCreate()
-
         setToolbarInjection()
-        //initialize the recyclerview variables
-        //usersRecyclerView.setHasFixedSize(true)
-        // use a linear layout manager
-       // mLayoutManager = LinearLayoutManager(this)
-       // usersRecyclerView.setLayoutManager(mLayoutManager)
         initAdapter()
         //presenter?.getListRoom()
     }
-
 
     private fun initAdapter() {
         usersRecyclerView?.layoutManager = LinearLayoutManager(this)
@@ -73,8 +57,6 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
         toolbar.title = getString(R.string.title_usuario)
     }
 
-
-
     //region IMPLMENTS METHODS INTERFACE
     override fun setListRoom(sms: List<RoomConversation>) {
         adapter?.clear()
@@ -84,11 +66,9 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
     override fun showProgress() {
         //  swipeRefreshLayout.setRefreshing(true);
     }
-
     override fun hideProgress() {
         // swipeRefreshLayout.setRefreshing(false);
     }
-
     override fun showProgressHud(){
         hud = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
@@ -96,17 +76,8 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
                 .setLabel("Cargando...", resources.getColor(R.color.white))
         hud?.show()
     }
-
     override fun hideProgressHud(){
         hud?.dismiss()
-    }
-
-    override fun requestResponseOK() {
-        onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
-    }
-
-    override fun requestResponseError(error: String?) {
-        onMessageError(R.color.grey_luiyi, error)
     }
 
     override fun onMessageToas(message: String, color: Int) {
@@ -120,23 +91,6 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
         mytoast.show();
     }
 
-    override fun onMessageOk(colorPrimary: Int, message: String?) {
-        val color = Color.WHITE
-        val snackbar = Snackbar
-                .make(container, message!!, Snackbar.LENGTH_LONG)
-        val sbView = snackbar.view
-        sbView.setBackgroundColor(ContextCompat.getColor(applicationContext, colorPrimary))
-        val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
-        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.quantum_ic_cast_connected_white_24, 0, 0, 0)
-        // textView.setCompoundDrawablePadding(getResources().getDimensionPixelOffset(R.dimen.activity_horizontal_margin));
-        textView.setTextColor(color)
-        snackbar.show()
-    }
-
-    override fun onMessageError(colorPrimary: Int, message: String?) {
-        onMessageOk(colorPrimary, message)
-    }
-
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
         if(extras!=null){
             if (extras.containsKey("state_conectivity")) {
@@ -145,18 +99,26 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
 
         }
     }
-
     //endregion
 
+    //region OVERRIDES METHODS
     override fun onStart() {
         super.onStart()
-
         checkIfUserIsSignIn()
         presenter?.getListRoom()
         /**query usrs and add them to a list */
         ///queryUsersAndAddthemToList()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter?.onDestroy()
+    }
+
+    //endregion
+
+
+    //region METHODS
 
     private fun checkIfUserIsSignIn() {
         val user = FirebaseAuth.getInstance().currentUser
@@ -168,22 +130,21 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
             goToSignIn()
         }
     }
-
     private fun goToSignIn() {
         //startActivity(Intent(this, LoginActivity::class.java))
     }
+
+    //endregion
 
     //region MENU
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-
         ///Metodo que permite no recargar la pagina al devolverse
             android.R.id.home -> {
                 // Obtener intent de la actividad padre
                 val upIntent = NavUtils.getParentActivityIntent(this)
                 upIntent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-
                 // Comprobar si DetailActivity no se creó desde CourseActivity
                 if (NavUtils.shouldUpRecreateTask(this, upIntent) || this.isTaskRoot) {
                     // Construir de nuevo la tarea para ligar ambas actividades
@@ -193,13 +154,11 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
                                 .startActivities()
                     }
                 }
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     // Terminar con el método correspondiente para Android 5.x
                     this.finishAfterTransition()
                     return true
                 }
-
                 //Para versiones anterios a 5.x
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                     // Terminar con el método correspondiente para Android 5.x
@@ -211,7 +170,6 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
             }
         }
         return super.onOptionsItemSelected(item)
-
     }
     //endregion
 }

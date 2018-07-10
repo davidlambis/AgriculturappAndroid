@@ -10,6 +10,9 @@ interface IMainViewJob {
         fun updateUserStatus()
 
         fun getListSyncEnfermedadesAndTratamiento(context: Context)
+
+
+        fun checkControlPlagas(context: Context)
         // fun syncQuantityData(): QuantitySync
 
     }

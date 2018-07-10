@@ -31,6 +31,7 @@ interface IPlaga {
         fun setPlaga(tipoEnfermedadId: Long?)
         fun onEventMainThread(plagasEvent: PlagasEvent?)
         fun getTiposProducto()
+        fun checkListPlagas():Long
 
         fun onResume(context: Context)
         fun onPause(context: Context)
@@ -39,12 +40,16 @@ interface IPlaga {
     }
 
     interface Interactor {
+        fun checkListPlagas():Long
         fun getPlagasByTipoProducto(tipoProductoId: Long?)
         fun setPlaga(tipoEnfermedadId: Long?)
         fun getTiposProducto()
     }
 
     interface Repository {
+
+        fun checkListPlagas():Long
+
         fun getPlagasByTipoProducto(tipoProductoId: Long?)
         fun setPlaga(tipoEnfermedadId: Long?)
         fun getTiposProducto()

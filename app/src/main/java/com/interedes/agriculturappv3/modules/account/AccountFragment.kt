@@ -364,6 +364,10 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     override fun requestResponseOK() {
         userLogued=presenter?.getUserLogued()
         (activity as MenuMainActivity).tvNombreUsuario.setText(String.format(getString(R.string.nombre_usuario_nav), userLogued?.Nombre, userLogued?.Apellidos))
+        if(imageBitmapAccountGlobal!=null){
+            user_image?.setImageBitmap(imageBitmapAccountGlobal)
+            (activity as MenuMainActivity).circleImageView.setImageBitmap(imageBitmapAccountGlobal)
+        }
         onMessageOk(R.color.colorPrimary,getString(R.string.request_ok));
     }
 
@@ -810,8 +814,10 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     }
 
     override fun uplodateFotoUserAccount(){
-        mCurrentUserID=presenter?.verificateUserLoguedFirebaseFirebase()?.uid
-        updateUserPhoto(imageAccountGlobal)
+
+        saveDataUserLogued()
+        //mCurrentUserID=presenter?.verificateUserLoguedFirebaseFirebase()?.uid
+       /// updateUserPhoto(imageAccountGlobal)
     }
 
     fun convertBitmapToByte(bitmapCompressed: Bitmap): ByteArray? {
@@ -825,9 +831,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
 
     //region METHODS FIREBASE
-
-
-
 
     private fun updateUserPhoto(photoByteArray: ByteArray?) {
         // Create file metadata with property to delete

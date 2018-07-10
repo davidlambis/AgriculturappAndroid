@@ -1,31 +1,38 @@
 package com.interedes.agriculturappv3.services.jobs
 
 import com.evernote.android.job.Job
-import com.evernote.android.job.JobRequest
 import com.evernote.android.job.JobManager
-import com.interedes.agriculturappv3.AgriculturApplication
+import com.evernote.android.job.JobRequest
+import com.interedes.agriculturappv3.BuildConfig
 import com.interedes.agriculturappv3.services.jobs.repository.IMainViewJob
 import com.interedes.agriculturappv3.services.jobs.repository.JobSyncRepository
 import java.util.concurrent.TimeUnit
 
+class ControlPlagasJob : Job() {
 
-class DataSyncJob: Job() {
+
     var repository: IMainViewJob.Repository? = null
     init {
         repository= JobSyncRepository()
     }
 
     companion object {
-        val TAG = "job_data_post_sync"
-        fun scheduleJob() {
-            val jobRequests = JobManager.instance().getAllJobRequestsForTag(DataSyncJob.TAG)
+
+        val TAG = "job_control_plagas"
+        fun scheduleJobChat() {
+            val jobRequests = JobManager.instance().getAllJobRequestsForTag(TAG)
             if (!jobRequests.isEmpty()) {
                 return
+                // return jobRequests.iterator().next().getJobId();
             }
-            JobRequest.Builder(DataSyncJob.TAG)
+
+            val interval = TimeUnit.HOURS.toMillis(2) // every 6 hours
+            val flex = TimeUnit.HOURS.toMillis(1) // wait 3 hours before job runs again
+
+            JobRequest.Builder(TAG)
+                    //.setPeriodic(interval, flex)
                     .setPeriodic(TimeUnit.MINUTES.toMillis(15), TimeUnit.MINUTES.toMillis(5))
                     .setUpdateCurrent(true) // calls cancelAllForTag(NoteSyncJob.TAG) for you
-                    .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
                     .setRequirementsEnforced(true)
                     .build()
                     .schedule()
@@ -37,12 +44,7 @@ class DataSyncJob: Job() {
     }
 
     override fun onRunJob(params: Job.Params): Job.Result {
-        val quantitySync= repository?.syncQuantityData()
-        if(quantitySync?.CantidadRegistrosSync!!.toInt()>0 || quantitySync?.CantidadUpdatesSync!!.toInt()>0 ){
-            AgriculturApplication.instance.showNotification(true)
-        }
-
+        repository?.checkControlPlagas(context)
         return Job.Result.SUCCESS
     }
-
 }

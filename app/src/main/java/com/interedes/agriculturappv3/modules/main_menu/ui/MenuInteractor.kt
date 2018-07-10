@@ -6,7 +6,6 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 class MenuInteractor:MainViewMenu.Interactor {
 
 
-
     var repository: MainViewMenu.Repository? = null
 
     init {
@@ -44,6 +43,11 @@ class MenuInteractor:MainViewMenu.Interactor {
     override fun logOut(usuario: Usuario?) {
         repository?.logOut(usuario)
     }
+
+    override fun checkListPlagas(): Long {
+      return  repository?.checkListPlagas()!!
+    }
+
 
 
     //Notifications

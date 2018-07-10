@@ -95,13 +95,11 @@ class Conversacion_Presenter (var mainView: IMainViewConversacion.MainView?): IM
     //region Messages/Notificaciones
     private fun onMessageOk() {
         mainView?.hideProgressHud()
-        mainView?.requestResponseOK()
     }
 
     private fun onMessageError(error: String?) {
         mainView?.hideProgress()
         mainView?.hideProgressHud()
-        mainView?.requestResponseError(error)
     }
 
     private fun onMessageConectionError() {

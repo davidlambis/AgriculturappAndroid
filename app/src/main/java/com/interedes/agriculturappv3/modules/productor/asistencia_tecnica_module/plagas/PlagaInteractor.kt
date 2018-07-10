@@ -21,5 +21,10 @@ class PlagaInteractor : IPlaga.Interactor {
     override fun getTiposProducto() {
         repository?.getTiposProducto()
     }
+
+    override fun checkListPlagas(): Long {
+      return repository?.checkListPlagas()!!
+    }
+
     //endregion
 }

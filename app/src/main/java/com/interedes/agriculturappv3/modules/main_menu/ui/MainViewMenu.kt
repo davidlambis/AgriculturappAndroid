@@ -37,7 +37,7 @@ interface MainViewMenu {
         fun  verificateSync(quantitySync: QuantitySync?): AlertDialog?
        // fun showAlertTypeChat(): AlertDialog?
         fun showAlertTypeChat()
-        fun showAlertDialogSyncDataConfirm()
+        //fun showAlertDialogSyncDataConfirm()
 
         fun setQuantitySync(quantitySync: QuantitySync?)
         fun setQuantitySyncAutomatic(quantitySync: QuantitySync?)
@@ -68,6 +68,7 @@ interface MainViewMenu {
         //
         fun getListasIniciales()
         fun getLastUserLogued(): Usuario?
+        fun checkListPlagas():Long
         //fun getListSyncEnfermedadesAndTratamiento()
 
 
@@ -83,6 +84,7 @@ interface MainViewMenu {
         fun getListasIniciales()
         fun syncQuantityData(automatic:Boolean)
         fun getLastUserLogued(): Usuario?
+        fun checkListPlagas():Long
         //fun getListSyncEnfermedadesAndTratamiento()
 
         //Notifications
@@ -102,6 +104,7 @@ interface MainViewMenu {
         fun logOut(usuario: Usuario?)
 
 
+        fun checkListPlagas():Long
         //Notifications
         fun getCountNotifications():Int
 

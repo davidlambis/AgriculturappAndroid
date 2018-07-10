@@ -16,6 +16,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad
@@ -37,9 +39,7 @@ import kotlinx.android.synthetic.main.content_list_recycler_view.view.*
 import kotlinx.android.synthetic.main.dialog_description.view.*
 import java.io.File
 
-
 class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
-
     //adapter
     var adapter: PlagasAdapter? = null
 
@@ -99,13 +99,24 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
         recyclerView?.layoutManager = LinearLayoutManager(activity)
         adapter = PlagasAdapter(plagasList!!)
         recyclerView?.adapter = adapter
+        setResults(0)
     }
 
     private fun setupInjection() {
-        showAlertDialogTipoProduccion()
+        //showAlertDialogTipoProduccion()
+        val verficateDowloadPlagas= presenter?.checkListPlagas()
+        if (verficateDowloadPlagas != null) {
+            if(verficateDowloadPlagas<=0) {
+                (activity as MenuMainActivity).navigationVerificateDownloadPlagasyEnfermedades()
+            }else{
+                showAlertDialogTipoProduccion()
+            }
+        }
+
+        YoYo.with(Techniques.Pulse)
+                .repeat(10)
+                .playOn(plagas_search_edit_frame)
     }
-
-
     //region Métodos Interfaz
 
     override fun setListPlagas(list_plagas: ArrayList<Enfermedad>) {
@@ -120,9 +131,6 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     override fun setDialogListPlagas(list_plagas: ArrayList<Enfermedad>) {
         val inflater = this.layoutInflater
         viewDialogPlagas = inflater.inflate(R.layout.dialog_list_general, null)
-
-
-
 
 
         viewDialogPlagas?.recyclerView?.layoutManager = LinearLayoutManager(activity)

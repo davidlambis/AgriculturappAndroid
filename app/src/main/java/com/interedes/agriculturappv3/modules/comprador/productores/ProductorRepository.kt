@@ -97,8 +97,6 @@ class ProductorRepository:IMainViewProductor.Repository {
                     usuario.save()
 
 
-
-
                     //TODO Unidades Productivas
                     val unidaProductiva= Unidad_Productiva()
 
@@ -244,6 +242,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                             producto.ProductoId = last_producto.ProductoId!! + 1
                         }
                     }
+                    producto.Usuario= usuario
                     producto.userId=item.usuario_id
                     producto.Id_Remote= item.id
                     producto.CalidadId= item.calidad_id
@@ -315,6 +314,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                     postEventError(RequestEventProductor.ERROR_EVENT, error)
                 }
             })
+
 
 
             //val seacrh =callProductos?.delay(500, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.computation())?.observeOn(AndroidSchedulers.mainThread()).subscribe()

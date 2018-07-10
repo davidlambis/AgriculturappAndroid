@@ -69,8 +69,11 @@ import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.modules.notification.NotificationActivity
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
+import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.AsistenciaTecnicaFragment
+import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.control_plagas.ControlPlagasFragment
 import com.interedes.agriculturappv3.services.jobs.ChatRunJob
 import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
+import com.interedes.agriculturappv3.services.jobs.ControlPlagasJob
 import com.interedes.agriculturappv3.services.jobs.DataSyncJob
 import com.interedes.agriculturappv3.services.jobs.FotosEnfermedadesInsumosjob
 import com.interedes.agriculturappv3.services.resources.*
@@ -84,6 +87,7 @@ import com.nightonke.boommenu.Util
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
+import kotlinx.android.synthetic.main.dialog_image_download_plaga.view.*
 import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import java.io.*
 import java.text.Normalizer
@@ -165,14 +169,12 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_main)
-
         //Fabric.with(this,  Crashlytics());
         instance=this
         //Presenter
         presenter = MenuPresenterImpl(this)
         (presenter as MenuPresenterImpl).onCreate()
         setToolbarInjection()
-
 
         if (getLastUserLogued() != null) {
             usuario_logued =  presenter?.getLastUserLogued()
@@ -182,8 +184,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         setAdapterFragment()
         // this.coordsService = CoordsService(this)
         //fragmentManager.beginTransaction().add(R.id.container, AccountingFragment()).commit()
-
-
         //Firebase
         mCurrentUserID = FirebaseAuth.getInstance()?.currentUser?.uid
         if(mCurrentUserID==null){
@@ -201,7 +201,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         septupInjection()
     }
-
 
     fun navigationVerificateDownloadPlagasyEnfermedades(){
 
@@ -231,17 +230,59 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 .theme(Theme.DARK)
                 .onPositive(
                         { dialog1, which ->
-                            showProgressBar()
-                            FotosEnfermedadesInsumosjob.scheduleFotosJob()
+                            if(presenter?.checkConnection()!!){
+                                showProgressBar()
+                                FotosEnfermedadesInsumosjob.scheduleFotosJob()
+                                dialog1.dismiss()
+                            }else{
+                                onMessageToast(R.color.red_900,getString(R.string.verifcate_conection_info))
+                                showDowloadPlagasEnfermedades(getString(R.string.message_conection_plaga))
+                                dialog1.dismiss()
+                            }
+
+                        })
+                .onNegative({ dialog1, which ->
+                    dialog1.dismiss()
+                    showDowloadPlagasEnfermedades("")
+                    //onMessageToas(getString(R.string.content_sms_not_send),R.color.red_900)
+                })
+                .show()
+    }
+
+    fun showDowloadPlagasEnfermedades(string:String){
+        val inflater = this.layoutInflater
+        val viewDialog = inflater.inflate(R.layout.dialog_image_download_plaga, null)
+        viewDialog?.txtDescripcion?.setText("")
+        viewDialog?.txtDescripcion?.setText(String.format(getString(R.string.message_downloa_plaga),string))
+        //var content =String.format(getString(R.string.verifcate_download_info))
+        //viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
+       val dialog= MaterialDialog.Builder(this)
+                .title(getString(R.string.tittle_dowload_plagas))
+                .customView(viewDialog, true)
+                .positiveText(R.string.confirm)
+                .positiveColorRes(R.color.light_green_800)
+                .titleGravity(GravityEnum.CENTER)
+                .titleColorRes(R.color.colorPrimary)
+                .contentColorRes(android.R.color.white)
+                .backgroundColorRes(R.color.material_blue_grey_800)
+                .dividerColorRes(R.color.light_green_800)
+                .btnSelector(R.drawable.md_btn_selector_custom, DialogAction.POSITIVE)
+                .positiveColor(Color.WHITE)
+                .theme(Theme.DARK)
+                .onPositive(
+                        { dialog1, which ->
                             dialog1.dismiss()
                             //Toast.makeText(activity,"Enviar oferta",Toast.LENGTH_SHORT).show()
                             // _dialogOferta?.dismiss()
                         })
-                .onNegative({ dialog1, which ->
-                    dialog1.dismiss()
-                    //onMessageToas(getString(R.string.content_sms_not_send),R.color.red_900)
-                })
-                .show()
+                .build()
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.show()
+        dialog.getWindow().setAttributes(lp)
 
     }
     /*override fun syncFotosInsumosPlagas() {
@@ -290,16 +331,20 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
             DataSyncJob.scheduleJob();
             ChatRunJob.scheduleJobChat()
-            if(presenter?.checkConnection()!!){
+            ControlPlagasJob.scheduleJobChat()
                 val myTimerr = 5000
                 ///Mensage
                 Handler().postDelayed(Runnable {
                     try {
-                        navigationVerificateDownloadPlagasyEnfermedades()
+                        if(presenter?.checkListPlagas()!!<=0){
+                            navigationVerificateDownloadPlagasyEnfermedades()
+                        }else{
+                            showDowloadPlagasEnfermedades("")
+                        }
                     } catch (e: Exception) {
                     }
                 }, myTimerr.toLong())
-            }
+
         } else if (usuarioLogued?.RolNombre.equals(RolResources.COMPRADOR)) {
             ChatRunJob.scheduleJobChat()
         }
@@ -316,6 +361,15 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 val chat = Intent(this, UserSmsActivity::class.java)
                 chat.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chat)
+            }
+            else if(extras.containsKey(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS)){
+                val bundle = Bundle()
+                bundle.putLong(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS, TagNavigationResources.NAVIGATE_CONTROL_PLAGAS)
+                val asistenciaTecnicaFragment: AsistenciaTecnicaFragment
+                asistenciaTecnicaFragment = AsistenciaTecnicaFragment()
+                asistenciaTecnicaFragment.arguments = bundle
+                replaceFragment(asistenciaTecnicaFragment)
+                replaceFragment(AsistenciaTecnicaFragment())
             }
         }
         /*var usuarioLogued=getLastUserLogued()
@@ -970,6 +1024,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             DataSyncJob.cancel();
             ChatRunJob.cancel()
             FotosEnfermedadesInsumosjob.cancel();
+            ControlPlagasJob.cancel()
 
 
             //startActivity(Intent(this, LoginActivity::class.java)
@@ -1123,7 +1178,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
             R.id.itemSyncronizarDatos -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
-                showAlertDialogSyncDataConfirm()
+                navigationVerificateDownloadPlagasyEnfermedades()
+
+                navigationVerificateDownloadPlagasyEnfermedades()
             }
         }
     }
@@ -1249,7 +1306,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         onMessageError(R.color.red_900,error);
     }
 
-    override fun showAlertDialogSyncDataConfirm(){
+    /*override fun showAlertDialogSyncDataConfirm(){
         MaterialDialog.Builder(this)
                 .title(R.string.title_sync_data_enfermedades)
                 .content(R.string.content_message_syn_data_enfermedades, true)
@@ -1262,6 +1319,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 .onPositive(
                         { dialog1, which ->
                             dialog1.dismiss()
+                            showProgressBar()
                             ///presenter?.getListSyncEnfermedadesAndTratamiento()
                             FotosEnfermedadesInsumosjob.scheduleFotosJob()
                             onMessageToast(R.color.green_900,"Sincronizando informacion de plagas,enfermedades y tratamientos")
@@ -1270,7 +1328,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     dialog1.dismiss()
                 })
                 .show()
-    }
+    }*/
 
 
 
@@ -1452,7 +1510,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     override fun onDestroy() {
-
         isAppRunning = false;
         presenter?.onDestroy(this)
         Log.d("TAG SERVICE", "START RUN SERVICE")

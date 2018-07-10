@@ -22,11 +22,6 @@ interface IMainViewConversacion {
 
         //Response Notify
         fun onMessageToas(message:String,color:Int)
-        fun requestResponseOK()
-        fun requestResponseError(error: String?)
-        fun onMessageOk(colorPrimary: Int, msg: String?)
-        fun onMessageError(colorPrimary: Int, msg: String?)
-
 
         //Events
         fun onEventBroadcastReceiver(extras: Bundle, intent: Intent)

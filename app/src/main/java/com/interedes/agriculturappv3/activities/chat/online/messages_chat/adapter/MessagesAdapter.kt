@@ -118,7 +118,6 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
 
             if(getItemViewType()== ITEM_TYPE_RECEIVED){
                 var imageUser: CircleImageView = itemView.findViewById(R.id.imageView2)
-
                 if((context as ChatMessageActivity).mReceiverFoto!=null){
                     try {
                         //Picasso.with(context).load((context as ChatMessageActivity).mReceiverFoto).placeholder(R.drawable.default_avata).into(imageUser)

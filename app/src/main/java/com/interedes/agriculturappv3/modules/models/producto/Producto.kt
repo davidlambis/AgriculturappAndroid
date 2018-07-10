@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
@@ -146,7 +147,9 @@ data class Producto(@PrimaryKey
                     var UnidadMedida:Unidad_Medida?=null,
 
                     @SerializedName("Calidad")
-                    var Calidad:CalidadProducto?=null
+                    var Calidad:CalidadProducto?=null,
+
+                    var Usuario:Usuario?=null
 
 ) {
 

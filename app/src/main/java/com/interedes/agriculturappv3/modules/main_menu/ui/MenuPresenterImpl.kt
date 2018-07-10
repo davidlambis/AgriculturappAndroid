@@ -131,6 +131,11 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
     }
 
 
+
+    override fun checkListPlagas(): Long {
+        return  interactor?.checkListPlagas()!!
+    }
+
     override fun syncQuantityData(automatic:Boolean) {
         //mainView?.showProgressHud()
         interactor?.syncQuantityData(automatic)

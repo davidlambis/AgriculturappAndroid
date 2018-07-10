@@ -127,7 +127,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
        recyclerView.layoutManager = LinearLayoutManager(activity)
         adapter = ProductorAdapter(ArrayList<Producto>())
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(VerticalLineDecorator(2))
+       //recyclerView.addItemDecoration(VerticalLineDecorator(2))
 
 
         /*For Load More Pagination

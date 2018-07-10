@@ -23,8 +23,6 @@ import com.raizlabs.android.dbflow.config.FlowManager
 import android.support.v4.app.NotificationCompat.Builder
 import com.interedes.agriculturappv3.services.services.JobSyncService
 import com.evernote.android.job.JobManager
-import com.interedes.agriculturappv3.services.jobs.creators.ChatJobCreator
-import com.interedes.agriculturappv3.services.jobs.creators.FotosEnfermedadesJobCreator
 import com.interedes.agriculturappv3.services.jobs.creators.SyncJobCreator
 
 
@@ -77,8 +75,8 @@ class AgriculturApplication : Application() {
 
         //Create JOBS SERVICES
         JobManager.create(this).addJobCreator(SyncJobCreator())
-        JobManager.create(this).addJobCreator(ChatJobCreator())
-        JobManager.create(this).addJobCreator(FotosEnfermedadesJobCreator())
+        //JobManager.create(this).addJobCreator(ChatJobCreator())
+        ///JobManager.create(this).addJobCreator(FotosEnfermedadesJobCreator())
 
 
 

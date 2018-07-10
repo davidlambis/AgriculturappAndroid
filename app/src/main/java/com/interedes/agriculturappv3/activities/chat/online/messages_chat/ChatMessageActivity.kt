@@ -27,13 +27,11 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
+import com.github.thunder413.datetimeutils.DateTimeUtils
 import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
 import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.modules.models.sms.Sms
-import com.interedes.agriculturappv3.services.resources.Chat_Resources
-import com.interedes.agriculturappv3.services.resources.EmisorType_Message_Resources
-import com.interedes.agriculturappv3.services.resources.MessageSmsType
-import com.interedes.agriculturappv3.services.resources.TagSmsResources
+import com.interedes.agriculturappv3.services.resources.*
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
@@ -44,8 +42,6 @@ import kotlin.collections.ArrayList
 
 
 class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView {
-
-
 
     private var mLayoutManager: LinearLayoutManager? = null
     private var mUsersRef: DatabaseReference? = null
@@ -100,10 +96,8 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
         iniAdapter()
         //querymessagesBetweenThisUserAndClickedUser()
         presenter?.getListMessagesByRoom(mReceiverRoom!!,mReceiverId!!)
-        listenerChangesUserSelected(mReceiverId)
+        listenerChangesUserSelected(mReceiverId,userFirebaeSelected)
     }
-
-
 
     private fun sendMessageToFirebase(message: String, senderId: String, receiverId: String?) {
         //mMessagesList.clear()
@@ -134,7 +128,17 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
     }
 
 
-    private fun listenerChangesUserSelected(receiverId: String?) {
+    private fun listenerChangesUserSelected(receiverId: String?,userFirebase: UserFirebase?) {
+
+        Picasso.get()
+                .load(userFirebase?.Imagen)
+                .fit()
+                .centerCrop()
+                .placeholder(R.drawable.default_avata)
+                .error(R.drawable.default_avata)
+                .into(imgUserTo);
+
+
         mUsersRef?.child(receiverId)?.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val recepient = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
@@ -142,15 +146,21 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
                 mReceiverName = recepient!!.Nombre+" "+recepient!!.Apellido
                 try {
                     nameUserTo.setText(mReceiverName)
-                    Picasso.get()
+                    /*Picasso.get()
                             .load(recepient.Imagen)
                             .fit()
                             .centerCrop()
                             .placeholder(R.drawable.default_avata)
                             .error(R.drawable.default_avata)
                             .into(imgUserTo);
-                    //supportActionBar!!.setTitle(mReceiverName)
-                    //actionBar!!.title = mReceiverName
+
+                            */
+
+                    if(userFirebaeSelected?.Status.equals(Status_Chat.ONLINE)){
+                        imgStatus.setImageResource(R.drawable.is_online_user)
+                    }else{
+                        imgStatus.setImageResource(R.drawable.is_offline_user)
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -160,7 +170,6 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
             }
         })
     }
-
 
     private fun setToolbarInjection() {
         setSupportActionBar(toolbar)

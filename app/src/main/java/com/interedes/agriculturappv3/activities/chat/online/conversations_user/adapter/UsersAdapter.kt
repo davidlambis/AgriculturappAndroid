@@ -10,20 +10,28 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.thunder413.datetimeutils.DateTimeUtils
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.online.messages_chat.ChatMessageActivity
 import com.interedes.agriculturappv3.libs.EventBus
+import com.interedes.agriculturappv3.libs.GlideApp
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.modules.models.chat.RoomConversation
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
+import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.Chat_Resources
+import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
@@ -97,8 +105,6 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
 
             var txtLastMessage: TextView = itemView.findViewById(R.id.txtStatisSincronized)
 
-
-
             var optionsContent: LinearLayout = itemView.findViewById(R.id.options)
             optionsContent.visibility=View.GONE
 
@@ -124,7 +130,6 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                 }
             }
 
-
             if(data.Room!=null){
                 txtLastMessage.visibility=View.VISIBLE
                 txtLastMessage.setText(data.Room?.LastMessage)
@@ -134,10 +139,10 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
 
             personNameTxtV.setText(data.UserFirebase?.Nombre+" "+data.UserFirebase?.Apellido)
             txtUserType.setText(data.UserFirebase?.Rol)
+
+
             try {
                 //Picasso.with(context).load(data.Imagen).placeholder(R.drawable.default_avata).into(contentIconUser)
-
-
                     Picasso.get()
                             .load(data.UserFirebase?.Imagen)
                             .fit()
@@ -151,7 +156,6 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                 e.printStackTrace()
             }
 
-
             //Change State
             mRoomDBRef?.child(data.UserFirebase?.User_Id)?.child(Chat_Resources.getRoomById(data.Room?.User_From))?.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError?) {
@@ -159,7 +163,7 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.value != null) {
                         //val avataStr = dataSnapshot.value as String
-                        var room = dataSnapshot.getValue<Room>(Room::class.java)
+                        val room = dataSnapshot.getValue<Room>(Room::class.java)
                         try {
                             txtLastMessage.setText(room?.LastMessage)
                         } catch (e: Exception) {
@@ -174,14 +178,11 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
             //Change State
            mUsersDBRef?.child(data.UserFirebase?.User_Id)?.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError?) {
-
                 }
-
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.value != null) {
                         //val avataStr = dataSnapshot.value as String
                         var user = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
-
                         if(user?.Status.equals(Status_Chat.ONLINE)){
                             data.UserFirebase?.Status=Status_Chat.ONLINE
                             imgStatus.setImageResource(R.drawable.is_online_user)
@@ -195,25 +196,31 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                                 txtDate.setText(DateTimeUtils.getTimeAgo(context, Date(user?.Last_Online!!)))
                             }
                         }
-
-                        try {
-
-                            Picasso.get()
-                                    .load(user?.Imagen)
-                                    .fit()
-                                    .centerCrop()
-                                    .placeholder(R.drawable.default_avata)
-                                    .error(R.drawable.default_avata)
-                                    .into(contentIconUser);
-
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-
                       //  UsersAdapter.instance.notifyDataSetChanged()
                     }
                 }
             })
+
+             val apiService = ApiInterface.create()
+              val queryCustom = Listas.queryGeneral("Email",data.UserFirebase?.Correo!!)
+              val callusuario = apiService.getUserByEmail(queryCustom)
+              callusuario.delay(500, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
+                  //Log.d("search", searchString)
+                  val usuario =searchResponse.value
+                  if(usuario!=null){
+                      for (item in usuario){
+                          data.UserFirebase?.Imagen=S3Resources.RootImage+"${item.Fotopefil}"
+                          GlideApp.with(context)
+                                  .load(S3Resources.RootImage+"${item.Fotopefil}")
+                                  .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                  .productorPhoto()
+                                  .into(contentIconUser);
+                      }
+                  }
+              },{ throwable ->{
+                  val error= throwable.toString()
+              }
+              })
 
             itemView.setOnClickListener {
                 //postEventc(RequestEventProduccion.ITEM_EVENT,data)

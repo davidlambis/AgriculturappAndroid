@@ -65,6 +65,9 @@ interface ApiInterface {
 
 
 
+    //Get User
+    @GET("odata/Agp2/Usuarios")
+    fun getUserByEmail(@Query("\$filter") filter: String): Observable<UsuarioResponse>
 
 
 

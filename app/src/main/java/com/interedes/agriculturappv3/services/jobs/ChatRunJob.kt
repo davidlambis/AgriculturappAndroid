@@ -22,12 +22,13 @@ class ChatRunJob : Job() {
             val jobRequests = JobManager.instance().getAllJobRequestsForTag(TAG)
             if (!jobRequests.isEmpty()) {
                 return
+               // return jobRequests.iterator().next().getJobId();
             }
             JobRequest.Builder(TAG)
                     .setPeriodic(TimeUnit.MINUTES.toMillis(15), TimeUnit.MINUTES.toMillis(5))
                     .setUpdateCurrent(true) // calls cancelAllForTag(NoteSyncJob.TAG) for you
                     .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
-                    .setRequirementsEnforced(true)
+                    //.setRequirementsEnforced(true)
                     .build()
                     .schedule()
         }

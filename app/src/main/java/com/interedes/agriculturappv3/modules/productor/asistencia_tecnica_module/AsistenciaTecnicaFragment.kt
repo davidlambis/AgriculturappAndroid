@@ -25,6 +25,7 @@ import android.view.WindowManager
 import android.util.TypedValue
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.control_plagas.ControlPlagasFragment
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.plagas.PlagaFragment
+import com.interedes.agriculturappv3.services.resources.TagNavigationResources
 
 
 /**
@@ -42,6 +43,17 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
         setupInitDesign()
         ivBackButton?.setOnClickListener(this)
         loadItems()
+
+        septupInjection()
+    }
+
+    private fun septupInjection() {
+        val b = this.arguments
+        if (b != null) {
+            if (b.containsKey(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS)) {
+                (activity as MenuMainActivity).replaceFragment(ControlPlagasFragment())
+            }
+        }
     }
 
 

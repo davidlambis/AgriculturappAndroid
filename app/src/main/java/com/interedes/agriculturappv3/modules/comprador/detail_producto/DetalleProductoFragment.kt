@@ -197,8 +197,6 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                                 // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
                             }
                         })*/
-
-
                 Picasso.get()
                         .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
                         .fit()
@@ -222,43 +220,15 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                         .centerCrop()
                         .error(R.drawable.ic_foto_producto)
                         .into(contenIconProducto)*/
-
             }
 
-            val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(productoGlobal?.EmailProductor)
-            query?.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        // dataSnapshot is the "issue" node with all children with id 0
-                        for (issue in dataSnapshot.children) {
-                            // do something with the individual "issues"
-                            var user = issue.getValue<UserFirebase>(UserFirebase::class.java)
-                            //if not current user, as we do not want to show ourselves then chat with ourselves lol
-                            try {
-                                /*Picasso.get()
-                                        .load(user?.Imagen)
-                                        .fit()
-                                        .centerCrop()
-                                        .placeholder(R.drawable.ic_account_box_green)
-                                        .error(R.drawable.ic_account_box_green)
-                                        .into(contentIcon);*/
+            GlideApp.with(activity)
+                    .load(S3Resources.RootImage+"${productoGlobal?.Usuario?.Fotopefil}")
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .productorPhoto()
+                    .into(contentIcon)
 
-                                GlideApp.with(activity)
-                                        .load(user?.Imagen)
-                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                        .productorPhoto()
-                                        .into(contentIcon)
 
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
-                    }
-                }
-                override fun onCancelled(databaseError: DatabaseError) {
-
-                }
-            })
         }
     }
 
