@@ -33,7 +33,6 @@ class NotificationService: Service() {
         // background priority so CPU-intensive work will not disrupt our UI.
         val thread = HandlerThread("ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND)
         thread.start()
-
         // Get the HandlerThread's Looper and use it for our Handler
         serviceLooper = thread.looper
         serviceHandler = ServiceHandler(serviceLooper)

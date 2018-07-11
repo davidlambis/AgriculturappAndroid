@@ -19,7 +19,7 @@ class ControlPlagasJob : Job() {
     companion object {
 
         val TAG = "job_control_plagas"
-        fun scheduleJobChat() {
+        fun scheduleJobControlPlaga() {
             val jobRequests = JobManager.instance().getAllJobRequestsForTag(TAG)
             if (!jobRequests.isEmpty()) {
                 return

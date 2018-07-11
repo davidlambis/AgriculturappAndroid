@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.content.ContextCompat
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import android.util.TypedValue
@@ -31,13 +32,19 @@ import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.Delete
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.raizlabs.android.dbflow.sql.language.Select
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_register_rol.*
 import retrofit2.Call
 import retrofit2.Callback
+import java.util.concurrent.TimeUnit
 
-class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickListener, ConnectivityReceiver.connectivityReceiverListener {
+class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickListener, ConnectivityReceiver.connectivityReceiverListener,SwipeRefreshLayout.OnRefreshListener {
+    override fun onRefresh() {
+        loadRoles()
+    }
 
-    var lista: MutableList<Rol>? = null
+    var lista: MutableList<Rol>? = ArrayList<Rol>()
     var adapter: RegisterRolAdapter? = null
     var connectivityReceiver: ConnectivityReceiver? = null
 
@@ -48,6 +55,7 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_rol)
+        swipeRefreshLayout.setOnRefreshListener(this)
         loadRoles()
         imageViewBackButton?.setOnClickListener(this)
         registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
@@ -56,41 +64,49 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
 
     //region Métodos Interfaz
     override fun loadRoles() {
+            swipeRefreshLayout.setRefreshing(true)
             //Si hay conectividad a Internet
             if (checkConnection()) {
+
                 val apiService = ApiInterface.create()
                 val call = apiService.getRoles()
-                call.enqueue(object : Callback<RolResponse> {
-                    override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
-                        if (response != null && response.code() == 200) {
-                            lista = response.body()?.value
-                            if (lista != null) {
-                                for (item: Rol in lista!!) {
-                                    if (item.Nombre.equals(RolResources.COMPRADOR)) {
-                                        item.Imagen = R.drawable.ic_comprador_big
-                                        item.save()
-                                    } else if (item.Nombre.equals(RolResources.PRODUCTOR)) {
-                                        item.Imagen = R.drawable.ic_productor_big
-                                        item.save()
-                                    }
-                                }
-                                //lista = Select().from(Rol::class.java).queryList()
-                                lista = Select().from(Rol::class.java).where(Rol_Table.Nombre.eq("Comprador")).or(Rol_Table.Nombre.eq("Productor")).queryList()
-
+                //val callProductos = apiService?.getProductosByTipoProductos(queryProductos)
+                // mCompositeDisposable?.add(callProductos?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe(this::handleResponse,this::handleError)!!);
+                call.delay(500, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
+                    //Log.d("search", searchString)
+                    lista?.clear()
+                    lista =searchResponse.value
+                    if (lista != null) {
+                        for (item: Rol in lista!!) {
+                            if (item.Nombre.equals(RolResources.COMPRADOR)) {
+                                item.Imagen = R.drawable.ic_comprador_big
+                                item.save()
+                            } else if (item.Nombre.equals(RolResources.PRODUCTOR)) {
+                                item.Imagen = R.drawable.ic_productor_big
+                                item.save()
                             }
-                            loadRecyclerView()
                         }
+                        //lista = Select().from(Rol::class.java).queryList()
+                        lista = Select().from(Rol::class.java).where(Rol_Table.Nombre.eq("Comprador")).or(Rol_Table.Nombre.eq("Productor")).queryList()
+
                     }
-                    override fun onFailure(call: Call<RolResponse>?, t: Throwable?) {
-                        onMessageOk(R.color.grey_luiyi, getString(R.string.error_request))
-                        Log.e("Error", t?.message.toString())
-                    }
-                })
+
+                    swipeRefreshLayout.setRefreshing(false)
+                    loadRecyclerView()
+
+                    //view.showSearchResult(searchResponse.items())
+                   },
+                    { throwable ->
+                            val error= throwable.toString()
+                        swipeRefreshLayout.setRefreshing(false)
+
+                    })
                 //Si no hay conectividad a Internet
             } else {
                 lista = Select().from(Rol::class.java).where(Rol_Table.Nombre.eq("Comprador")).or(Rol_Table.Nombre.eq("Productor")).queryList()
                 loadRecyclerView()
                 onMessageOk(R.color.grey_luiyi, getString(R.string.not_internet_connected))
+                swipeRefreshLayout.setRefreshing(false)
             }
     }
 
@@ -152,13 +168,13 @@ class RegisterRolActivity : AppCompatActivity(), RegisterRolView, View.OnClickLi
             recyclerView?.layoutManager = GridLayoutManager(this, 2)
             adapter?.clear()
             adapter = RegisterRolAdapter(lista) { position ->
-                if (lista!![position].Nombre.equals("Productor")) {
+                if (lista!![position].Nombre.equals(RolResources.PRODUCTOR)) {
                     showProgress()
                     val i = Intent(this, RegisterUserActivity::class.java)
                     i.putExtra("rol", "productor")
                     i.putExtra("rol_id", lista!![position].Id)
                     startActivity(i)
-                } else if (lista!![position].Nombre.equals("Comprador")) {
+                } else if (lista!![position].Nombre.equals(RolResources.COMPRADOR)) {
                     showProgress()
                     val j = Intent(this, RegisterUserActivity::class.java)
                     j.putExtra("rol", "comprador")

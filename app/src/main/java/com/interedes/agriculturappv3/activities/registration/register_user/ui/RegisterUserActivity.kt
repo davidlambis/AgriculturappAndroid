@@ -34,10 +34,7 @@ import com.interedes.agriculturappv3.activities.registration.register_user.repos
 import com.interedes.agriculturappv3.activities.registration.register_user.repository.RegisterUserRepositoryImpl
 import com.interedes.agriculturappv3.modules.models.usuario.User
 import java.util.*
-
-
 class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClickListener, ConnectivityReceiver.connectivityReceiverListener {
-
 
     var camposValidados: Boolean? = false
     var rol: String? = null
@@ -88,7 +85,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     //Cargar métodos Pago
     override fun setMetodosPago(metodosPago: List<MetodoPago>?) {
         spinnerMetodoPago?.setAdapter(null)
-        val metodoPagoArrayAdapter = ArrayAdapter<MetodoPago>(this, android.R.layout.simple_spinner_dropdown_item, metodosPago)
+        val metodoPagoArrayAdapter = ArrayAdapter<MetodoPago>(this, android.R.layout.simple_list_item_activated_1, metodosPago)
         spinnerMetodoPago?.setAdapter(metodoPagoArrayAdapter)
         spinnerMetodoPago?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             metodo_pago_id = metodosPago?.get(position)?.Id
@@ -124,7 +121,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     //Cargar Detalle métodos Pago
     override fun setDetalleMetodosPago(detalleMetodosPago: List<DetalleMetodoPago>?) {
         spinnerBanco?.setAdapter(null)
-        val detalleMetodoPagoArrayAdapter = ArrayAdapter<DetalleMetodoPago>(this, android.R.layout.simple_spinner_dropdown_item, detalleMetodosPago)
+        val detalleMetodoPagoArrayAdapter = ArrayAdapter<DetalleMetodoPago>(this, android.R.layout.simple_list_item_activated_1, detalleMetodosPago)
         spinnerBanco?.setAdapter(detalleMetodoPagoArrayAdapter)
         spinnerBanco?.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             detalle_metodo_pago_id = detalleMetodosPago?.get(position)?.Id

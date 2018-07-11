@@ -24,6 +24,7 @@ import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.producto.Producto
+import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.squareup.picasso.Picasso
 
 /**
@@ -103,7 +104,6 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
     fun setItems(newItems: List<Producto>) {
         lista?.addAll(newItems)
         notifyDataSetChanged()
-
     }
 
      /*fun clear() {
@@ -117,21 +117,17 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
 
         fun bindData(data: Producto) {
 
+            val txtNombreProductor: TextView = itemView.findViewById(R.id.txtNombreProductor)
+            val imgProductor: ImageView = itemView.findViewById(R.id.imgProductor)
 
-            var txtNombreProductor: TextView = itemView.findViewById(R.id.txtNombreProductor)
-            var imgProductor: ImageView = itemView.findViewById(R.id.imgProductor)
+            val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
+            val txtProducto: TextView = itemView.findViewById(R.id.txtProducto)
+            val txtUbicacion: TextView = itemView.findViewById(R.id.txtUbicacion)
+            val txtFechaDisponibilidad:TextView = itemView.findViewById(R.id.txtFechaDisponibilidad)
+            val txtDisponibilidad: TextView = itemView.findViewById(R.id.txtDisponibilidad)
+            val txtPrecio: TextView = itemView.findViewById(R.id.txtPrecio)
 
-            var ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
-            var txtProducto: TextView = itemView.findViewById(R.id.txtProducto)
-            var txtUbicacion: TextView = itemView.findViewById(R.id.txtUbicacion)
-            var txtFechaDisponibilidad:TextView = itemView.findViewById(R.id.txtFechaDisponibilidad)
-            var txtDisponibilidad: TextView = itemView.findViewById(R.id.txtDisponibilidad)
-            var txtPrecio: TextView = itemView.findViewById(R.id.txtPrecio)
-
-
-
-            txtProducto?.setText(data.Nombre)
-
+            txtProducto.setText(data.Nombre)
             var disponibilidad = ""
 
             if (data.Stock.toString().contains(".0")) {
@@ -141,19 +137,26 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                 disponibilidad = data.Stock.toString()
             }
 
-            ratingBar?.rating = 3.5f
+            ratingBar.rating = 3.5f
 
-            txtNombreProductor?.setText(data.NombreProductor)
-            txtDisponibilidad?.setText(String.format("%s: %s %s", data.NombreCalidad, disponibilidad, data.NombreUnidadMedidaCantidad))
-            txtFechaDisponibilidad?.setText(data.getFechaLimiteDisponibilidadFormat())
+            txtNombreProductor.setText(data.NombreProductor)
+            txtDisponibilidad.setText(String.format("%s: %s %s", data.NombreCalidad, disponibilidad, data.NombreUnidadMedidaCantidad))
+            txtFechaDisponibilidad.setText(data.getFechaLimiteDisponibilidadFormat())
 
-            txtPrecio?.setText(String.format(contextLocal!!.getString(R.string.price_producto),
+            txtPrecio.setText(String.format(contextLocal!!.getString(R.string.price_producto),
                     data.Precio, data.PrecioUnidadMedida))
 
-            txtUbicacion?.setText(String.format("%s / %s", data.Ciudad, data.Departamento))
-            txtFechaDisponibilidad?.setText(data.getFechaLimiteDisponibilidadFormat())
+            txtUbicacion.setText(String.format("%s / %s", data.Ciudad, data.Departamento))
+            txtFechaDisponibilidad.setText(data.getFechaLimiteDisponibilidadFormat())
+
+            GlideApp.with(contextLocal!!)
+                    .load(S3Resources.RootImage+"${data.Usuario?.Fotopefil}")
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .productorPhoto()
+                    .into(imgProductor);
 
 
+            /*
             val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(data.EmailProductor)
             query?.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -199,7 +202,7 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                 override fun onCancelled(databaseError: DatabaseError) {
 
                 }
-            })
+            })*/
 
             itemView.setOnClickListener {
                 postEvento(RequestEventProductor.ITEM_EVENT, data)
@@ -230,6 +233,4 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
     fun setLoadMoreListener(loadMoreListeners: OnLoadMoreListener) {
         loadMoreListener = loadMoreListeners
     }
-
-
 }

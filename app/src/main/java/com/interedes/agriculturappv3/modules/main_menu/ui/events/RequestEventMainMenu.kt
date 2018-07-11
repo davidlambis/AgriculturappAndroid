@@ -18,5 +18,6 @@ data class RequestEventMainMenu (var eventType: Int,
         val SYNC_FOTOS_INSUMOS_PLAGAS=5
         val UPDATE_BADGE_NOTIIFCATIONS=6
 
+
     }
 }

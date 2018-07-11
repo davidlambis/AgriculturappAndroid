@@ -51,6 +51,9 @@ data class NotificationLocal(
         @Column(name = "userLoguedId")
         var userLoguedId: UUID? = null,
 
+        @Column(name = "parameter")
+        var parameter: String? = null,
+
         @Column(name = "time")
         var time: Long? = null
 

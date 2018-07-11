@@ -2,11 +2,8 @@ package com.interedes.agriculturappv3.services.jobs.creators
 
 import com.evernote.android.job.JobCreator
 import com.evernote.android.job.Job
-import com.interedes.agriculturappv3.services.jobs.DataSyncJob
 import android.R.attr.tag
-import com.interedes.agriculturappv3.services.jobs.ChatRunJob
-import com.interedes.agriculturappv3.services.jobs.ControlPlagasJob
-import com.interedes.agriculturappv3.services.jobs.FotosEnfermedadesInsumosjob
+import com.interedes.agriculturappv3.services.jobs.*
 
 
 class SyncJobCreator: JobCreator {
@@ -20,6 +17,8 @@ class SyncJobCreator: JobCreator {
             ChatRunJob.TAG -> return ChatRunJob()
 
             ControlPlagasJob.TAG -> return ControlPlagasJob()
+
+            FotoPerfilJob.TAG -> return FotoPerfilJob()
 
             else -> return null
         }

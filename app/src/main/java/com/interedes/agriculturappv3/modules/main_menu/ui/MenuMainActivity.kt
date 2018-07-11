@@ -57,17 +57,15 @@ import com.interedes.agriculturappv3.activities.chat.online.conversations_user.C
 import com.interedes.agriculturappv3.activities.intro.PermissionsIntro
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.libs.eventbus_rx.Rx_Bus
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.notification.NotificationActivity
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.AsistenciaTecnicaFragment
-import com.interedes.agriculturappv3.services.jobs.ChatRunJob
 import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
-import com.interedes.agriculturappv3.services.jobs.ControlPlagasJob
-import com.interedes.agriculturappv3.services.jobs.DataSyncJob
-import com.interedes.agriculturappv3.services.jobs.FotosEnfermedadesInsumosjob
+import com.interedes.agriculturappv3.services.jobs.*
 import com.interedes.agriculturappv3.services.resources.*
 import com.interedes.agriculturappv3.services.sms.NotificationService
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -88,12 +86,14 @@ import java.util.*
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu.MainView,View.OnClickListener {
+
+
     var isAppRunning: Boolean = false
 
     // var coordsService: CoordsService? = null
     //var coordsGlobal:Coords?=null
     var presenter: MenuPresenterImpl? = null
-    var usuario_logued: Usuario? = null
+
     var inflaterGlobal: MenuInflater? = null
     var menuItemGlobal: MenuItem? = null
     var menuItemNotificationsGlobal: View? = null
@@ -159,11 +159,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         presenter = MenuPresenterImpl(this)
         (presenter as MenuPresenterImpl).onCreate()
         setToolbarInjection()
-
-        if (getLastUserLogued() != null) {
-            usuario_logued =  presenter?.getLastUserLogued()
-        }
-
         setNavDrawerInjection()
         setAdapterFragment()
         // this.coordsService = CoordsService(this)
@@ -180,9 +175,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         presenter?.makeUserOnline(this)
 
         getListasIniciales()
-
         setupMenuFloating()
-
         septupInjection()
     }
 
@@ -301,12 +294,19 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         return true;
     }
 
+
     private fun septupInjection() {
+        val userLogued= getLastUserLogued()
+        if(userLogued!=null){
+            Rx_Bus.publish(userLogued)
+        }
+
         if (Build.VERSION.SDK_INT >= 23) {
             if (!hasPermissions(this, *PERMISSIONS)) {
                 startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
             }
         }
+
         //Service SMS
         val notificationServiceIntent = Intent(this, NotificationService::class.java)
         startService(notificationServiceIntent)
@@ -315,7 +315,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
             DataSyncJob.scheduleJob();
             ChatRunJob.scheduleJobChat()
-            ControlPlagasJob.scheduleJobChat()
+            ControlPlagasJob.scheduleJobControlPlaga()
+            FotoPerfilJob.scheduleFotosJob()
                 val myTimerr = 5000
                 ///Mensage
                 Handler().postDelayed(Runnable {
@@ -331,6 +332,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         } else if (usuarioLogued?.RolNombre.equals(RolResources.COMPRADOR)) {
             ChatRunJob.scheduleJobChat()
+            FotoPerfilJob.scheduleFotosJob()
         }
 
         extrasGlobal= intent.extras
@@ -346,6 +348,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 chat.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chat)
             }
+
             else if(extrasGlobal!!.containsKey(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS)){
                 val myTimerr = 500
                 ///Mensage
@@ -734,7 +737,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     private fun setNavDrawerInjection() {
-
         val mActionBarDrawerToggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.nav_open, R.string.nav_close)
         mActionBarDrawerToggle.syncState()
         navigationView.setNavigationItemSelectedListener(this)
@@ -742,22 +744,18 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val header = navigationView.getHeaderView(0)
         val headerViewHolder = HeaderViewHolder(header)
 
-
-        headerViewHolder.tvNombreUsuario.setText(String.format(getString(R.string.nombre_usuario_nav), usuario_logued?.Nombre, usuario_logued?.Apellidos))
-        headerViewHolder.tvIdentificacion.setText(usuario_logued?.Email)
-
-        if(usuario_logued?.blobImagenUser!=null){
-            // val bitmap = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
-            // imgTipoProducto.setImageBitmap(bitmap)
+        Rx_Bus.listen(Usuario::class.java).subscribe({
             try {
-                val foto = usuario_logued?.blobImagenUser?.blob
-                var imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+                val foto = it.blobImagenUser?.blob
+                val imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                 headerViewHolder.circleImageView.setImageBitmap(imageBitmapAccountGlobal)
+                headerViewHolder.tvNombreUsuario.setText(String.format(getString(R.string.nombre_usuario_nav), it?.Nombre, it?.Apellidos))
+                headerViewHolder.tvIdentificacion.setText(it?.Email)
             }catch (ex:Exception){
-                var ss= ex.toString()
+                val ss= ex.toString()
                 Log.d("Convert Image", "defaultValue = " + ss);
             }
-        }
+        })
 
         if (getLastUserLogued()?.RolNombre.equals(RolResources.PRODUCTOR)) {
             //Menu Lateral
@@ -1017,6 +1015,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             ChatRunJob.cancel()
             FotosEnfermedadesInsumosjob.cancel();
             ControlPlagasJob.cancel()
+            FotoPerfilJob.cancel()
 
 
             //startActivity(Intent(this, LoginActivity::class.java)
@@ -1161,8 +1160,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
             }*/
 
-
-
             R.id.itemOfertas -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
                 replaceFragment(OfertasFragment())
@@ -1170,8 +1167,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
             R.id.itemSyncronizarDatos -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
-                navigationVerificateDownloadPlagasyEnfermedades()
-
                 navigationVerificateDownloadPlagasyEnfermedades()
             }
         }

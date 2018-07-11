@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_green_800"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_10"
+        android:orientation="horizontal">
+
+        <ImageView
+
+            android:id="@+id/ivClosetDialogLote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_clear" />
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/margin_10"
+            android:layout_marginTop="11dp"
+            android:gravity="end"
+            android:text="@string/aplic"
+            android:textColor="@color/white_solid"
+            android:textSize="@dimen/text_size_30"
+            android:textStyle="normal" />
+
+        <View
+            android:id="@+id/division"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@+id/txtTitle"
+            android:layout_marginTop="10dp"
+            android:background="@color/white_solid" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/margin_24">
+            <!--
+            <ImageView
+                android:id="@+id/ivClosetDialogLote"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@color/light_green_800"
+                android:tint="@color/white"
+                android:contentDescription="@string/app_name"
+                android:scaleType="center"
+                android:src="@android:drawable/ic_menu_close_clear_cancel" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- seekbar option 5 -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:clipChildren="false">
+
+                        <com.crystal.crystalrangeseekbar.widgets.BubbleThumbRangeSeekbar
+                            android:id="@+id/rangeSeekbar5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:corner_radius="10"
+                            app:min_value="0"
+                            app:max_value="100"
+                            app:steps="5"
+                            app:bar_color="#F7BB88"
+                            app:bar_highlight_color="#E07416"
+                            app:left_thumb_image="@drawable/thumb"
+                            app:right_thumb_image="@drawable/thumb"
+                            app:left_thumb_image_pressed="@drawable/thumb_pressed"
+                            app:right_thumb_image_pressed="@drawable/thumb_pressed"
+                            app:data_type="_integer"/>
+
+                        <TextView
+                            android:id="@+id/textMin5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:layout_below="@id/rangeSeekbar5"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="10dp"
+                            android:textSize="16dp"
+                            android:textColor="#000"/>
+
+                        <TextView
+                            android:id="@+id/textMax5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:layout_below="@id/rangeSeekbar5"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="10dp"
+                            android:textSize="16dp"
+                            android:textColor="#000"
+                            android:layout_alignParentRight="true"/>
+
+                    </RelativeLayout>
+
+
+
+
+                    <Button
+                        android:padding="@dimen/margin_10"
+                        android:gravity="center"
+                        android:id="@+id/button1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:textColor="@color/white_solid"
+                        android:background="@drawable/style_buttons"
+                        android:text="Ubicación"
+                        />
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

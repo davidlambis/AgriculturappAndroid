@@ -19,7 +19,6 @@ import android.widget.TextView
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.producto.Producto
-import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_productores.*
@@ -28,6 +27,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.widget.Toast
 import com.interedes.agriculturappv3.modules.comprador.detail_producto.DetalleProductoFragment
 import com.interedes.agriculturappv3.modules.comprador.productores.adapter.*
+import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 
 
 class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.MainView, SwipeRefreshLayout.OnRefreshListener {
@@ -36,8 +36,8 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
     var tipoProductoIdGlobal:Long=0
     var presenter: IMainViewProductor.Presenter? = null
-    var adapter: ProductorAdapter?=null
-    var productosList:List<Producto>?=ArrayList<Producto>()
+    var adapter: ProductorMoreAdapter?=null
+    var productosList:ArrayList<Producto>?=ArrayList<Producto>()
 
     val TAG = ProductoresFragment::class.java!!.getSimpleName()
     //Progress
@@ -88,20 +88,20 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         }else{
             //setListProducto(list)
             if(productosList!=null){
-                for (item in productosList!!){
+
+                adapter?.setItems(productosList!!)
+                /*for (item in productosList!!){
                     adapter?.add(item)
-                }
+                }*/
             }
 
             setResults(productosList?.size!!)
         }
 
 
-        var tipoProducto= presenter?.getTipoProducto(tipoProductoIdGlobal)
+        val tipoProducto= presenter?.getTipoProducto(tipoProductoIdGlobal)
         if(tipoProducto!=null){
-
             txtTipoProducto.setText(tipoProducto.Nombre)
-
             if(tipoProducto.Imagen!=null){
                 // val bitmap = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                 // imgTipoProducto.setImageBitmap(bitmap)
@@ -124,13 +124,13 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     //region ADAPTER
     private fun initAdapter() {
 
-       recyclerView.layoutManager = LinearLayoutManager(activity)
-        adapter = ProductorAdapter(ArrayList<Producto>())
-        recyclerView.adapter = adapter
+        //recyclerView.layoutManager = LinearLayoutManager(activity)
+        //adapter = ProductorAdapter(ArrayList<Producto>())
+       // recyclerView.adapter = adapter
        //recyclerView.addItemDecoration(VerticalLineDecorator(2))
+        /*For Load More Pagination*/
 
 
-        /*For Load More Pagination
        adapter = ProductorMoreAdapter(productosList, activity)
         adapter?.setLoadMoreListener(object : ProductorMoreAdapter.OnLoadMoreListener {
             override fun onLoadMore() {
@@ -151,12 +151,11 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         recyclerView.addItemDecoration(VerticalLineDecorator(2))
         recyclerView.adapter = adapter
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0)
-        */
     }
 
 
     private fun loadMore(index: Int) {
-        //productosList?.add(Producto(Enabled = false))
+        productosList?.add(Producto(Enabled = false))
         adapter?.notifyItemInserted(productosList?.size!! - 1)
         presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,index,false)
     }
@@ -168,7 +167,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     //region IMPLEMENTS METHODS INTERFACE
 
     override fun addNewItem(producto: Producto) {
-        adapter?.add(producto)
+        //adapter?.add(producto)
     }
     override fun showProgress() {
 
@@ -196,7 +195,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
 
     override fun setListProductoFirts(listProducto: List<Producto>) {
-       /* productosList?.clear()
+        productosList?.clear()
         productosList?.addAll(listProducto)
         adapter?.notifyDataChanged()
         setResults(productosList?.size!!)
@@ -209,17 +208,14 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         }else{
             pastVisiblesItems=0
         }
-
-        */
     }
 
     override fun setListProducto(listProducto: List<Producto>) {
 
-        /*
             productosList?.removeAt(productosList?.size!! - 1)
             if (listProducto.size > 0) {
                 //add loaded data
-                productosList?.addAll(listProducto!!)
+                productosList?.addAll(listProducto)
             } else {//result size 0 means there is no more data available at server
                 //adapter?.setMoreDataAvailable(false)
                 //telling adapter to stop calling load more as no more server data available
@@ -228,9 +224,9 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             adapter?.notifyDataChanged()
             pastVisiblesItems=listProducto.size
             setResults(productosList?.size!!)
-        */
-        productosList=listProducto
-        setResults(listProducto.size)
+
+        //productosList=listProducto
+       // setResults(listProducto.size)
     }
 
     override fun setResults(listProduccion: Int) {

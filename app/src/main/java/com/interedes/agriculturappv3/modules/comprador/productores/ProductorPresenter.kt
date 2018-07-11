@@ -85,19 +85,18 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
             }
 
             RequestEventProductor.ITEM_EVENT -> {
-                var producto = event.objectMutable as Producto
+                val producto = event.objectMutable as Producto
                 mainView?.navigateDetalleTipoProductoUser(producto)
             }
 
-
             RequestEventProductor.ITEM_NEW_EVENT -> {
-                var producto = event.objectMutable as Producto
+                val producto = event.objectMutable as Producto
                 mainView?.addNewItem(producto)
                 mainView?.hideProgressHud()
             }
 
             RequestEventProductor.LIST_EVENT -> {
-                var listProducto = event.mutableList as List<Producto>
+                val listProducto = event.mutableList as List<Producto>
                 mainView?.setListProducto(listProducto)
                 mainView?.hideProgressHud()
             }
@@ -108,10 +107,7 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
                 mainView?.setListProductoFirts(list)
                 mainView?.hideProgress()
                 mainView?.hideProgressHud()
-
-
             }
-
         }
     }
     //endregion

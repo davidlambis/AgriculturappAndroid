@@ -39,14 +39,6 @@ import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit;
 import android.widget.Toast
 
-
-
-
-
-
-
-
-
 class ProductorRepository:IMainViewProductor.Repository {
 
 
@@ -61,7 +53,7 @@ class ProductorRepository:IMainViewProductor.Repository {
 
 
     override fun getTipoProducto(tipoProducto: Long): TipoProducto? {
-        var tipoProducto= SQLite.select().from(TipoProducto::class.java).where(TipoProducto_Table.Id.eq(tipoProducto)).querySingle()
+        val tipoProducto= SQLite.select().from(TipoProducto::class.java).where(TipoProducto_Table.Id.eq(tipoProducto)).querySingle()
         return tipoProducto
     }
 
@@ -70,10 +62,10 @@ class ProductorRepository:IMainViewProductor.Repository {
         if(checkConection){
             //Get Productos by user
             val queryProductos = Listas.queryGeneralLong("tipo_producto_id",tipoProductoId)
-            //val callProductos = apiService?.getProductosByTipoProductos(queryProductos,top,skip)
-            val callProductos = apiService?.getProductosByTipoProductos(queryProductos)
+            val callProductos = apiService?.getProductosByTipoProductos(queryProductos,top,skip)
+            //val callProductos = apiService?.getProductosByTipoProductos(queryProductos)
            // mCompositeDisposable?.add(callProductos?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe(this::handleResponse,this::handleError)!!);
-            val searchDisposable = callProductos?.delay(500, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
+            callProductos?.delay(500, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
                 //Log.d("search", searchString)
                 val list =searchResponse.value
                 //TODO Delete information in local, add new remote
@@ -100,7 +92,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                     //TODO Unidades Productivas
                     val unidaProductiva= Unidad_Productiva()
 
-                    var unidadProductivaVerficateSave= SQLite.select()
+                    val unidadProductivaVerficateSave= SQLite.select()
                             .from(Unidad_Productiva::class.java)
                             .where(Unidad_Productiva_Table.Id_Remote.eq(item.unidad_productiva_id))
                             .querySingle()
@@ -136,8 +128,8 @@ class ProductorRepository:IMainViewProductor.Repository {
 
                     //TODO Lote
                     val lote=Lote()
-                    if(lote!=null){
-                        var loteVerficateSave= SQLite.select()
+
+                        val loteVerficateSave= SQLite.select()
                                 .from(Lote::class.java)
                                 .where(Lote_Table.Id_Remote.eq(item.lote_id))
                                 .querySingle()
@@ -157,8 +149,8 @@ class ProductorRepository:IMainViewProductor.Repository {
                         if(coordenadas!=null){
                             if(coordenadas.isNotEmpty()){
                                 val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
-                                var latitud= separated!![0].toDoubleOrNull() // this will contain "Fruit"
-                                var longitud=separated!![1].toDoubleOrNull() // this will contain " they taste good"
+                                val latitud= separated!![0].toDoubleOrNull() // this will contain "Fruit"
+                                val longitud=separated!![1].toDoubleOrNull() // this will contain " they taste good"
                                 lote.Latitud=latitud
                                 lote.Longitud=longitud
                                 lote.Coordenadas=coordenadas
@@ -176,7 +168,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                         lote.EstadoSincronizacion=false
                         lote.Estado_SincronizacionUpdate=false
                         lote.save()
-                    }
+
 
 
                     //TODO Cultivo
@@ -290,22 +282,17 @@ class ProductorRepository:IMainViewProductor.Repository {
                     }
                     producto.save()
 
-                    postEventOk(RequestEventProductor.ITEM_NEW_EVENT,null,producto)
-
+                    //postEventOk(RequestEventProductor.ITEM_NEW_EVENT,null,producto)
                     listProductos.add(producto)
                 }
 
+                //postEventOk(RequestEventProductor.LIST_EVENT,listProductos,null)
 
-
-                postEventOk(RequestEventProductor.LIST_EVENT,listProductos,null)
-
-                /*
                 if(isFirst){
                     postEventOk(RequestEventProductor.LOAD_DATA_FIRTS,listProductos,null)
                 }else{
                     postEventOk(RequestEventProductor.READ_EVENT,listProductos,null)
-                }*/
-
+                }
                 //view.showSearchResult(searchResponse.items())
             },
 

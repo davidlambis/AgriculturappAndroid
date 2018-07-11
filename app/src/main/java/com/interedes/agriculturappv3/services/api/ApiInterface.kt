@@ -72,8 +72,13 @@ interface ApiInterface {
 
 
     //Get Roles
+    //@GET("odata/Agp2/Rols?\$select=Nombre,Id")
+    //fun getRoles(): Call<RolResponse>
+
     @GET("odata/Agp2/Rols?\$select=Nombre,Id")
-    fun getRoles(): Call<RolResponse>
+    fun getRoles(): Observable<RolResponse>
+
+
 
     //Get Métodos Pago
     @GET("odata/Agp2/MetodoPagos")
@@ -378,12 +383,12 @@ interface ApiInterface {
 
 
 
-    //@GET("odata/Agp2/ViewProductos")
-    //fun getProductosByTipoProductos(@Query("\$filter") filter: String,@Query("\$top") top: Int,@Query("\$skip") skip: Int): Observable<GetProductosByTipoResponse>
-
-
     @GET("odata/Agp2/ViewProductos")
-    fun getProductosByTipoProductos(@Query("\$filter") filter: String): Observable<GetProductosByTipoResponse>
+    fun getProductosByTipoProductos(@Query("\$filter") filter: String,@Query("\$top") top: Int,@Query("\$skip") skip: Int): Observable<GetProductosByTipoResponse>
+
+
+    //@GET("odata/Agp2/ViewProductos")
+   // fun getProductosByTipoProductos(@Query("\$filter") filter: String): Observable<GetProductosByTipoResponse>
 
 
 

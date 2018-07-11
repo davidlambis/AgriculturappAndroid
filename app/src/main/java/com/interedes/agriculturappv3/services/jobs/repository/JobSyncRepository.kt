@@ -22,7 +22,10 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.libs.eventbus_rx.Rx_Bus
 import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
+import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal
+import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal_Table
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
@@ -114,6 +117,53 @@ class JobSyncRepository: IMainViewJob.Repository {
             }
         }
     }
+    //endregion
+
+    //region FOTO PERFIL
+
+    override fun syncFotoPerfilUserLogued(context: Context){
+        getFotoPerfil(context)
+    }
+
+    private fun getFotoPerfil(context:Context){
+        val user = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        if(user!=null){
+            if(user.Fotopefil!=null){
+                FileLoader.with(context)
+                        .load(S3Resources.RootImage+"${user.Fotopefil}",false) //2nd parameter is optioal, pass true to force load from network
+                        //.fromDirectory("test4", FileLoader.DIR_EXTERNAL_PUBLIC)
+                        .fromDirectory(DIR_FOTO_PERFIL, FileLoader.DIR_INTERNAL)
+                        .asFile( object: FileRequestListener<File> {
+                            override fun onLoad(request: FileLoadRequest?, response: FileResponse<File>?) {
+                                val loadedFile = response?.getBody();
+                                if(loadedFile?.length()!!>0){
+                                    val compressedImage = Compressor(context)
+                                            .setMaxWidth(300)
+                                            .setMaxHeight(300)
+                                            .setQuality(75)
+                                            //.setCompressFormat(Bitmap.CompressFormat.WEBP)
+                                            //.setQuality(80)
+                                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                                            .compressToBitmap(loadedFile)
+
+                                    val bitmap= convertBitmapToBytePlagasAndFotoPerfil(compressedImage)
+                                    user.blobImagenUser = Blob(bitmap)
+                                    user.save()
+                                }
+
+                                Rx_Bus.publish(user)
+                                FileLoader.deleteWith (context) .fromDirectory ( DIR_FOTO_PERFIL , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
+                                Log.d("SYNC DATA", "Foto perfil Loaded" )
+                            }
+                            override fun onError(request: FileLoadRequest?, error : Throwable?) {
+                                var error = error.toString()
+                                getAllPlagasFoto(0,context)
+                            }
+                        })
+            }
+        }
+    }
+
     //endregion
 
     //region CONTROL PLAGAS
@@ -237,12 +287,41 @@ class JobSyncRepository: IMainViewJob.Repository {
                         //val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                         notificationManager!!.notify(notificationId,notification)
                     }
-          //  }
+                //  }
+                val fcmNotificationBuilder= com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal()
+                fcmNotificationBuilder.title=NotificationTypeResources.NOTIFICATION_TYPE_CONTROLPLAGA
+                fcmNotificationBuilder.message= message
+                fcmNotificationBuilder.user_name=""
+                fcmNotificationBuilder.ui=""
+                fcmNotificationBuilder.fcm_token=""
+                fcmNotificationBuilder.room_id=""
+                fcmNotificationBuilder.type_notification=NotificationTypeResources.NOTIFICATION_TYPE_CONTROLPLAGA
+                fcmNotificationBuilder.image_url= ""
+                fcmNotificationBuilder.parameter=item.CultivoId.toString()
+                saveNotification(fcmNotificationBuilder)
         }
         }
     }
 
 
+    override fun saveNotification(notification: NotificationLocal) {
+        val lastNotification = getLastNotification()
+        if (lastNotification == null) {
+            notification.Id = 1
+        } else {
+            notification.Id = lastNotification.Id!! + 1
+        }
+
+        notification.time= System.currentTimeMillis()
+        val lastUserLogued= getLastUserLogued()
+        notification.userLoguedId=lastUserLogued?.Id
+        notification.save()
+    }
+
+    override fun getLastNotification(): NotificationLocal? {
+        val lastNotification = SQLite.select().from(NotificationLocal::class.java).orderBy(NotificationLocal_Table.Id, false).querySingle()
+        return lastNotification
+    }
 
     private fun getNotificationIcon(): Int {
         val useWhiteIcon = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
@@ -500,53 +579,11 @@ class JobSyncRepository: IMainViewJob.Repository {
     override fun syncFotos(context:Context) {
         listInsmo= SQLite.select().from(Insumo::class.java).queryList()
         listFotoEnfermedad= SQLite.select().from(FotoEnfermedad::class.java).queryList()
-        getFotoPerfil(context)
+        getAllPlagasFoto(0,context)
     }
 
 
-    private fun getFotoPerfil(context:Context){
-        val user = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
-        if(user!=null){
-            if(user.Fotopefil!=null){
 
-                FileLoader.with(context)
-                        .load(S3Resources.RootImage+"${user.Fotopefil}",false) //2nd parameter is optioal, pass true to force load from network
-                        //.fromDirectory("test4", FileLoader.DIR_EXTERNAL_PUBLIC)
-                        .fromDirectory(DIR_FOTO_PERFIL, FileLoader.DIR_INTERNAL)
-                        .asFile( object: FileRequestListener<File> {
-                            override fun onLoad(request: FileLoadRequest?, response: FileResponse<File>?) {
-                                val loadedFile = response?.getBody();
-                                if(loadedFile?.length()!!>0){
-                                    val compressedImage = Compressor(context)
-                                            .setMaxWidth(300)
-                                            .setMaxHeight(300)
-                                            .setQuality(75)
-                                            //.setCompressFormat(Bitmap.CompressFormat.WEBP)
-                                            //.setQuality(80)
-                                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                                            .compressToBitmap(loadedFile)
-
-                                    val bitmap= convertBitmapToBytePlagasAndFotoPerfil(compressedImage)
-                                    user.blobImagenUser = Blob(bitmap)
-                                    user.save()
-                                }
-
-                                Log.d("SYNC DATA", "Foto perfil Loaded" )
-                                getAllPlagasFoto(0,context)
-                            }
-                            override fun onError(request: FileLoadRequest?, error : Throwable?) {
-                                var error = error.toString()
-                                getAllPlagasFoto(0,context)
-                            }
-                        });
-            }
-            else{
-                getAllPlagasFoto(0,context)
-            }
-        }else{
-            getAllPlagasFoto(0,context)
-        }
-    }
 
     private fun getAllInsumoFoto(index: Int,context: Context) {
         if (index >= listInsmo!!.size) {
@@ -554,7 +591,6 @@ class JobSyncRepository: IMainViewJob.Repository {
             //Toast.makeText(this,"Insumos cargados",Toast.LENGTH_LONG).show()
             Log.d("SYNC DATA", "Fotografias de insumos y plagas Loaded" )
             //Log.d(TAG_INSUMOS, "Fotografias de insumos y plagas cargados")
-            FileLoader.deleteWith (context) .fromDirectory ( DIR_FOTO_PERFIL , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
             FileLoader.deleteWith (context) .fromDirectory ( DIR_INSUMOS , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
             FileLoader.deleteWith (context) .fromDirectory ( DIR_PLAGAS , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
             postEventMainMenu(RequestEventMainMenu.SYNC_EVENT,null,null,null)

@@ -16,10 +16,8 @@
         android:layout_height="match_parent"
         tools:context=".modules.main_menu.ui.MenuMainActivity">
 
-
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar_main"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay">
@@ -70,7 +68,6 @@
                 <FrameLayout
                     app:layout_constraintBottom_toTopOf="@+id/navigationViewBotom"
                     android:id="@+id/container"
-                    android:background="@drawable/fondo_general"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     />

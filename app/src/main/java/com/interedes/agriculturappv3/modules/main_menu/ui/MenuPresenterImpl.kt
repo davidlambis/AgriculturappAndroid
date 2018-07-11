@@ -109,6 +109,7 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
             }
 
 
+
             /*RequestEventMainMenu.SYNC_FOTOS_INSUMOS_PLAGAS -> {
                 mainView?.syncFotosInsumosPlagas()
             }*/

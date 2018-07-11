@@ -11,6 +11,29 @@
     </style>
 
 
+    <!-- Splash Style -->
+    <style name="AppTheme.Intro" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/transparent
+        </item>
+    </style>
+
+    <style name="AppTheme.Login" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/fondo_login_opt</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/black_transparencia_190
+        </item>
+    </style>
+
+    <style name="AppTheme.MenuMain" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/fondo_general</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark
+        </item>
+    </style>
 
 
     <style name="MyAppThemeNoShadow" parent="android:Theme.Holo.Light">
@@ -22,7 +45,6 @@
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark
         </item>
-
     </style>
 <!--
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -39,11 +61,12 @@
     </style>
 
     <!-- Splash Style -->
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/splash_drawable</item>
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/transparent
         </item>
-
     </style>
 
     <!-- Login Theme -->

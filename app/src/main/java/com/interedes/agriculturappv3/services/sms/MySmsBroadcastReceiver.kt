@@ -185,7 +185,6 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
         return if (useWhiteIcon) R.mipmap.ic_launcher else R.mipmap.ic_launcher
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun setupChannels(context:Context) {
         val adminChannelName = context.getString(R.string.notifications_admin_channel_name)

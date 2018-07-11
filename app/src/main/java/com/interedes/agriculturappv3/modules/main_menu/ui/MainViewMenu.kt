@@ -43,8 +43,8 @@ interface MainViewMenu {
         fun setQuantitySyncAutomatic(quantitySync: QuantitySync?)
 
         fun updateCountNotifications()
-
         fun getListasIniciales()
+
 
         ///fun syncFotosInsumosPlagas()
     }

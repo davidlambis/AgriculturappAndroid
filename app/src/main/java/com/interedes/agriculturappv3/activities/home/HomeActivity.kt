@@ -79,7 +79,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
 
         registerReceiver(connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         AgriculturApplication.instance.setConnectivityListener(this)
-        loadRoles()
+        //loadRoles()
         loadInitialLists()
         linearLayoutIngresar?.setOnClickListener(this)
         linearLayoutRegistrar?.setOnClickListener(this)
@@ -109,6 +109,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
         if (Build.VERSION.SDK_INT >= 23) {
             if (!hasPermissions(this, *PERMISSIONS)) {
                 startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
+                finish()
             } else {
                 val response = doPermissionGrantedStuffs()
                 if (response) {
@@ -136,39 +137,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
             startActivity(i)
         }
     }
-
-
-    private fun loadRoles() {
-        if (checkConnection()) {
-                val apiService = ApiInterface.create()
-                val call = apiService.getRoles()
-                call.enqueue(object : Callback<RolResponse> {
-                    override fun onResponse(call: Call<RolResponse>, response: retrofit2.Response<RolResponse>?) {
-                        if (response != null && response.code() == 200) {
-                            lista = response.body()?.value
-                            if (lista != null) {
-                                for (item: Rol in lista!!) {
-                                    if (item.Nombre.equals(RolResources.COMPRADOR)) {
-                                        item.Imagen = R.drawable.ic_comprador_big
-                                        item.save()
-                                    } else if (item.Nombre.equals(RolResources.PRODUCTOR)) {
-                                        item.Imagen = R.drawable.ic_productor_big
-                                        item.save()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    override fun onFailure(call: Call<RolResponse>?, t: Throwable?) {
-                        onMessageOk(R.color.grey_luiyi, getString(R.string.error_request))
-                        Log.e("Error", t?.message.toString())
-                    }
-                })
-            } else {
-                onMessageOk(R.color.grey_luiyi, getString(R.string.not_internet_connected))
-            }
-    }
-
 
     fun loadInitialLists() {
         if (checkConnection()) {
@@ -236,12 +204,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
         if (isConnected) {
             onMessageOk(R.color.colorPrimary, getString(R.string.internet_connected))
-            if (Select().from(Rol::class.java).queryList().size <= 0) {
-                loadRoles()
-            }
         } else {
             if (Select().from(Rol::class.java).queryList().size <= 0) {
-                onMessageOk(R.color.grey_luiyi, getString(R.string.error_load_roles))
+                //onMessageOk(R.color.grey_luiyi, getString(R.string.error_load_roles))
             } else {
                 onMessageOk(R.color.grey_luiyi, getString(R.string.not_internet_connected))
             }

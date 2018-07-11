@@ -227,7 +227,7 @@
     <string name="title_erradicada">Erradicada</string>
     <string name="title_alert_erradicar_plaga">¿Confirma la erradicación de esta plaga?</string>
 
-    <string name="message_downloa_plaga">Señor(a) usuario %s recuerde que podra descargar o actualizar la informacion de plagas como se muestra en el siguiente figura:</string>
+    <string name="message_downloa_plaga">Señor(a) usuario %s recuerde que podra descargar o actualizar la informacion de plagas como se muestra en la siguiente figura:</string>
     <string name="message_conection_plaga">al parecer no cuentas con conexión a a internet,</string>
 
     <string name="search_plaga">Buscar Plaga</string>
@@ -315,6 +315,7 @@
     <string name="tittle_verificate_conection">Verifique su conexion a internet para actualizar su imagen de perfil</string>
 
 
+
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>
     <string name="name">Nombre</string>
@@ -352,6 +353,7 @@
 
     <string name="agregar">Agregar</string>
     <string name="filtrar">Filtrar</string>
+    <string name="aplic">Aplicar</string>
     <string name="ubicar">Ubicar</string>
     <string name="tittle_filter">Filtros de búsqueda</string>
     <string name="error_results">No se encontraron resultados</string>

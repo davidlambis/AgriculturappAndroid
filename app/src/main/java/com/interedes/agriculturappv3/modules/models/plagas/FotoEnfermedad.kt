@@ -11,7 +11,7 @@ import com.raizlabs.android.dbflow.data.Blob
 data class FotoEnfermedad(@PrimaryKey
                           @SerializedName("Id")
                           @Column(name = "Id")
-                          var Id: Long? = 0,
+                          var Id: Long = 0,
 
                           @SerializedName("Descripcion")
                           @Column(name = "Descripcion")

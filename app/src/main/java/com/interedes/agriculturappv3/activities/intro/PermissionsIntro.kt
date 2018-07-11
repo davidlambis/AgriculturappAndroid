@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.github.paolorotolo.appintro.AppIntro2
+import com.interedes.agriculturappv3.activities.home.HomeActivity
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
@@ -181,15 +182,18 @@ class PermissionsIntro: AppIntro() {
 
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
-
         if (doPermissionGrantedStuffs()!!) {
-            var usuario= getLastUserLogued()
+            val usuario= getLastUserLogued()
             if (usuario != null) {
                 val i = Intent(this, MenuMainActivity::class.java)
                 i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(i)
+            }else{
+                val i = Intent(this, HomeActivity::class.java)
+                i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(i)
             }
-            finish()
+           // finish()
         }else{
 
             if(!doPermissionGrantedStuffsUbicacion()){
