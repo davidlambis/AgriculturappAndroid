@@ -6,7 +6,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 
 class ProgressIntentService: IntentService("ProgressIntentService") {
 
@@ -14,7 +14,7 @@ class ProgressIntentService: IntentService("ProgressIntentService") {
     override fun onHandleIntent(intent: Intent?) {
         if (intent != null) {
             val action = intent.action
-            if (Const.ACTION_RUN_ISERVICE.equals(action)) {
+            if (Const_Resources.ACTION_RUN_ISERVICE.equals(action)) {
                 handleActionRun()
             }
         }
@@ -41,8 +41,8 @@ class ProgressIntentService: IntentService("ProgressIntentService") {
 
                 startForeground(1, builder.build())
 
-                val localIntent = Intent(Const.ACTION_RUN_ISERVICE)
-                        .putExtra(Const.EXTRA_PROGRESS, i)
+                val localIntent = Intent(Const_Resources.ACTION_RUN_ISERVICE)
+                        .putExtra(Const_Resources.EXTRA_PROGRESS, i)
 
                 // Emisión de {@code localIntent}
                 LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent)
@@ -60,11 +60,9 @@ class ProgressIntentService: IntentService("ProgressIntentService") {
 
     override fun onDestroy() {
         Toast.makeText(this, "Servicio destruido...", Toast.LENGTH_SHORT).show()
-
         // Emisión para avisar que se terminó el servicio
-        val localIntent = Intent(Const.ACTION_PROGRESS_EXIT)
+        val localIntent = Intent(Const_Resources.ACTION_PROGRESS_EXIT)
         LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent)
-
         Log.d(TAG, "Servicio destruido...")
     }
 }

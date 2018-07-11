@@ -12,10 +12,8 @@ import com.interedes.agriculturappv3.modules.account.events.RequestEventAccount
 import com.interedes.agriculturappv3.modules.models.detalle_metodo_pago.DetalleMetodoPago
 import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
-import com.raizlabs.android.dbflow.kotlinextensions.save
-import com.raizlabs.android.dbflow.sql.language.SQLite
 import org.greenrobot.eventbus.Subscribe
 import java.util.ArrayList
 
@@ -62,7 +60,7 @@ class AccountPresenter (var mainView: IMainViewAccount.MainView?):IMainViewAccou
     }
 
     override fun onResume(context: Context) {
-        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const_Resources.SERVICE_CONECTIVITY))
     }
 
     override fun onPause(context: Context) {

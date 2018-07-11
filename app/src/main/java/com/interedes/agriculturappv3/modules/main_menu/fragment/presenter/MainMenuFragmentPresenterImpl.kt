@@ -4,14 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.main_menu.fragment.interactor.MainMenuFragmentInteractor
 import com.interedes.agriculturappv3.modules.main_menu.fragment.interactor.MainMenuFragmentInteractorImpl
 import com.interedes.agriculturappv3.modules.main_menu.fragment.ui.MainMenuFragmentView
 import com.interedes.agriculturappv3.events.RequestEvent
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 
@@ -74,8 +73,8 @@ class MainMenuFragmentPresenterImpl(var view: MainMenuFragmentView?) : MainMenuF
         context.registerReceiver(mNotificationReceiver, IntentFilter("LOCATION"))*/
 
 
-        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
-        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_LOCATION))
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const_Resources.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const_Resources.SERVICE_LOCATION))
     }
 
     override fun onPause(context: Context) {

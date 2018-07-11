@@ -13,7 +13,7 @@ import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
@@ -121,8 +121,8 @@ class LotePresenterImpl(var loteMainView: MainViewLote.View?) : MainViewLote.Pre
     }
 
     override fun onResume(context: Context) {
-        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const.SERVICE_CONECTIVITY))
-        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const.SERVICE_LOCATION))
+        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const_Resources.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const_Resources.SERVICE_LOCATION))
 
     }
 

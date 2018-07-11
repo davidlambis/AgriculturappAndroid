@@ -3,7 +3,6 @@ package com.interedes.agriculturappv3.modules.productor.ui.main_menu
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
-import android.app.job.JobScheduler
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -36,10 +35,9 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.main_menu.fragment.ui.adapter.AdapterFragmetMenu
 import com.interedes.agriculturappv3.modules.main_menu.fragment.ui.MainMenuFragment
-import kotlinx.android.synthetic.main.activity_menu_main.*
 import com.interedes.agriculturappv3.modules.main_menu.ui.MenuPresenterImpl
 import com.interedes.agriculturappv3.modules.main_menu.ui.MainViewMenu
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.afollestad.materialdialogs.DialogAction
@@ -53,11 +51,7 @@ import com.daimajia.androidanimations.library.YoYo
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.interedes.agriculturappv3.AgriculturApplication
-import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
 import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.UserSmsActivity
 import com.interedes.agriculturappv3.activities.chat.online.conversations_user.ConversationsUsersActivity
 import com.interedes.agriculturappv3.activities.intro.PermissionsIntro
@@ -66,11 +60,9 @@ import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
-import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.modules.notification.NotificationActivity
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.AsistenciaTecnicaFragment
-import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.control_plagas.ControlPlagasFragment
 import com.interedes.agriculturappv3.services.jobs.ChatRunJob
 import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.jobs.ControlPlagasJob
@@ -85,6 +77,7 @@ import com.nightonke.boommenu.Types.ButtonType
 import com.nightonke.boommenu.Types.PlaceType
 import com.nightonke.boommenu.Util
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
 import kotlinx.android.synthetic.main.dialog_image_download_plaga.view.*
@@ -95,8 +88,6 @@ import java.util.*
 
 
 class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu.MainView,View.OnClickListener {
-
-
     var isAppRunning: Boolean = false
 
     // var coordsService: CoordsService? = null
@@ -114,18 +105,14 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     //Firebase
     //FIREBASE
-
-     var mCurrentUserID: String? = null
+    var mCurrentUserID: String? = null
     var mAuth: FirebaseAuth? = null
-
-
     //Alert Dialog Sync
     var viewDialogSync:View?= null
     var _dialogSync: AlertDialog? = null
     //Chat Type
 
     //private var DIALOG_SET_TYPE_CHAT: Int = -1
-
 
     //Permission
     //public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 1;
@@ -141,12 +128,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private var IS_EXPORT = false
 
     private val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
-
     var  notificationCount:TextView?=null
 
-
-    var jobScheduler: JobScheduler?=null
-    val  MYJOBID:Int = 1;
+    var extrasGlobal:Bundle?=null
 
     companion object {
         var instance: MenuMainActivity? = null
@@ -349,27 +333,34 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             ChatRunJob.scheduleJobChat()
         }
 
-        val extras = intent.extras
-        if (extras != null) {
-            if (extras.containsKey(TagNavigationResources.TAG_NAVIGATE_CHAT_ONLINE)) {
+        extrasGlobal= intent.extras
+        if (extrasGlobal != null) {
+            if (extrasGlobal!!.containsKey(TagNavigationResources.TAG_NAVIGATE_CHAT_ONLINE)) {
                 val chatOnline = Intent(this, ConversationsUsersActivity::class.java)
                 chatOnline.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chatOnline)
-            }else if(extras.containsKey(TagNavigationResources.TAG_NAVIGATE_OFERTAS)){
+            }else if(extrasGlobal!!.containsKey(TagNavigationResources.TAG_NAVIGATE_OFERTAS)){
                 replaceFragment(OfertasFragment())
-            }else if(extras.containsKey(TagNavigationResources.TAG_NAVIGATE_CHAT_SMS)){
+            }else if(extrasGlobal!!.containsKey(TagNavigationResources.TAG_NAVIGATE_CHAT_SMS)){
                 val chat = Intent(this, UserSmsActivity::class.java)
                 chat.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chat)
             }
-            else if(extras.containsKey(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS)){
-                val bundle = Bundle()
-                bundle.putLong(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS, TagNavigationResources.NAVIGATE_CONTROL_PLAGAS)
-                val asistenciaTecnicaFragment: AsistenciaTecnicaFragment
-                asistenciaTecnicaFragment = AsistenciaTecnicaFragment()
-                asistenciaTecnicaFragment.arguments = bundle
-                replaceFragment(asistenciaTecnicaFragment)
-                replaceFragment(AsistenciaTecnicaFragment())
+            else if(extrasGlobal!!.containsKey(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS)){
+                val myTimerr = 500
+                ///Mensage
+                Handler().postDelayed(Runnable {
+                    try {
+                        val bundle = Bundle()
+                        bundle.putLong(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS, TagNavigationResources.NAVIGATE_CONTROL_PLAGAS)
+                        //val asistenciaTecnicaFragment: AsistenciaTecnicaFragment
+                        val asistenciaTecnicaFragment = AsistenciaTecnicaFragment()
+                        asistenciaTecnicaFragment.arguments = bundle
+                        replaceFragment(asistenciaTecnicaFragment)
+
+                    } catch (e: Exception) {
+                    }
+                }, myTimerr.toLong())
             }
         }
         /*var usuarioLogued=getLastUserLogued()
@@ -377,6 +368,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             presenter?.syncQuantityData(true)
         }*/
     }
+
 
     private fun setupMenuFloating() {
 
@@ -1067,7 +1059,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
                     var intent =  Intent(this, ProgresService::class.java)
-                    intent.setAction(Const.ACTION_RUN_ISERVICE)
+                    intent.setAction(Const_Resources.ACTION_RUN_ISERVICE)
                     startForegroundService(intent)
                 }*/
 
@@ -1078,7 +1070,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 /*
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     var intent =  Intent(this, JobSyncService::class.java)
-                    //intent.setAction(Const.ACTION_RUN_ISERVICE)
+                    //intent.setAction(Const_Resources.ACTION_RUN_ISERVICE)
                     //startForegroundService(intent)
                     //this.startForegroundService(intent)
                     ContextCompat.startForegroundService(this, intent)
@@ -1438,7 +1430,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         userStatus?.setValue(Status_Chat.ONLINE)
         userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
         */
-        val retIntent = Intent(Const.SERVICE_CONECTIVITY)
+        val retIntent = Intent(Const_Resources.SERVICE_CONECTIVITY)
         retIntent.putExtra("state_conectivity", true)
         this?.sendBroadcast(retIntent)
         onMessageOk(R.color.colorPrimary, getString(R.string.on_connectividad))
@@ -1464,7 +1456,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);*/
 
        // mUserDBRef?.database?.goOffline()
-        val retIntent = Intent(Const.SERVICE_CONECTIVITY)
+        val retIntent = Intent(Const_Resources.SERVICE_CONECTIVITY)
         retIntent.putExtra("state_conectivity", false)
         this?.sendBroadcast(retIntent)
         onMessageError(R.color.grey_luiyi, getString(R.string.off_connectividad))

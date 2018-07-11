@@ -431,10 +431,10 @@ class PlagaFragment : Fragment(), IPlaga.View, SwipeRefreshLayout.OnRefreshListe
     //endregion
 
     //region Ciclo de Vida Fragment
-    override fun onDestroyView() {
+    /*override fun onDestroyView() {
         super.onDestroyView()
         presenter?.onDestroy()
-    }
+    }*/
 
     override fun onPause() {
         super.onPause()

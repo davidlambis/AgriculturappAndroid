@@ -13,7 +13,7 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.modules.models.sms.Sms_Table
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -135,12 +135,12 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
 
     override fun onResume(context: Context) {
         //On Activity Chat_Sms_Activity
-        context.registerReceiver(sentStatusReceiver, IntentFilter(Const.SERVICE_SMS_SENT))
-        context.registerReceiver(deliveredStatusReceiver, IntentFilter(Const.SERVICE_SMS_DELIVERED))
+        context.registerReceiver(sentStatusReceiver, IntentFilter(Const_Resources.SERVICE_SMS_SENT))
+        context.registerReceiver(deliveredStatusReceiver, IntentFilter(Const_Resources.SERVICE_SMS_DELIVERED))
 
         //On Activity UsersSmsActivity
-        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const.SERVICE_CONECTIVITY))
-        context.registerReceiver(mNotificationReceiverSms, IntentFilter(Const.SERVICE_RECYVE_MESSAGE))
+        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const_Resources.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiverSms, IntentFilter(Const_Resources.SERVICE_RECYVE_MESSAGE))
 
     }
 
@@ -212,8 +212,8 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
             // if message length is too long messages are divided
             val messages = sms.divideMessage(message)
             for (msg in messages) {
-                val sentIntent = PendingIntent.getBroadcast(context, 0, Intent(Const.SERVICE_SMS_SENT), 0)
-                val deliveredIntent = PendingIntent.getBroadcast(context, 0, Intent(Const.SERVICE_SMS_DELIVERED), 0)
+                val sentIntent = PendingIntent.getBroadcast(context, 0, Intent(Const_Resources.SERVICE_SMS_SENT), 0)
+                val deliveredIntent = PendingIntent.getBroadcast(context, 0, Intent(Const_Resources.SERVICE_SMS_DELIVERED), 0)
                 sms.sendTextMessage(phone, null, msg, sentIntent, deliveredIntent)
             }
 

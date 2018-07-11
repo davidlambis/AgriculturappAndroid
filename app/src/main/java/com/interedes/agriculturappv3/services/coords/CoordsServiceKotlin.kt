@@ -13,7 +13,7 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 
 
 
@@ -100,7 +100,7 @@ class CoordsServiceKotlin(): Service(), LocationListener {
     override fun onProviderEnabled(s: String) {
         Toast.makeText(applicationContext, "GPS Activado", Toast.LENGTH_SHORT).show()
         val is_enabled_gps=true
-        val retIntent = Intent(Const.SERVICE_LOCATION)
+        val retIntent = Intent(Const_Resources.SERVICE_LOCATION)
         retIntent.setPackage(PACKAGE_NAME)
        // retIntent.setAction("com.interedes.agriculturappv3.SendBroadcast")
         retIntent.putExtra("is_enabled_gps", is_enabled_gps)
@@ -112,7 +112,7 @@ class CoordsServiceKotlin(): Service(), LocationListener {
         Toast.makeText(applicationContext,"GPS Desactivado",Toast.LENGTH_SHORT).show();
 
         val is_enabled_gps=false
-        val retIntent = Intent(Const.SERVICE_LOCATION)
+        val retIntent = Intent(Const_Resources.SERVICE_LOCATION)
         retIntent.setPackage(PACKAGE_NAME)
         retIntent.putExtra("is_enabled_gps", is_enabled_gps)
         applicationContext?.sendBroadcast(retIntent)
@@ -125,7 +125,7 @@ class CoordsServiceKotlin(): Service(), LocationListener {
         latitud = loc.latitude
         longitud = loc.longitude
 
-        val retIntent = Intent(Const.SERVICE_LOCATION)
+        val retIntent = Intent(Const_Resources.SERVICE_LOCATION)
         retIntent.setPackage(PACKAGE_NAME)
         retIntent.putExtra("latitud", latitud)
         retIntent.putExtra("longitud", longitud)

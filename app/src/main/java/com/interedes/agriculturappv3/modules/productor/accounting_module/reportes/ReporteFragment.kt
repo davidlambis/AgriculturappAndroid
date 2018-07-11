@@ -614,8 +614,8 @@ class ReporteFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.On
 
 
     //region OVERRIDES METHODS
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         presenter?.onDestroy()
     }
 

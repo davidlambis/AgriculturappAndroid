@@ -2,8 +2,6 @@ package com.interedes.agriculturappv3.modules.comprador.detail_producto
 
 
 import android.Manifest
-import android.app.Activity
-import android.app.PendingIntent
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
@@ -17,7 +15,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
-import android.telephony.SmsManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -41,13 +38,10 @@ import com.afollestad.materialdialogs.Theme
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.libs.GlideApp
-import com.interedes.agriculturappv3.modules.comprador.productores.adapter.ProductorMoreAdapter
-import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
-import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
 import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -55,7 +49,6 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.alert_success.view.*
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
-import kotlinx.android.synthetic.main.dialog_form_cultivo.*
 import java.util.*
 
 
@@ -197,7 +190,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                                 // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
                             }
                         })*/
-                Picasso.get()
+                /*Picasso.get()
                         .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
                         .fit()
                         .placeholder(R.drawable.ic_foto_producto)
@@ -211,8 +204,14 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                             override fun onSuccess() {
                                 // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
                             }
-                        })
-               // Picasso.setSingletonInstance(picassoss) //apply to default singleton instance
+                        })*/
+                GlideApp.with(activity!!)
+                        .load(S3Resources.RootImage+"${productoGlobal?.Usuario?.Fotopefil}")
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .productorPhoto()
+                        .into(contentIcon)
+
+                // Picasso.setSingletonInstance(picassoss) //apply to default singleton instance
                 /*Picasso.get()
                         .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
                         .placeholder(R.drawable.ic_foto_producto)
@@ -222,11 +221,6 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                         .into(contenIconProducto)*/
             }
 
-            GlideApp.with(activity)
-                    .load(S3Resources.RootImage+"${productoGlobal?.Usuario?.Fotopefil}")
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .productorPhoto()
-                    .into(contentIcon)
 
 
         }

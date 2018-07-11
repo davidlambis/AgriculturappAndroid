@@ -7,9 +7,8 @@ import android.content.IntentFilter
 import com.interedes.agriculturappv3.activities.chat.online.conversations_user.events.RequestEventChatOnline
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.modules.models.chat.RoomConversation
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 
@@ -53,7 +52,7 @@ class Conversacion_Presenter (var mainView: IMainViewConversacion.MainView?): IM
     }
 
     override fun onResume(context: Context) {
-        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const_Resources.SERVICE_CONECTIVITY))
     }
 
     override fun onPause(context: Context) {

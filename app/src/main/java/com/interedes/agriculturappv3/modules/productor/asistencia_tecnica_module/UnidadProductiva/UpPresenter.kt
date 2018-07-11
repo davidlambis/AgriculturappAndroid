@@ -13,15 +13,11 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.departments.Ciudad
 import com.interedes.agriculturappv3.modules.models.departments.Departamento
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
-import com.interedes.agriculturappv3.services.coords.CoordsServicePrueba
-import com.interedes.agriculturappv3.services.coords.HelloSeervice
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 import java.util.ArrayList
-import com.google.android.gms.cast.CastRemoteDisplayLocalService.startService
-
 
 
 class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Presenter {
@@ -66,8 +62,8 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
     }
 
     override fun onResume(context: Context) {
-        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
-        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_LOCATION))
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const_Resources.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const_Resources.SERVICE_LOCATION))
     }
 
     override fun onPause(context: Context) {

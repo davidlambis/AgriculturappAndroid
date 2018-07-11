@@ -1,9 +1,9 @@
-package com.interedes.agriculturappv3.services
+package com.interedes.agriculturappv3.services.resources
 
 /**
  * Created by usuario on 21/03/2018.
  */
-class Const {
+class Const_Resources {
 
     companion object {
 

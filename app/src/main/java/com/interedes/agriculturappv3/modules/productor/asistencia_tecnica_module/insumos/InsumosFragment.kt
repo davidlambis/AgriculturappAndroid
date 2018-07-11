@@ -188,10 +188,10 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
 
     //region ciclo de vida
 
-    override fun onDestroyView() {
+   /* override fun onDestroyView() {
         super.onDestroyView()
         presenter?.onDestroy()
-    }
+    }*/
 
     override fun onPause() {
         super.onPause()

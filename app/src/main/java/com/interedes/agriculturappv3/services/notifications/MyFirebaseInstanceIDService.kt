@@ -7,11 +7,10 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.FirebaseInstanceIdService
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.notifications.events.RequestEventFirebaseService
 import com.interedes.agriculturappv3.services.notifications.repository.FirebaseInstanceRepository
 import com.interedes.agriculturappv3.services.notifications.repository.IMainFirebaseInstance
-import com.interedes.agriculturappv3.services.services.JobSyncService
 import org.greenrobot.eventbus.Subscribe
 
 class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
@@ -35,7 +34,7 @@ class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         val preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-        preferences.edit().putString(Const.FIREBASE_TOKEN, refreshedToken).apply()
+        preferences.edit().putString(Const_Resources.FIREBASE_TOKEN, refreshedToken).apply()
 
          sendRegistrationToServer(refreshedToken)
 

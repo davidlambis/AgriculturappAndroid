@@ -1,24 +1,18 @@
 package com.interedes.agriculturappv3.modules.main_menu.ui
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.preference.PreferenceManager
-import android.support.v4.content.ContextCompat.startActivity
 import android.util.Base64
 import android.util.Log
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
@@ -27,21 +21,15 @@ import com.interedes.agriculturappv3.modules.models.Notification.NotificationLoc
 import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal_Table
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
-import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPlaga
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
-import com.interedes.agriculturappv3.modules.models.cultivo.PostCultivo
 import com.interedes.agriculturappv3.modules.models.departments.Ciudad
 import com.interedes.agriculturappv3.modules.models.departments.DeparmentsResponse
 import com.interedes.agriculturappv3.modules.models.departments.Departamento
-import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
-import com.interedes.agriculturappv3.modules.models.lote.PostLote
 import com.interedes.agriculturappv3.modules.models.ofertas.*
 import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad
-import com.interedes.agriculturappv3.modules.models.plagas.EnfermedadResponseApi
-import com.interedes.agriculturappv3.modules.models.produccion.PostProduccion
 import com.interedes.agriculturappv3.modules.models.produccion.Produccion
 import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
 import com.interedes.agriculturappv3.modules.models.producto.*
@@ -51,48 +39,32 @@ import com.interedes.agriculturappv3.modules.models.sincronizacion.GetSynProduct
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProductoResponse
-import com.interedes.agriculturappv3.modules.models.tratamiento.Tratamiento
-import com.interedes.agriculturappv3.modules.models.tratamiento.TratamientoResponse
-import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento
-import com.interedes.agriculturappv3.modules.models.tratamiento.calificacion.Calificacion_Tratamiento_Table
 import com.interedes.agriculturappv3.modules.models.unidad_medida.CategoriaMedida
 import com.interedes.agriculturappv3.modules.models.unidad_medida.CategoriaMedidaResponse
-import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.modules.models.unidad_productiva.PostUnidadProductiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
-import com.interedes.agriculturappv3.modules.models.unidad_productiva.localizacion.LocalizacionUp
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.models.ventas.*
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.CategoriaPucResponse
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.EstadoTransaccionResponse
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.RolResources
-import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
-import com.raizlabs.android.dbflow.config.DatabaseDefinition
 import com.raizlabs.android.dbflow.config.FlowManager
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
-import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction
-import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.math.BigDecimal
-import java.math.MathContext
-import java.net.HttpURLConnection
-import java.text.SimpleDateFormat
 
 class MenuRepository: MainViewMenu.Repository {
 
@@ -243,13 +215,13 @@ class MenuRepository: MainViewMenu.Repository {
         // Save to SharedPreferences
         //editor.putString("registration_id", _token);
         //editor.apply();
-        preferences.edit().putString(Const.FIREBASE_TOKEN, _token).apply()
+        preferences.edit().putString(Const_Resources.FIREBASE_TOKEN, _token).apply()
     }
 
     private fun  getTokenFromPrefs(context:Context):String?
     {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getString(Const.FIREBASE_TOKEN, null);
+        return preferences.getString(Const_Resources.FIREBASE_TOKEN, null);
     }
 
 

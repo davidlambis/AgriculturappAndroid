@@ -28,11 +28,11 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
 import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.adapter.SmsUserAdapter
 import com.interedes.agriculturappv3.modules.models.sms.Sms
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.resources.TagSmsResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_user_sms.*
-import kotlinx.android.synthetic.main.content_recyclerview.*
+import kotlinx.android.synthetic.main.content_list_recycler_view.*
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import java.util.*
 
@@ -232,7 +232,7 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
                                         .setPositiveButton("Aceptar") { dialog, id ->
                                             val intent = Intent()
                                             intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                            val uri = Uri.fromParts("package", Const.PAKAGE, null)
+                                            val uri = Uri.fromParts("package", Const_Resources.PAKAGE, null)
                                             intent.setData(uri)
                                             startActivity(intent)
                                         }

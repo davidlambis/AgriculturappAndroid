@@ -1,33 +1,18 @@
 package com.interedes.agriculturappv3.services.chat;
 
-import android.app.ActivityManager;
 import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.Query;
 import com.interedes.agriculturappv3.R;
-import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity;
-import com.interedes.agriculturappv3.services.Const;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import com.interedes.agriculturappv3.services.resources.Const_Resources;
 
 public class ChatService extends Service {
 
@@ -70,7 +55,7 @@ public class ChatService extends Service {
             startForeground(1, notification);
         }
 
-        updateOnline = new CountDownTimer(System.currentTimeMillis(), Const.Companion.getTIME_TO_REFRESH()) {
+        updateOnline = new CountDownTimer(System.currentTimeMillis(), Const_Resources.Companion.getTIME_TO_REFRESH()) {
             @Override
             public void onTick(long l) {
                 ServiceUtils.updateUserStatus(getApplicationContext());

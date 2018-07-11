@@ -9,7 +9,7 @@ import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.events
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.sms.Sms
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 
@@ -68,8 +68,8 @@ class UserSms_Presenter(var mainView: IMainViewUserSms.MainView?): IMainViewUser
         //On Activity Chat_Sms_Activity
 
         //On Activity UsersSmsActivity
-        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const.SERVICE_CONECTIVITY))
-        context.registerReceiver(mNotificationReceiverSms, IntentFilter(Const.SERVICE_RECYVE_MESSAGE))
+        context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const_Resources.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiverSms, IntentFilter(Const_Resources.SERVICE_RECYVE_MESSAGE))
 
     }
 

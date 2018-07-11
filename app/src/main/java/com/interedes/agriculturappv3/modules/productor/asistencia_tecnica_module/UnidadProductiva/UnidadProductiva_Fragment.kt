@@ -45,7 +45,6 @@ import com.daimajia.androidanimations.library.YoYo
 import com.google.android.gms.cast.CastRemoteDisplayLocalService
 import com.google.android.gms.cast.CastRemoteDisplayLocalService.startService
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
-import com.interedes.agriculturappv3.services.coords.HelloSeervice
 import com.interedes.agriculturappv3.services.resources.RequestAccessPhoneResources
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import java.io.IOException

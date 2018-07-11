@@ -807,9 +807,9 @@ Transaccion_Fragment : Fragment(), View.OnClickListener , SwipeRefreshLayout.OnR
     //endregion
 
 
-    //region OVERRIDES METHODS
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        //super.onDestroy()
         presenter?.onDestroy()
     }
 

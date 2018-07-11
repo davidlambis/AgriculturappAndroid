@@ -2,7 +2,7 @@ package com.interedes.agriculturappv3.modules.models.Notification
 
 import android.util.Log
 import com.google.gson.annotations.SerializedName
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import retrofit2.Call
 import retrofit2.Callback
@@ -57,7 +57,7 @@ data class FcmNotificationBuilder(@SerializedName("title")
 
         val postNotification = PostNotification(receiver_firebase_token,dataPostNotification
         )
-        val call = apiServiceFcm?.postSendNotifcation("Key="+ Const.FIREBASE_TOKEN,postNotification)
+        val call = apiServiceFcm?.postSendNotifcation("Key="+ Const_Resources.FIREBASE_TOKEN,postNotification)
         call?.enqueue(object : Callback<ResponsePostNotification> {
             override fun onResponse(call: Call<ResponsePostNotification>?, response: Response<ResponsePostNotification>?) {
                 if (response != null && response.code() == 200) {

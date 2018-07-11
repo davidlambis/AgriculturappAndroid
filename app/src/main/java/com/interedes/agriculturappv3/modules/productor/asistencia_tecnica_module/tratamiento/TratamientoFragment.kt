@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.tratamiento
 
 
+import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -41,6 +42,7 @@ import kotlinx.android.synthetic.main.dialog_form_control_plaga.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_tratamiento.*
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -76,6 +78,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
     //Models
     var calificacionTratamiento:Calificacion_Tratamiento?=null
     var tratamientoGlobal:Tratamiento?=null
+
 
 
     //Progress
@@ -474,11 +477,11 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
     override fun validarCampos(): Boolean {
         var cancel = false
         var focusView: View? = null
-        /*if (viewDialog?.txtFechaAplicacion?.text.toString().isEmpty()) {
-            viewDialog?.txtFechaAplicacion?.setError(getString(R.string.error_field_required))
-            focusView = viewDialog?.txtFechaAplicacion
+        if (viewDialog?.edtFechaAplicacion?.text.toString().isEmpty()) {
+            viewDialog?.edtFechaAplicacion?.setError(getString(R.string.error_field_required))
+            focusView = viewDialog?.edtFechaAplicacion
             cancel = true
-        } */if (viewDialog?.txtDosis?.text.toString().isEmpty()) {
+        } else if (viewDialog?.txtDosis?.text.toString().isEmpty()) {
             viewDialog?.txtDosis?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.txtDosis
             cancel = true
@@ -501,7 +504,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
             controlPlaga.CultivoId = cultivoGlobal?.CultivoId
             controlPlaga.Dosis = viewDialog?.txtDosis?.text.toString().toDoubleOrNull()
             controlPlaga.UnidadMedidaId = unidadMedidaGlobal?.Id
-            controlPlaga.Fecha_aplicacion_local = Calendar.getInstance().time
+            controlPlaga.Fecha_aplicacion_local = fechaAplicacion
             controlPlaga.TratamientoId = tratamientoId
             controlPlaga.EnfermedadesId = enfermedadId
             controlPlaga.NombrePlaga = nombreTipoEnfermedad
@@ -579,7 +582,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
         viewDialog = inflater.inflate(R.layout.dialog_form_control_plaga, null)
         presenter?.setListSpinnerUnidadMedida()
         viewDialog?.ivClosetDialogControlPlaga?.setOnClickListener(this)
-        //viewDialog?.txtFechaAplicacion?.setOnClickListener(this)
+        viewDialog?.edtFechaAplicacion?.setOnClickListener(this)
 
         viewDialog?.btnSaveControlPlaga?.setOnClickListener(this)
         viewDialog?.txtUnidadProductivaSelected?.setText(unidadProductivaGlobal?.nombre)
@@ -635,14 +638,23 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
                 _dialogFilter?.dismiss()
             }
 
+
+            R.id.edtFechaAplicacion -> {
+
+                selectFechaAplicacionPlaga()
+            }
+
         }
 
     }
     //endregion
 
     //region Métodos
+
+
+
     //Fecha
-    /* private fun updateDate() {
+     private fun selectFechaAplicacionPlaga() {
          DatePickerDialog(context, d, dateTime.get(Calendar.YEAR), dateTime.get(Calendar.MONTH), dateTime.get(Calendar.DAY_OF_MONTH)).show()
      }
 
@@ -654,18 +666,18 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
      }
 
      private fun mostrarResultadosFecha() {
-         val format1 = SimpleDateFormat("MM/dd/yyyy")
+         val format1 = SimpleDateFormat("dd/MM/yyyy")
          val formatted = format1.format(dateTime.time)
          fechaAplicacion = dateTime.time
-         viewDialog?.txtFechaAplicacion?.setText(formatted)
-     }*/
+         viewDialog?.edtFechaAplicacion?.setText(formatted)
+     }
     //endregion
 
     //region ciclo de vida
-    override fun onDestroyView() {
+    /*override fun onDestroyView() {
         super.onDestroyView()
         presenter?.onDestroy()
-    }
+    }*/
 
     override fun onPause() {
         super.onPause()

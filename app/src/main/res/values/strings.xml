@@ -185,6 +185,7 @@
     <string name="title_selected_tipo_productos">Seleccione el producto</string>
     <string name="title_selected_plaga">Selecciona la Plaga</string>
     <string name="title_selected_insumo">Selecciona el Insumo</string>
+    <string name="title_fecha_aplicacion_control">Fecha de aplicacion</string>
 
 
     <string name="title_sync_data_enfermedades">Sincronizacion</string>
@@ -232,7 +233,8 @@
     <string name="search_plaga">Buscar Plaga</string>
     <string name="tittle_notification_control_plaga">Control Plagas.</string>
 
-    <string name="description_control_pending">Tienes un control de plagas pendiente por aplicar.</string>
+    <string name="description_control_pending_cultivo_empty">Tienes un control de plagas  pendiente por aplicar a un cultivo</string>
+    <string name="description_control_pending">Tienes un control de plagas  pendiente por aplicar al cultivo de %s.</string>
     <!--Productos -->
     <string name="title_productos">Productos</string>
     <string name="title_select_producto">Selecciona el Cultivo para agregar el producto</string>

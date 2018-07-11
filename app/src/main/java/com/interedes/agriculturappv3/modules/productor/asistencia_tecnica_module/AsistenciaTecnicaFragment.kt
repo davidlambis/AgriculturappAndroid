@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_modul
 import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
@@ -17,7 +18,7 @@ import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.UnidadProductiva.UnidadProductiva_Fragment
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.cultivos.Cultivo_Fragment
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
-import com.interedes.agriculturappv3.services.Resources_Menu
+import com.interedes.agriculturappv3.services.resources.Menu_Resources
 import com.interedes.agriculturappv3.services.listas.Listas
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_general.*
@@ -43,19 +44,29 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
         setupInitDesign()
         ivBackButton?.setOnClickListener(this)
         loadItems()
-
-        septupInjection()
     }
 
-    private fun septupInjection() {
+
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         val b = this.arguments
         if (b != null) {
             if (b.containsKey(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS)) {
-                (activity as MenuMainActivity).replaceFragment(ControlPlagasFragment())
+                val myTimerr = 500
+                ///Mensage
+                Handler().postDelayed(Runnable {
+                    try {
+                        (activity as MenuMainActivity).replaceFragment(ControlPlagasFragment())
+                    } catch (e: Exception) {
+                    }
+                }, myTimerr.toLong())
+
+                //
             }
         }
     }
-
 
     private fun setupInitDesign() {
         (activity as MenuMainActivity).toolbar.title = getString(R.string.title_module_asistencia_tecnica)
@@ -101,11 +112,10 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
         return result
     }
 
-
     private fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
         val lista = Listas.listaAsistenciaTecnicaProductor()
-        val adapter = SingleAdapter(lista, Resources_Menu.MENU_MODULE_ASISTENCIA_TECNICA, activity) { position ->
+        val adapter = SingleAdapter(lista, Menu_Resources.MENU_MODULE_ASISTENCIA_TECNICA, activity) { position ->
 
             if (lista[position].Identificador.equals("mis_lotes")) {
                 (activity as MenuMainActivity).replaceFragment(Lote_Fragment())
@@ -143,6 +153,10 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
         ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.grey_luiyi))
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        this.arguments?.clear()
+    }
 
     //endregion
 }

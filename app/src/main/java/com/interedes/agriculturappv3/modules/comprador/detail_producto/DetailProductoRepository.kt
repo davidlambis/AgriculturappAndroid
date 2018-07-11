@@ -393,7 +393,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         val dataPostNotification= FcmNotificationBuilder(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA,message,imageUrl)
         val postNotification = PostNotification(token,dataPostNotification
                 )
-        val call = apiServiceFcm?.postSendNotifcation("Key="+Const.FIREBASE_TOKEN,postNotification)
+        val call = apiServiceFcm?.postSendNotifcation("Key="+Const_Resources.FIREBASE_TOKEN,postNotification)
         call?.enqueue(object : Callback<ResponsePostNotification> {
             override fun onResponse(call: Call<ResponsePostNotification>?, response: Response<ResponsePostNotification>?) {
                 if (response != null && response.code() == 200) {

@@ -10,7 +10,7 @@ import com.interedes.agriculturappv3.modules.models.ItemLista
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.interedes.agriculturappv3.services.Resources_Menu
+import com.interedes.agriculturappv3.services.resources.Menu_Resources
 
 //Recibe directamente la lista y el listener del click
 class SingleAdapter(val lista: ArrayList<ItemLista>,var TYPE_MENU:Int,var context:Context?, val listener: (Int) -> Unit) : RecyclerView.Adapter<SingleAdapter.ViewHolder>() {
@@ -44,7 +44,7 @@ class SingleAdapter(val lista: ArrayList<ItemLista>,var TYPE_MENU:Int,var contex
             content.setBackgroundResource(R.drawable.sombra_drawing)
 
             //Aplicar diseños al menu
-            if(Resources_Menu.MENU_MAIN==TYPE_MENU){
+            if(Menu_Resources.MENU_MAIN==TYPE_MENU){
                 if(data.Identificador.equals("asistencia_tecnica")){
                     textNombre.setTextColor(context.resources.getColor(R.color.purple))
                 }else if(data.Identificador.equals("comercial")){
@@ -54,13 +54,13 @@ class SingleAdapter(val lista: ArrayList<ItemLista>,var TYPE_MENU:Int,var contex
                 }
 
 
-            }else if(Resources_Menu.MENU_MODULE_ASISTENCIA_TECNICA==TYPE_MENU){
+            }else if(Menu_Resources.MENU_MODULE_ASISTENCIA_TECNICA==TYPE_MENU){
                 textNombre.setTextColor(context.resources.getColor(R.color.purple))
             }
-            else if(Resources_Menu.MENU_MODULE_COMERCIAL==TYPE_MENU){
+            else if(Menu_Resources.MENU_MODULE_COMERCIAL==TYPE_MENU){
                 textNombre.setTextColor(context.resources.getColor(R.color.blue))
             }
-            else if(Resources_Menu.MENU_MODULE_ACCOUNTANT==TYPE_MENU){
+            else if(Menu_Resources.MENU_MODULE_ACCOUNTANT==TYPE_MENU){
                 textNombre.setTextColor(context.resources.getColor(R.color.green))
             }
 

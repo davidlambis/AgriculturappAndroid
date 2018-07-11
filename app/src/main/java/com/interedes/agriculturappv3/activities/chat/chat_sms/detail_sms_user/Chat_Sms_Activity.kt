@@ -23,7 +23,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.adapter.SmsAdapter
 import com.interedes.agriculturappv3.modules.models.sms.Sms
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.resources.EmisorType_Message_Resources
 import com.interedes.agriculturappv3.services.resources.MessageSmsType
 import com.interedes.agriculturappv3.services.resources.TagSmsResources
@@ -484,7 +484,7 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener, IMainViewDet
                                         .setPositiveButton("Aceptar") { dialog, id ->
                                             val intent = Intent()
                                             intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                            val uri = Uri.fromParts("package", Const.PAKAGE, null)
+                                            val uri = Uri.fromParts("package", Const_Resources.PAKAGE, null)
                                             intent.setData(uri)
                                             startActivity(intent)
                                         }

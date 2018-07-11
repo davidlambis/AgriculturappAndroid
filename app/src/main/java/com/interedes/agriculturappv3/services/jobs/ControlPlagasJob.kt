@@ -26,12 +26,12 @@ class ControlPlagasJob : Job() {
                 // return jobRequests.iterator().next().getJobId();
             }
 
-            val interval = TimeUnit.HOURS.toMillis(2) // every 6 hours
-            val flex = TimeUnit.HOURS.toMillis(1) // wait 3 hours before job runs again
+            val interval = TimeUnit.HOURS.toMillis(6) // every 6 hours
+            val flex = TimeUnit.HOURS.toMillis(3) // wait 3 hours before job runs again
 
             JobRequest.Builder(TAG)
-                    //.setPeriodic(interval, flex)
-                    .setPeriodic(TimeUnit.MINUTES.toMillis(15), TimeUnit.MINUTES.toMillis(5))
+                    .setPeriodic(interval, flex)
+                    //.setPeriodic(TimeUnit.MINUTES.toMillis(15), TimeUnit.MINUTES.toMillis(5))
                     .setUpdateCurrent(true) // calls cancelAllForTag(NoteSyncJob.TAG) for you
                     .setRequirementsEnforced(true)
                     .build()

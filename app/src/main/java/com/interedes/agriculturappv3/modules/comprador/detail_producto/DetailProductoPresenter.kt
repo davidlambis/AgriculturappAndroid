@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.telephony.SmsManager
-import com.google.firebase.database.DatabaseReference
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
@@ -19,10 +18,8 @@ import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
-import com.interedes.agriculturappv3.modules.models.usuario.User
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
-import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import org.greenrobot.eventbus.Subscribe
@@ -173,10 +170,10 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
     }
 
     override fun onResume(context: Context) {
-        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const_Resources.SERVICE_CONECTIVITY))
         //SMS
-        context.registerReceiver(sentStatusReceiver, IntentFilter(Const.SERVICE_SMS_SENT))
-        context.registerReceiver(deliveredStatusReceiver, IntentFilter(Const.SERVICE_SMS_DELIVERED))
+        context.registerReceiver(sentStatusReceiver, IntentFilter(Const_Resources.SERVICE_SMS_SENT))
+        context.registerReceiver(deliveredStatusReceiver, IntentFilter(Const_Resources.SERVICE_SMS_DELIVERED))
     }
 
     override fun onPause(context: Context) {
@@ -308,8 +305,8 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
             // if message length is too long messages are divided
 
 
-            //val sendIntent=PendingIntent.getBroadcast(activity, 0, Intent(Const.SERVICE_SMS_SENT), 0)
-            //val deliveredIntent=PendingIntent.getBroadcast(activity, 0, Intent(Const.SERVICE_SMS_DELIVERED), 0)
+            //val sendIntent=PendingIntent.getBroadcast(activity, 0, Intent(Const_Resources.SERVICE_SMS_SENT), 0)
+            //val deliveredIntent=PendingIntent.getBroadcast(activity, 0, Intent(Const_Resources.SERVICE_SMS_DELIVERED), 0)
             //sms.sendTextMessage(phone, null, message, sendIntent, deliveredIntent)
 
 
@@ -319,8 +316,8 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
             val deliveryIntents = ArrayList<PendingIntent>()
 
             for (msg in messages) {
-                sentIntents.add(PendingIntent.getBroadcast(activity, 0, Intent(Const.SERVICE_SMS_SENT), 0))
-                deliveryIntents.add(PendingIntent.getBroadcast(activity, 0, Intent(Const.SERVICE_SMS_DELIVERED), 0))
+                sentIntents.add(PendingIntent.getBroadcast(activity, 0, Intent(Const_Resources.SERVICE_SMS_SENT), 0))
+                deliveryIntents.add(PendingIntent.getBroadcast(activity, 0, Intent(Const_Resources.SERVICE_SMS_DELIVERED), 0))
                 //sms.sendTextMessage(phone, null, msg, sentIntent, deliveredIntent)
             }
             sms.sendMultipartTextMessage(phone, null, messages, sentIntents, deliveryIntents);

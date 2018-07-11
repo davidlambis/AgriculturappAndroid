@@ -2,7 +2,6 @@ package com.interedes.agriculturappv3.activities.login.repository
 
 import android.content.Context
 import android.preference.PreferenceManager
-import android.util.Base64
 import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -20,39 +19,30 @@ import com.interedes.agriculturappv3.modules.models.ResetPassword
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.login.LoginResponse
 import com.interedes.agriculturappv3.modules.models.rol.Rol
-import com.interedes.agriculturappv3.modules.models.rol.RolUserLogued
 import com.interedes.agriculturappv3.modules.models.rol.Rol_Table
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.events.ProductosEvent
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.Status_Chat
-import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
-import com.raizlabs.android.dbflow.kotlinextensions.update
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.database.Transaction
 import com.google.firebase.iid.FirebaseInstanceId
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
-import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
-import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.lote.Lote
-import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.ofertas.DetalleOferta
 import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.produccion.Produccion
-import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
-import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table
 import com.interedes.agriculturappv3.modules.models.ventas.Tercero
 import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.RolResources
@@ -455,14 +445,14 @@ class LoginRepositoryImpl : LoginRepository {
         // Save to SharedPreferences
         //editor.putString("registration_id", _token);
         //editor.apply();
-        preferences.edit().putString(Const.FIREBASE_TOKEN, _token).apply()
+        preferences.edit().putString(Const_Resources.FIREBASE_TOKEN, _token).apply()
         SharedPreferenceHelper.getInstance(context).savePostSyncData(Status_Sync_Data_Resources.STOP);
     }
 
     private fun  getTokenFromPrefs(context:Context):String?
     {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getString(Const.FIREBASE_TOKEN, null);
+        return preferences.getString(Const_Resources.FIREBASE_TOKEN, null);
     }
 
 

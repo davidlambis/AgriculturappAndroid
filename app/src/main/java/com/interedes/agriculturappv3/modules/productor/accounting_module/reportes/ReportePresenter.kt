@@ -12,7 +12,7 @@ import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Pro
 import com.interedes.agriculturappv3.modules.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.modules.models.ventas.resports.BalanceContable
 import com.interedes.agriculturappv3.modules.productor.accounting_module.reportes.events.RequestEventReporte
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
@@ -63,7 +63,7 @@ class ReportePresenter(var mainView: IMainViewReportes.MainView?):IMainViewRepor
     }
 
     override fun onResume(context: Context) {
-        context.registerReceiver(mNotificationReceiver, IntentFilter(Const.SERVICE_CONECTIVITY))
+        context.registerReceiver(mNotificationReceiver, IntentFilter(Const_Resources.SERVICE_CONECTIVITY))
     }
 
     override fun onPause(context: Context) {

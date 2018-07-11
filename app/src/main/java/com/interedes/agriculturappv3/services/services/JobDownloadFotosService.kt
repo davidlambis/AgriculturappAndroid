@@ -10,10 +10,8 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.*
 import android.util.Log
-import android.widget.Toast
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.insumos.Insumo
-import com.interedes.agriculturappv3.services.Const
 import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.krishna.fileloader.FileLoader
 import com.krishna.fileloader.listener.FileRequestListener
@@ -25,10 +23,8 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import id.zelory.compressor.Compressor
 import java.io.ByteArrayOutputStream
 import java.io.File
-import io.fabric.sdk.android.services.settings.IconRequest.build
 import android.os.Build
 import android.support.annotation.RequiresApi
-import android.support.v4.app.JobIntentService
 import android.support.v4.app.NotificationCompat
 import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad_Table

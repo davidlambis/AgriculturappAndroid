@@ -18,7 +18,7 @@ import android.telephony.SmsMessage
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
 import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.SettingsActivity
-import com.interedes.agriculturappv3.services.Const
+import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.resources.TagSmsResources
 import java.util.*
 
@@ -74,7 +74,7 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
 
 
                     displayCustomNotificationForOrders(messageAdress, messageContent, context,smsAddress,messageAdress)
-                    val retIntent = Intent(Const.SERVICE_RECYVE_MESSAGE)
+                    val retIntent = Intent(Const_Resources.SERVICE_RECYVE_MESSAGE)
                     retIntent.putExtra("new_message_sms", smsMessageStr)
                     context.sendBroadcast(retIntent)
 

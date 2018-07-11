@@ -713,7 +713,6 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         presenter?.onDestroy()
     }
 
-
     override fun onRefresh() {
         showProgress()
         presenter?.getListProduccion(Cultivo_Id)

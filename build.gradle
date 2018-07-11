@@ -56,7 +56,7 @@ ext {
     library_material_spinner = "1.1.0"
 
     //Glide
-    glideVersion = '4.4.0'
+    glideVersion = '4.7.1'
 
     //Circle Image View
     circleImageViewVersion = '2.2.0'

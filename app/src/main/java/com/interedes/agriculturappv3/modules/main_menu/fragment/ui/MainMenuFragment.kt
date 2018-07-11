@@ -1,6 +1,5 @@
 package com.interedes.agriculturappv3.modules.main_menu.fragment.ui
 
-import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -8,7 +7,6 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,7 +25,7 @@ import com.interedes.agriculturappv3.modules.productor.comercial_module.Comercia
 import com.interedes.agriculturappv3.modules.main_menu.fragment.presenter.MainMenuFragmentPresenter
 import com.interedes.agriculturappv3.modules.main_menu.fragment.presenter.MainMenuFragmentPresenterImpl
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
-import com.interedes.agriculturappv3.services.Resources_Menu
+import com.interedes.agriculturappv3.services.resources.Menu_Resources
 import com.interedes.agriculturappv3.services.listas.Listas
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_main_menu.*
@@ -62,6 +60,13 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
 
         loadItems()
         setupInit()
+    }
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+
     }
 
 
@@ -114,7 +119,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
     override fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
         val lista = Listas.listaMenuProductor()
-        val adapter = SingleAdapter(lista, Resources_Menu.MENU_MAIN, activity) { position ->
+        val adapter = SingleAdapter(lista, Menu_Resources.MENU_MAIN, activity) { position ->
             if (lista[position].Identificador.equals("asistencia_tecnica")) {
                 (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())
             } else if (lista[position].Identificador.equals("comercial")) {
@@ -130,7 +135,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
         recyclerView?.adapter = adapter
        /* if ((activity as MenuMainActivity).getLastUserLogued()?.RolNombre.equals("Productor")) {
             val lista = Listas.listaMenuProductor()
-            val adapter = SingleAdapter(lista, Resources_Menu.MENU_MAIN, activity) { position ->
+            val adapter = SingleAdapter(lista, Menu_Resources.MENU_MAIN, activity) { position ->
                 if (lista[position].Identificador.equals("asistencia_tecnica")) {
                     (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())
                 } else if (lista[position].Identificador.equals("comercial")) {
@@ -145,7 +150,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
             recyclerView?.adapter = adapter
         } else if ((activity as MenuMainActivity).getLastUserLogued()?.RolNombre.equals("Comprador")) {
             val lista = Listas.listaMenuComprador()
-            val adapter = SingleAdapter(lista, Resources_Menu.MENU_MAIN, activity) { position ->
+            val adapter = SingleAdapter(lista, Menu_Resources.MENU_MAIN, activity) { position ->
                 if (lista[position].Identificador.equals("comercial")) {
                     (activity as MenuMainActivity).replaceFragment(ComercialFragment())
                 } else if (lista[position].Identificador.equals("salir")) {

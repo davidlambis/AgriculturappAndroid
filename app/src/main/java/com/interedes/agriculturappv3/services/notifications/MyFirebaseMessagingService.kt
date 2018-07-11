@@ -193,14 +193,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val pendingIntent: PendingIntent
             setupChannels(context)
-            /*
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            if (mChannel == null) {
-                mChannel = NotificationChannel("0", title, importance)
-                mChannel?.setDescription(description)
-                mChannel?.enableVibration(true)
-                notifManager?.createNotificationChannel(mChannel)
-            }*/
             builder = NotificationCompat.Builder(context, ADMIN_CHANNEL_ID)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             pendingIntent = PendingIntent.getActivity(context, notificationId+1, intent, PendingIntent.FLAG_ONE_SHOT)

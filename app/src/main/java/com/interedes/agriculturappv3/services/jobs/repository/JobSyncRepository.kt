@@ -72,7 +72,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class JobSyncRepository: IMainViewJob.Repository {
-    private val ADMIN_CHANNEL_ID = "admin_channel"
+    private val ADMIN_CHANNEL_ID = "plagas_channel"
 
     var apiService: ApiInterface? = null
     var eventBus: EventBus? = null
@@ -126,93 +126,119 @@ class JobSyncRepository: IMainViewJob.Repository {
         var isPending=false
         for(item in controlPlagas){
             if(item.getFechaAplicacionFormat().equals(dateNowFormat)){
-                isPending=true
-            }
-        }
+                //isPending=true
+                //if(isPending){
 
-        if(isPending){
-            if (notificationManager == null) {
-                notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                // notificationManager = NotificationManagerCompat.from(this)
-            }
-            //var intent:Intent?=null
-            val intent = Intent(context, MenuMainActivity::class.java)
-            intent.putExtra(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS,TagNavigationResources.NAVIGATE_CONTROL_PLAGAS)
+                    var message = ""
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val ticker = "Ver"
-                val notificationId = Random().nextInt(60000)
+                    val cultivo =SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(item.CultivoId)).querySingle()
+                    if(cultivo!=null){
+                        message= String.format(context.getString(R.string.description_control_pending),cultivo.Nombre)
+                    }else{
+                        message=context.getString(R.string.description_control_pending_cultivo_empty)
+                    }
 
-                val builder: NotificationCompat.Builder
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                val pendingIntent: PendingIntent
-                setupChannels(context)
-                builder = NotificationCompat.Builder(context, ADMIN_CHANNEL_ID)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                pendingIntent = PendingIntent.getActivity(context, notificationId+1, intent, PendingIntent.FLAG_ONE_SHOT)
-                builder.setContentTitle(context.getString(R.string.tittle_notification_control_plaga))
-                        .setSmallIcon(getNotificationIcon()) // required
-                        .setContentText(context.getString(R.string.description_control_pending))  // required
-                        .setDefaults(Notification.DEFAULT_ALL)
-                        .setAutoCancel(true)
-                        .setTicker(ticker)
+                    if (notificationManager == null) {
+                        notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        // notificationManager = NotificationManagerCompat.from(this)
+                    }
+                    //var intent:Intent?=null
+                    val intent = Intent(context, MenuMainActivity::class.java)
+                    intent.putExtra(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS,TagNavigationResources.NAVIGATE_CONTROL_PLAGAS)
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val ticker = "Ver"
+                        val notificationId = Random().nextInt(60000)
+
+                        val builder: NotificationCompat.Builder
+                        //intent.putExtra(TagSmsResources.PHONE_NUMBER,smsAddress)
+                        //intent.putExtra(TagSmsResources.CONTACT_NAME,messageAdress)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        val pendingIntent: PendingIntent
+                        setupChannels(context)
+                        builder = NotificationCompat.Builder(context, ADMIN_CHANNEL_ID)
+                        //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        pendingIntent = PendingIntent.getActivity(context, notificationId+1, intent, PendingIntent.FLAG_ONE_SHOT)
+                        builder.setContentTitle(context.getString(R.string.tittle_notification_control_plaga))
+                                .setSmallIcon(getNotificationIcon()) // required
+                                .setContentText(message)  // required
+                                .setDefaults(Notification.DEFAULT_ALL)
+                                .setAutoCancel(true)
+                                .setTicker(ticker)
+                                //API Level min 16 is required
+                                .setLargeIcon( BitmapFactory.decodeResource(context.resources, R.drawable.ic_plagas) )
+                                //.setGroup(smsAddress)
+                                .setBadgeIconType(R.mipmap.ic_launcher_notification)
+                                .setContentIntent(pendingIntent)
+                                ///.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                                .setShowWhen(true)
+                                .setWhen(Calendar.getInstance().getTimeInMillis())
+                                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                .setContentInfo(message)
+                                .setStyle( NotificationCompat.BigTextStyle()
+                                        .bigText(message))
+
+                        builder.setVibrate( longArrayOf(0))
+
+
+                        //builder.setDefaults(NotificationLocal.DEFAULT_VIBRATE)
+                        val notification = builder.build()
+                        notificationManager!!.notify(notificationId, notification)
+
+                    } else {
+
+                        val ticker = "Ver"
+                        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+                        val notificationId = 237
+
+                        //intent.putExtra(TagSmsResources.PHONE_NUMBER,smsAddress)
+                        //intent.putExtra(TagSmsResources.CONTACT_NAME,messageAdress)
+                        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        var pendingIntent: PendingIntent? = null
+
+                        pendingIntent = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_ONE_SHOT)
+
+                        val notificationBuilder = NotificationCompat.Builder(context)
+                                .setSmallIcon(R.mipmap.ic_launcher)
+                                .setContentTitle(context.getString(R.string.tittle_notification_control_plaga))
+                                .setContentText(message)
+                                .setDefaults(Notification.DEFAULT_ALL) // must requires VIBRATE permission
+                                .setPriority(NotificationCompat.PRIORITY_HIGH) //must give priority to High, Max which will considered as heads-up notification
+                                .addAction(R.mipmap.ic_launcher_notification,
+                                        ticker, pendingIntent)
+                                .setAutoCancel(true)
+                                .setTicker(ticker)
+                                .setShowWhen(true)
+                                ///.setColor(context.getColor(R.color.colorPrimary))
+                                .setSound(defaultSoundUri)
+                                .setSmallIcon(getNotificationIcon())
+                                .setContentIntent(pendingIntent)
+                                .setLargeIcon( BitmapFactory.decodeResource(context.resources, R.drawable.ic_plagas) )
+                                //.setGroupSummary(true)
+                                // .setNumber(notificationSum)
+                                .setStyle( NotificationCompat.BigTextStyle()
+                                        .bigText(message))
+                                .setWhen(System.currentTimeMillis())
+                                .setContentInfo(message)
+                        //.setFullScreenIntent(pendingIntent, true)
                         //API Level min 16 is required
-                        .setLargeIcon( BitmapFactory.decodeResource(context.resources, R.drawable.ic_plagas) )
-                        //.setGroup(smsAddress)
-                        .setBadgeIconType(R.drawable.ic_plagas)
-                        .setContentIntent(pendingIntent)
-                        ///.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                        .setShowWhen(true)
-                        .setStyle( NotificationCompat.BigTextStyle().bigText(context.getString(R.string.description_control_pending)))
-                        .setWhen(Calendar.getInstance().getTimeInMillis())
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setContentInfo(context.getString(R.string.description_control_pending))
+                        //.setStyle(NotificationCompat.BigTextStyle().setBigContentTitle(fcmNotificationLocalBuilder.title).bigText(fcmNotificationLocalBuilder.message))
 
-                builder.setVibrate( longArrayOf(0))
+                        if (android.os.Build.VERSION.SDK_INT >= 21) {
+                            notificationBuilder.setColor(context.getResources().getColor(R.color.green_900))
+                                    .setVisibility(Notification.VISIBILITY_PUBLIC)
+                            notificationBuilder.setVibrate( longArrayOf(0))
+                        }
 
-                //builder.setDefaults(NotificationLocal.DEFAULT_VIBRATE)
-                val notification = builder.build()
-                notificationManager!!.notify(notificationId, notification)
-
-            } else {
-                val ticker = "Ver"
-                val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-                val notificationId = 237
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                var pendingIntent: PendingIntent? = null
-
-                pendingIntent = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_ONE_SHOT)
-
-                val notificationBuilder = NotificationCompat.Builder(context)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(context.getString(R.string.tittle_notification_control_plaga))
-                        .setContentText(context.getString(R.string.description_control_pending))
-                        .setDefaults(Notification.DEFAULT_ALL) // must requires VIBRATE permission
-                        .setPriority(NotificationCompat.PRIORITY_HIGH) //must give priority to High, Max which will considered as heads-up notification
-                        .addAction(R.mipmap.ic_launcher_notification,
-                                ticker, pendingIntent)
-                        .setAutoCancel(true)
-                        .setTicker(ticker)
-                        .setShowWhen(true)
-                        ///.setColor(context.getColor(R.color.colorPrimary))
-                        .setSound(defaultSoundUri)
-                        .setSmallIcon(getNotificationIcon())
-                        .setContentIntent(pendingIntent)
-                        .setLargeIcon( BitmapFactory.decodeResource(context.resources, R.drawable.ic_plagas) )
-                        //.setGroupSummary(true)
-                        // .setNumber(notificationSum)
-                        .setWhen(System.currentTimeMillis())
-                        .setContentInfo(context.getString(R.string.description_control_pending))
-                if (android.os.Build.VERSION.SDK_INT >= 21) {
-                    notificationBuilder.setColor(context.getResources().getColor(R.color.green_900))
-                            .setVisibility(Notification.VISIBILITY_PUBLIC)
-                    notificationBuilder.setVibrate( longArrayOf(0))
-                }
-                val notification:Notification = notificationBuilder.build();
-                //val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager!!.notify(notificationId,notification)
-            }
+                        val notification:Notification = notificationBuilder.build();
+                        //val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        notificationManager!!.notify(notificationId,notification)
+                    }
+          //  }
+        }
         }
     }
 

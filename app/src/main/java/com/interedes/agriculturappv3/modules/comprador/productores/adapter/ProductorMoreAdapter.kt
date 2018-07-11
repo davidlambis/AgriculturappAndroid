@@ -182,7 +182,7 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                                             .placeholder(R.drawable.ic_account_box_green)
                                             .error(R.drawable.ic_account_box_green)
                                             .into(imgProductor);*/
-                                    GlideApp.with(contextLocal)
+                                    GlideApp.with(contextLocal!!)
                                             .load(user?.Imagen)
                                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .productorPhoto()

@@ -45,10 +45,10 @@ class ChatSms_Repository: IMainViewDetailSms.Repository {
                 return
             }
             context.startManagingCursor(c)
-            val totalSMS = c.getCount()
+            //val totalSMS = c.getCount()
 
             while (c.moveToNext()) {
-                var typeMessage:String?=""
+                var typeMessage:String=""
                 if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
                     typeMessage= MessageSmsType.MESSAGE_TYPE_INBOX
                 } else {
@@ -83,9 +83,9 @@ class ChatSms_Repository: IMainViewDetailSms.Repository {
                     //smsListMessage.add(objSms)
 
 
-                    var smsExist=SQLite.select().from(Sms::class.java).where(Sms_Table.Id_Message.eq(objSms.Id_Message)).querySingle()
+                    val smsExist=SQLite.select().from(Sms::class.java).where(Sms_Table.Id_Message.eq(objSms.Id_Message)).querySingle()
                     if(smsExist!=null){
-                        objSms.Id=smsExist?.Id
+                        objSms.Id=smsExist.Id
                     }else{
                         val lastSms = getLastSms()
                         if (lastSms == null) {
