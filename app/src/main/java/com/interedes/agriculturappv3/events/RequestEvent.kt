@@ -16,8 +16,6 @@ data class RequestEvent (var eventType: Int,
         val DELETE_EVENT: Int = 3
         val ERROR_EVENT: Int = 4
 
-
-
         //Events On item Click
         val ITEM_EVENT: Int = 5
         val ITEM_READ_EVENT: Int = 6

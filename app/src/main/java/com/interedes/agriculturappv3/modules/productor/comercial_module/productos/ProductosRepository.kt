@@ -102,7 +102,7 @@ class ProductosRepository : IProductos.Repository {
 
     override fun registerProducto(mProducto: Producto, cultivo_id: Long,checkConection:Boolean) {
 
-        var usuarioLogued= getLastUserLogued()
+        val usuarioLogued= getLastUserLogued()
         mProducto.userId=usuarioLogued?.Id
         mProducto.Usuario_Logued=usuarioLogued?.Id
 
@@ -204,7 +204,7 @@ class ProductosRepository : IProductos.Repository {
 
     override fun updateProducto(mProducto: Producto, cultivo_id: Long,checkConection:Boolean) {
 
-        var usuarioLogued= getLastUserLogued()
+        val usuarioLogued= getLastUserLogued()
         mProducto.userId=usuarioLogued?.Id
         mProducto.Usuario_Logued=usuarioLogued?.Id
         //TODO si existe coneccion a internet

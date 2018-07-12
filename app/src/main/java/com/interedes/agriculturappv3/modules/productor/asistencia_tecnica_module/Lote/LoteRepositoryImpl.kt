@@ -192,9 +192,7 @@ class LoteRepositoryImpl : MainViewLote.Repository {
         if(checkConection){
 
             val unidad_productiva = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()
-
             val areaBig = BigDecimal(mLote.Area!!, MathContext.DECIMAL64)
-
             //TODO se valida estado de sincronizacion  para actualizar,actualizacion remota
             if (mLote.EstadoSincronizacion == true) {
                 val postLote = PostLote(mLote.Id_Remote,

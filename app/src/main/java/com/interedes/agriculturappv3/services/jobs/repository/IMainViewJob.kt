@@ -7,14 +7,15 @@ import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 interface IMainViewJob {
     interface Repository {
         fun syncQuantityData(): QuantitySync
-        fun syncFotos(context: Context)
+
+
         fun syncFotoPerfilUserLogued(context: Context)
         fun updateUserStatus()
 
+        fun syncFotosPlagasEnfermedades(context: Context)
         fun getListSyncEnfermedadesAndTratamiento(context: Context)
-
-
         fun checkControlPlagas(context: Context)
+
 
         //Notification
         fun saveNotification(notification: NotificationLocal)

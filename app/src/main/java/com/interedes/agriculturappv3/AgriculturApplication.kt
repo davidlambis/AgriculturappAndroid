@@ -24,6 +24,7 @@ import android.support.v4.app.NotificationCompat.Builder
 import com.interedes.agriculturappv3.services.services.JobSyncService
 import com.evernote.android.job.JobManager
 import com.interedes.agriculturappv3.services.jobs.creators.SyncJobCreator
+import com.raizlabs.android.dbflow.config.FlowLog
 
 
 class AgriculturApplication : Application() {
@@ -63,24 +64,20 @@ class AgriculturApplication : Application() {
 
         //DbFlow
         //FlowManager.init(this)
-        FlowManager.init(FlowConfig.Builder(this).build())
 
+
+        FlowManager.init(FlowConfig.Builder(this).build())
+        FlowLog.setMinimumLoggingLevel(FlowLog.Level.W);
 
 
         //Avoiding Memory Leaks and code optimization
         val builder = StrictMode.VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build())
 
-
-
         //Create JOBS SERVICES
         JobManager.create(this).addJobCreator(SyncJobCreator())
         //JobManager.create(this).addJobCreator(ChatJobCreator())
         ///JobManager.create(this).addJobCreator(FotosEnfermedadesJobCreator())
-
-
-
-
 
         if (Build.VERSION.SDK_INT >= 26) {
             val appName = getString(R.string.app_name)

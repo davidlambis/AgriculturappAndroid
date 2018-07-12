@@ -6,6 +6,7 @@ import com.evernote.android.job.JobManager
 import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.services.jobs.repository.IMainViewJob
 import com.interedes.agriculturappv3.services.jobs.repository.JobSyncRepository
+import com.interedes.agriculturappv3.services.resources.RequestProcessResources
 import java.util.concurrent.TimeUnit
 
 
@@ -38,7 +39,7 @@ class DataSyncJob: Job() {
 
     override fun onRunJob(params: Job.Params): Job.Result {
         val quantitySync= repository?.syncQuantityData()
-        if(quantitySync?.CantidadRegistrosSync!!.toInt()>0 || quantitySync?.CantidadUpdatesSync!!.toInt()>0 ){
+        if(quantitySync?.CantidadRegistrosSync!!.toInt()>0 || quantitySync.CantidadUpdatesSync!!.toInt()>0 ){
             AgriculturApplication.instance.showNotification(true)
         }
 

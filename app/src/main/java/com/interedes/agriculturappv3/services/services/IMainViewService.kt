@@ -7,6 +7,8 @@ interface IMainViewService {
 
     interface RepositoryPost {
         fun syncData()
+
+        fun updateSyncData()
     }
     
 }

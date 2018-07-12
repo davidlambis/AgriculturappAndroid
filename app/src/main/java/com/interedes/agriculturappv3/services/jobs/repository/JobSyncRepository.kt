@@ -75,29 +75,33 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class JobSyncRepository: IMainViewJob.Repository {
-    private val ADMIN_CHANNEL_ID = "plagas_channel"
 
-    var apiService: ApiInterface? = null
-    var eventBus: EventBus? = null
-    init {
-        eventBus = GreenRobotEventBus()
-        apiService = ApiInterface.create()
-    }
-
+    //List
     private var listInsmo: List<Insumo>? = null
     private var listFotoEnfermedad: List<FotoEnfermedad>? = null
-    private val TAG_INSUMOS = "INSUMOS"
+
+    //Folder Privates
     private val DIR_PLAGAS = "DIR_PLAGAS"
     private val DIR_FOTO_PERFIL = "DIR_FOTO_PERFIL"
     private val DIR_INSUMOS = "DIR_INSUMOS"
     private val TAG_FIREBASE = "FIREBASE UIID"
 
-
+    //Folders Public
     private val DIR_PLAGAS_PUBLIC = "Enfermedades"
     private val DIR_INSUMO_PUBLIC = "Insumos"
     private val DIR_AGRICULTUR_APP_PUBLIC = "AgriculturApp"
 
+    //Services
+    var apiService: ApiInterface? = null
+    var eventBus: EventBus? = null
+
+    //Notifications
     private var notificationManager: NotificationManager? = null
+    private val ADMIN_CHANNEL_ID = "plagas_channel"
+    init {
+        eventBus = GreenRobotEventBus()
+        apiService = ApiInterface.create()
+    }
 
     fun getLastUserLogued(): Usuario? {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
@@ -156,7 +160,7 @@ class JobSyncRepository: IMainViewJob.Repository {
                                 Log.d("SYNC DATA", "Foto perfil Loaded" )
                             }
                             override fun onError(request: FileLoadRequest?, error : Throwable?) {
-                                var error = error.toString()
+                                Log.d("SYNC DATA", error.toString() )
                                 getAllPlagasFoto(0,context)
                             }
                         })
@@ -360,83 +364,89 @@ class JobSyncRepository: IMainViewJob.Repository {
 
     //region POST DATA SYNC
     override fun syncQuantityData(): QuantitySync {
-        var usuarioLogued=getLastUserLogued()
-        var counRegisterUnidadesProductivas= SQLite.select().from(Unidad_Productiva::class.java)
+        val usuarioLogued=getLastUserLogued()
+        val counRegisterUnidadesProductivas= SQLite.select().from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
                 .and(Unidad_Productiva_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
 
-        var counRegisterLotes= SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(false))
+        val counRegisterLotes= SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(false))
                 .and(Lote_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
-        var counRegisterCultivos= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.EstadoSincronizacion.eq(false))
+        val counRegisterCultivos= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.EstadoSincronizacion.eq(false))
                 .and(Cultivo_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
-        var counRegisterControlPlagas= SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
+        val counRegisterControlPlagas= SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
                 .and(ControlPlaga_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
-        var counRegisterProducccion= SQLite.select().from(Produccion::class.java).where(Produccion_Table.Estado_Sincronizacion.eq(false))
+        val counRegisterProducccion= SQLite.select().from(Produccion::class.java).where(Produccion_Table.Estado_Sincronizacion.eq(false))
                 .and(Produccion_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
-        var counRegisterProductos= SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(false))
+        val counRegisterProductos= SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(false))
                 .and(Producto_Table.userId.eq(usuarioLogued?.Id))
                 .queryList().count()
-        var counRegisterTransacciones= SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(false))
+        val counRegisterTransacciones= SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(false))
                 .and(Transaccion_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
 
-        var registerTotal= counRegisterUnidadesProductivas+
+        val registerTotal= counRegisterUnidadesProductivas+
                 counRegisterControlPlagas+
                 counRegisterCultivos+
                 counRegisterLotes+counRegisterProducccion+counRegisterProductos+counRegisterTransacciones
 
-        var countUpdatesUnidadesProductivas= SQLite.select()
+        val countUpdatesUnidadesProductivas= SQLite.select()
                 .from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true))
                 .and(Unidad_Productiva_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
 
-        var countUpdatesLotes= SQLite.select().from(Lote::class.java)
+        val countUpdatesLotes= SQLite.select().from(Lote::class.java)
                 .where(Lote_Table.EstadoSincronizacion.eq(true))
                 .and(Lote_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(Lote_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
 
-        var countUpdatesCultivos= SQLite.select().from(Cultivo::class.java)
+        val countUpdatesCultivos= SQLite.select().from(Cultivo::class.java)
                 .where(Cultivo_Table.EstadoSincronizacion.eq(true))
                 .and(Cultivo_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
-        var countUpdatesControlPlagas= SQLite.select().from(ControlPlaga::class.java)
+        val countUpdatesControlPlagas= SQLite.select().from(ControlPlaga::class.java)
                 .where(ControlPlaga_Table.Estado_Sincronizacion.eq(true))
                 .and(ControlPlaga_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
-        var countUpdatesProducccion= SQLite.select().from(Produccion::class.java)
+        val countUpdatesProducccion= SQLite.select().from(Produccion::class.java)
                 .where(Produccion_Table.Estado_Sincronizacion.eq(true))
                 .and(Produccion_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(Produccion_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
-        var countUpdatesProductos= SQLite.select().from(Producto::class.java)
+        val countUpdatesProductos= SQLite.select().from(Producto::class.java)
                 .where(Producto_Table.Estado_Sincronizacion.eq(true))
                 .and(Producto_Table.userId.eq(usuarioLogued?.Id))
                 .and(Producto_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
-        var countUpdatesTransacciones= SQLite.select().from(Transaccion::class.java)
+        val countUpdatesTransacciones= SQLite.select().from(Transaccion::class.java)
                 .where(Transaccion_Table.Estado_Sincronizacion.eq(true))
                 .and(Transaccion_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(Transaccion_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
-        var updatesTotal= countUpdatesUnidadesProductivas+
+        val updatesTotal= countUpdatesUnidadesProductivas+
                 countUpdatesLotes+
                 countUpdatesCultivos+
                 countUpdatesControlPlagas+countUpdatesProducccion+countUpdatesProductos+countUpdatesTransacciones
 
-        var quantitySync= QuantitySync(registerTotal.toLong(),updatesTotal.toLong())
+        val quantitySync= QuantitySync(registerTotal.toLong(),updatesTotal.toLong())
         return  quantitySync
 
     }
+
+    //endregion
+
+    //region PUT DATA SYNC
+
+
 
     //endregion
 
@@ -557,7 +567,7 @@ class JobSyncRepository: IMainViewJob.Repository {
                         item.save()
                     }
 
-                    syncFotos(context)
+                    syncFotosPlagasEnfermedades(context)
                     //postEventOk(RequestEventMainMenu.SYNC_FOTOS_INSUMOS_PLAGAS)
                     //postEventOk(RequestEventMainMenu.SYNC_EVENT)
 
@@ -576,14 +586,11 @@ class JobSyncRepository: IMainViewJob.Repository {
 
 
 
-    override fun syncFotos(context:Context) {
+    override fun syncFotosPlagasEnfermedades(context:Context) {
         listInsmo= SQLite.select().from(Insumo::class.java).queryList()
         listFotoEnfermedad= SQLite.select().from(FotoEnfermedad::class.java).queryList()
         getAllPlagasFoto(0,context)
     }
-
-
-
 
     private fun getAllInsumoFoto(index: Int,context: Context) {
         if (index >= listInsmo!!.size) {
@@ -742,8 +749,7 @@ class JobSyncRepository: IMainViewJob.Repository {
 
     //endregion
 
-
-    //Main Post Event
+    //region Main Post Event
     private fun postEventMainMenu(type: Int, listModel1:MutableList<Object>?,model:Object?,errorMessage: String?) {
         val event = RequestEventMainMenu(type, listModel1, model, errorMessage)
         event.eventType = type

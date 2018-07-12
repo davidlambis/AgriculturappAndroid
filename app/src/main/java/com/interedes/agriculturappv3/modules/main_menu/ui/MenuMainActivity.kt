@@ -309,8 +309,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         }
 
 
-
-
         //Service SMS
         val notificationServiceIntent = Intent(this, NotificationService::class.java)
         startService(notificationServiceIntent)
@@ -762,8 +760,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 Log.d("Convert Image", "defaultValue = " + ss);
             }
         })
-
-
 
         val userLogued= getLastUserLogued()
         if(userLogued!=null){
@@ -1350,7 +1346,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         viewDialogSync = inflater.inflate(R.layout.dialog_sync_data , null)
 
         var message= ""
-        if(quantitySync?.CantidadRegistrosSync!!.toInt()==0 && quantitySync?.CantidadUpdatesSync!!.toInt()==0 ){
+        if(quantitySync?.CantidadRegistrosSync!!.toInt()==0 && quantitySync.CantidadUpdatesSync!!.toInt()==0 ){
             message=getString(R.string.tittle_no_sync)
             viewDialogSync?.imageViewSyncNone?.visibility=View.VISIBLE
         }else{
@@ -1402,7 +1398,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     override fun setQuantitySyncAutomatic(quantitySync: QuantitySync?){
-        if(quantitySync?.CantidadRegistrosSync!!.toInt()>0 || quantitySync?.CantidadUpdatesSync!!.toInt()>0 ){
+        if(quantitySync?.CantidadRegistrosSync!!.toInt()>0 || quantitySync.CantidadUpdatesSync!!.toInt()>0 ){
             if(presenter?.checkConnection()!!){
                 val myTimerr = 2000
                 ///Mensage

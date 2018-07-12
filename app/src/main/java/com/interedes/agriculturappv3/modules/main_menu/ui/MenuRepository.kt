@@ -142,7 +142,7 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     override fun makeUserOffline(checkConection:Boolean,context: Context) {
-        var verficateLoguedFirebase=verificateUserLoguedFirebaseFirebase()
+        val verficateLoguedFirebase=verificateUserLoguedFirebaseFirebase()
         if(verficateLoguedFirebase!=null){
                 makeUserOfflineSet()
         }
@@ -157,7 +157,7 @@ class MenuRepository: MainViewMenu.Repository {
 
     override fun loginFirebase(usuario:Usuario,context: Context)
     {
-        mAuth?.signInWithEmailAndPassword(usuario?.Email!!, usuario?.Contrasena!!)?.addOnCompleteListener({ task ->
+        mAuth?.signInWithEmailAndPassword(usuario.Email!!, usuario.Contrasena!!)?.addOnCompleteListener({ task ->
             if (task.isSuccessful) {
                 val mCurrentUserID =task.result.user.uid
                 usuario.IdFirebase=mCurrentUserID
@@ -252,87 +252,87 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     override fun syncQuantityData(automatic:Boolean) {
-        var usuarioLogued=getLastUserLogued()
-        var counRegisterUnidadesProductivas=SQLite.select().from(Unidad_Productiva::class.java)
+        val usuarioLogued=getLastUserLogued()
+        val counRegisterUnidadesProductivas=SQLite.select().from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
                 .and(Unidad_Productiva_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
 
-        var counRegisterLotes=SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(false))
+        val counRegisterLotes=SQLite.select().from(Lote::class.java).where(Lote_Table.EstadoSincronizacion.eq(false))
                 .and(Lote_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
-        var counRegisterCultivos=SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.EstadoSincronizacion.eq(false))
+        val counRegisterCultivos=SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.EstadoSincronizacion.eq(false))
                 .and(Cultivo_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
-        var counRegisterControlPlagas=SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
+        val counRegisterControlPlagas=SQLite.select().from(ControlPlaga::class.java).where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
                 .and(ControlPlaga_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
-        var counRegisterProducccion=SQLite.select().from(Produccion::class.java).where(Produccion_Table.Estado_Sincronizacion.eq(false))
+        val counRegisterProducccion=SQLite.select().from(Produccion::class.java).where(Produccion_Table.Estado_Sincronizacion.eq(false))
                 .and(Produccion_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
-        var counRegisterProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(false))
+        val counRegisterProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.Estado_Sincronizacion.eq(false))
                 .and(Producto_Table.userId.eq(usuarioLogued?.Id))
                 .queryList().count()
-        var counRegisterTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(false))
+        val counRegisterTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Estado_Sincronizacion.eq(false))
                 .and(Transaccion_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .queryList().count()
 
-        var registerTotal= counRegisterUnidadesProductivas+
+        val registerTotal= counRegisterUnidadesProductivas+
                 counRegisterControlPlagas+
                 counRegisterCultivos+
                 counRegisterLotes+counRegisterProducccion+counRegisterProductos+counRegisterTransacciones
 
-        var countUpdatesUnidadesProductivas=SQLite.select()
+        val countUpdatesUnidadesProductivas=SQLite.select()
                 .from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true))
                 .and(Unidad_Productiva_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
 
-        var countUpdatesLotes=SQLite.select().from(Lote::class.java)
+        val countUpdatesLotes=SQLite.select().from(Lote::class.java)
                 .where(Lote_Table.EstadoSincronizacion.eq(true))
                 .and(Lote_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(Lote_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
 
-        var countUpdatesCultivos=SQLite.select().from(Cultivo::class.java)
+        val countUpdatesCultivos=SQLite.select().from(Cultivo::class.java)
                 .where(Cultivo_Table.EstadoSincronizacion.eq(true))
                 .and(Cultivo_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
 
 
-        var countUpdatesControlPlagas=SQLite.select().from(ControlPlaga::class.java)
+        val countUpdatesControlPlagas=SQLite.select().from(ControlPlaga::class.java)
                 .where(ControlPlaga_Table.Estado_Sincronizacion.eq(true))
                 .and(ControlPlaga_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
-        var countUpdatesProducccion=SQLite.select().from(Produccion::class.java)
+        val countUpdatesProducccion=SQLite.select().from(Produccion::class.java)
                 .where(Produccion_Table.Estado_Sincronizacion.eq(true))
                 .and(Produccion_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(Produccion_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
-        var countUpdatesProductos=SQLite.select().from(Producto::class.java)
+        val countUpdatesProductos=SQLite.select().from(Producto::class.java)
                 .where(Producto_Table.Estado_Sincronizacion.eq(true))
                 .and(Producto_Table.userId.eq(usuarioLogued?.Id))
                 .and(Producto_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
-        var countUpdatesTransacciones=SQLite.select().from(Transaccion::class.java)
+        val countUpdatesTransacciones=SQLite.select().from(Transaccion::class.java)
                 .where(Transaccion_Table.Estado_Sincronizacion.eq(true))
                 .and(Transaccion_Table.UsuarioId.eq(usuarioLogued?.Id))
                 .and(Transaccion_Table.Estado_SincronizacionUpdate.eq(false)).queryList().count()
 
-        var updatesTotal= countUpdatesUnidadesProductivas+
+        val updatesTotal= countUpdatesUnidadesProductivas+
                 countUpdatesLotes+
                 countUpdatesCultivos+
                 countUpdatesControlPlagas+countUpdatesProducccion+countUpdatesProductos+countUpdatesTransacciones
 
 
         if(automatic){
-            var quantitySync= QuantitySync(registerTotal.toLong(),updatesTotal.toLong())
+            val quantitySync= QuantitySync(registerTotal.toLong(),updatesTotal.toLong())
             postEventOkQuntitySync(RequestEventMainMenu.SYNC_RESUME_AUTOMATIC,quantitySync)
         }else{
-            var quantitySync= QuantitySync(registerTotal.toLong(),updatesTotal.toLong())
+            val quantitySync= QuantitySync(registerTotal.toLong(),updatesTotal.toLong())
             postEventOkQuntitySync(RequestEventMainMenu.SYNC_RESUME,quantitySync)
         }
     }
@@ -345,7 +345,7 @@ class MenuRepository: MainViewMenu.Repository {
 
             val lastUnidadProductiva = SQLite.select()
                     .from(Unidad_Productiva::class.java)
-                    .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id)).orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id, false)
+                    .where(Unidad_Productiva_Table.UsuarioId.eq(usuario.Id)).orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id, false)
                     .querySingle()
             return lastUnidadProductiva
         }else{
@@ -363,7 +363,7 @@ class MenuRepository: MainViewMenu.Repository {
 
         if(usuario!=null){
             val lastLote = SQLite.select().from(Lote::class.java)
-                    .where(Lote_Table.UsuarioId.eq(usuario?.Id))
+                    .where(Lote_Table.UsuarioId.eq(usuario.Id))
                     .orderBy(Lote_Table.LoteId, false).querySingle()
             return lastLote
 
@@ -380,7 +380,7 @@ class MenuRepository: MainViewMenu.Repository {
     fun getLastCultivo(usuario:Usuario?): Cultivo? {
         if(usuario!=null){
             val lastCultivo = SQLite.select().from(Cultivo::class.java)
-                    .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
+                    .where(Cultivo_Table.UsuarioId.eq(usuario.Id))
                     .orderBy(Cultivo_Table.CultivoId, false).querySingle()
             return lastCultivo
 
@@ -394,7 +394,7 @@ class MenuRepository: MainViewMenu.Repository {
     fun getLastProduccion(usuario:Usuario?): Produccion? {
         if(usuario!=null){
             val lastProduccion = SQLite.select().from(Produccion::class.java)
-                    .where(Produccion_Table.UsuarioId.eq(usuario?.Id))
+                    .where(Produccion_Table.UsuarioId.eq(usuario.Id))
                     .orderBy(Produccion_Table.ProduccionId, false).querySingle()
             return lastProduccion
         }else{
@@ -408,7 +408,7 @@ class MenuRepository: MainViewMenu.Repository {
 
         if(usuario!=null){
             val lastControlPlaga = SQLite.select().from(ControlPlaga::class.java)
-                    .where(ControlPlaga_Table.UsuarioId.eq(usuario?.Id)).orderBy(ControlPlaga_Table.ControlPlagaId, false).querySingle()
+                    .where(ControlPlaga_Table.UsuarioId.eq(usuario.Id)).orderBy(ControlPlaga_Table.ControlPlagaId, false).querySingle()
             return lastControlPlaga
 
         }else{
@@ -424,7 +424,7 @@ class MenuRepository: MainViewMenu.Repository {
     fun getLastTransaccion(usuario:Usuario?): Transaccion? {
         if(usuario!=null){
             val lastTransaccion = SQLite.select().from(Transaccion::class.java)
-                    .where(Transaccion_Table.UsuarioId.eq(usuario?.Id)).orderBy(Transaccion_Table.TransaccionId, false).querySingle()
+                    .where(Transaccion_Table.UsuarioId.eq(usuario.Id)).orderBy(Transaccion_Table.TransaccionId, false).querySingle()
             return lastTransaccion
         }else{
             val lastTransaccion = SQLite.select().from(Transaccion::class.java)
@@ -461,7 +461,7 @@ class MenuRepository: MainViewMenu.Repository {
 
         if(usuario!=null){
             val lastProducto = SQLite.select().from(Producto::class.java)
-                    .where(Producto_Table.userId.eq(usuario?.Id)).orderBy(Producto_Table.ProductoId, false).querySingle()
+                    .where(Producto_Table.userId.eq(usuario.Id)).orderBy(Producto_Table.ProductoId, false).querySingle()
             return lastProducto
 
         }else{
@@ -481,16 +481,16 @@ class MenuRepository: MainViewMenu.Repository {
     }
 
     override fun getListasIniciales() {
-        var usuario= getLastUserLogued()
+        val usuario= getLastUserLogued()
         //LISTAS ROL PRODUCTOR
         /*-----------------------------------------------------------------------------------------------------------------*/
         if(usuario?.RolNombre?.equals(RolResources.PRODUCTOR)!!){
 
-            var users=SQLite.select().from(Usuario::class.java).where(Usuario_Table.RolNombre.eq(RolResources.COMPRADOR)).queryList()
+            val users=SQLite.select().from(Usuario::class.java).where(Usuario_Table.RolNombre.eq(RolResources.COMPRADOR)).queryList()
             for (user in users){
                 user.delete()
             }
-            val query = Listas.queryGeneral("UsuarioId",usuario?.Id.toString())
+            val query = Listas.queryGeneral("UsuarioId",usuario.Id.toString())
             val callInformacionSinronized = apiService?.getSyncInformacionUsuario(query)
             callInformacionSinronized?.enqueue(object : Callback<GetSincronizacionResponse> {
                 override fun onResponse(call: Call<GetSincronizacionResponse>?, response: Response<GetSincronizacionResponse>?) {
@@ -544,7 +544,7 @@ class MenuRepository: MainViewMenu.Repository {
                                     .querySingle()
                             //TODO Verifica si tiene pendiente actualizacion por sincronizar
                             if (unidadProductivaVerficateSave !=null){
-                                item.Unidad_Productiva_Id=unidadProductivaVerficateSave?.Unidad_Productiva_Id
+                                item.Unidad_Productiva_Id=unidadProductivaVerficateSave.Unidad_Productiva_Id
                             }else{
                                 val last_up = getLastUp(null)
                                 if (last_up == null) {
@@ -553,7 +553,7 @@ class MenuRepository: MainViewMenu.Repository {
                                     item.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
                                 }
 
-                                item.UsuarioId=usuario?.Id
+                                item.UsuarioId=usuario.Id
                                 item.Nombre_Ciudad= if (item.Ciudad!=null) item.Ciudad?.Nombre else null
                                 item.Nombre_Unidad_Medida= if (item.UnidadMedida!=null) item.UnidadMedida?.Descripcion else null
                                 item.Nombre_Departamento= if (item.Ciudad!=null) item.Ciudad?.Departamento?.Nombre else null
@@ -593,16 +593,16 @@ class MenuRepository: MainViewMenu.Repository {
                                         if (last_lote == null) {
                                             lote.LoteId = 1
                                         } else {
-                                            lote.LoteId = last_lote.LoteId!! + 1
+                                            lote.LoteId = last_lote.LoteId + 1
                                         }
 
-                                        var coordenadas =lote.Localizacion
+                                        val coordenadas =lote.Localizacion
 
                                         if(coordenadas!=null){
                                             if(coordenadas.isNotEmpty()){
-                                                val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
-                                                var latitud= separated!![0].toDoubleOrNull() // this will contain "Fruit"
-                                                var longitud=separated!![1].toDoubleOrNull() // this will contain " they taste good"
+                                                val separated = coordenadas.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                                                val latitud= separated!![0].toDoubleOrNull() // this will contain "Fruit"
+                                                val longitud=separated!![1].toDoubleOrNull() // this will contain " they taste good"
                                                 lote.Latitud=latitud
                                                 lote.Longitud=longitud
                                                 lote.Coordenadas=coordenadas
@@ -749,7 +749,7 @@ class MenuRepository: MainViewMenu.Repository {
         }
         //LISTAS ROL COMPRADOR
         /*-----------------------------------------------------------------------------------------------------------------*/
-        else if(usuario?.RolNombre?.equals(RolResources.COMPRADOR)!!){
+        else if(usuario.RolNombre?.equals(RolResources.COMPRADOR)!!){
             //Limpiar BD con informacion de un productor
             //TODO Delete information in local, add new remote
             SQLite.delete<Oferta>(Oferta::class.java)
@@ -862,7 +862,7 @@ class MenuRepository: MainViewMenu.Repository {
 
                     for (item in tiposProducto) {
                         try {
-                            val base64String = item?.Icono
+                            val base64String = item.Icono
                             val base64Image = base64String?.split(",".toRegex())?.dropLastWhile { it.isEmpty() }!!.toTypedArray()[1]
                             val byte = Base64.decode(base64Image, Base64.DEFAULT)
                             item.Imagen = Blob(byte)
@@ -931,13 +931,17 @@ class MenuRepository: MainViewMenu.Repository {
                         Log.d("SYNC DATA", "Departamentos y Ciudades  Loaded" )
                         loadCategoriasMedidas()
                     } else {
-                        postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                       // postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                        Log.d("ERROR SYNC DATA", "ERROR Departamentos y Ciudades  Loaded" )
                     }
                 }
                 override fun onFailure(call: Call<DeparmentsResponse>?, t: Throwable?) {
-                    postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    //postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
+                    Log.d("ERROR SYNC DATA", "ERROR Departamentos y Ciudades  Loaded" )
                 }
             })
+        }else{
+            loadCategoriasMedidas()
         }
     }
 
@@ -967,7 +971,7 @@ class MenuRepository: MainViewMenu.Repository {
                         val transactionUnidadMedidas = databaseUnidadMedidas.beginTransactionAsync(fastStoreModelTransactionUnidadMedidas).build();
                         transactionUnidadMedidas.execute()*/
                         item.save()
-                        for (itemUnidadmedida in item?.UnidadMedidas!!){
+                        for (itemUnidadmedida in item.UnidadMedidas!!){
                             itemUnidadmedida.save()
                         }
                     }
@@ -1109,8 +1113,8 @@ class MenuRepository: MainViewMenu.Repository {
                                     .querySingle()
 
                             if (terceroVerificateSave!=null){
-                                item.Tercero?.TerceroId=terceroVerificateSave?.TerceroId
-                                item.TerceroId=terceroVerificateSave?.TerceroId
+                                item.Tercero?.TerceroId=terceroVerificateSave.TerceroId
+                                item.TerceroId=terceroVerificateSave.TerceroId
                             }else{
                                 val lastTercero = getLastTercero(null)
                                 if (lastTercero == null) {
@@ -1184,9 +1188,9 @@ class MenuRepository: MainViewMenu.Repository {
                                 producto.ProductoId = last_producto.ProductoId!! + 1
                             }
 
-                            producto.NombreCultivo= if(producto.Cultivo!=null)producto?.Cultivo?.Nombre else null
-                            producto.NombreLote= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.Nombre else null
-                            producto.NombreUnidadProductiva= if(producto.Cultivo!=null)producto?.Cultivo?.Lote?.UnidadProductiva?.nombre else null
+                            producto.NombreCultivo= if(producto.Cultivo!=null)producto.Cultivo?.Nombre else null
+                            producto.NombreLote= if(producto.Cultivo!=null)producto.Cultivo?.Lote?.Nombre else null
+                            producto.NombreUnidadProductiva= if(producto.Cultivo!=null)producto.Cultivo?.Lote?.UnidadProductiva?.nombre else null
                             producto.NombreUnidadMedidaCantidad=if(producto.UnidadMedida!= null)producto.UnidadMedida?.Descripcion else null
                             producto.NombreCalidad=if(producto.Calidad!=null)producto.Calidad?.Nombre else null
                             producto.NombreUnidadMedidaPrecio=producto.PrecioUnidadMedida
@@ -1294,9 +1298,9 @@ class MenuRepository: MainViewMenu.Repository {
                         } else {
                             val last_detalle_oferta = getLastDetalleOferta()
                             if (last_detalle_oferta == null) {
-                                detalleoferta?.Detalle_Oferta_Id = 1
+                                detalleoferta.Detalle_Oferta_Id = 1
                             } else {
-                                detalleoferta?.Detalle_Oferta_Id = last_detalle_oferta.Detalle_Oferta_Id!! + 1
+                                detalleoferta.Detalle_Oferta_Id = last_detalle_oferta.Detalle_Oferta_Id!! + 1
                             }
                         }
                         detalleoferta.NombreUnidadMedidaPrecio = if (detalleoferta.UnidadMedida != null) detalleoferta.UnidadMedida?.Descripcion else null
@@ -1312,7 +1316,7 @@ class MenuRepository: MainViewMenu.Repository {
                             }
 
                             //TODO Unidades Productivas
-                            val unidaProductiva = detalleoferta?.Producto?.Cultivo?.Lote?.UnidadProductiva
+                            val unidaProductiva = detalleoferta.Producto?.Cultivo?.Lote?.UnidadProductiva
                             if (unidaProductiva != null) {
                                 val unidadProductivaVerficateSave = SQLite.select()
                                         .from(Unidad_Productiva::class.java)
@@ -1338,7 +1342,7 @@ class MenuRepository: MainViewMenu.Repository {
 
 
                             //TODO Lote
-                            val lote = detalleoferta?.Producto?.Cultivo?.Lote
+                            val lote = detalleoferta.Producto?.Cultivo?.Lote
                             if (lote != null) {
                                 val loteVerficateSave = SQLite.select()
                                         .from(Lote::class.java)
@@ -1352,15 +1356,15 @@ class MenuRepository: MainViewMenu.Repository {
                                     if (last_lote == null) {
                                         lote.LoteId = 1
                                     } else {
-                                        lote.LoteId = last_lote.LoteId!! + 1
+                                        lote.LoteId = last_lote.LoteId + 1
                                     }
                                 }
 
                                 val coordenadas = lote.Localizacion
                                 if (coordenadas != null) {
-                                    val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
-                                    var latitud = separated!![0].toDoubleOrNull() // this will contain "Fruit"
-                                    var longitud = separated!![1].toDoubleOrNull() // this will contain " they taste good"
+                                    val separated = coordenadas.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                                    val latitud = separated!![0].toDoubleOrNull() // this will contain "Fruit"
+                                    val longitud = separated!![1].toDoubleOrNull() // this will contain " they taste good"
                                     lote.Latitud = latitud
                                     lote.Longitud = longitud
                                     lote.Coordenadas = coordenadas
@@ -1377,11 +1381,11 @@ class MenuRepository: MainViewMenu.Repository {
                             }
 
                             //TODO Cultivo
-                            val cultivo = detalleoferta?.Producto?.Cultivo
+                            val cultivo = detalleoferta.Producto?.Cultivo
                             if (cultivo != null) {
                                 val cultivoVerficateSave = SQLite.select()
                                         .from(Cultivo::class.java)
-                                        .where(Cultivo_Table.Id_Remote.eq(cultivo?.Id_Remote))
+                                        .where(Cultivo_Table.Id_Remote.eq(cultivo.Id_Remote))
                                         .querySingle()
                                 //TODO Verifica si tiene pendiente actualizacion por sincronizar
                                 if (cultivoVerficateSave != null) {
@@ -1413,7 +1417,7 @@ class MenuRepository: MainViewMenu.Repository {
                             }
 
                             //TODO Producto
-                            val producto = detalleoferta?.Producto
+                            val producto = detalleoferta.Producto
                             if (producto != null) {
                                 val productoVerficateSave = SQLite.select()
                                         .from(Producto::class.java)
