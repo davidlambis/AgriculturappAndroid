@@ -73,21 +73,21 @@ class ProduccionRepository :IMainProduccion.Repository {
                         if (response != null && response.code() == 201 || response?.code() == 200) {
 
                             produccion.Id_Remote = response.body()?.Id!!
-
-
-                            val las_prduccion = getLastProduccion()
-                            if (las_prduccion == null) {
-                                produccion.ProduccionId = 1
-                            } else {
-                                produccion.ProduccionId = las_prduccion.ProduccionId!! + 1
+                            if( produccion.Id_Remote!!>0){
+                                val las_prduccion = getLastProduccion()
+                                if (las_prduccion == null) {
+                                    produccion.ProduccionId = 1
+                                } else {
+                                    produccion.ProduccionId = las_prduccion.ProduccionId!! + 1
+                                }
+                                produccion.Estado_Sincronizacion = true
+                                produccion?.Estado_SincronizacionUpdate = true
+                                produccion.save()
+                                postEventOk(RequestEventProduccion.SAVE_EVENT, getProductions(cultivo_id), produccion)
+                            }else{
+                                postEventError(RequestEventProduccion.ERROR_EVENT, "Por favor intente nuevamente")
                             }
 
-
-
-                            produccion.Estado_Sincronizacion = true
-                            produccion?.Estado_SincronizacionUpdate = true
-                            produccion.save()
-                            postEventOk(RequestEventProduccion.SAVE_EVENT, getProductions(cultivo_id), produccion)
                         } else {
                             postEventError(RequestEventProduccion.ERROR_EVENT, "Comprueba tu conexión")
                         }

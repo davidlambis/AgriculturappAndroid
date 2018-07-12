@@ -77,22 +77,23 @@ class TratamientoRepository : ITratamiento.Repository {
                 call?.enqueue(object : Callback<PostControlPlaga> {
                     override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
                         if (response != null && response.code() == 201 || response?.code() == 200) {
-                            var controlPlagaResponse= response.body()
-                            controlPlaga.Id_Remote = controlPlagaResponse?.Id!!
+                            if( controlPlaga.Id_Remote!!>0){
+                                var controlPlagaResponse= response.body()
+                                controlPlaga.Id_Remote = controlPlagaResponse?.Id!!
+                                val lastControl = getLastControlPlaga()
+                                if (lastControl == null) {
+                                    controlPlaga.ControlPlagaId = 1
+                                } else {
+                                    controlPlaga.ControlPlagaId = lastControl.ControlPlagaId!! + 1
+                                }
+                                controlPlaga.Estado_Sincronizacion = true
+                                controlPlaga?.Estado_SincronizacionUpdate = true
+                                controlPlaga.save()
+                                postEventControlPlaga(TratamientoEvent.SAVE_CONTROL_PLAGA_EVENT, getControlPlagasByCultivo(cultivo_id))
 
-                            val lastControl = getLastControlPlaga()
-                            if (lastControl == null) {
-                                controlPlaga.ControlPlagaId = 1
-                            } else {
-                                controlPlaga.ControlPlagaId = lastControl.ControlPlagaId!! + 1
+                            }else{
+                                postEventError(TratamientoEvent.ERROR_EVENT, "Por favor intente nuevamente")
                             }
-
-
-
-                            controlPlaga.Estado_Sincronizacion = true
-                            controlPlaga?.Estado_SincronizacionUpdate = true
-                            controlPlaga.save()
-                            postEventControlPlaga(TratamientoEvent.SAVE_CONTROL_PLAGA_EVENT, getControlPlagasByCultivo(cultivo_id))
                         } else {
                             postEventError(TratamientoEvent.ERROR_EVENT, "Comprueba tu conexión")
                         }

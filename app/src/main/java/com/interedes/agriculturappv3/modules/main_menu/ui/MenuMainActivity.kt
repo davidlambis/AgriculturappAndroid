@@ -75,12 +75,17 @@ import com.nightonke.boommenu.Types.ButtonType
 import com.nightonke.boommenu.Types.PlaceType
 import com.nightonke.boommenu.Util
 import de.hdodenhof.circleimageview.CircleImageView
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
 import kotlinx.android.synthetic.main.dialog_image_download_plaga.view.*
 import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import java.io.*
+import java.net.InetSocketAddress
+import java.net.Socket
 import java.text.Normalizer
 import java.util.*
 
@@ -182,11 +187,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     fun navigationVerificateDownloadPlagasyEnfermedades(){
 
         val inflater = this.layoutInflater
-        var viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
+        val viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
         viewDialogConfirm?.txtTitleConfirm?.setText("")
         //viewDialogConfirm?.txtTitleConfirm?.setText(usuario?.Nombre+" ${usuario?.Apellidos}")
 
-        var content =String.format(getString(R.string.verifcate_download_info))
+        val content =String.format(getString(R.string.verifcate_download_info))
         viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
 
         MaterialDialog.Builder(this)
@@ -296,16 +301,15 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
     private fun septupInjection() {
-        val userLogued= getLastUserLogued()
-        if(userLogued!=null){
-            Rx_Bus.publish(userLogued)
-        }
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (!hasPermissions(this, *PERMISSIONS)) {
                 startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
             }
         }
+
+
+
 
         //Service SMS
         val notificationServiceIntent = Intent(this, NotificationService::class.java)
@@ -366,6 +370,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 }, myTimerr.toLong())
             }
         }
+
         /*var usuarioLogued=getLastUserLogued()
         if (usuarioLogued?.RolNombre.equals(RolResources.PRODUCTOR)) {
             presenter?.syncQuantityData(true)
@@ -379,9 +384,9 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         mActionBar!!.setDisplayShowHomeEnabled(false)
         mActionBar.setDisplayShowTitleEnabled(false)
         val mInflater = LayoutInflater.from(this)
-        var mCustomView = mInflater.inflate(R.layout.custom_actionbar, null)
+        val mCustomView = mInflater.inflate(R.layout.custom_actionbar, null)
 
-        var boomMenuButtonInActionBar:BoomMenuButton = mCustomView.findViewById(R.id.boom)
+        val boomMenuButtonInActionBar:BoomMenuButton = mCustomView.findViewById(R.id.boom)
         mActionBar.setCustomView(mCustomView)
         mActionBar.setDisplayShowCustomEnabled(true)
         (mCustomView.getParent() as Toolbar).setContentInsetsAbsolute(0, 0)
@@ -574,7 +579,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             //File data = Environment.getDataDirectory();
             if (sd.canWrite()) {
 
-                var usuario= presenter?.getLastUserLogued()
+                val usuario= presenter?.getLastUserLogued()
 
                // val nombre= limpiarAcentos(usuario?.Nombre+"_"+usuario?.Apellidos)
 
@@ -744,6 +749,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val header = navigationView.getHeaderView(0)
         val headerViewHolder = HeaderViewHolder(header)
 
+
         Rx_Bus.listen(Usuario::class.java).subscribe({
             try {
                 val foto = it.blobImagenUser?.blob
@@ -756,6 +762,26 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 Log.d("Convert Image", "defaultValue = " + ss);
             }
         })
+
+
+
+        val userLogued= getLastUserLogued()
+        if(userLogued!=null){
+
+            if(userLogued.blobImagenUser!=null){
+                try {
+                    val foto = userLogued.blobImagenUser?.blob
+                    val imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
+                    headerViewHolder.circleImageView.setImageBitmap(imageBitmapAccountGlobal)
+                }catch (ex:Exception){
+                    val ss= ex.toString()
+                    Log.d("Convert Image", "defaultValue = " + ss);
+                }
+            }
+
+            headerViewHolder.tvNombreUsuario.setText(String.format(getString(R.string.nombre_usuario_nav), userLogued.Nombre, userLogued.Apellidos))
+            headerViewHolder.tvIdentificacion.setText(userLogued?.Email)
+        }
 
         if (getLastUserLogued()?.RolNombre.equals(RolResources.PRODUCTOR)) {
             //Menu Lateral

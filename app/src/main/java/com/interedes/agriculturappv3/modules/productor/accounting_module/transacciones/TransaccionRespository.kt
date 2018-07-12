@@ -31,7 +31,6 @@ import java.math.MathContext.DECIMAL64
 
 class TransaccionRespository: IMainViewTransacciones.Repository {
 
-
     var eventBus: EventBus? = null
     var apiService: ApiInterface? = null
     init {
@@ -50,11 +49,9 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                 .where(Lote_Table.UsuarioId.eq(usuario?.Id))
                 .queryList()
 
-
         var listCultivos = SQLite.select().from(Cultivo::class.java!!)
                 .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
                 .queryList()
-
 
         //var listCategoriasPuk= Listas.listCategoriaPuk()
         //var listPuk= Listas.listPuk()
@@ -99,10 +96,8 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
     }
 
     override fun saveTransaccion(transaccion: Transaccion, cultivo_id: Long?,checkConection:Boolean) {
-
         transaccion.UsuarioId= getLastUserLogued()?.Id
         var terceroLocal=Tercero(TerceroId = transaccion.TerceroId,Nombre = transaccion.Nombre_Tercero,Apellido = "",NitRut = transaccion.Identificacion_Tercero,Usuario_Id = transaccion.UsuarioId)
-
         if(checkConection){
             val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
             if (cultivo?.EstadoSincronizacion == true) {
@@ -119,64 +114,65 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                     override fun onResponse(call: Call<PostTercero>?, response: Response<PostTercero>?) {
                         if (response != null && response.code() == 201 || response?.code() == 200) {
                             terceroLocal.Id_Remote = response.body()?.Id!!
-                            terceroLocal.Estado_Sincronizacion = true
-                            transaccion.Estado_SincronizacionUpdate = true
 
-                            val lastTercero = getLastTercero()
-                            if (lastTercero == null) {
-                                terceroLocal.TerceroId = 1
-                            } else {
-                                terceroLocal.TerceroId = lastTercero.TerceroId!! + 1
-                            }
+                            if(terceroLocal.Id_Remote!! >0){
+                                terceroLocal.Estado_Sincronizacion = true
+                                transaccion.Estado_SincronizacionUpdate = true
 
+                                val lastTercero = getLastTercero()
+                                if (lastTercero == null) {
+                                    terceroLocal.TerceroId = 1
+                                } else {
+                                    terceroLocal.TerceroId = lastTercero.TerceroId!! + 1
+                                }
 
-                            terceroLocal.save()
+                                terceroLocal.save()
+                                ///val decimal = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
+                                val valorBig = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
+                                val cantidadBig = BigDecimal(transaccion.Cantidad!!, MathContext.DECIMAL64)
+                                val postTransaccion = PostTransaccion(
+                                        0,
+                                        transaccion.Concepto,
+                                        transaccion.EstadoId,
+                                        transaccion.getFechaTransacccionFormatApi(),
+                                        transaccion.NaturalezaId,
+                                        transaccion.PucId,
+                                        terceroLocal.Id_Remote,
+                                        valorBig,
+                                        cantidadBig,
+                                        cultivo.Id_Remote,
+                                        transaccion.UsuarioId
+                                )
+                                val call = apiService?.postTransaccion(postTransaccion)
+                                call?.enqueue(object : Callback<PostTransaccion> {
+                                    override fun onResponse(call: Call<PostTransaccion>?, response: Response<PostTransaccion>?) {
+                                        if (response != null && response.code() == 201 || response?.code() == 200) {
+                                            transaccion.Id_Remote = response.body()?.Id!!
 
-                            ///val decimal = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
-
-                            val valorBig = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
-                            val cantidadBig = BigDecimal(transaccion.Cantidad!!, MathContext.DECIMAL64)
-
-                            val postTransaccion = PostTransaccion(
-                                    0,
-                                    transaccion.Concepto,
-                                    transaccion.EstadoId,
-                                    transaccion.getFechaTransacccionFormatApi(),
-                                    transaccion.NaturalezaId,
-                                    transaccion.PucId,
-                                    terceroLocal.Id_Remote,
-                                    valorBig,
-                                    cantidadBig,
-                                    cultivo.Id_Remote,
-                                    transaccion.UsuarioId
-                            )
-                            val call = apiService?.postTransaccion(postTransaccion)
-                            call?.enqueue(object : Callback<PostTransaccion> {
-                                override fun onResponse(call: Call<PostTransaccion>?, response: Response<PostTransaccion>?) {
-                                    if (response != null && response.code() == 201 || response?.code() == 200) {
-                                        transaccion.Id_Remote = response.body()?.Id!!
-
-                                        val lastTransaccion = getLastTransaccion()
-                                        if (lastTransaccion == null) {
-                                            transaccion.TransaccionId = 1
+                                            val lastTransaccion = getLastTransaccion()
+                                            if (lastTransaccion == null) {
+                                                transaccion.TransaccionId = 1
+                                            } else {
+                                                transaccion.TransaccionId = lastTransaccion.TransaccionId!! + 1
+                                            }
+                                            transaccion.Estado_Sincronizacion = true
+                                            transaccion.Estado_SincronizacionUpdate = true
+                                            transaccion.TerceroId=terceroLocal.TerceroId
+                                            transaccion.save()
+                                            var listProduccion = getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id)
+                                            postEventOk(RequestEventTransaccion.SAVE_EVENT, listProduccion, transaccion)
                                         } else {
-                                            transaccion.TransaccionId = lastTransaccion.TransaccionId!! + 1
+                                            postEventError(RequestEventTransaccion.ERROR_EVENT, "Comprueba tu conexión")
                                         }
-                                        transaccion.Estado_Sincronizacion = true
-                                        transaccion.Estado_SincronizacionUpdate = true
-                                        transaccion.TerceroId=terceroLocal.TerceroId
-                                        transaccion.save()
-                                        var listProduccion = getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id)
-                                        postEventOk(RequestEventTransaccion.SAVE_EVENT, listProduccion, transaccion)
-                                    } else {
+                                    }
+                                    override fun onFailure(call: Call<PostTransaccion>?, t: Throwable?) {
                                         postEventError(RequestEventTransaccion.ERROR_EVENT, "Comprueba tu conexión")
                                     }
-                                }
-                                override fun onFailure(call: Call<PostTransaccion>?, t: Throwable?) {
-                                    postEventError(RequestEventTransaccion.ERROR_EVENT, "Comprueba tu conexión")
-                                }
-                            })
+                                })
 
+                            }else{
+                                postEventError(RequestEventTransaccion.ERROR_EVENT, "Por favor intente nuevamente")
+                            }
                             //postEventOk(RequestEventTransaccion.SAVE_EVENT, getProductions(cultivo_id), produccion)
                         } else {
                             postEventError(RequestEventTransaccion.ERROR_EVENT, "Comprueba tu conexión")

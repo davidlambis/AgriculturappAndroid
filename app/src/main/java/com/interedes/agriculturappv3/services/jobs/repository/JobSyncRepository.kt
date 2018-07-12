@@ -143,10 +143,10 @@ class JobSyncRepository: IMainViewJob.Repository {
                                             .setQuality(75)
                                             //.setCompressFormat(Bitmap.CompressFormat.WEBP)
                                             //.setQuality(80)
-                                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                                            .setCompressFormat(Bitmap.CompressFormat.PNG)
                                             .compressToBitmap(loadedFile)
 
-                                    val bitmap= convertBitmapToBytePlagasAndFotoPerfil(compressedImage)
+                                    val bitmap= convertBitmapToByte(compressedImage)
                                     user.blobImagenUser = Blob(bitmap)
                                     user.save()
                                 }
@@ -727,7 +727,7 @@ class JobSyncRepository: IMainViewJob.Repository {
 
     fun convertBitmapToByte(bitmapCompressed: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()
-        bitmapCompressed.compress(Bitmap.CompressFormat.PNG, 80, stream)
+        bitmapCompressed.compress(Bitmap.CompressFormat.PNG, 100, stream)
         return stream.toByteArray()
         //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }

@@ -6,7 +6,7 @@ import java.util.*
 
 data class PostControlPlaga(
         @SerializedName("Id")
-        var Id: Long? = 0,
+        var Id: Long = 0,
 
         @SerializedName("CultivoId")
         var CultivoId: Long? = 0,

@@ -91,17 +91,21 @@ class LoteRepositoryImpl : MainViewLote.Repository {
                         override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
                             if (response != null && response.code() == 201) {
                                 mLote.Id_Remote = response.body()?.Id_Remote!!
-                                val last_lote = getLastLote()
-                                if (last_lote == null) {
-                                    mLote.LoteId = 1
-                                } else {
-                                    mLote.LoteId = last_lote.LoteId + 1
-                                }
+                                if( mLote.Id_Remote!!>0){
+                                    val last_lote = getLastLote()
+                                    if (last_lote == null) {
+                                        mLote.LoteId = 1
+                                    } else {
+                                        mLote.LoteId = last_lote.LoteId + 1
+                                    }
 
-                                mLote.EstadoSincronizacion = true
-                                mLote.Estado_SincronizacionUpdate = true
-                                mLote.save()
-                                postEventOk(RequestEventLote.SAVE_EVENT, getLotes(unidad_productiva_id), mLote)
+                                    mLote.EstadoSincronizacion = true
+                                    mLote.Estado_SincronizacionUpdate = true
+                                    mLote.save()
+                                    postEventOk(RequestEventLote.SAVE_EVENT, getLotes(unidad_productiva_id), mLote)
+                                }else{
+                                    postEventError(RequestEventLote.ERROR_EVENT, "Por favor intente nuevamente")
+                                }
                             } else {
                                 postEventError(RequestEventLote.ERROR_EVENT, "Comprueba tu conexión")
                             }

@@ -144,9 +144,6 @@ class CultivoRepository : ICultivo.Repository {
             val lote = SQLite.select().from(Lote::class.java).where(Lote_Table.LoteId.eq(loteId)).querySingle()
 
             //val areaBig = BigDecimal(mCultivo!!, MathContext.DECIMAL64)
-
-
-
             if (lote?.EstadoSincronizacion == true) {
                 val postCultivo = PostCultivo(0,
                         mCultivo?.Descripcion,
@@ -164,12 +161,16 @@ class CultivoRepository : ICultivo.Repository {
                     override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
                         if (response != null && response.code() == 201) {
                             val value = response.body()
-                            mCultivo?.Id_Remote = value?.Id_Remote!!
-                            mCultivo?.FechaIncio = value.FechaIncio
-                            mCultivo?.FechaFin = value.FechaFin
-                            mCultivo?.EstadoSincronizacion = true
-                            mCultivo?.Estado_SincronizacionUpdate = true
-                            saveCultivoLocal(mCultivo,loteId)
+                            if(value?.Id_Remote!!>0){
+                                mCultivo?.Id_Remote = value?.Id_Remote!!
+                                mCultivo?.FechaIncio = value.FechaIncio
+                                mCultivo?.FechaFin = value.FechaFin
+                                mCultivo?.EstadoSincronizacion = true
+                                mCultivo?.Estado_SincronizacionUpdate = true
+                                saveCultivoLocal(mCultivo,loteId)
+                            }else{
+                                postEventError(CultivoEvent.ERROR_EVENT, "Por favor intente nuevamente")
+                            }
                             //postEventOk(CultivoEvent.SAVE_EVENT, getCultivos(loteId), mCultivo)
                         } else {
                             postEventError(CultivoEvent.ERROR_EVENT, "Comprueba tu conexión")

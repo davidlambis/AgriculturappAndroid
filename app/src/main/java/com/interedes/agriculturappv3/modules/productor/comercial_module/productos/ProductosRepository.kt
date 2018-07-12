@@ -144,22 +144,23 @@ class ProductosRepository : IProductos.Repository {
                    override fun onResponse(call: Call<Producto>?, response: Response<Producto>?) {
                        if (response != null && response.code() == 201) {
                            val value = response.body()
+                           if(value?.Id_Remote!!>0){
+                               mProducto.Id_Remote = value?.Id_Remote!!
+                               val last_producto = getLastProducto()
+                               if (last_producto == null) {
+                                   mProducto.ProductoId = 1
+                               } else {
+                                   mProducto.ProductoId = last_producto.ProductoId!! + 1
+                               }
 
-                           mProducto.Id_Remote = value?.Id_Remote!!
+                               mProducto.Estado_Sincronizacion = true
+                               mProducto.Estado_SincronizacionUpdate = true
 
-
-                           val last_producto = getLastProducto()
-                           if (last_producto == null) {
-                               mProducto.ProductoId = 1
-                           } else {
-                               mProducto.ProductoId = last_producto.ProductoId!! + 1
+                               mProducto.save()
+                               postEventOk(ProductosEvent.SAVE_EVENT, getProductos(cultivo_id), null)
+                           }else{
+                               postEventError(ProductosEvent.ERROR_EVENT, "Por favor intente nuevamente")
                            }
-
-                           mProducto.Estado_Sincronizacion = true
-                           mProducto.Estado_SincronizacionUpdate = true
-
-                           mProducto.save()
-                           postEventOk(ProductosEvent.SAVE_EVENT, getProductos(cultivo_id), null)
                        } else {
                            postEventError(ProductosEvent.ERROR_EVENT, "Comprueba tu conexión")
                            Log.e("error", response?.message().toString())

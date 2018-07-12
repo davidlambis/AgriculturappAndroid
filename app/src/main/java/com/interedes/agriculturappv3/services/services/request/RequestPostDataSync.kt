@@ -68,12 +68,12 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
             val areaBig = BigDecimal(mUnidadProductiva.Area!!, MathContext.DECIMAL64)
             val postUnidadProductiva = PostUnidadProductiva(0,
                     areaBig,
-                    mUnidadProductiva?.CiudadId,
-                    mUnidadProductiva?.Codigo,
-                    mUnidadProductiva?.UnidadMedidaId,
-                    mUnidadProductiva?.UsuarioId,
-                    mUnidadProductiva?.descripcion,
-                    mUnidadProductiva?.nombre)
+                    mUnidadProductiva.CiudadId,
+                    mUnidadProductiva.Codigo,
+                    mUnidadProductiva.UnidadMedidaId,
+                    mUnidadProductiva.UsuarioId,
+                    mUnidadProductiva.descripcion,
+                    mUnidadProductiva.nombre)
 
             // mUnidadProductiva?.CiudadId = 1
             val call = apiService?.postUnidadProductiva(postUnidadProductiva)
@@ -84,55 +84,61 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
 
                         //Thread.sleep(100)
                         val idUP = response.body()?.Id_Remote
-                        mUnidadProductiva?.Id_Remote = idUP
-                        //mUnidadProductiva?.save()
-                        //postLocalizacionUnidadProductiva
+                        if(idUP!!>0){
 
-                        val latitudBig = BigDecimal(mUnidadProductiva.Latitud!!, MathContext.DECIMAL64)
-                        val longitudBig = BigDecimal(mUnidadProductiva.Longitud!!, MathContext.DECIMAL64)
+                            mUnidadProductiva.Id_Remote = idUP
+                            //mUnidadProductiva?.save()
+                            //postLocalizacionUnidadProductiva
 
-                        val postLocalizacionUnidadProductiva = LocalizacionUp(0,
-                                "",
-                                mUnidadProductiva?.Coordenadas,
-                                if (mUnidadProductiva?.Direccion!=null) mUnidadProductiva.Direccion else "",
-                                mUnidadProductiva?.DireccionAproximadaGps,
-                                latitudBig,
-                                longitudBig,
-                                "",
-                                "",
-                                "",
-                                mUnidadProductiva?.Id_Remote,
-                                "")
+                            val latitudBig = BigDecimal(mUnidadProductiva.Latitud!!, MathContext.DECIMAL64)
+                            val longitudBig = BigDecimal(mUnidadProductiva.Longitud!!, MathContext.DECIMAL64)
 
-                        val call = apiService?.postLocalizacionUnidadProductiva(postLocalizacionUnidadProductiva)
-                        call?.enqueue(object : Callback<LocalizacionUp> {
-                            override fun onResponse(call: Call<LocalizacionUp>?, response: Response<LocalizacionUp>?) {
-                                if (response != null && response.code() == 201) {
-                                    val idLocalizacion = response.body()?.Id
-                                    mUnidadProductiva?.LocalizacionUpId=idLocalizacion
-                                    mUnidadProductiva?.Estado_Sincronizacion = true
-                                    mUnidadProductiva?.Estado_SincronizacionUpdate=true
-                                    mUnidadProductiva?.update()
-                                    //postLocalizacionUnidadProductiva
-                                    val mUnidadProductivaPost= SQLite.select()
-                                            .from(Unidad_Productiva::class.java)
-                                            .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
-                                            .and(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
-                                            .orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id,false)
-                                            .querySingle()
-                                    if(mUnidadProductivaPost!=null){
-                                        syncData()
-                                    }else{
-                                        syncDataLotes()
+                            val postLocalizacionUnidadProductiva = LocalizacionUp(0,
+                                    "",
+                                    mUnidadProductiva.Coordenadas,
+                                    if (mUnidadProductiva.Direccion!=null) mUnidadProductiva.Direccion else "",
+                                    mUnidadProductiva.DireccionAproximadaGps,
+                                    latitudBig,
+                                    longitudBig,
+                                    "",
+                                    "",
+                                    "",
+                                    mUnidadProductiva.Id_Remote,
+                                    "")
+
+                            val callLocalizacion = apiService?.postLocalizacionUnidadProductiva(postLocalizacionUnidadProductiva)
+                            callLocalizacion?.enqueue(object : Callback<LocalizacionUp> {
+                                override fun onResponse(call: Call<LocalizacionUp>?, response: Response<LocalizacionUp>?) {
+                                    if (response != null && response.code() == 201) {
+                                        val idLocalizacion = response.body()?.Id
+                                        mUnidadProductiva.LocalizacionUpId=idLocalizacion
+                                        mUnidadProductiva.Estado_Sincronizacion = true
+                                        mUnidadProductiva.Estado_SincronizacionUpdate=true
+                                        mUnidadProductiva.update()
+                                        //postLocalizacionUnidadProductiva
+                                        val mUnidadProductivaPost= SQLite.select()
+                                                .from(Unidad_Productiva::class.java)
+                                                .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(false))
+                                                .and(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
+                                                .orderBy(Unidad_Productiva_Table.Unidad_Productiva_Id,false)
+                                                .querySingle()
+                                        if(mUnidadProductivaPost!=null){
+                                            syncData()
+                                        }else{
+                                            syncDataLotes()
+                                        }
+                                    } else {
+                                        postEventError(EventsService.ERROR_EVENT, "Error 500...")
                                     }
-                                } else {
-                                    postEventError(EventsService.ERROR_EVENT, "Error 500...")
                                 }
-                            }
-                            override fun onFailure(call: Call<LocalizacionUp>?, t: Throwable?) {
-                                postEventError(EventsService.ERROR_EVENT, "Error Faillure...")
-                            }
-                        })
+                                override fun onFailure(call: Call<LocalizacionUp>?, t: Throwable?) {
+                                    postEventError(EventsService.ERROR_EVENT, "Error Faillure...")
+                                }
+                            })
+
+                        }else{
+                            syncData()
+                        }
                     } else {
                         postEventError(EventsService.ERROR_EVENT, "Error 500...")
                     }
@@ -165,26 +171,32 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                     mLote.Localizacion,
                     mLote.Localizacion_Poligono,
                     mLote.Unidad_Medida_Id,
-                    unidad_productiva?.Id_Remote)
+                    unidad_productiva.Id_Remote)
 
             val call = apiService?.postLote(postLote)
             call?.enqueue(object : Callback<Lote> {
                 override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
                     if (response != null && response.code() == 201) {
-                        mLote.Id_Remote = response.body()?.Id_Remote!!
-                        mLote.EstadoSincronizacion = true
-                        mLote.Estado_SincronizacionUpdate = true
-                        mLote.save()
-                        val mLotePost= SQLite.select()
-                                .from(Lote::class.java)
-                                .where(Lote_Table.EstadoSincronizacion.eq(false))
-                                .and(Lote_Table.UsuarioId.eq(usuario?.Id))
-                                .orderBy(Lote_Table.LoteId,false).querySingle()
 
-                        if(mLotePost!=null){
-                            syncDataLotes()
+                        if(response.body()?.Id_Remote!!>0){
+
+                            mLote.Id_Remote = response.body()?.Id_Remote!!
+                            mLote.EstadoSincronizacion = true
+                            mLote.Estado_SincronizacionUpdate = true
+                            mLote.save()
+                            val mLotePost= SQLite.select()
+                                    .from(Lote::class.java)
+                                    .where(Lote_Table.EstadoSincronizacion.eq(false))
+                                    .and(Lote_Table.UsuarioId.eq(usuario?.Id))
+                                    .orderBy(Lote_Table.LoteId,false).querySingle()
+
+                            if(mLotePost!=null){
+                                syncDataLotes()
+                            }else{
+                                syncDataCultivos()
+                            }
                         }else{
-                            syncDataCultivos()
+                            syncDataLotes()
                         }
                     } else {
                         postEventError(EventsService.ERROR_EVENT, "Error 500...")
@@ -211,39 +223,43 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
         if(mCultivo!=null && lote?.EstadoSincronizacion==true){
 
             val postCultivo = PostCultivo(0,
-                    mCultivo?.Descripcion,
-                    mCultivo?.DetalleTipoProductoId,
+                    mCultivo.Descripcion,
+                    mCultivo.DetalleTipoProductoId,
                     mCultivo.Unidad_Medida_Id,
-                    mCultivo?.EstimadoCosecha,
-                    mCultivo?.stringFechaFin,
-                    mCultivo?.stringFechaInicio,
-                    lote?.Id_Remote,
-                    mCultivo?.Nombre,
-                    mCultivo?.siembraTotal)
+                    mCultivo.EstimadoCosecha,
+                    mCultivo.stringFechaFin,
+                    mCultivo.stringFechaInicio,
+                    lote.Id_Remote,
+                    mCultivo.Nombre,
+                    mCultivo.siembraTotal)
 
             val call = apiService?.postCultivo(postCultivo)
             call?.enqueue(object : Callback<Cultivo> {
                 override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
                     if (response != null && response.code() == 201) {
                         val value = response.body()
-                        mCultivo?.Id_Remote = value?.Id_Remote!!
-                        mCultivo?.FechaIncio = value.FechaIncio
-                        mCultivo?.FechaFin = value.FechaFin
-                        mCultivo?.EstadoSincronizacion = true
-                        mCultivo?.Estado_SincronizacionUpdate = true
-                        mCultivo?.save()
-                        val mCultivo= SQLite.select()
-                                .from(Cultivo::class.java)
-                                .where(Cultivo_Table.EstadoSincronizacion.eq(false))
-                                .and(Cultivo_Table.UsuarioId.eq(usuario?.Id))
-                                .orderBy(Cultivo_Table.CultivoId,false).querySingle()
 
-                        if(mCultivo!=null){
-                            syncDataCultivos()
+                        if(response.body()?.Id_Remote!!>0){
+                            mCultivo.Id_Remote = value?.Id_Remote!!
+                            mCultivo.FechaIncio = value.FechaIncio
+                            mCultivo.FechaFin = value.FechaFin
+                            mCultivo.EstadoSincronizacion = true
+                            mCultivo.Estado_SincronizacionUpdate = true
+                            mCultivo.save()
+                            val mCultivo= SQLite.select()
+                                    .from(Cultivo::class.java)
+                                    .where(Cultivo_Table.EstadoSincronizacion.eq(false))
+                                    .and(Cultivo_Table.UsuarioId.eq(usuario?.Id))
+                                    .orderBy(Cultivo_Table.CultivoId,false).querySingle()
+
+                            if(mCultivo!=null){
+                                syncDataCultivos()
+                            }else{
+                                syncDataControlPlagas()
+                            }
                         }else{
-                            syncDataControlPlagas()
+                            syncDataCultivos()
                         }
-
                     } else {
                         postEventError(EventsService.ERROR_EVENT, "Error 500...")
                         Log.e("error", response?.message().toString())
@@ -289,21 +305,25 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                     if (response != null && response.code() == 201 || response?.code() == 200) {
 
                         val controlPlagaResponse= response.body()
-                        controlPlaga.Id_Remote = controlPlagaResponse?.Id!!
-                        controlPlaga.Estado_Sincronizacion = true
-                        controlPlaga?.Estado_SincronizacionUpdate = true
-                        controlPlaga.save()
+                        if(controlPlagaResponse?.Id!!>0){
+                            controlPlaga.Id_Remote = controlPlagaResponse.Id
+                            controlPlaga.Estado_Sincronizacion = true
+                            controlPlaga.Estado_SincronizacionUpdate = true
+                            controlPlaga.save()
 
 
-                        val controlPlaga= SQLite.select()
-                                .from(ControlPlaga::class.java)
-                                .where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
-                                .and(ControlPlaga_Table.UsuarioId.eq(usuario?.Id))
-                                .orderBy(ControlPlaga_Table.ControlPlagaId,false).querySingle()
-                        if(controlPlaga!=null){
-                            syncDataControlPlagas()
+                            val controlPlaga= SQLite.select()
+                                    .from(ControlPlaga::class.java)
+                                    .where(ControlPlaga_Table.Estado_Sincronizacion.eq(false))
+                                    .and(ControlPlaga_Table.UsuarioId.eq(usuario?.Id))
+                                    .orderBy(ControlPlaga_Table.ControlPlagaId,false).querySingle()
+                            if(controlPlaga!=null){
+                                syncDataControlPlagas()
+                            }else{
+                                syncDataProduccion()
+                            }
                         }else{
-                            syncDataProduccion()
+                            syncDataControlPlagas()
                         }
                     } else {
                         postEventError(EventsService.ERROR_EVENT, "Error 500...")
@@ -346,22 +366,27 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                 override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
                     if (response != null && response.code() == 201 || response?.code() == 200) {
                         produccion.Id_Remote = response.body()?.Id!!
-                        produccion.Estado_Sincronizacion = true
-                        produccion?.Estado_SincronizacionUpdate = true
-                        produccion.save()
 
-                        val produccionPost= SQLite.select()
-                                .from(Produccion::class.java)
-                                .where(Produccion_Table.Estado_Sincronizacion.eq(false))
-                                .and(Produccion_Table.UsuarioId.eq(usuario?.Id))
-                                .orderBy(Produccion_Table.ProduccionId,false).querySingle()
+                        if(response.body()?.Id!!>0){
 
-                        if(produccionPost!=null){
-                            syncDataProduccion()
+                            produccion.Estado_Sincronizacion = true
+                            produccion.Estado_SincronizacionUpdate = true
+                            produccion.save()
+
+                            val produccionPost= SQLite.select()
+                                    .from(Produccion::class.java)
+                                    .where(Produccion_Table.Estado_Sincronizacion.eq(false))
+                                    .and(Produccion_Table.UsuarioId.eq(usuario?.Id))
+                                    .orderBy(Produccion_Table.ProduccionId,false).querySingle()
+
+                            if(produccionPost!=null){
+                                syncDataProduccion()
+                            }else{
+                                syncDataProductos()
+                            }
                         }else{
-                            syncDataProductos()
+                            syncDataProduccion()
                         }
-
                     } else {
                         postEventError(EventsService.ERROR_EVENT, "Error 500...")
                     }
@@ -411,23 +436,28 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                     if (response != null && response.code() == 201) {
 
                         val value = response.body()
-                        mProducto.Id_Remote = value?.Id_Remote!!
-                        mProducto.Estado_Sincronizacion = true
-                        mProducto.Estado_SincronizacionUpdate = true
-                        mProducto.save()
+
+                        if(value?.Id_Remote!!>0){
+                            mProducto.Id_Remote = value.Id_Remote!!
+                            mProducto.Estado_Sincronizacion = true
+                            mProducto.Estado_SincronizacionUpdate = true
+                            mProducto.save()
 
 
-                        val mProductoPost= SQLite.select()
-                                .from(Producto::class.java)
-                                .where(Producto_Table.Estado_Sincronizacion.eq(false))
-                                .and(Producto_Table.userId.eq(usuario?.Id))
-                                .orderBy(Producto_Table.ProductoId,false).querySingle()
+                            val mProductoPost= SQLite.select()
+                                    .from(Producto::class.java)
+                                    .where(Producto_Table.Estado_Sincronizacion.eq(false))
+                                    .and(Producto_Table.userId.eq(usuario?.Id))
+                                    .orderBy(Producto_Table.ProductoId,false).querySingle()
 
 
-                        if(mProductoPost!=null){
-                            syncDataProductos()
+                            if(mProductoPost!=null){
+                                syncDataProductos()
+                            }else{
+                                syncDataTransacciones()
+                            }
                         }else{
-                            syncDataTransacciones()
+                            syncDataProductos()
                         }
                     } else {
                         postEventError(EventsService.ERROR_EVENT, "Error 500...")
@@ -470,56 +500,61 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
                 override fun onResponse(call: Call<PostTercero>?, response: Response<PostTercero>?) {
                     if (response != null && response.code() == 201 || response?.code() == 200) {
                         terceroLocal?.Id_Remote = response.body()?.Id!!
-                        terceroLocal?.Estado_Sincronizacion = true
-                        transaccion?.Estado_SincronizacionUpdate = true
-                        terceroLocal?.save()
 
-                        val decimal = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
-                        val cantidad = BigDecimal(transaccion.Cantidad!!, MathContext.DECIMAL64)
+                        if(response.body()?.Id!!>0){
+                            terceroLocal?.Estado_Sincronizacion = true
+                            transaccion.Estado_SincronizacionUpdate = true
+                            terceroLocal?.save()
 
-                        val postTransaccion = PostTransaccion(
-                                0,
-                                transaccion.Concepto,
-                                transaccion.EstadoId,
-                                transaccion.getFechaTransacccionFormatApi(),
-                                transaccion.NaturalezaId,
-                                transaccion.PucId,
-                                terceroLocal?.Id_Remote,
-                                decimal,
-                                cantidad,
-                                cultivo.Id_Remote,
-                                transaccion.UsuarioId
-                        )
+                            val decimal = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
+                            val cantidad = BigDecimal(transaccion.Cantidad!!, MathContext.DECIMAL64)
 
-                        val call = apiService?.postTransaccion(postTransaccion)
-                        call?.enqueue(object : Callback<PostTransaccion> {
+                            val postTransaccion = PostTransaccion(
+                                    0,
+                                    transaccion.Concepto,
+                                    transaccion.EstadoId,
+                                    transaccion.getFechaTransacccionFormatApi(),
+                                    transaccion.NaturalezaId,
+                                    transaccion.PucId,
+                                    terceroLocal?.Id_Remote,
+                                    decimal,
+                                    cantidad,
+                                    cultivo.Id_Remote,
+                                    transaccion.UsuarioId
+                            )
 
-                            override fun onResponse(call: Call<PostTransaccion>?, response: Response<PostTransaccion>?) {
-                                if (response != null && response.code() == 201 || response?.code() == 200) {
-                                    transaccion.Id_Remote = response.body()?.Id!!
-                                    transaccion.Estado_Sincronizacion = true
-                                    transaccion.Estado_SincronizacionUpdate = true
-                                    transaccion.save()
+                            val callTransa = apiService?.postTransaccion(postTransaccion)
+                            callTransa?.enqueue(object : Callback<PostTransaccion> {
 
-                                    val transaccionPost= SQLite.select()
-                                            .from(Transaccion::class.java)
-                                            .where(Transaccion_Table.Estado_Sincronizacion.eq(false))
-                                            .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
-                                            .orderBy(Transaccion_Table.TransaccionId,false).querySingle()
+                                override fun onResponse(call: Call<PostTransaccion>?, response: Response<PostTransaccion>?) {
+                                    if (response != null && response.code() == 201 || response?.code() == 200) {
+                                        transaccion.Id_Remote = response.body()?.Id!!
+                                        transaccion.Estado_Sincronizacion = true
+                                        transaccion.Estado_SincronizacionUpdate = true
+                                        transaccion.save()
 
-                                    if(transaccionPost!=null){
-                                        syncDataTransacciones()
-                                    }else{
-                                        postEventOk(EventsService.POST_SYNC_EVENT)
+                                        val transaccionPost= SQLite.select()
+                                                .from(Transaccion::class.java)
+                                                .where(Transaccion_Table.Estado_Sincronizacion.eq(false))
+                                                .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
+                                                .orderBy(Transaccion_Table.TransaccionId,false).querySingle()
+
+                                        if(transaccionPost!=null){
+                                            syncDataTransacciones()
+                                        }else{
+                                            postEventOk(EventsService.POST_SYNC_EVENT)
+                                        }
+                                    } else {
+                                        postEventError(EventsService.ERROR_EVENT, "Error 500...")
                                     }
-                                } else {
-                                    postEventError(EventsService.ERROR_EVENT, "Error 500...")
                                 }
-                            }
-                            override fun onFailure(call: Call<PostTransaccion>?, t: Throwable?) {
-                                postEventError(EventsService.ERROR_EVENT, "Error Failure...")
-                            }
-                        })
+                                override fun onFailure(call: Call<PostTransaccion>?, t: Throwable?) {
+                                    postEventError(EventsService.ERROR_EVENT, "Error Failure...")
+                                }
+                            })
+                        }else{
+                            syncDataTransacciones()
+                        }
                         //postEventOk(RequestEventTransaccion.SAVE_EVENT, getProductions(cultivo_id), produccion)
                     } else {
                         postEventError(EventsService.ERROR_EVENT, "Error 500...")
@@ -536,7 +571,6 @@ class RequestPostDataSync:IMainViewService.RepositoryPost {
 
 
     //endregion SYN
-
     fun getLastUserLogued(): Usuario? {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
         return usuarioLogued

@@ -120,23 +120,23 @@ class ControlPlagasRepository : IControlPlagas.Repository {
                 val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(controlPlaga.CultivoId)).querySingle()
 
                 val postControlPlaga = PostControlPlaga(
-                        controlPlaga?.Id_Remote,
+                        controlPlaga.Id_Remote!!,
                         cultivo?.Id_Remote,
-                        controlPlaga?.Dosis,
-                        controlPlaga?.EnfermedadesId,
-                        controlPlaga?.getFechaAplicacionFormatApi(),
-                        controlPlaga?.TratamientoId,
-                        controlPlaga?.UnidadMedidaId,
-                        controlPlaga?.getFechaErradicacionFormatApi(),
-                        controlPlaga?.EstadoErradicacion
+                        controlPlaga.Dosis,
+                        controlPlaga.EnfermedadesId,
+                        controlPlaga.getFechaAplicacionFormatApi(),
+                        controlPlaga.TratamientoId,
+                        controlPlaga.UnidadMedidaId,
+                        controlPlaga.getFechaErradicacionFormatApi(),
+                        controlPlaga.EstadoErradicacion
                 )
                 val call = apiService?.updateControlPlaga(postControlPlaga,controlPlaga?.Id_Remote!!)
                 call?.enqueue(object : Callback<PostControlPlaga> {
                     override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
-                        if (response != null && response.code() == 201 || response?.code() == 200) {
+                        if (response != null && response?.code() == 200) {
                             var controlPlagaResponse= response.body()
                             controlPlaga.Estado_Sincronizacion = true
-                            controlPlaga?.Estado_SincronizacionUpdate = true
+                            controlPlaga.Estado_SincronizacionUpdate = true
                             controlPlaga.update()
                             postEventOk(ControlPlagasEvent.UPDATE_EVENT_OK, getControlPlagas(controlPlaga.CultivoId),controlPlaga)
                         } else {

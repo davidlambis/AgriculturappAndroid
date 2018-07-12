@@ -78,58 +78,59 @@ class UpRepository() : IUnidadProductiva.Repo {
 
                 override fun onResponse(call: Call<Unidad_Productiva>?, response: Response<Unidad_Productiva>?) {
                     if (response != null && response.code() == 201) {
-
                         val idUP = response.body()?.Id_Remote
-                        mUnidadProductiva?.Id_Remote = idUP
+                        if(idUP!!>0){
+                            mUnidadProductiva?.Id_Remote = idUP
 
-                        //Se crea valor primario en SQlite
-                        val last_up = getLastUp()
-                        if (last_up == null) {
-                            mUnidadProductiva.Unidad_Productiva_Id = 1
-                        } else {
-                            mUnidadProductiva.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
-                        }
+                            //Se crea valor primario en SQlite
+                            val last_up = getLastUp()
+                            if (last_up == null) {
+                                mUnidadProductiva.Unidad_Productiva_Id = 1
+                            } else {
+                                mUnidadProductiva.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
+                            }
+                            //mUnidadProductiva?.save()
+                            val latitudBig = BigDecimal(mUnidadProductiva.Latitud!!, MathContext.DECIMAL64)
+                            val longitudBig = BigDecimal(mUnidadProductiva.Longitud!!, MathContext.DECIMAL64)
+//postLocalizacionUnidadProductiva
+                            val postLocalizacionUnidadProductiva = LocalizacionUp(0,
+                                    "",
+                                    mUnidadProductiva?.Coordenadas,
+                                    if (mUnidadProductiva?.Direccion!=null) mUnidadProductiva.Direccion else "",
+                                    mUnidadProductiva?.DireccionAproximadaGps,
+                                    latitudBig,
+                                    longitudBig,
+                                    "",
+                                    "",
+                                    "",
+                                    mUnidadProductiva?.Id_Remote,
+                                    "")
 
-                        //mUnidadProductiva?.save()
+                            val call = apiService?.postLocalizacionUnidadProductiva(postLocalizacionUnidadProductiva)
+                            call?.enqueue(object : Callback<LocalizacionUp> {
 
-                        val latitudBig = BigDecimal(mUnidadProductiva.Latitud!!, MathContext.DECIMAL64)
-                        val longitudBig = BigDecimal(mUnidadProductiva.Longitud!!, MathContext.DECIMAL64)
+                                override fun onResponse(call: Call<LocalizacionUp>?, response: Response<LocalizacionUp>?) {
+                                    if (response != null && response.code() == 201) {
+                                        val idLocalizacion = response.body()?.Id
+                                        mUnidadProductiva?.LocalizacionUpId=idLocalizacion
+                                        mUnidadProductiva?.Estado_Sincronizacion = true
+                                        mUnidadProductiva?.Estado_SincronizacionUpdate=true
+                                        mUnidadProductiva?.save()
+                                        //postLocalizacionUnidadProductiva
+                                        postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
+                                    } else {
+                                        postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
+                                    }
+                                }
 
-                        //postLocalizacionUnidadProductiva
-                        val postLocalizacionUnidadProductiva = LocalizacionUp(0,
-                                "",
-                                mUnidadProductiva?.Coordenadas,
-                                if (mUnidadProductiva?.Direccion!=null) mUnidadProductiva.Direccion else "",
-                                mUnidadProductiva?.DireccionAproximadaGps,
-                                latitudBig,
-                                longitudBig,
-                                "",
-                                "",
-                                "",
-                                mUnidadProductiva?.Id_Remote,
-                                "")
-
-                        val call = apiService?.postLocalizacionUnidadProductiva(postLocalizacionUnidadProductiva)
-                        call?.enqueue(object : Callback<LocalizacionUp> {
-
-                            override fun onResponse(call: Call<LocalizacionUp>?, response: Response<LocalizacionUp>?) {
-                                if (response != null && response.code() == 201) {
-                                    val idLocalizacion = response.body()?.Id
-                                    mUnidadProductiva?.LocalizacionUpId=idLocalizacion
-                                    mUnidadProductiva?.Estado_Sincronizacion = true
-                                    mUnidadProductiva?.Estado_SincronizacionUpdate=true
-                                    mUnidadProductiva?.save()
-                                    //postLocalizacionUnidadProductiva
-                                    postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
-                                } else {
+                                override fun onFailure(call: Call<LocalizacionUp>?, t: Throwable?) {
                                     postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
                                 }
-                            }
+                            })
 
-                            override fun onFailure(call: Call<LocalizacionUp>?, t: Throwable?) {
-                                postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
-                            }
-                        })
+                        }else{
+                            postEventError(RequestEventUP.ERROR_EVENT, "Por favor intente nuevamente")
+                        }
                         // postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
                     } else {
                         postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")

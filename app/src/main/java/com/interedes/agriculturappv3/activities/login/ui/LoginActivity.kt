@@ -76,7 +76,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
                 .repeat(10)
                 .playOn(fabLogin)
         //Registra al receiver de Internet
-        //registerInternetReceiver()
+        registerInternetReceiver()
     }
 
     private fun getRememberedUser() {
@@ -261,7 +261,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     //region Ciclo de Vida Actividad
     override fun onDestroy() {
         super.onDestroy()
-        //unregisterReceiver(connectivityReceiver)
+        unregisterReceiver(connectivityReceiver)
         presenter?.onDestroy()
     }
 
