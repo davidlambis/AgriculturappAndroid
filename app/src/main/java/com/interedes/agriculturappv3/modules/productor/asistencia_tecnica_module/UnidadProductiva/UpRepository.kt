@@ -92,7 +92,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                             //mUnidadProductiva?.save()
                             val latitudBig = BigDecimal(mUnidadProductiva.Latitud!!, MathContext.DECIMAL64)
                             val longitudBig = BigDecimal(mUnidadProductiva.Longitud!!, MathContext.DECIMAL64)
-//postLocalizacionUnidadProductiva
+                            //postLocalizacionUnidadProductiva
                             val postLocalizacionUnidadProductiva = LocalizacionUp(0,
                                     "",
                                     mUnidadProductiva?.Coordenadas,
@@ -144,6 +144,8 @@ class UpRepository() : IUnidadProductiva.Repo {
         }
         //TODO sin conexion a internet, registro local
         else{
+            mUnidadProductiva.Estado_Sincronizacion = false
+            mUnidadProductiva.Estado_SincronizacionUpdate=false
             saveUpLocal(mUnidadProductiva)
         }
     }

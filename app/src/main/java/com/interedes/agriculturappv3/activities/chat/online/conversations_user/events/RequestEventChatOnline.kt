@@ -16,6 +16,8 @@ data class RequestEventChatOnline (var eventType: Int,
 
         val LIST_ROOM_EVENT: Int = 5
 
+        val LIST_ROOM_EVENT_EMPTY: Int = 7
+
         val ITEM_EVENTS_DETAIL_SMS: Int = 6
     }
 }

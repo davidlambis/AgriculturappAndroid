@@ -20,6 +20,7 @@ class SyncJobCreator: JobCreator {
 
             FotoPerfilJob.TAG -> return FotoPerfilJob()
 
+            SyncFotoProductosJob.TAG -> return SyncFotoProductosJob()
             //DataSyncUpdateJob.TAG -> return DataSyncUpdateJob()
             else -> return null
         }

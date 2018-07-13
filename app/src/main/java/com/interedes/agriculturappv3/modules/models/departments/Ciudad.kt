@@ -10,13 +10,13 @@ import com.raizlabs.android.dbflow.annotation.Table
 data class Ciudad(@PrimaryKey
                   @SerializedName("Id")
                   @Column(name = "Id")
-                  var Id: Long? = 0,
+                  var Id: Long = 0,
                   @SerializedName("Nombre")
                   @Column(name = "Nombre")
                   var Nombre: String? = null,
                   @SerializedName("departmentoId")
                   @Column(name = "departmentoId")
-                  var departmentoId: Long? = 0,
+                  var departmentoId: Long = 0,
 
                   @SerializedName("Departamento")
                   var Departamento: Departamento?= null

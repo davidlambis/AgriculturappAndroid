@@ -69,7 +69,9 @@ class NotificationPresenter(var mainView:IMainViewNotification.MainView?):IMainV
 
             RequestEventsNotification.UPDATE_EVENT -> {
                 val notification = event.objectMutable as NotificationLocal
-                mainView?.onChangeNotification(notification)
+                mainView?.onNavigationdetailNotification(notification)
+                //val notification = event.objectMutable as NotificationLocal
+                //mainView?.onChangeNotification(notification)
                 //onMessageOk()
             }
 
@@ -100,7 +102,8 @@ class NotificationPresenter(var mainView:IMainViewNotification.MainView?):IMainV
             //ON ITEM CLICK
             RequestEventsNotification.ITEM_READ_EVENT -> {
                 val notification = event.objectMutable as NotificationLocal
-                mainView?.onNavigationdetailNotification(notification)
+                updateNotifications(notification)
+
             }
 
             RequestEventsNotification.ITEM_DELETE_EVENT -> {

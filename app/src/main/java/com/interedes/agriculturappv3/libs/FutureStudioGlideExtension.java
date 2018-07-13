@@ -30,11 +30,33 @@ public class FutureStudioGlideExtension {
 
 
     @GlideOption
+    public static void productorPhotoCenterCrop(RequestOptions options) {
+        options
+
+                .placeholder(R.drawable.ic_account_box_green)
+                .error(R.drawable.ic_account_box_green)
+                .centerCrop();
+    }
+
+
+    @GlideOption
     public static void productoPhoto(RequestOptions options) {
         options
                 .placeholder(R.drawable.ic_foto_producto)
                 .error(R.drawable.ic_foto_producto)
                 .centerInside()
+                .fitCenter();
+    }
+
+
+
+
+    @GlideOption
+    public static void productoPhotoCenterCrop(RequestOptions options) {
+        options
+                .placeholder(R.drawable.ic_foto_producto)
+                .error(R.drawable.ic_foto_producto)
+                .centerCrop()
                 .fitCenter();
     }
 

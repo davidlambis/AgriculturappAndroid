@@ -48,7 +48,6 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
     //SMS
 
     private val sentStatusReceiver = object : BroadcastReceiver() {
-
         override fun onReceive(arg0: Context, arg1: Intent) {
             var s = "Unknown Error"
             when (resultCode) {
@@ -68,7 +67,6 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
             //hideProgressHud()
             //messageEditText.setText("")
             //message_status_text_view.setText(s)
-
         }
     }
 
@@ -103,26 +101,13 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
                 mainView?.onMessageToas("Mensage no enviado", R.color.red_900)
                 mainView?.hideProgressHud()
             }
-
-
-        }
-    }
-
-    private val mNotificationReceiverSms = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
-            if (extras != null) {
-                // if (extras.containsKey("new_message")) {
-                mainView?.onEventBroadcastReceiver(extras,intent)
-                // }
-            }
         }
     }
 
     //region Conectividad
     private val mNotificationReceiverApp = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
+            val extras = intent.extras
             if (extras != null) {
                 mainView?.onEventBroadcastReceiver(extras, intent)
             }
@@ -140,8 +125,6 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
 
         //On Activity UsersSmsActivity
         context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const_Resources.SERVICE_CONECTIVITY))
-        context.registerReceiver(mNotificationReceiverSms, IntentFilter(Const_Resources.SERVICE_RECYVE_MESSAGE))
-
     }
 
     override fun onPause(context: Context) {
@@ -150,7 +133,6 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
         context.unregisterReceiver(this.deliveredStatusReceiver);
         //On Activity UsersSmsActivity
         context.unregisterReceiver(this.mNotificationReceiverApp);
-        context.unregisterReceiver(this.mNotificationReceiverSms);
     }
 
     //endregion
@@ -171,10 +153,15 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
             RequestEventSmsDetail.LIST_SMS_EVENT -> {
                 mainView?.hideProgressHud()
                 mainView?.hideProgress()
-                var listSms = event.mutableList as List<Sms>
+                val listSms = event.mutableList as List<Sms>
                 mainView?.setListSmsDetaiil(listSms)
             }
 
+            RequestEventSmsDetail.NEW_MESSAGE_EVENT -> {
+                val new_sms=event.mensajeError
+                mainView?.onMessageToas(new_sms!!, R.color.green_900)
+                mainView?.getListSms(false)
+            }
         }
     }
     //endregion

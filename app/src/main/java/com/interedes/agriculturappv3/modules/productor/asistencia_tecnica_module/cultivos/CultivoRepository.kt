@@ -184,11 +184,15 @@ class CultivoRepository : ICultivo.Repository {
             }
             //TODO con conexion a internet sin sincronizacion, registro local
             else {
+                mCultivo.EstadoSincronizacion = false
+                mCultivo.Estado_SincronizacionUpdate = false
                 saveCultivoLocal(mCultivo, loteId)
             }
         }
         //TODO sin conexion a internet, registro local
         else{
+            mCultivo.EstadoSincronizacion = false
+            mCultivo.Estado_SincronizacionUpdate = false
             saveCultivoLocal(mCultivo, loteId)
         }
     }

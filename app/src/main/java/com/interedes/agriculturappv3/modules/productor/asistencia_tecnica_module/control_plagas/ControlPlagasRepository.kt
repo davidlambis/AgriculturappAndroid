@@ -39,7 +39,7 @@ class ControlPlagasRepository : IControlPlagas.Repository {
 
     //region Métodos Interfaz
     override fun getListas() {
-        var usuario= getLastUserLogued()
+        val usuario= getLastUserLogued()
 
         val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
@@ -50,7 +50,7 @@ class ControlPlagasRepository : IControlPlagas.Repository {
                 .queryList()
 
 
-        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+        val listCultivos = SQLite.select().from(Cultivo::class.java)
                 .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
                 .queryList()
 

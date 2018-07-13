@@ -7,9 +7,9 @@
 
     <!--Titles Frfgaments-->
     <string name="title_module_asistencia_tecnica">Asistencia Técnica</string>
-
     <string name="title_module_comercial">Comercial</string>
     <string name="title_module_contable">Contabilidad</string>
+
     <!-- GLOBALES -->
     <string name="results_global_search">Mostrando %d Resultados</string>
     <string name="error_field_required">Campo Requerido</string>
@@ -436,6 +436,7 @@
     <string name="tittle_sms_messajes">Mi bandeja de entrada de mensajes</string>
     <string name="idenfication_sms_app">AgriculturApp</string>
     <string name="idenfication_send_sms_app">AgriculturApp:</string>
+    <string name="idenfication_send_sms_oferta_app">AgriculturApp:OFERTA </string>
     <string name="online">En linea</string>
     <string name="offline">Desconectado</string>
 
@@ -482,6 +483,9 @@
     <string name="content_sms_message">El señor(a) %1$s no se encuentra en linea desea enviarle un mensaje de texto para notificar su oferta ?</string>
 
     <string name="content_sms_message_offline">El señor(a) %1$s no se encuentra en linea desea enviarle un mensaje de texto?</string>
+
+
+    <string name="content_sms_message_offline_from_online">Al parecer no tienes conexion, deseas  enviarle un mensaje de texto al señor(a) %1$s ?</string>
 
 
     <string name="content_sms_tittle">Notifcacion Oferta</string>

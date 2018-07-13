@@ -37,7 +37,7 @@ class ChatSms_Repository: IMainViewDetailSms.Repository {
             ///var smsListMessage:ArrayList<Sms> = ArrayList<Sms>()
             val message = Uri.parse("content://sms/")
             val cr = context.contentResolver
-            var c = cr.query(message, null, null, null, "date ASC")
+            val c = cr.query(message, null, null, null, "date ASC")
             val indexBody = c.getColumnIndex("body")
             if (indexBody < 0 || !c.moveToFirst()) {
                 postEventOk(RequestEventSmsDetail.LIST_SMS_EVENT, ArrayList<Sms>(),null)
@@ -164,11 +164,9 @@ class ChatSms_Repository: IMainViewDetailSms.Repository {
            /* if (c != null) {
                 c.close();
             }*/
-
             smsListMessage= SQLite.select().from(Sms::class.java).where(Sms_Table.Address.eq(smsUser?.Address)).queryList()
             postEventOk(RequestEventSmsDetail.LIST_SMS_EVENT,smsListMessage,null)
         }
-
     }
 
 

@@ -117,11 +117,15 @@ class LoteRepositoryImpl : MainViewLote.Repository {
             }
             //TODO con conexion a internet sin sincronizacion, registro local
             else {
+                mLote.EstadoSincronizacion = false
+                mLote.Estado_SincronizacionUpdate = false
                 saveLotesLocal(mLote,unidad_productiva_id)
             }
         }
         //TODO sin conexion a internet, registro local
         else{
+            mLote.EstadoSincronizacion = false
+            mLote.Estado_SincronizacionUpdate = false
             saveLotesLocal(mLote,unidad_productiva_id)
         }
     }

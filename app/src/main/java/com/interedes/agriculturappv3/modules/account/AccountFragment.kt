@@ -700,8 +700,8 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     try {
                         isFoto = true
 
-                        var rutaGaleria=getRealPathFromURI(contentURI)
-                        var file=getFileRuta(rutaGaleria)
+                        val rutaGaleria=getRealPathFromURI(contentURI)
+                        val file=getFileRuta(rutaGaleria)
                         val compressedImage = Compressor(activity)
                                 .setMaxHeight(400)
                                 .setQuality(100)
@@ -805,10 +805,10 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         if (cursor == null) { // Source is Dropbox or other similar local file path
             result = contentURI.path
         } else {
-            cursor!!.moveToFirst()
-            val idx = cursor!!.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-            result = cursor!!.getString(idx)
-            cursor!!.close()
+            cursor.moveToFirst()
+            val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+            result = cursor.getString(idx)
+            cursor.close()
         }
         return result
     }
@@ -898,7 +898,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
               }?.addOnProgressListener{
                           taskSnapshot ->
-                          var progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                          val progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
                                   .getTotalByteCount());
                           progressDialog.setMessage("Esperando "+progress.toInt()+"%");
               }

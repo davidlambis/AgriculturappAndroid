@@ -22,7 +22,10 @@ class NotificationRepository:IMainViewNotification.Repository {
 
     override fun getListNotification() {
         val userlogued= getLastUserLogued()
-        val listNotification= SQLite.select().from(NotificationLocal::class.java).where(NotificationLocal_Table.userLoguedId.eq(userlogued?.Id)).queryList()
+        val listNotification= SQLite.select().from(NotificationLocal::class.java)
+                .where(NotificationLocal_Table.userLoguedId.eq(userlogued?.Id))
+                .and(NotificationLocal_Table.ReadNotification.eq(false))
+                .queryList()
         for (item in listNotification){
             postEventOk(RequestEventsNotification.ITEM_NEW_EVENT,null,item)
         }
@@ -37,7 +40,8 @@ class NotificationRepository:IMainViewNotification.Repository {
 
 
     override fun updateNotifications(notification: NotificationLocal) {
-       notification.update()
+        notification.ReadNotification=true
+        notification.update()
         postEventOk(RequestEventsNotification.UPDATE_EVENT,null,notification)
     }
 

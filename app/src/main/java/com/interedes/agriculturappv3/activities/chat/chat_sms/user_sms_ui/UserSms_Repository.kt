@@ -31,7 +31,7 @@ class UserSms_Repository: IMainViewUserSms.Repository {
             ///var smsListMessage:ArrayList<Sms> = ArrayList<Sms>()
             val message = Uri.parse("content://sms/")
            // val cr =
-            var c = context.contentResolver.query(message, null, null, null, "date ASC")
+            val c = context.contentResolver.query(message, null, null, null, "date ASC")
             val indexBody = c.getColumnIndex("body")
             if (indexBody < 0 || !c.moveToFirst()) {
                 postEventOk(RequestEventUserSms.LIST_SMS_EVENT, ArrayList<Sms>(),null)
@@ -62,10 +62,10 @@ class UserSms_Repository: IMainViewUserSms.Repository {
 
                 val addresSpaceReplace= addresSpaceEmpty.replace(" ","")
 
-                var newMsg=mensaje.replace(context.getString(R.string.idenfication_send_sms_app),"")
+                val newMsg=mensaje.replace(context.getString(R.string.idenfication_send_sms_app),"")
                 val contactName = getContactDisplayNameByNumber(addresSpaceReplace,context)
 
-                var objSms = Sms(
+                val objSms = Sms(
                         0,
                         c.getString(c!!.getColumnIndexOrThrow("_id")),
                         addresSpaceReplace,
@@ -80,7 +80,7 @@ class UserSms_Repository: IMainViewUserSms.Repository {
                 //smsListMessage.add(objSms)
 
 
-                var smsExist=SQLite.select().from(Sms::class.java).where(Sms_Table.Id_Message.eq(objSms.Id_Message)).querySingle()
+                val smsExist=SQLite.select().from(Sms::class.java).where(Sms_Table.Id_Message.eq(objSms.Id_Message)).querySingle()
                 if(smsExist!=null){
                     objSms.Id=smsExist?.Id
                 }else{

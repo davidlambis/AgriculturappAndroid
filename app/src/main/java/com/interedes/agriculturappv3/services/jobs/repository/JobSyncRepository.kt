@@ -79,11 +79,13 @@ class JobSyncRepository: IMainViewJob.Repository {
     //List
     private var listInsmo: List<Insumo>? = null
     private var listFotoEnfermedad: List<FotoEnfermedad>? = null
+    private var listProductos: List<Producto>? = null
 
     //Folder Privates
     private val DIR_PLAGAS = "DIR_PLAGAS"
     private val DIR_FOTO_PERFIL = "DIR_FOTO_PERFIL"
     private val DIR_INSUMOS = "DIR_INSUMOS"
+    private val DIR_PRODUCTOS = "DIR_PRODUCTOS"
     private val TAG_FIREBASE = "FIREBASE UIID"
 
     //Folders Public
@@ -123,8 +125,56 @@ class JobSyncRepository: IMainViewJob.Repository {
     }
     //endregion
 
-    //region FOTO PERFIL
+    //region FOTO PRODUCTOS
+    override   fun syncFotoProductos(context: Context){
+        val userLogued= getLastUserLogued()
+        listProductos= SQLite.select().from(Producto::class.java).where(Producto_Table.userId.eq(userLogued?.Id)).queryList()
+        getAllFotoProuctos(0,context)
+    }
 
+
+    private fun getAllFotoProuctos(index: Int,context: Context) {
+        if (index >= listProductos!!.size) {
+            Log.d("SYNC FOTO_PRODUCTOS", "Photo Products Loaded" )
+            FileLoader.deleteWith (context) .fromDirectory ( DIR_PRODUCTOS , FileLoader.DIR_INTERNAL) .deleteAllFiles ();
+        } else {
+            val producto = listProductos?.get(index)
+            if(producto?.Imagen!=null){
+                FileLoader.with(context)
+                        .load(S3Resources.RootImage+"${producto.Imagen}",false) //2nd parameter is optioal, pass true to force load from network
+                        //.fromDirectory("test4", FileLoader.DIR_EXTERNAL_PUBLIC)
+                        .fromDirectory(DIR_PRODUCTOS, FileLoader.DIR_INTERNAL)
+                        .asFile( object: FileRequestListener<File> {
+                            override fun onLoad(request: FileLoadRequest?, response: FileResponse<File>?) {
+                                val loadedFile = response?.getBody()
+
+                                if(loadedFile?.length()!!>0){
+                                    val compressedImage = Compressor(context)
+                                            .setMaxWidth(300)
+                                            .setMaxHeight(300)
+                                            .setQuality(100)
+                                            .setCompressFormat(Bitmap.CompressFormat.PNG)
+                                            .compressToBitmap(loadedFile)
+
+                                    val bitmap= convertBitmapToByte(compressedImage)
+                                    producto.blobImagen = Blob(bitmap)
+                                    producto.save()
+                                }
+
+                                getAllFotoProuctos(index+1,context)
+                            }
+                            override fun onError(request: FileLoadRequest?, error : Throwable?) {
+                                val err = error.toString()
+                                Log.d("SYNC FOTO PRODUCTO ", err )
+                            }
+                        })
+            }
+        }
+    }
+
+    //endregion
+
+    //region FOTO PERFIL
     override fun syncFotoPerfilUserLogued(context: Context){
         getFotoPerfil(context)
     }
@@ -144,7 +194,7 @@ class JobSyncRepository: IMainViewJob.Repository {
                                     val compressedImage = Compressor(context)
                                             .setMaxWidth(300)
                                             .setMaxHeight(300)
-                                            .setQuality(75)
+                                            .setQuality(100)
                                             //.setCompressFormat(Bitmap.CompressFormat.WEBP)
                                             //.setQuality(80)
                                             .setCompressFormat(Bitmap.CompressFormat.PNG)
@@ -161,7 +211,6 @@ class JobSyncRepository: IMainViewJob.Repository {
                             }
                             override fun onError(request: FileLoadRequest?, error : Throwable?) {
                                 Log.d("SYNC DATA", error.toString() )
-                                getAllPlagasFoto(0,context)
                             }
                         })
             }
@@ -444,11 +493,6 @@ class JobSyncRepository: IMainViewJob.Repository {
 
     //endregion
 
-    //region PUT DATA SYNC
-
-
-
-    //endregion
 
     //region  FOTOS DE PERFIL, PLAGAS Y ENFERMEDADES, INSUMOS
     override fun getListSyncEnfermedadesAndTratamiento(context: Context) {
@@ -654,7 +698,8 @@ class JobSyncRepository: IMainViewJob.Repository {
                             }
                             override fun onError(request: FileLoadRequest?, error : Throwable?) {
                                 var error = error.toString()
-                                getAllPlagasFoto(index+1,context)
+                                getAllInsumoFoto(index+1,context)
+                                //getAllPlagasFoto(index+1,context)
                             }
                         });
             }else{

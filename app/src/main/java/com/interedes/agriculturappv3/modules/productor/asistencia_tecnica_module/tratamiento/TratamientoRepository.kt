@@ -39,7 +39,6 @@ import retrofit2.Response
 
 class TratamientoRepository : ITratamiento.Repository {
 
-
     var apiService: ApiInterface? = null
     var eventBus: EventBus? = null
 
@@ -77,7 +76,7 @@ class TratamientoRepository : ITratamiento.Repository {
                 call?.enqueue(object : Callback<PostControlPlaga> {
                     override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
                         if (response != null && response.code() == 201 || response?.code() == 200) {
-                            if( controlPlaga.Id_Remote!!>0){
+                            if(response.body()?.Id!!>0){
                                 val controlPlagaResponse= response.body()
                                 controlPlaga.Id_Remote = controlPlagaResponse?.Id!!
                                 val lastControl = getLastControlPlaga()
@@ -105,11 +104,15 @@ class TratamientoRepository : ITratamiento.Repository {
             }
             //TODO con conexion a internet sin sincronizacion, registro local
             else {
+                controlPlaga.Estado_Sincronizacion = false
+                controlPlaga.Estado_SincronizacionUpdate = false
                 saveControlPlagaLocal(controlPlaga,cultivo_id)
             }
         }
         //TODO sin conexion a internet, registro local
         else{
+            controlPlaga.Estado_Sincronizacion = false
+            controlPlaga.Estado_SincronizacionUpdate = false
             saveControlPlagaLocal(controlPlaga,cultivo_id)
         }
     }
@@ -169,7 +172,6 @@ class TratamientoRepository : ITratamiento.Repository {
         }else{
             calificacion=Calificacion_Tratamiento(User_Id = null,Valor = 0.0,Valor_Promedio = 0.0)
         }
-
 
         if(firstTratamientoInsumo!=null){
             firstTratamientoInsumo.CalificacionPromedio=calificacion.Valor_Promedio

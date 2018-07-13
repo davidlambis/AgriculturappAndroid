@@ -38,7 +38,7 @@ class Departamento : BaseModel() {
     //Methods
     @SerializedName("Id")
     @PrimaryKey
-    var Id: Long ?= 0
+    var Id: Long = 0
 
     @SerializedName("Nombre")
     @Column
@@ -46,7 +46,7 @@ class Departamento : BaseModel() {
 
     @SerializedName("codigodpto")
     @Column
-    var codigodpto: Long ?= 0
+    var codigodpto: Long = 0
 
     @SerializedName("Ciudads")
     var ciudades: ArrayList<Ciudad> ?= ArrayList<Ciudad>()

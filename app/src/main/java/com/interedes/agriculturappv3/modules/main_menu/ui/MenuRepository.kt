@@ -103,7 +103,8 @@ class MenuRepository: MainViewMenu.Repository {
 
     //Notifications
     override fun getCountNotifications(): Int {
-        val lisNotificationsPending = SQLite.select().from(NotificationLocal::class.java).where(NotificationLocal_Table.ReadNotification.eq(false)).queryList()
+        val userLogued=getLastUserLogued()
+        val lisNotificationsPending = SQLite.select().from(NotificationLocal::class.java).where(NotificationLocal_Table.ReadNotification.eq(false)).and(NotificationLocal_Table.userLoguedId.eq(userLogued?.Id)).queryList()
         return  lisNotificationsPending.size
     }
 
@@ -111,8 +112,6 @@ class MenuRepository: MainViewMenu.Repository {
     {
         return  FirebaseAuth.getInstance().currentUser
     }
-
-
 
     override fun makeUserOnline(checkConection:Boolean,context: Context) {
         val userLogued=getLastUserLogued()
@@ -899,14 +898,22 @@ class MenuRepository: MainViewMenu.Repository {
 
     fun loadDepartmentsCities(){
         //Departamentos y Ciudades
-        val lista_departamentos = SQLite.select().from(Departamento::class.java).queryList()
-        val lista_ciudades = SQLite.select().from(Ciudad::class.java).queryList()
-        if (lista_departamentos.size <= 0 || lista_ciudades.size <= 0) {
-            val call = apiService?.getDepartamentos()
-            call?.enqueue(object : Callback<DeparmentsResponse> {
+        val call = apiService?.getDepartamentos()
+        call?.enqueue(object : Callback<DeparmentsResponse> {
                 override fun onResponse(call: Call<DeparmentsResponse>?, response: Response<DeparmentsResponse>?) {
                     if (response != null && response.code() == 200) {
                         val departamentos: MutableList<Departamento> = response.body()?.value!!
+
+
+                        SQLite.delete<Departamento>(Departamento::class.java)
+                                .async()
+                                .execute()
+
+                        SQLite.delete<Ciudad>(Ciudad::class.java)
+                                .async()
+                                .execute()
+
+
 
                         val fastStoreModelTransactionDepartamentos=FastStoreModelTransaction
                                 .insertBuilder(FlowManager.getModelAdapter(Departamento::class.java))
@@ -939,10 +946,7 @@ class MenuRepository: MainViewMenu.Repository {
                     //postEventError(RequestEventMainMenu.ERROR_EVENT, "Comprueba tu conexión a Internet")
                     Log.d("ERROR SYNC DATA", "ERROR Departamentos y Ciudades  Loaded" )
                 }
-            })
-        }else{
-            loadCategoriasMedidas()
-        }
+        })
     }
 
     fun loadCategoriasMedidas(){
@@ -1219,7 +1223,7 @@ class MenuRepository: MainViewMenu.Repository {
                     }
                     //    }
                   //  }
-
+                    postEvent(RequestEventMainMenu.SYNC_FOTOS_PRODUCTOS, null,null,null)
                     Log.d("SYNC DATA", "Productos Loaded" )
                     loadOfertas(usuario)
                 } else {

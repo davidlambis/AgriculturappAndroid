@@ -15,6 +15,7 @@ interface IMainViewJob {
         fun syncFotosPlagasEnfermedades(context: Context)
         fun getListSyncEnfermedadesAndTratamiento(context: Context)
         fun checkControlPlagas(context: Context)
+        fun syncFotoProductos(context: Context)
 
 
         //Notification

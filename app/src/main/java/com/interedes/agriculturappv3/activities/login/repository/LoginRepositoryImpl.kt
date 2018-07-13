@@ -117,7 +117,6 @@ class LoginRepositoryImpl : LoginRepository {
 
                                 }
 
-
                                 //Verificate Rol User
                                 val call_usuario = apiService?.getUsuarioLogued(usuario?.Id.toString())
                                 call_usuario?.enqueue(object : Callback<Usuario> {
@@ -156,7 +155,6 @@ class LoginRepositoryImpl : LoginRepository {
                                             usuario.save()
 
                                             loginFirebaseUser(usuario,context)
-
                                         } else {
                                             postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                                             Log.e("Get Login User Response", response?.body().toString())
@@ -176,9 +174,7 @@ class LoginRepositoryImpl : LoginRepository {
                             postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                             Log.e("Failure Get Login User", t?.message.toString())
                         }
-
                     })
-
                 } else if( response?.code() == 503){
                     postEventError(LoginEvent.ERROR_EVENT, "Estamos experiemntando inconvenientes para ingresar, disculpa las molestias")
                     Log.e("Failure Login", response?.message().toString())
@@ -382,7 +378,7 @@ class LoginRepositoryImpl : LoginRepository {
         if (usuario_sqlite != null) {
 
             val ultimo_usuario = getLastUser()
-            var session_id: Long?
+            val session_id: Long?
             if (ultimo_usuario == null) {
                 session_id = 1
             } else {
@@ -506,7 +502,7 @@ class LoginRepositoryImpl : LoginRepository {
 
     //Post Object user
     private fun postEventObjectUsuario(type: Int, usuario: Usuario?, errorMessage: String?) {
-        var usuarioMutable = usuario as Object
+        val usuarioMutable = usuario as Object
         val event = LoginEvent(type, null, usuarioMutable, errorMessage)
         event.eventType = type
         event.mensajeError = errorMessage

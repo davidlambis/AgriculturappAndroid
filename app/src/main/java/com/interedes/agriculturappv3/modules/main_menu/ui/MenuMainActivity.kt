@@ -299,7 +299,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         return true;
     }
 
-
     private fun septupInjection() {
 
         if (Build.VERSION.SDK_INT >= 23) {
@@ -947,19 +946,15 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val adapter=MaterialSimpleListAdapter({dialog, index, item ->
             if(index==0){
                 dialog.dismiss()
-
                 val chat = Intent(this, UserSmsActivity::class.java)
                 chat.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chat)
 
-
             }else{
                 dialog.dismiss()
-
                 val chatOnline = Intent(this, ConversationsUsersActivity::class.java)
                 chatOnline.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chatOnline)
-
             }
         })
 

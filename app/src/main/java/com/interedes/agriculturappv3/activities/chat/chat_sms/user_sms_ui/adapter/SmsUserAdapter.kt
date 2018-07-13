@@ -119,17 +119,14 @@ class SmsUserAdapter(var lista: ArrayList<Sms>) : RecyclerView.Adapter<SmsUserAd
 
 
             try{
-                var strGotDate = data.FechaSms;
-                var longGotDate = strGotDate?.toLong()
-
+                val strGotDate = data.FechaSms;
+                val longGotDate = strGotDate?.toLong()
                 // Format that date
                 //var formattedGotDate =  SimpleDateFormat("MM/dd/yyyy h:mm a").format(longGotDate);
                 txtDate.setText(DateTimeUtils.getTimeAgo(context, Date(longGotDate!!)))
-
             }catch (ex:Exception){
                 var error = ex.toString()
             }
-
 
             try {
                 contentIconUser.setImageResource(R.drawable.default_avata)

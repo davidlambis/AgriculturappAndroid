@@ -6,6 +6,8 @@ import com.interedes.agriculturappv3.activities.chat.online.conversations_user.e
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.chat.*
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.raizlabs.android.dbflow.kotlinextensions.save
@@ -38,17 +40,25 @@ class Conversacion_Repository:IMainViewConversacion.Repository {
 
 
     }
-
+    fun getUserLogued(): Usuario?{
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
     override fun getListRoom(checkConection: Boolean) {
         if(checkConection){
             queryUsersAndAddthemToList()
         }else{
 
             mUsersList.clear()
-            val uidFirebase= mAuth?.currentUser?.uid
+            var uidFirebase= mAuth?.currentUser?.uid
+            if(uidFirebase==null){
+                val userLogued= getUserLogued()
+                uidFirebase=userLogued?.IdFirebase
+            }
+
 
             if(uidFirebase!=null){
-                var listConversaciones= SQLite.select().from(Room::class.java).where(Room_Table.User_From.eq(uidFirebase)).queryList()
+                val listConversaciones= SQLite.select().from(Room::class.java).where(Room_Table.User_From.eq(uidFirebase)).queryList()
                 for (item in listConversaciones){
                     val userFirebase= SQLite.select().from(UserFirebase::class.java).where(UserFirebase_Table.User_Id.eq(item.User_To)).querySingle()
                     val conversation = RoomConversation()
@@ -69,7 +79,6 @@ class Conversacion_Repository:IMainViewConversacion.Repository {
     private fun queryUsersAndAddthemToList() {
         mRoomDBRef?.child(mAuth?.currentUser?.uid)?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-
                 if (dataSnapshot.value != null) {
 
                     if (dataSnapshot.childrenCount > 0) {
@@ -98,6 +107,8 @@ class Conversacion_Repository:IMainViewConversacion.Repository {
                             }
                         }
                         getAllFriendInfo(0);
+                    }else{
+                        postEventOk(RequestEventChatOnline.LIST_ROOM_EVENT_EMPTY,null,null)
                     }
                     /* val mapRecord = dataSnapshot.value as HashMap<*, *>
                      val listKey = mapRecord.mapKeys {  }.iterator()
@@ -107,7 +118,7 @@ class Conversacion_Repository:IMainViewConversacion.Repository {
                      }
                      */
                 } else {
-
+                    postEventOk(RequestEventChatOnline.LIST_ROOM_EVENT_EMPTY,null,null)
                 }
                 /*
                  if (dataSnapshot.childrenCount > 0) {
@@ -140,6 +151,7 @@ class Conversacion_Repository:IMainViewConversacion.Repository {
     private fun getAllFriendInfo(index: Int) {
         if (index === listRoom?.size) {
                 postEventOk(RequestEventChatOnline.LIST_ROOM_EVENT,mUsersList,null)
+
             //populaterecyclerView()
             //save list friend
             /*adapter.notifyDataSetChanged()

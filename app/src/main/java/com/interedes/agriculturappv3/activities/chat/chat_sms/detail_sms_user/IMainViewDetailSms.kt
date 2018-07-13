@@ -22,9 +22,8 @@ interface IMainViewDetailSms {
 
         //list
         fun setListSmsDetaiil(sms: List<Sms>)
-
-
         fun getListSms(eventClickNotification: Boolean)
+
 
 
 

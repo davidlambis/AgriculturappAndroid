@@ -19,5 +19,7 @@ data class RequestEventSmsDetail (var eventType: Int,
 
         val ITEM_EVENTS_DETAIL_SMS: Int = 6
 
+        val NEW_MESSAGE_EVENT: Int = 7
+
     }
 }

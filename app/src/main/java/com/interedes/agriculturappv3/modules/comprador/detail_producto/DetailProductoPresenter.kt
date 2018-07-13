@@ -158,7 +158,7 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
     //region Conectividad
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
+            val extras = intent.extras
             if (extras != null) {
                 mainView?.onEventBroadcastReceiver(extras, intent)
             }
@@ -211,7 +211,7 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
 
             RequestEventDetalleProducto.OK_SEND_EVENT_SMS -> {
                 onMessageSendSmsOk()
-                var oferta = event.objectMutable as Oferta
+                val oferta = event.objectMutable as Oferta
                 mainView?.showConfirmSendSmsOferta(oferta)
             }
 
@@ -264,15 +264,10 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
         return  interactor?.getLastUserLogued()
     }
 
-
-
-
     override fun sendSmsOferta(user: Usuario,oferta:Oferta, activity:Activity) {
-
         val phone =user.PhoneNumber?.trim()
         //val smsMessage = "Oferta por sms"
         try {
-
             var disponibilidad = ""
             var precioOferta = ""
             var productoCantidad=""
@@ -280,7 +275,7 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
 
             val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
 
-            var detalleOferta=SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
+            val detalleOferta=SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
 
             if (detalleOferta?.Cantidad.toString().contains(".0")) {
                 disponibilidad = String.format(activity?.getString(R.string.price_empty_signe)!!,
@@ -296,9 +291,9 @@ class DetailProductoPresenter(var mainView: IMainViewDetailProducto.MainView?):I
                     detalleOferta?.Valor_Oferta, detalleOferta?.NombreUnidadMedidaPrecio)
 
 
-            val idSms=activity.getString(R.string.idenfication_send_sms_app)
+            val idSms=activity.getString(R.string.idenfication_send_sms_oferta_app)
 
-            var message="$idSms "+String.format(activity.getString(R.string.descripcion_oferta_productor)
+            val message="$idSms "+String.format(activity.getString(R.string.descripcion_oferta_productor)
                     ,user?.Nombre,user.Apellidos,productoCantidad,precioOferta,producto?.Nombre,calidad)
 
             val sms = SmsManager.getDefault()

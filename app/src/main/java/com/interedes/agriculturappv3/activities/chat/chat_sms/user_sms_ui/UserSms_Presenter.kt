@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.events.RequestEventUserSms
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
@@ -40,20 +41,10 @@ class UserSms_Presenter(var mainView: IMainViewUserSms.MainView?): IMainViewUser
         eventBus?.unregister(this)
     }
 
-    private val mNotificationReceiverSms = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
-            if (extras != null) {
-                // if (extras.containsKey("new_message")) {
-                mainView?.onEventBroadcastReceiver(extras,intent)
-                // }
-            }
-        }
-    }
     //region Conectividad
     private val mNotificationReceiverApp = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
+            val extras = intent.extras
             if (extras != null) {
                 mainView?.onEventBroadcastReceiver(extras, intent)
             }
@@ -66,18 +57,13 @@ class UserSms_Presenter(var mainView: IMainViewUserSms.MainView?): IMainViewUser
 
     override fun onResume(context: Context) {
         //On Activity Chat_Sms_Activity
-
         //On Activity UsersSmsActivity
         context.registerReceiver(mNotificationReceiverApp, IntentFilter(Const_Resources.SERVICE_CONECTIVITY))
-        context.registerReceiver(mNotificationReceiverSms, IntentFilter(Const_Resources.SERVICE_RECYVE_MESSAGE))
-
     }
 
     override fun onPause(context: Context) {
-
         //On Activity UsersSmsActivity
         context.unregisterReceiver(this.mNotificationReceiverApp);
-        context.unregisterReceiver(this.mNotificationReceiverSms);
     }
 
     //endregion
@@ -98,21 +84,26 @@ class UserSms_Presenter(var mainView: IMainViewUserSms.MainView?): IMainViewUser
             RequestEventUserSms.LIST_SMS_EVENT -> {
                 mainView?.hideProgressHud()
                 mainView?.hideProgress()
-                var listSms = event.mutableList as List<Sms>
+                val listSms = event.mutableList as List<Sms>
                 mainView?.setListSms(listSms)
             }
 
             RequestEventUserSms.ITEM_EVENTS_DETAIL_SMS -> {
-                var sms = event.objectMutable as Sms
+                val sms = event.objectMutable as Sms
                 mainView?.navigateDetailSms(sms)
             }
 
 
             RequestEventUserSms.ITEM_EVENTS_ADD_CONTAT -> {
-                var sms = event.objectMutable as Sms
+                val sms = event.objectMutable as Sms
                 mainView?.addContact(sms)
             }
 
+            RequestEventUserSms.NEW_MESSAGE_EVENT -> {
+                val new_sms=event.mensajeError
+                mainView?.onMessageToas(new_sms!!, R.color.green_900)
+                mainView?.getListSms()
+            }
         }
     }
     //endregion

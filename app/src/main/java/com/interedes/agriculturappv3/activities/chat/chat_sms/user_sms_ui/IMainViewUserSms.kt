@@ -22,6 +22,7 @@ interface IMainViewUserSms {
 
         //list
         fun setListSms(sms: List<Sms>)
+        fun getListSms()
 
         //Navigate
         fun navigateDetailSms(sms:Sms)

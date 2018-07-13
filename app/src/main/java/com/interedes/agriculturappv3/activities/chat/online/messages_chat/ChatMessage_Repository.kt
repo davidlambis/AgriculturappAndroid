@@ -71,16 +71,16 @@ class ChatMessage_Repository:IMainViewChatMessages.Repository {
 
     override fun sendMessage(message: ChatMessage,room:Room,userSelected:UserFirebase,checkConection: Boolean) {
        if(checkConection){
-           var roomDateComprador= Chat_Resources.mRoomDBRef?.child(room?.User_From)?.child(Chat_Resources.getRoomById(room?.User_To)+"/lastMessage")
+           val roomDateComprador= Chat_Resources.mRoomDBRef?.child(room?.User_From)?.child(Chat_Resources.getRoomById(room?.User_To)+"/lastMessage")
            roomDateComprador?.setValue(message.message);
 
-           var roomDateProductor= Chat_Resources.mRoomDBRef?.child(room?.User_To)?.child(Chat_Resources.getRoomById(room?.User_From)+"/lastMessage")
+           val roomDateProductor= Chat_Resources.mRoomDBRef?.child(room?.User_To)?.child(Chat_Resources.getRoomById(room?.User_From)+"/lastMessage")
            roomDateProductor?.setValue(message.message);
 
-           var roomDateCompradorDate= Chat_Resources.mRoomDBRef?.child(room?.User_From)?.child(Chat_Resources.getRoomById(room?.User_To)+"/date_Last")
+           val roomDateCompradorDate= Chat_Resources.mRoomDBRef?.child(room?.User_From)?.child(Chat_Resources.getRoomById(room?.User_To)+"/date_Last")
            roomDateCompradorDate?.setValue(ServerValue.TIMESTAMP);
 
-           var roomDateProductorDate= Chat_Resources.mRoomDBRef?.child(room?.User_To)?.child(Chat_Resources.getRoomById(room?.User_From)+"/date_Last")
+           val roomDateProductorDate= Chat_Resources.mRoomDBRef?.child(room?.User_To)?.child(Chat_Resources.getRoomById(room?.User_From)+"/date_Last")
            roomDateProductorDate?.setValue(ServerValue.TIMESTAMP);
 
            mMessagesDBRef?.push()?.setValue(message)?.addOnCompleteListener { task ->

@@ -61,6 +61,7 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
     override fun setListRoom(sms: List<RoomConversation>) {
         adapter?.clear()
         adapter?.setItems(sms)
+        setResult(sms.size)
     }
 
     override fun showProgress() {
@@ -76,16 +77,23 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
                 .setLabel("Cargando...", resources.getColor(R.color.white))
         hud?.show()
     }
+
     override fun hideProgressHud(){
         hud?.dismiss()
     }
 
+    override fun setResults(resultsCount: Int) {
+        val results = String.format(getString(R.string.results_global_search),
+                resultsCount);
+        txtResults.setText(results);
+    }
+
     override fun onMessageToas(message: String, color: Int) {
         val inflater = this.layoutInflater
-        var viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        val viewToast = inflater.inflate(R.layout.custom_message_toast, null)
         viewToast.txtMessageToastCustom.setText(message)
         viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(this, color))
-        var mytoast =  Toast(this);
+        val mytoast =  Toast(this);
         mytoast.setView(viewToast);
         mytoast.setDuration(Toast.LENGTH_SHORT);
         mytoast.show();

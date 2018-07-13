@@ -21,5 +21,7 @@ data class RequestEventUserSms (var eventType: Int,
         val ITEM_EVENTS_DETAIL_SMS: Int = 6
 
         val ITEM_EVENTS_ADD_CONTAT: Int = 7
+
+        val NEW_MESSAGE_EVENT: Int = 8
     }
 }

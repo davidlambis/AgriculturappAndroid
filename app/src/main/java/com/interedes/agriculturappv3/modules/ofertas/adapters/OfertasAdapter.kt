@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.database.*
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.libs.EventBus
@@ -31,8 +32,7 @@ import java.util.ArrayList
 import com.interedes.agriculturappv3.R.id.imageView
 import com.squareup.picasso.Callback
 import com.interedes.agriculturappv3.R.id.imageView
-
-
+import com.interedes.agriculturappv3.libs.GlideApp
 
 
 class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : RecyclerView.Adapter<OfertasAdapter.ViewHolder>() {
@@ -153,43 +153,12 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
                     val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
                     contentIcon.setImageBitmap(bitmap)
                 }else{
-                    if(data.Producto?.Imagen!=null){
-                        if(data.Producto?.Imagen!!.contains("Productos")){
-                           /* try {
-                                Picasso.with(context).load(S3Resources.RootImage+"${data.Producto?.Imagen}").placeholder(R.drawable.ic_foto_producto).into(contentIcon)
-                                contentIcon.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }*/
-                            Picasso.get()
-                                    .load(S3Resources.RootImage+"${data.Producto?.Imagen}")
-                                    .fit()
-                                    .into(contentIcon, object : com.squareup.picasso.Callback {
-                                        override fun onError(e: java.lang.Exception?) {
 
-                                            contentIcon.setImageResource(R.drawable.ic_foto_producto)
-                                            contentIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                                            //) Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
-                                        }
-
-                                        override fun onSuccess() {
-                                           // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
-                                        }
-                                    })
-
-                           /* val builder = Picasso.Builder(context)
-                            builder.listener(object : Picasso.Listener {
-                                override fun onImageLoadFailed(picasso: Picasso, uri: Uri, exception: Exception) {
-
-                                    Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
-                                    exception.printStackTrace()
-                                }
-                            })
-                            builder.build().load(S3Resources.RootImage+"${data.Producto?.Imagen}").into(contentIcon)
-                            */
-
-                        }
-                    }
+                    GlideApp.with(context)
+                            .load(S3Resources.RootImage+"${data.Producto?.Imagen}")
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .productorPhoto()
+                            .into(contentIcon);
                 }
 
                 txtTitle.setText(data.Producto?.Nombre)
@@ -204,55 +173,11 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
 
                 //TODO se valida que el usuario sea productor para mostrar opciones de editar la oferta
                 publisher_name.text=data.Usuario?.Nombre+" ${data.Usuario?.Apellidos}"
-                val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(data.Usuario?.Email)
-                query?.addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            // dataSnapshot is the "issue" node with all children with id 0
-                            for (issue in dataSnapshot.children) {
-                                // do something with the individual "issues"
-                                var user = issue.getValue<UserFirebase>(UserFirebase::class.java)
-                                //if not current user, as we do not want to show ourselves then chat with ourselves lol
-
-                                    try {
-                                        //Picasso.with(context).load(user?.Imagen).placeholder(R.drawable.ic_account_box_green).into(circleView)
-
-                                       /* val builder = Picasso.Builder(context)
-                                        builder.listener(object : Picasso.Listener {
-                                            override fun onImageLoadFailed(picasso: Picasso, uri: Uri, exception: Exception) {
-                                                contentIcon.setImageResource(R.drawable.ic_foto_producto)
-                                                contentIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                                            }
-                                        })
-                                        builder.build().load(user?.Imagen).into(circleView)*/
-                                        Picasso.get()
-                                                .load(user?.Imagen)
-                                                .fit()
-                                                .into(circleView, object : com.squareup.picasso.Callback {
-                                                    override fun onError(e: java.lang.Exception?) {
-                                                        circleView.setImageResource(R.drawable.ic_account_box_green)
-                                                        circleView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                                                       // Toast.makeText(context,"Error foto",Toast.LENGTH_LONG).show()
-                                                    }
-                                                    override fun onSuccess() {
-                                                        // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
-                                                    }
-                                                })
-
-
-
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
-
-                            }
-                        }
-                    }
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-
-                    }
-                })
+                GlideApp.with(context)
+                        .load(S3Resources.RootImage+"${data.Usuario?.Fotopefil}")
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .productorPhoto()
+                        .into(circleView);
 
                 /*
                 try {

@@ -79,6 +79,9 @@ class Conversacion_Presenter (var mainView: IMainViewConversacion.MainView?): IM
                 mainView?.setListRoom(list)
             }
 
+            RequestEventChatOnline.LIST_ROOM_EVENT_EMPTY -> {
+                mainView?.setResults(0)
+            }
         }
     }
     //endregion

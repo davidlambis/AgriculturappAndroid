@@ -95,27 +95,27 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: RoomConversation, pos: Int) = with(itemView) {
 
-            var personNameTxtV: TextView = itemView.findViewById(R.id.txtTitle)
-            var personImageImgV: ImageView = itemView.findViewById(R.id.contentIcon)
+            val personNameTxtV: TextView = itemView.findViewById(R.id.txtTitle)
+            val personImageImgV: ImageView = itemView.findViewById(R.id.contentIcon)
             personImageImgV.visibility=View.GONE
 
-            var txtUserType: TextView = itemView.findViewById(R.id.txtDescription)
+            val txtUserType: TextView = itemView.findViewById(R.id.txtDescription)
 
-            var txtDescripcionAdditional: TextView = itemView.findViewById(R.id.txtDescripcionAdditional)
+            val txtDescripcionAdditional: TextView = itemView.findViewById(R.id.txtDescripcionAdditional)
 
-            var txtLastMessage: TextView = itemView.findViewById(R.id.txtStatisSincronized)
+            val txtLastMessage: TextView = itemView.findViewById(R.id.txtStatisSincronized)
 
-            var optionsContent: LinearLayout = itemView.findViewById(R.id.options)
+            val optionsContent: LinearLayout = itemView.findViewById(R.id.options)
             optionsContent.visibility=View.GONE
 
            // var contentQuantdate: LinearLayout = itemView.findViewById(R.id.contentQuantdate)
            // contentQuantdate.visibility=View.GONE
-            var txtDate: TextView = itemView.findViewById(R.id.txtDate)
+            val txtDate: TextView = itemView.findViewById(R.id.txtDate)
 
-            var contentIconUser: CircleImageView = itemView.findViewById(R.id.contentIconUser)
+            val contentIconUser: CircleImageView = itemView.findViewById(R.id.contentIconUser)
             contentIconUser.visibility=View.VISIBLE
 
-            var imgStatus: ImageView = itemView.findViewById(R.id.imgStatus)
+            val imgStatus: ImageView = itemView.findViewById(R.id.imgStatus)
             imgStatus.visibility=View.VISIBLE
 
             if(data.UserFirebase?.Status.equals(Status_Chat.ONLINE)){
@@ -182,7 +182,7 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.value != null) {
                         //val avataStr = dataSnapshot.value as String
-                        var user = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
+                        val user = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
                         if(user?.Status.equals(Status_Chat.ONLINE)){
                             data.UserFirebase?.Status=Status_Chat.ONLINE
                             imgStatus.setImageResource(R.drawable.is_online_user)
@@ -231,8 +231,6 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                 goToUpdate.putExtra("FOTO", data.UserFirebase?.Imagen)
                 context.startActivity(goToUpdate)
             }
-
-
 
 /*
             var txtFechasProduccion: TextView = itemView.findViewById(R.id.txtDate)

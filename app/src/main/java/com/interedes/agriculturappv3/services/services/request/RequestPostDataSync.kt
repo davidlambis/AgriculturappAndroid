@@ -577,6 +577,11 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                                 override fun onResponse(call: Call<LocalizacionUp>?, response: Response<LocalizacionUp>?) {
                                     if (response != null && response.code() == 201) {
                                         val idLocalizacion = response.body()?.Id
+
+
+
+
+
                                         mUnidadProductiva.LocalizacionUpId=idLocalizacion
                                         mUnidadProductiva.Estado_Sincronizacion = true
                                         mUnidadProductiva.Estado_SincronizacionUpdate=true

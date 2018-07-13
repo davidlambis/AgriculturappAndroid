@@ -179,7 +179,7 @@ class OfertasRepository : IOfertas.Repository {
         }*/
         //TODO con onexion a internet
         if(checkConection){
-            var usuario= getLastUserLogued()
+            val usuario= getLastUserLogued()
 
             var queryOfertas = ""
             var callOfertas: Call<OfertaResponse>? = null
@@ -294,7 +294,7 @@ class OfertasRepository : IOfertas.Repository {
                                 //TODO Lote
                                 val lote = detalleoferta?.Producto?.Cultivo?.Lote
                                 if (lote != null) {
-                                    var loteVerficateSave = SQLite.select()
+                                    val loteVerficateSave = SQLite.select()
                                             .from(Lote::class.java)
                                             .where(Lote_Table.Id_Remote.eq(lote.Id_Remote))
                                             .querySingle()
@@ -313,8 +313,8 @@ class OfertasRepository : IOfertas.Repository {
                                     val coordenadas = lote.Localizacion
                                     if (coordenadas != null || coordenadas != "") {
                                         val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
-                                        var latitud = separated!![0].toDoubleOrNull() // this will contain "Fruit"
-                                        var longitud = separated!![1].toDoubleOrNull() // this will contain " they taste good"
+                                        val latitud = separated!![0].toDoubleOrNull() // this will contain "Fruit"
+                                        val longitud = separated!![1].toDoubleOrNull() // this will contain " they taste good"
                                         lote.Latitud = latitud
                                         lote.Longitud = longitud
                                         lote.Coordenadas = coordenadas
@@ -450,8 +450,8 @@ class OfertasRepository : IOfertas.Repository {
     }
 
     override fun getOfertas(productoId: Long?): List<Oferta> {
-        var usuario= getLastUserLogued();
-        var listResponse= ArrayList<Oferta>()
+        val usuario= getLastUserLogued();
+        val listResponse= ArrayList<Oferta>()
         if(usuario?.RolNombre.equals(RolResources.COMPRADOR)){
 
             if (productoId == null) {

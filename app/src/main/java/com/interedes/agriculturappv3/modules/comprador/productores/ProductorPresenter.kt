@@ -46,7 +46,7 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
     //region Conectividad
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
+            val extras = intent.extras
             if (extras != null) {
                 mainView?.onEventBroadcastReceiver(extras, intent)
             }
@@ -72,7 +72,7 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
     override fun onEventMainThread(event: RequestEventProductor?) {
         when (event?.eventType) {
             RequestEventProductor.READ_EVENT -> {
-                var list = event.mutableList as List<Producto>
+                val list = event.mutableList as List<Producto>
                 listTipoProducto=list
                 mainView?.setListProducto(list)
                 mainView?.hideProgress()
@@ -102,7 +102,7 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
             }
 
             RequestEventProductor.LOAD_DATA_FIRTS -> {
-                var list = event.mutableList as List<Producto>
+                val list = event.mutableList as List<Producto>
                 listTipoProducto=list
                 mainView?.setListProductoFirts(list)
                 mainView?.hideProgress()

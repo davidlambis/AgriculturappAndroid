@@ -27,8 +27,6 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.math.MathContext.DECIMAL64
 
-
-
 class TransaccionRespository: IMainViewTransacciones.Repository {
 
     var eventBus: EventBus? = null
@@ -184,11 +182,14 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                 })
                 //}
             } else {
-
+                terceroLocal.Estado_Sincronizacion = false
+                transaccion.Estado_SincronizacionUpdate = false
                 saveTransaccionLocal(transaccion,cultivo_id,terceroLocal)
             }
 
         }else{
+            terceroLocal.Estado_Sincronizacion = false
+            transaccion.Estado_SincronizacionUpdate = false
             saveTransaccionLocal(transaccion,cultivo_id,terceroLocal)
         }
 
@@ -390,7 +391,7 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
     }
 
     private fun postEventListCultivos(type: Int, listUnidadMedida:List<Cultivo>?, messageError:String?) {
-        var upMutable= listUnidadMedida as MutableList<Object>
+        val upMutable= listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }
 

@@ -4,6 +4,7 @@ import android.app.Notification
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.interedes.agriculturappv3.libs.EventBus
+import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal
 import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal_Table
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
@@ -15,12 +16,12 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 
 class FirebaseInstanceRepository:IMainFirebaseInstance.Repository {
 
-
     var mUserDBRef: DatabaseReference? = null
     var eventBus: EventBus? = null
 
     private var  mCurrentUserID: String? = null
     init {
+        eventBus = GreenRobotEventBus()
         mUserDBRef = Chat_Resources.mUserDBRef
     }
 
@@ -31,10 +32,13 @@ class FirebaseInstanceRepository:IMainFirebaseInstance.Repository {
             if(mCurrentUserID==null){
                 mCurrentUserID=usuario.IdFirebase
             }
-            val userTokenMessaginStatus= mUserDBRef?.child(mCurrentUserID+"/statusTokenFcm")
-            val userTokenMessaging= mUserDBRef?.child(mCurrentUserID+"/tokenFcm")
-            userTokenMessaginStatus?.setValue(true)
-            userTokenMessaging?.setValue(token)
+
+            if(mCurrentUserID!=null){
+                val userTokenMessaginStatus= mUserDBRef?.child(mCurrentUserID+"/statusTokenFcm")
+                val userTokenMessaging= mUserDBRef?.child(mCurrentUserID+"/tokenFcm")
+                userTokenMessaginStatus?.setValue(true)
+                userTokenMessaging?.setValue(token)
+            }
             postEventOk(RequestEventFirebaseService.POST_SYNC_EVENT_TOKEN)
         }else{
             postEventError(RequestEventFirebaseService.ERROR_EVENT,"No existe un usuario logueado para el token: $token")

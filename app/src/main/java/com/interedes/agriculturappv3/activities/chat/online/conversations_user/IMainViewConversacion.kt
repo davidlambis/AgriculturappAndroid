@@ -16,6 +16,8 @@ interface IMainViewConversacion {
         fun showProgressHud()
         fun hideProgressHud()
 
+        //results
+        fun setResults(resuts: Int)
 
         //list
         fun setListRoom(sms: List<RoomConversation>)

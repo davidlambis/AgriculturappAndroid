@@ -43,7 +43,7 @@ class ChatMessage_Presenter  (var mainView: IMainViewChatMessages.MainView?): IM
     //region Conectividad
     private val mNotificationReceiverApp = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
+            val extras = intent.extras
             if (extras != null) {
                 mainView?.onEventBroadcastReceiver(extras, intent)
             }

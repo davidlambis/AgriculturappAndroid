@@ -48,7 +48,7 @@ class ProductosRepository : IProductos.Repository {
 
     //region Métodos Interfaz
     override fun getListas() {
-        var usuario= getLastUserLogued()
+        val usuario= getLastUserLogued()
 
         val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
@@ -59,7 +59,7 @@ class ProductosRepository : IProductos.Repository {
                 .queryList()
 
 
-        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+        val listCultivos = SQLite.select().from(Cultivo::class.java)
                 .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
                 .queryList()
         //val listUnidadMedida = Listas.listaUnidadMedida()
@@ -82,7 +82,7 @@ class ProductosRepository : IProductos.Repository {
     }
 
     override fun getProductos(cultivo_id: Long?): List<Producto> {
-        var usuarioLogued= getLastUserLogued()
+        val usuarioLogued= getLastUserLogued()
         val list= SQLite.select().from(Producto::class.java).queryList()
 
         var listResponse: List<Producto>? = null
@@ -173,11 +173,15 @@ class ProductosRepository : IProductos.Repository {
            }
            //TODO con conexion a internet sin sincronizacion, registro local
            else {
+               mProducto.Estado_Sincronizacion = false
+               mProducto.Estado_SincronizacionUpdate = false
                registerProductoLocal(mProducto, cultivo_id)
            }
        }
        //TODO sin conexion a internet, registro local
        else{
+           mProducto.Estado_Sincronizacion = false
+           mProducto.Estado_SincronizacionUpdate = false
            registerProductoLocal(mProducto,cultivo_id)
        }
     }

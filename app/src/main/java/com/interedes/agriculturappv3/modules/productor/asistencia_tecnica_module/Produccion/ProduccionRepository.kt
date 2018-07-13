@@ -99,11 +99,15 @@ class ProduccionRepository :IMainProduccion.Repository {
             }
             //TODO con conexion a internet sin sincronizacion, registro local
             else {
+                produccion.Estado_Sincronizacion = false
+                produccion.Estado_SincronizacionUpdate = false
                 saveProduccionLocal(produccion,cultivo_id)
             }
         }
         //TODO sin conexion a internet, registro local
         else{
+            produccion.Estado_Sincronizacion = false
+            produccion.Estado_SincronizacionUpdate = false
             saveProduccionLocal(produccion,cultivo_id)
         }
     }

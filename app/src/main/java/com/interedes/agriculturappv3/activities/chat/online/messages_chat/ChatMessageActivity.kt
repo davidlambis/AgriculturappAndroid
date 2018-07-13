@@ -101,7 +101,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
 
     private fun sendMessageToFirebase(message: String, senderId: String, receiverId: String?) {
         //mMessagesList.clear()
-        var time= System.currentTimeMillis()
+        val time= System.currentTimeMillis()
         val dateFormat = SimpleDateFormat("MM/dd/yyyy")
         val date = Date()
         val fecha = dateFormat.format(date)
@@ -185,13 +185,11 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
 
     override fun sendSmsVerificate(newMessage: ChatMessage){
         val inflater = this.layoutInflater
-        var viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
+        val viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
 
         viewDialogConfirm?.txtTitleConfirm?.setText("")
         viewDialogConfirm?.txtTitleConfirm?.setText(userFirebaeSelected?.Nombre+" ${userFirebaeSelected?.Apellido}")
-
-
-        var content =String.format(getString(R.string.content_sms_message_offline),userFirebaeSelected?.Nombre+" ${userFirebaeSelected?.Apellido}")
+        val content =String.format(getString(R.string.content_sms_message_offline),userFirebaeSelected?.Nombre+" ${userFirebaeSelected?.Apellido}")
         viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
 
 
@@ -235,7 +233,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
                         })
                 .onNegative({ dialog1, which ->
                     dialog1.dismiss()
-                    onMessageToas(getString(R.string.content_sms_not_send),R.color.red_900)
+                    //onMessageToas(getString(R.string.content_sms_not_send),R.color.red_900)
                 })
                 .show()
     }

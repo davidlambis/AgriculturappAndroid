@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -304,19 +305,14 @@ class UserSmsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListene
         onMessageOk(colorPrimary, message)
     }
 
+    override fun getListSms() {
+        presenter?.getListSms(this,null)
+    }
 
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
-        if(extras!=null){
             if (extras.containsKey("state_conectivity")) {
                 var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
             }
-
-            if (extras.containsKey("new_message_sms")) {
-                var new_sms = intent.extras!!.getString("new_message_sms")
-                onMessageToas(new_sms,R.color.green_900)
-                presenter?.getListSms(this,null)
-            }
-        }
     }
 
     override fun navigateDetailSms(sms: Sms) {

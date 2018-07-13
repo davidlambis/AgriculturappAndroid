@@ -70,12 +70,12 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     }
 
     override fun getProducto(producto_id: Long): Producto? {
-        var producto= SQLite.select().from(Producto::class.java).where(Producto_Table.ProductoId.eq(producto_id)).querySingle()
+        val producto= SQLite.select().from(Producto::class.java).where(Producto_Table.ProductoId.eq(producto_id)).querySingle()
         return producto
     }
 
     override fun getTipoProducto(tipo_producto_id: Long): TipoProducto? {
-        var tipoProducto= SQLite.select().from(TipoProducto::class.java).where(TipoProducto_Table.Id.eq(tipo_producto_id)).querySingle()
+        val tipoProducto= SQLite.select().from(TipoProducto::class.java).where(TipoProducto_Table.Id.eq(tipo_producto_id)).querySingle()
         return tipoProducto
     }
 
@@ -126,10 +126,10 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                         call?.enqueue(object : Callback<PostDetalleOferta> {
                             override fun onResponse(call: Call<PostDetalleOferta>?, response: Response<PostDetalleOferta>?) {
                                 if (response != null && response.code() == 201 || response?.code() == 200) {
-                                    var response = response.body()
+                                    val response = response.body()
 
 
-                                    var detalleOferta=DetalleOferta()
+                                    val detalleOferta=DetalleOferta()
                                     detalleOferta.Id_Remote=response?.Id
                                     detalleOferta.OfertasId=oferta?.Id_Remote
                                     detalleOferta.Cantidad= oferta.Cantidad
@@ -187,16 +187,12 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                         }
 
-                       if(user?.Status.equals(Status_Chat.ONLINE)){
-                               findRoomUser(user!!,oferta)
-                            //sendMessageToFirebase(message, senderId, mReceiverId)
-                        }else{
-                            postEvenNotifySms(RequestEventDetalleProducto.OK_SEND_EVENT_SMS,oferta)
-                        }
+                        findRoomUser(user!!,oferta)
+                        //sendMessageToFirebase(message, senderId, mReceiverId)
                     }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
-                    var error = databaseError.message
+                    val error = databaseError.message
                     postEventError(RequestEventDetalleProducto.ERROR_EVENT, error)
                     //postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
                 }
@@ -215,7 +211,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                     var roomFind=Room()
 
                     for (issue in dataSnapshot.children) {
-                        var room = issue.getValue<Room>(Room::class.java)
+                        val room = issue.getValue<Room>(Room::class.java)
                         roomId=room?.IdRoom
                         roomFind= room!!
                     }
@@ -226,7 +222,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {
-                var error = databaseError.message
+                val error = databaseError.message
                 postEventError(RequestEventDetalleProducto.ERROR_EVENT, error)
             }
         })
@@ -238,8 +234,8 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     }
 
     private fun createRoomUser(user: UserFirebase?,idProductor:String?,roomComprador:Boolean,oferta:Oferta,userFirebase:UserFirebase) {
-        var date= Calendar.getInstance().time
-        var dateString =getDateFormatApi(date)
+        val date= Calendar.getInstance().time
+        val dateString =getDateFormatApi(date)
 
          if(idProductor!= null){
             if(roomComprador){
@@ -256,7 +252,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                 val room = Room(Chat_Resources.getRoomByCompradorProductor(mCompradorSenderId,mProductorReceiverId), mProductorReceiverId, mCompradorSenderId, 0, 0,dateString,"")
                 mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId))?.setValue(room)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
                     if (!task.isSuccessful) {
-                        var error = task.exception
+                        val error = task.exception
                         postEventError(RequestEventDetalleProducto.ERROR_EVENT, error.toString())
                         //error
                     } else {
@@ -268,10 +264,10 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
             updateDatesRoomUser()
 
 
-            var roomDateComprador= mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId)+"/date")
+            val roomDateComprador= mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId)+"/date")
             roomDateComprador?.setValue(ServerValue.TIMESTAMP);
 
-            var roomDateProductor= mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId)+"/date")
+            val roomDateProductor= mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId)+"/date")
             roomDateProductor?.setValue(ServerValue.TIMESTAMP);
 
 
@@ -338,7 +334,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     }
 
     private fun sendMessageToFirebase(message: String,oferta:Oferta,userFirebase: UserFirebase) {
-        var time= System.currentTimeMillis()
+        val time= System.currentTimeMillis()
         val dateFormat = SimpleDateFormat("MM/dd/yyyy")
         val date = Date()
         val fecha = dateFormat.format(date)
@@ -349,7 +345,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         val newMsg = ChatMessage(roomId,message, mCompradorSenderId, mProductorReceiverId,fecha,hora,time)
         mMessagesDBRef?.push()?.setValue(newMsg)?.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
-                var error = task.exception
+                val error = task.exception
                 postEventError(RequestEventDetalleProducto.ERROR_EVENT, error.toString())
                 //error
                 //Toast.makeText(applicationContext, "Error " + task.exception!!.localizedMessage, Toast.LENGTH_SHORT).show()
@@ -357,6 +353,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                 updateDatesRoomUser()
                 updateLastMessageRoomUser(newMsg.message)
                 val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
+
                 if(userFirebase.StatusTokenFcm!=null){
                     if(userFirebase.StatusTokenFcm==true){
                         var imagen=""
@@ -369,7 +366,13 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                         sendPushNotificationToReceiver(message,userFirebase,imagen)
                     }
                 }
-                postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
+
+                if(userFirebase?.Status.equals(Status_Chat.ONLINE)){
+                    postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
+                    //sendMessageToFirebase(message, senderId, mReceiverId)
+                }else{
+                    postEvenNotifySms(RequestEventDetalleProducto.OK_SEND_EVENT_SMS,oferta)
+                }
             }
         }
     }

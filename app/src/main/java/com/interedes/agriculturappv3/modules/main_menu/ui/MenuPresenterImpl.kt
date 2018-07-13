@@ -11,6 +11,7 @@ import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMai
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
+import com.interedes.agriculturappv3.services.jobs.SyncFotoProductosJob
 import org.greenrobot.eventbus.Subscribe
 
 /**
@@ -95,7 +96,7 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
 
             RequestEventMainMenu.SYNC_RESUME_AUTOMATIC -> {
                 //onMessageError(event.mensajeError)
-                var quantitySync = event.objectMutable as QuantitySync
+                val quantitySync = event.objectMutable as QuantitySync
                 mainView?.setQuantitySyncAutomatic(quantitySync)
             }
 
@@ -115,9 +116,13 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
             }*/
 
             RequestEventMainMenu.SYNC_RESUME -> {
-                var quantitySync = event.objectMutable as QuantitySync
+                val quantitySync = event.objectMutable as QuantitySync
                 mainView?.setQuantitySync(quantitySync)
                 mainView?.hideProgressHud()
+            }
+
+            RequestEventMainMenu.SYNC_FOTOS_PRODUCTOS -> {
+                SyncFotoProductosJob.scheduleFotosProductosJob()
             }
         }
     }

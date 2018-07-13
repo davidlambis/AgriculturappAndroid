@@ -117,7 +117,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
     private fun setupInjection() {
         presenter?.getListas()
         productoGlobal= presenter?.getProducto(productoIdGlobal)
-        var tipoProducto= presenter?.getTipoProducto(productoGlobal?.TipoProductoId!!)
+        val tipoProducto= presenter?.getTipoProducto(productoGlobal?.TipoProductoId!!)
         if(tipoProducto!=null){
             txtTipoProducto.setText(tipoProducto.Nombre)
             if(tipoProducto.Imagen!=null){
@@ -128,7 +128,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                     val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                     logoTipoProducto.setImageBitmap(bitmapBlob)
                 }catch (ex:Exception){
-                    var ss= ex.toString()
+                    val ss= ex.toString()
                     Log.d("Convert Image", "defaultValue = " + ss);
                 }
             }
@@ -163,6 +163,13 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             txtUbicacion?.setText(String.format("%s / %s", productoGlobal?.Ciudad, productoGlobal?.Departamento))
             txtFechaDisponibilidad?.setText(productoGlobal?.getFechaLimiteDisponibilidadFormat())
 
+            val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(productoGlobal?.userId)).querySingle()
+            GlideApp.with(activity!!)
+                    .load(S3Resources.RootImage+"${usuario?.Fotopefil}")
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .productorPhotoCenterCrop()
+                    .into(contentIcon)
+
 
             if(productoGlobal?.blobImagen!=null){
                 // val bitmap = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
@@ -172,10 +179,17 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                     val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                     contenIconProducto.setImageBitmap(bitmapBlob)
                 }catch (ex:Exception){
-                    var ss= ex.toString()
+                    val ss= ex.toString()
                     Log.d("Convert Image", "defaultValue = " + ss);
                 }
             }else{
+
+                GlideApp.with(activity!!)
+                        .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .productoPhotoCenterCrop()
+                        .into(contenIconProducto)
+
                /* Picasso.get()
                         .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
                         .placeholder(R.drawable.ic_account_box_green)
@@ -205,11 +219,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                                 // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
                             }
                         })*/
-                GlideApp.with(activity!!)
-                        .load(S3Resources.RootImage+"${productoGlobal?.Usuario?.Fotopefil}")
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .productorPhoto()
-                        .into(contentIcon)
+
 
                 // Picasso.setSingletonInstance(picassoss) //apply to default singleton instance
                 /*Picasso.get()
@@ -369,17 +379,17 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
 
-                var cantidad=  viewDialog?.edtCantidadOfertar?.text.toString()?.toDoubleOrNull()
-                var precioOferta=  viewDialog?.edtPriceOferta?.text.toString()?.toDoubleOrNull()
+                val cantidad=  viewDialog?.edtCantidadOfertar?.text.toString()?.toDoubleOrNull()
+                val precioOferta=  viewDialog?.edtPriceOferta?.text.toString()?.toDoubleOrNull()
 
                 if(!viewDialog?.edtCantidadOfertar?.text.toString().isEmpty()
                         && !viewDialog?.edtPriceOferta?.text.toString().isEmpty()){
 
                     if(presenter?.verificateCantProducto(producto?.ProductoId,cantidad)!!){
-                        var subtotal=cantidad!!*precioOferta!!
-                        var costo_total_item = String.format(context!!.getString(R.string.price),
+                        val subtotal=cantidad!!*precioOferta!!
+                        val costo_total_item = String.format(context!!.getString(R.string.price),
                                 subtotal)
-                        var costo_total_ = String.format(context!!.getString(R.string.price),
+                        val costo_total_ = String.format(context!!.getString(R.string.price),
                                 subtotal)
                         valorTotalGlobal=subtotal
                         viewDialog?.txtValorSubtotal?.text=costo_total_item
@@ -409,18 +419,18 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
 
-                var cantidad=  viewDialog?.edtCantidadOfertar?.text.toString()?.toDoubleOrNull()
-                var precioOferta=  viewDialog?.edtPriceOferta?.text.toString()?.toDoubleOrNull()
+                val cantidad=  viewDialog?.edtCantidadOfertar?.text.toString()?.toDoubleOrNull()
+                val precioOferta=  viewDialog?.edtPriceOferta?.text.toString()?.toDoubleOrNull()
 
                 if(!viewDialog?.edtCantidadOfertar?.text.toString().isEmpty()
                         && !viewDialog?.edtPriceOferta?.text.toString().isEmpty()){
 
                     if(presenter?.verificateCantProducto(producto?.ProductoId,cantidad)!!){
 
-                        var subtotal=cantidad!!*precioOferta!!
-                        var costo_total_item = String.format(context!!.getString(R.string.price),
+                        val subtotal=cantidad!!*precioOferta!!
+                        val costo_total_item = String.format(context!!.getString(R.string.price),
                                 subtotal)
-                        var costo_total_ = String.format(context!!.getString(R.string.price),
+                        val costo_total_ = String.format(context!!.getString(R.string.price),
                                 subtotal)
                         valorTotalGlobal=subtotal
                         viewDialog?.txtValorSubtotal?.text=costo_total_item
@@ -461,18 +471,18 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
     override fun showConfirmOferta() {
 
         val inflater = this.layoutInflater
-        var viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
+        val viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
 
 
 
         viewDialogConfirm?.txtTitleConfirm?.setText("")
 
-        var costo_total_ = String.format(context!!.getString(R.string.price),
+        val costo_total_ = String.format(context!!.getString(R.string.price),
                 valorTotalGlobal)
         viewDialogConfirm?.txtTitleConfirm?.setText(costo_total_+" " + viewDialog?.spinnerMonedaPrecio?.text.toString())
 
 
-        var content =String.format(getString(R.string.content_oferta_confirm),viewDialog?.edtCantidadOfertar?.text.toString(),viewDialog?.txtUnidadMedida?.text.toString(),productoGlobal?.Nombre)
+        val content =String.format(getString(R.string.content_oferta_confirm),viewDialog?.edtCantidadOfertar?.text.toString(),viewDialog?.txtUnidadMedida?.text.toString(),productoGlobal?.Nombre)
         viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
 
         MaterialDialog.Builder(activity!!)
@@ -506,7 +516,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
 
     override fun showConfirmSendSmsOferta(oferta:Oferta){
         val inflater = this.layoutInflater
-        var viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
+        val viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
 
         viewDialogConfirm?.txtTitleConfirm?.setText("")
         viewDialogConfirm?.txtTitleConfirm?.setText(productoGlobal?.NombreProductor)
