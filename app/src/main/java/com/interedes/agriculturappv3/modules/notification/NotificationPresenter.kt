@@ -41,7 +41,7 @@ class NotificationPresenter(var mainView:IMainViewNotification.MainView?):IMainV
     //region Conectividad
     private val mNotificationReceiverApp = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
+            val extras = intent.extras
             if (extras != null) {
                 mainView?.onEventBroadcastReceiver(extras, intent)
             }

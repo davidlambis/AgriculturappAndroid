@@ -20,16 +20,13 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-
-
 class Notification_Adapter(var list: ArrayList<NotificationLocal>) : RecyclerView.Adapter<Notification_Adapter.ViewHolder>() {
 
     companion object {
 
         var eventBus: EventBus? = null
         fun postEvent(type: Int, notificationLocal: NotificationLocal?) {
-            var produccionMutable= notificationLocal as Object
+            val produccionMutable= notificationLocal as Object
             val event = RequestEventsNotification(type,null, produccionMutable,null)
             event.eventType = type
             eventBus?.post(event)
@@ -43,7 +40,7 @@ class Notification_Adapter(var list: ArrayList<NotificationLocal>) : RecyclerVie
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         //Llama al método del holder para cargar los items
-        var item = list[position]
+        val item = list[position]
 
         holder.bindItems(item, position)
     }

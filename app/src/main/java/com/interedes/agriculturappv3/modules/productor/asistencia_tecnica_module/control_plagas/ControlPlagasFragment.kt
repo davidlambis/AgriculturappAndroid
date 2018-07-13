@@ -201,11 +201,11 @@ class ControlPlagasFragment : Fragment(), IControlPlagas.View, View.OnClickListe
         txtNombreCultivo.setText(cultivo?.Nombre)
         txtNombreLote.setText(cultivo?.Nombre_Tipo_Producto)
 
-        var fechaDateInicio= cultivo?.getFechaDate(cultivo.FechaIncio)
-        var fechaDateFin= cultivo?.getFechaDate(cultivo.FechaFin)
+        val fechaDateInicio= cultivo?.getFechaDate(cultivo.FechaIncio)
+        val fechaDateFin= cultivo?.getFechaDate(cultivo.FechaFin)
 
-        var fechaInicioFormat= cultivo?.getFechaFormat(fechaDateInicio)
-        var fechaFinFormat= cultivo?.getFechaFormat(fechaDateFin)
+        val fechaInicioFormat= cultivo?.getFechaFormat(fechaDateInicio)
+        val fechaFinFormat= cultivo?.getFechaFormat(fechaDateFin)
 
         txtPrecio.setText(fechaInicioFormat)
         txtArea.setText(fechaFinFormat)

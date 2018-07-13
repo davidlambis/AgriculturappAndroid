@@ -124,7 +124,7 @@ class ProductosRepository : IProductos.Repository {
                val postProducto = PostProducto(0,
                        mProducto.CalidadId,
                        1,
-                       mProducto.CodigoUp,
+                       mProducto?.CodigoUp,
                        mProducto.Descripcion,
                        mProducto.FechaLimiteDisponibilidad,
                        mProducto.Imagen,
@@ -145,7 +145,7 @@ class ProductosRepository : IProductos.Repository {
                        if (response != null && response.code() == 201) {
                            val value = response.body()
                            if(value?.Id_Remote!!>0){
-                               mProducto.Id_Remote = value?.Id_Remote!!
+                               mProducto.Id_Remote = value.Id_Remote!!
                                val last_producto = getLastProducto()
                                if (last_producto == null) {
                                    mProducto.ProductoId = 1
@@ -216,7 +216,7 @@ class ProductosRepository : IProductos.Repository {
                 val postProducto = PostProducto(mProducto.Id_Remote,
                         mProducto.CalidadId,
                         1,
-                        mProducto.CodigoUp,
+                        mProducto?.CodigoUp,
                         mProducto.Descripcion,
                         mProducto.FechaLimiteDisponibilidad,
                         mProducto.Imagen,
@@ -228,14 +228,15 @@ class ProductosRepository : IProductos.Repository {
                         mProducto.Nombre,
                         mProducto.Unidad_Medida_Id,
                         mProducto.PrecioUnidadMedida,
-                        mProducto?.userId
+                        mProducto.userId
                 )
 
                 val call = apiService?.updateProducto(postProducto, mProducto.Id_Remote!!)
                 call?.enqueue(object : Callback<Producto> {
                     override fun onResponse(call: Call<Producto>?, response: Response<Producto>?) {
                         if (response != null && response.code() == 200) {
-
+                            mProducto.Estado_Sincronizacion=true
+                            mProducto.Estado_SincronizacionUpdate=true
                             mProducto.update()
                             postEventOk(ProductosEvent.SAVE_EVENT, getProductos(cultivo_id), null)
                         } else {
@@ -249,14 +250,14 @@ class ProductosRepository : IProductos.Repository {
             }
             //TODO con  conexion a internet, pero no se ha sincronizado,actualizacion local
             else {
-                mProducto?.Estado_SincronizacionUpdate = false
+                mProducto.Estado_SincronizacionUpdate = false
                 mProducto.update()
                 postEventOk(ProductosEvent.SAVE_EVENT, getProductos(cultivo_id), null)
             }
         }
         //TODO sin conexion a internet, actualizacion local
         else{
-            mProducto?.Estado_SincronizacionUpdate = false
+            mProducto.Estado_SincronizacionUpdate = false
             mProducto.update()
             postEventOk(ProductosEvent.SAVE_EVENT, getProductos(cultivo_id), null)
         }

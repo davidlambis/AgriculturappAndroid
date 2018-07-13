@@ -58,7 +58,7 @@ class InsumosRepository : InterfaceInsumos.Repository {
         */
 
 
-        var trtamientosList= SQLite.select().from(Tratamiento::class.java).where(Tratamiento_Table.EnfermedadesId.eq(tipoEnfermedadId)).queryList()
+        val trtamientosList= SQLite.select().from(Tratamiento::class.java).where(Tratamiento_Table.EnfermedadesId.eq(tipoEnfermedadId)).queryList()
 
         postEventOk(InsumosEvent.READ_EVENT, trtamientosList, null)
     }

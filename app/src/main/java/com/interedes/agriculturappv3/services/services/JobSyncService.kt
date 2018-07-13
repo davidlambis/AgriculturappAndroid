@@ -14,12 +14,11 @@ import android.app.NotificationChannel
 import android.os.Build
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.api.ApiInterface
 import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.jobs.DataSyncJob
 import com.interedes.agriculturappv3.services.resources.Status_Sync_Data_Resources
-import com.interedes.agriculturappv3.services.services.Events.EventsService
+import com.interedes.agriculturappv3.services.services.events.EventsService
 import com.interedes.agriculturappv3.services.services.request.RequestPostDataSync
 import org.greenrobot.eventbus.Subscribe
 

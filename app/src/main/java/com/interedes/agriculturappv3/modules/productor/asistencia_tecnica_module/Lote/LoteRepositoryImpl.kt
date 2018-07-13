@@ -51,7 +51,7 @@ class LoteRepositoryImpl : MainViewLote.Repository {
 
 
     override fun verificateAreaLoteBiggerUp(unidad_productiva_id:Long?,area:Double):Boolean {
-        var response: Boolean
+        val response: Boolean
         val up_area = SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.Unidad_Productiva_Id.eq(unidad_productiva_id)).querySingle()?.Area
         val total_areas = area_lotes(area, unidad_productiva_id)
         if (total_areas!! > up_area!!) {
@@ -77,11 +77,11 @@ class LoteRepositoryImpl : MainViewLote.Repository {
 
                 val postLote = PostLote(0,
                         areaBig,
-                        mLote.Codigo,
+                        mLote?.Codigo,
                         mLote.Nombre,
                         mLote.Descripcion,
                         mLote.Localizacion,
-                        mLote.Localizacion_Poligono,
+                        mLote?.Localizacion_Poligono,
                         mLote.Unidad_Medida_Id,
                         unidad_productiva.Id_Remote)
 
@@ -197,11 +197,11 @@ class LoteRepositoryImpl : MainViewLote.Repository {
             if (mLote.EstadoSincronizacion == true) {
                 val postLote = PostLote(mLote.Id_Remote,
                         areaBig,
-                        mLote.Codigo,
+                        mLote?.Codigo,
                         mLote.Nombre,
                         mLote.Descripcion,
                         mLote.Localizacion,
-                        mLote.Localizacion_Poligono,
+                        mLote?.Localizacion_Poligono,
                         mLote.Unidad_Medida_Id,
                         unidad_productiva?.Id_Remote)
 
@@ -210,6 +210,7 @@ class LoteRepositoryImpl : MainViewLote.Repository {
                 call?.enqueue(object : Callback<Lote> {
                     override fun onResponse(call: Call<Lote>?, response: Response<Lote>?) {
                         if (response != null && response.code() == 200) {
+                            mLote.EstadoSincronizacion = true
                             mLote.Estado_SincronizacionUpdate = true
                             mLote.update()
                             postEventOk(RequestEventLote.UPDATE_EVENT, getLotes(unidad_productiva_id), mLote)
@@ -235,7 +236,7 @@ class LoteRepositoryImpl : MainViewLote.Repository {
         //TODO sin conexion a internet, actualizacion local
         else{
             mLote.Estado_SincronizacionUpdate = false
-            mLote?.update()
+            mLote.update()
             postEventOk(RequestEventLote.UPDATE_EVENT, getLotes(unidad_productiva_id), mLote)
         }
     }
@@ -278,7 +279,7 @@ class LoteRepositoryImpl : MainViewLote.Repository {
 
 
     fun deleteLote(lote: Lote) {
-        var cultivos = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(lote.LoteId)).queryList()
+        val cultivos = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(lote.LoteId)).queryList()
         for (cultivo in cultivos) {
 
             SQLite.delete<Produccion>(Produccion::class.java)
@@ -291,7 +292,7 @@ class LoteRepositoryImpl : MainViewLote.Repository {
                     .async()
                     .execute()
 
-            var listTransacciones = SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Cultivo_Id.eq(cultivo?.CultivoId)).queryList()
+            val listTransacciones = SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Cultivo_Id.eq(cultivo?.CultivoId)).queryList()
             for (transaccion in listTransacciones) {
                 SQLite.delete<Tercero>(Tercero::class.java)
                         .where(Tercero_Table.TerceroId.eq(transaccion.TerceroId))
@@ -300,9 +301,9 @@ class LoteRepositoryImpl : MainViewLote.Repository {
                 transaccion.delete()
             }
 
-            var listProductos = SQLite.select().from(Producto::class.java).where(Producto_Table.cultivoId.eq(cultivo?.CultivoId)).queryList()
+            val listProductos = SQLite.select().from(Producto::class.java).where(Producto_Table.cultivoId.eq(cultivo?.CultivoId)).queryList()
             for (producto in listProductos) {
-                var listDetalleOferta = SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.ProductoId.eq(producto?.ProductoId)).queryList()
+                val listDetalleOferta = SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.ProductoId.eq(producto?.ProductoId)).queryList()
                 for (detalleoferta in listDetalleOferta) {
 
                     SQLite.delete<Oferta>(Oferta::class.java)
@@ -325,7 +326,7 @@ class LoteRepositoryImpl : MainViewLote.Repository {
     //region Events
 
     private fun postEventOk(type: Int, lotes: List<Lote>?, lote: Lote?) {
-        var loteListMitable = lotes as MutableList<Object>
+        val loteListMitable = lotes as MutableList<Object>
         var LoteMutable: Object? = null
         if (lote != null) {
             LoteMutable = lote as Object
@@ -338,12 +339,12 @@ class LoteRepositoryImpl : MainViewLote.Repository {
     }
 
     private fun postEventListUp(type: Int, listUnidadProductiva: List<Unidad_Productiva>?, messageError: String?) {
-        var upMutable = listUnidadProductiva as MutableList<Object>
+        val upMutable = listUnidadProductiva as MutableList<Object>
         postEvent(type, upMutable, null, messageError)
     }
 
     private fun postEventListUnidadMedida(type: Int, listUnidadMedida: List<Unidad_Medida>?, messageError: String?) {
-        var upMutable = listUnidadMedida as MutableList<Object>
+        val upMutable = listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable, null, messageError)
     }
 

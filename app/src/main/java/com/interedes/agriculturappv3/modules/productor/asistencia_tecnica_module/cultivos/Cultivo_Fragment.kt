@@ -349,7 +349,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             cultivo?.Nombre_Detalle_Tipo_Producto = viewDialog?.spinnerDetalleTipoProducto?.text?.toString()
             cultivo?.Id_Tipo_Producto = tipoProductoGlobal?.Id
             cultivo?.siembraTotal=viewDialog?.edtSiembraTotal?.text?.toString()?.toLongOrNull()
-            presenter?.updateCultivo(cultivo!!, cultivo?.LoteId)
+            presenter?.updateCultivo(cultivo!!, cultivo.LoteId)
         }
     }
 
@@ -387,7 +387,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
 
 
     override fun setResults(cultivos: Int) {
-        var results = String.format(getString(R.string.results_global_search),
+        val results = String.format(getString(R.string.results_global_search),
                 cultivos);
         txtResults.setText(results);
     }
@@ -407,10 +407,10 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     }
 
     override fun verificateConnection(): AlertDialog? {
-        var builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.verificate_conexion));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
         })
         builder.setIcon(R.drawable.ic_lote);
@@ -435,10 +435,10 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     }
 
     override fun messageErrorDialog(msg: String?): AlertDialog? {
-        var builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(msg);
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
         })
         builder.setIcon(R.drawable.ic_admiracion);
@@ -647,7 +647,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
         if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadMedidaCosecha!!.setAdapter(null)
-            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listUnidadMedida);
+            val uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listUnidadMedida);
             viewDialog?.spinnerUnidadMedidaCosecha!!.setAdapter(uMedidaArrayAdapter);
             viewDialog?.spinnerUnidadMedidaCosecha!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadMedidaGlobal = listUnidadMedida!![position]
@@ -660,7 +660,7 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
     override fun onEventBroadcastReceiver(extras: Bundle, intent: Intent) {
         if (extras != null) {
             if (extras.containsKey("state_conectivity")) {
-                var state_conectivity = intent.extras!!.getBoolean("state_conectivity")
+                val state_conectivity = intent.extras!!.getBoolean("state_conectivity")
                 if (state_conectivity == true) {
 
                 }

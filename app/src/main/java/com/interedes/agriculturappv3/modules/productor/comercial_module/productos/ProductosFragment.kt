@@ -413,7 +413,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
 
-                var precioVenta=  viewDialog?.txtPrecioProducto?.text.toString()?.toDoubleOrNull()
+                val precioVenta=  viewDialog?.txtPrecioProducto?.text.toString().toDoubleOrNull()
 
                 if(!viewDialog?.txtPrecioProducto?.text.toString().isEmpty()){
 
@@ -552,7 +552,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
     override fun validarCampos(): Boolean {
 
-        var dateNow=Calendar.getInstance().time
+        val dateNow=Calendar.getInstance().time
 
 
         var cancel = false

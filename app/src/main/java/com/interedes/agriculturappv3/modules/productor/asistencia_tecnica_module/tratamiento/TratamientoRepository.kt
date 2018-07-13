@@ -78,7 +78,7 @@ class TratamientoRepository : ITratamiento.Repository {
                     override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
                         if (response != null && response.code() == 201 || response?.code() == 200) {
                             if( controlPlaga.Id_Remote!!>0){
-                                var controlPlagaResponse= response.body()
+                                val controlPlagaResponse= response.body()
                                 controlPlaga.Id_Remote = controlPlagaResponse?.Id!!
                                 val lastControl = getLastControlPlaga()
                                 if (lastControl == null) {
@@ -87,7 +87,7 @@ class TratamientoRepository : ITratamiento.Repository {
                                     controlPlaga.ControlPlagaId = lastControl.ControlPlagaId!! + 1
                                 }
                                 controlPlaga.Estado_Sincronizacion = true
-                                controlPlaga?.Estado_SincronizacionUpdate = true
+                                controlPlaga.Estado_SincronizacionUpdate = true
                                 controlPlaga.save()
                                 postEventControlPlaga(TratamientoEvent.SAVE_CONTROL_PLAGA_EVENT, getControlPlagasByCultivo(cultivo_id))
 
@@ -136,9 +136,9 @@ class TratamientoRepository : ITratamiento.Repository {
 
     override fun getTratamiento(tratamientoId: Long?) {
         val firstTratamientoInsumo = SQLite.select().from(Tratamiento::class.java).where(Tratamiento_Table.Id.eq(tratamientoId)).querySingle()
-        var firtsInsumo= SQLite.select().from(Insumo::class.java).where(Insumo_Table.Id.eq(firstTratamientoInsumo?.InsumoId)).querySingle()
+        val firtsInsumo= SQLite.select().from(Insumo::class.java).where(Insumo_Table.Id.eq(firstTratamientoInsumo?.InsumoId)).querySingle()
 
-        var calificaciones= SQLite.select()
+        val calificaciones= SQLite.select()
                 .from(Calificacion_Tratamiento::class.java)
                 .where(Calificacion_Tratamiento_Table.TratamientoId.eq(tratamientoId)).queryList()
 
@@ -146,7 +146,7 @@ class TratamientoRepository : ITratamiento.Repository {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered?.eq(true)).querySingle()
 
 
-        var calificacionByUser= SQLite.select()
+        val calificacionByUser= SQLite.select()
                 .from(Calificacion_Tratamiento::class.java)
                 .where(Calificacion_Tratamiento_Table.TratamientoId.eq(tratamientoId)
                         .and(Calificacion_Tratamiento_Table.User_Id.eq(usuarioLogued?.Id.toString())))
@@ -158,10 +158,10 @@ class TratamientoRepository : ITratamiento.Repository {
             for (item in calificaciones){
                 sumacalificacion=sumacalificacion!!+ item.Valor!!
             }
-            var promedio= sumacalificacion!! /calificaciones.size
+            val promedio= sumacalificacion!! /calificaciones.size
 
             if(calificacionByUser!=null){
-                calificacion=Calificacion_Tratamiento(User_Id = calificacionByUser.User_Id,Valor = calificacionByUser?.Valor,Valor_Promedio = promedio)
+                calificacion=Calificacion_Tratamiento(User_Id = calificacionByUser.User_Id,Valor = calificacionByUser.Valor,Valor_Promedio = promedio)
             }else{
                 calificacion=Calificacion_Tratamiento(User_Id =null,Valor = null,Valor_Promedio = promedio)
             }
@@ -172,7 +172,7 @@ class TratamientoRepository : ITratamiento.Repository {
 
 
         if(firstTratamientoInsumo!=null){
-            firstTratamientoInsumo?.CalificacionPromedio=calificacion.Valor_Promedio
+            firstTratamientoInsumo.CalificacionPromedio=calificacion.Valor_Promedio
             firstTratamientoInsumo.update()
         }
 
@@ -217,8 +217,8 @@ class TratamientoRepository : ITratamiento.Repository {
                                 Valor = calificacion,
                                 userId =  usuarioLogued?.Id.toString()
                         )
-                        val call = apiService?.postCalificacionTratamiento(postCalificacion)
-                        call?.enqueue(object : Callback<Calificacion_Tratamiento> {
+                        val callCalificacion = apiService?.postCalificacionTratamiento(postCalificacion)
+                        callCalificacion?.enqueue(object : Callback<Calificacion_Tratamiento> {
                             override fun onResponse(call: Call<Calificacion_Tratamiento>?, response: Response<Calificacion_Tratamiento>?) {
                                 if (response != null && response.code() == 201 || response?.code() == 200) {
                                     val calificacion: Calificacion_Tratamiento? = response.body()
@@ -251,7 +251,7 @@ class TratamientoRepository : ITratamiento.Repository {
     }
 
     override fun getListas() {
-        var usuario= getLastUserLogued()
+        val usuario= getLastUserLogued()
 
         val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
@@ -262,7 +262,7 @@ class TratamientoRepository : ITratamiento.Repository {
                 .queryList()
 
 
-        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+        val listCultivos = SQLite.select().from(Cultivo::class.java)
                 .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
                 .queryList()
 

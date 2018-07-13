@@ -65,12 +65,12 @@ class UpRepository() : IUnidadProductiva.Repo {
             //TODO Ciudad Id de la tabla del backend
             val postUnidadProductiva = PostUnidadProductiva(0,
                     cantidadBig,
-                    mUnidadProductiva?.CiudadId,
+                    mUnidadProductiva.CiudadId,
                     mUnidadProductiva?.Codigo,
-                    mUnidadProductiva?.UnidadMedidaId,
-                    mUnidadProductiva?.UsuarioId,
-                    mUnidadProductiva?.descripcion,
-                    mUnidadProductiva?.nombre)
+                    mUnidadProductiva.UnidadMedidaId,
+                    mUnidadProductiva.UsuarioId,
+                    mUnidadProductiva.descripcion,
+                    mUnidadProductiva.nombre)
 
             // mUnidadProductiva?.CiudadId = 1
             val call = apiService?.postUnidadProductiva(postUnidadProductiva)
@@ -80,7 +80,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                     if (response != null && response.code() == 201) {
                         val idUP = response.body()?.Id_Remote
                         if(idUP!!>0){
-                            mUnidadProductiva?.Id_Remote = idUP
+                            mUnidadProductiva.Id_Remote = idUP
 
                             //Se crea valor primario en SQlite
                             val last_up = getLastUp()
@@ -103,26 +103,25 @@ class UpRepository() : IUnidadProductiva.Repo {
                                     "",
                                     "",
                                     "",
-                                    mUnidadProductiva?.Id_Remote,
+                                    mUnidadProductiva.Id_Remote,
                                     "")
 
-                            val call = apiService?.postLocalizacionUnidadProductiva(postLocalizacionUnidadProductiva)
-                            call?.enqueue(object : Callback<LocalizacionUp> {
+                            val callLocalizacion = apiService?.postLocalizacionUnidadProductiva(postLocalizacionUnidadProductiva)
+                            callLocalizacion?.enqueue(object : Callback<LocalizacionUp> {
 
                                 override fun onResponse(call: Call<LocalizacionUp>?, response: Response<LocalizacionUp>?) {
                                     if (response != null && response.code() == 201) {
                                         val idLocalizacion = response.body()?.Id
-                                        mUnidadProductiva?.LocalizacionUpId=idLocalizacion
-                                        mUnidadProductiva?.Estado_Sincronizacion = true
-                                        mUnidadProductiva?.Estado_SincronizacionUpdate=true
-                                        mUnidadProductiva?.save()
+                                        mUnidadProductiva.LocalizacionUpId=idLocalizacion
+                                        mUnidadProductiva.Estado_Sincronizacion = true
+                                        mUnidadProductiva.Estado_SincronizacionUpdate=true
+                                        mUnidadProductiva.save()
                                         //postLocalizacionUnidadProductiva
                                         postEventOk(RequestEventUP.SAVE_EVENT, getUPs(), mUnidadProductiva)
                                     } else {
                                         postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
                                     }
                                 }
-
                                 override fun onFailure(call: Call<LocalizacionUp>?, t: Throwable?) {
                                     postEventError(RequestEventUP.ERROR_EVENT, "Comprueba tu conexión")
                                 }
@@ -172,7 +171,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                 val updateUnidadProductiva = PostUnidadProductiva(mUnidadProductiva.Id_Remote,
                         areaBig,
                         mUnidadProductiva.CiudadId,
-                        mUnidadProductiva.Codigo,
+                        mUnidadProductiva?.Codigo,
                         mUnidadProductiva.UnidadMedidaId,
                         mUnidadProductiva.UsuarioId,
                         mUnidadProductiva.descripcion,
@@ -188,7 +187,7 @@ class UpRepository() : IUnidadProductiva.Repo {
 
                             val postLocalizacionUnidadProductiva = LocalizacionUp(mUnidadProductiva.LocalizacionUpId,
                                     "",
-                                    mUnidadProductiva?.Coordenadas,
+                                    mUnidadProductiva.Coordenadas,
                                     if (mUnidadProductiva?.Direccion!=null) mUnidadProductiva.Direccion else "",
                                     mUnidadProductiva?.DireccionAproximadaGps,
                                     latitudBig,
@@ -196,13 +195,14 @@ class UpRepository() : IUnidadProductiva.Repo {
                                     "",
                                     "",
                                     "",
-                                    mUnidadProductiva?.Id_Remote,
+                                    mUnidadProductiva.Id_Remote,
                                     "")
 
                             val call = apiService?.updateLocalizacionUnidadProductiva(postLocalizacionUnidadProductiva, mUnidadProductiva.LocalizacionUpId!!)
                             call?.enqueue(object : Callback<LocalizacionUp> {
                                 override fun onResponse(call: Call<LocalizacionUp>?, response: Response<LocalizacionUp>?) {
                                     if (response != null && response.code() == 200) {
+                                        mUnidadProductiva.Estado_Sincronizacion=true
                                         mUnidadProductiva.Estado_SincronizacionUpdate=true
                                         mUnidadProductiva.update()
                                         postEventOk(RequestEventUP.UPDATE_EVENT, getUPs(), mUnidadProductiva)
@@ -280,9 +280,9 @@ class UpRepository() : IUnidadProductiva.Repo {
 
     fun deleteUp(mUnidadProductiva: Unidad_Productiva){
 
-        var lotes= SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(mUnidadProductiva.Unidad_Productiva_Id)).queryList()
+        val lotes= SQLite.select().from(Lote::class.java).where(Lote_Table.Unidad_Productiva_Id.eq(mUnidadProductiva.Unidad_Productiva_Id)).queryList()
         for (lote in lotes){
-            var cultivos= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(lote.LoteId)).queryList()
+            val cultivos= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(lote.LoteId)).queryList()
             for (cultivo in cultivos){
 
                 SQLite.delete<Produccion>(Produccion::class.java)
@@ -295,7 +295,7 @@ class UpRepository() : IUnidadProductiva.Repo {
                         .async()
                         .execute()
 
-                var listTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Cultivo_Id.eq(cultivo?.CultivoId)).queryList()
+                val listTransacciones=SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Cultivo_Id.eq(cultivo?.CultivoId)).queryList()
                 for (transaccion in listTransacciones){
                     SQLite.delete<Tercero>(Tercero::class.java)
                             .where(Tercero_Table.TerceroId.eq(transaccion.TerceroId))
@@ -304,9 +304,9 @@ class UpRepository() : IUnidadProductiva.Repo {
                     transaccion.delete()
                 }
 
-                var listProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.cultivoId.eq(cultivo?.CultivoId)).queryList()
+                val listProductos=SQLite.select().from(Producto::class.java).where(Producto_Table.cultivoId.eq(cultivo?.CultivoId)).queryList()
                 for (producto in listProductos){
-                    var listDetalleOferta=SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.ProductoId.eq(producto?.ProductoId)).queryList()
+                    val listDetalleOferta=SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.ProductoId.eq(producto?.ProductoId)).queryList()
                     for(detalleoferta in listDetalleOferta){
 
                         SQLite.delete<Oferta>(Oferta::class.java)
@@ -357,22 +357,22 @@ class UpRepository() : IUnidadProductiva.Repo {
 
     //region EVENTS
     private fun postEventListUnidadMedida(type: Int, listUnidadMedida: List<Unidad_Medida>?, messageError: String?) {
-        var upMutable = listUnidadMedida as MutableList<Object>
+        val upMutable = listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable, null, messageError)
     }
 
     private fun postEventListDepartamentos(type: Int, listDepartamentos: List<Departamento>?, messageError: String?) {
-        var departamentoMutable = listDepartamentos as MutableList<Object>
+        val departamentoMutable = listDepartamentos as MutableList<Object>
         postEvent(type, departamentoMutable, null, messageError)
     }
 
     private fun postEventListCiudades(type: Int, listCiudades: List<Ciudad>?, messageError: String?) {
-        var ciudadMutable = listCiudades as MutableList<Object>
+        val ciudadMutable = listCiudades as MutableList<Object>
         postEvent(type, ciudadMutable, null, messageError)
     }
 
     private fun postEventOk(type: Int, listUnidadProductivas: List<Unidad_Productiva>?, unidadProductiva: Unidad_Productiva?) {
-        var UpListMutable = listUnidadProductivas as MutableList<Object>
+        val UpListMutable = listUnidadProductivas as MutableList<Object>
         var UpMutable: Object? = null
         if (unidadProductiva != null) {
             UpMutable = unidadProductiva as Object

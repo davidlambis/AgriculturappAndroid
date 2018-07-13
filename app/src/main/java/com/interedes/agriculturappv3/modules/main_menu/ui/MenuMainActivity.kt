@@ -283,8 +283,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
     fun  checkPlayServices():Boolean {
-        var apiAvailability = GoogleApiAvailability.getInstance();
-        var resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        val apiAvailability = GoogleApiAvailability.getInstance();
+        val resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (apiAvailability.isUserResolvableError(resultCode)) {
                 apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)

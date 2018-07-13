@@ -438,9 +438,9 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     }
 
     override fun showProgressHudCoords(){
-        var imageView = ImageView(activity);
+        val imageView = ImageView(activity);
         imageView.setBackgroundResource(R.drawable.spin_animation);
-        var drawable = imageView.getBackground() as AnimationDrawable;
+        val drawable = imageView.getBackground() as AnimationDrawable;
         drawable.start();
         hudCoords = KProgressHUD.create(activity)
                 .setCustomView(imageView)
@@ -540,7 +540,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
 
                 if(!viewDialog?.edtLatitud?.text.toString().isEmpty()){
                     if(isParceableDouble(viewDialog?.edtLatitud?.text.toString())){
-                        latitud=  viewDialog?.edtLatitud?.text.toString()?.toDoubleOrNull()
+                        latitud=  viewDialog?.edtLatitud?.text.toString().toDoubleOrNull()
                         viewDialog?.edtLocalizacionUnidadProductiva?.setText(String.format(getString(R.string.coords), latitud, longitud))
 
                     }else{
@@ -569,7 +569,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
                 if(!viewDialog?.edtLongitud?.text.toString().isEmpty()){
 
                     if(isParceableDouble(viewDialog?.edtLongitud?.text.toString())){
-                        longitud=  viewDialog?.edtLongitud?.text.toString()?.toDoubleOrNull()
+                        longitud=  viewDialog?.edtLongitud?.text.toString().toDoubleOrNull()
                         viewDialog?.edtLocalizacionUnidadProductiva?.setText(String.format(getString(R.string.coords), latitud, longitud))
 
                     }else{
@@ -650,10 +650,10 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     }
 
     override fun verificateConnection(): AlertDialog? {
-        var builder = AlertDialog.Builder(context!!)
+        val builder = AlertDialog.Builder(context!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.verificate_conexion));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
         })
         builder.setIcon(R.drawable.ic_lote);
@@ -676,10 +676,10 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     }
 
     fun alertDialogInitServiceCoords(): AlertDialog? {
-        var builder = AlertDialog.Builder(context!!)
+        val builder = AlertDialog.Builder(context!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.init_service_coords));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             presenter?.startGps(activity!!)
          //   var intent =  Intent((activity as MenuMainActivity).baseContext, HelloSeervice::class.java);
          //   (activity as MenuMainActivity).startService(intent)
@@ -690,13 +690,13 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
     }
 
     override fun confirmDelete(unidadProductiva: Unidad_Productiva): AlertDialog? {
-        var builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.confirmation));
         builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
 
         })
         builder.setMessage(getString(R.string.alert_delete_up));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             presenter?.deleteUP(unidadProductiva)
         })
         builder.setIcon(R.drawable.ic_lote);
@@ -771,7 +771,7 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             }
 
             if (extras.containsKey("is_enabled_gps")) {
-                var state_gps = intent.extras!!.getBoolean("is_enabled_gps")
+                val state_gps = intent.extras!!.getBoolean("is_enabled_gps")
                 if(!state_gps){
                     if (viewDialog?.imageViewStopLocalizarUnidadProductiva?.getVisibility() == View.VISIBLE) {
                         // Its visible

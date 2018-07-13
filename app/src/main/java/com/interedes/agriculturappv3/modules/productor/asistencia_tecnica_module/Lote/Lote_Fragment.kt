@@ -794,7 +794,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(null);
-            var upArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_list_item_activated_1, listUnidadProductivaGlobal);
+            val upArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_list_item_activated_1, listUnidadProductivaGlobal);
             viewDialog?.spinnerUnidadProductiva!!.setAdapter(upArrayAdapter);
             viewDialog?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadProductivaGlobalSppiner = listUnidadProductivaGlobal!![position] as Unidad_Productiva
@@ -810,7 +810,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
         if (viewDialog != null) {
             ///Adapaters
             viewDialog?.spinnerUnidadMedidaLote!!.setAdapter(null)
-            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listUnidadMedidaGlobal);
+            val uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listUnidadMedidaGlobal);
             viewDialog?.spinnerUnidadMedidaLote!!.setAdapter(uMedidaArrayAdapter);
             viewDialog?.spinnerUnidadMedidaLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadMedidaGlobal = listUnidadMedidaGlobal!![position] as Unidad_Medida
@@ -832,7 +832,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     }
 
     override fun setResults(lotes: Int) {
-        var results = String.format(getString(R.string.results_global_search),
+        val results = String.format(getString(R.string.results_global_search),
                 lotes);
         txtResults.setText(results);
     }
@@ -954,8 +954,8 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 val separated = coordenadas?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
                 if(isParceableDouble( separated!![0].toString())==true && isParceableDouble( separated!![1].toString())==true){
 
-                    var latitudL= separated!![0].toDoubleOrNull() // this will contain "Fruit"
-                    var longitudL=separated!![1].toDoubleOrNull() // this will contain " they taste good"
+                    val latitudL= separated!![0].toDoubleOrNull() // this will contain "Fruit"
+                    val longitudL=separated!![1].toDoubleOrNull() // this will contain " they taste good"
                     lote.Latitud=latitudL
                     lote.Longitud=longitudL
                     lote.Coordenadas=coordenadas
@@ -1016,7 +1016,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
                 if(!viewDialog?.edtLatitud?.text.toString().isEmpty()){
                     if(isParceableDouble(viewDialog?.edtLatitud?.text.toString())){
-                        latitud=  viewDialog?.edtLatitud?.text.toString()?.toDoubleOrNull()
+                        latitud=  viewDialog?.edtLatitud?.text.toString().toDoubleOrNull()
                         viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
                     }else{
                         var focusView:View? =null
@@ -1046,7 +1046,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
                 if(!viewDialog?.edtLongitud?.text.toString().isEmpty()){
                     if(isParceableDouble(viewDialog?.edtLongitud?.text.toString())){
-                        longitud=  viewDialog?.edtLongitud?.text.toString()?.toDoubleOrNull()
+                        longitud=  viewDialog?.edtLongitud?.text.toString().toDoubleOrNull()
                         viewDialog?.coordenadas_lote?.setText(String.format(getString(R.string.coords), latitud, longitud))
 
                     }else{
@@ -1084,7 +1084,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 }else{
                     if(!viewDialog?.area_lote?.text.toString().isEmpty()){
 
-                        var areaLote=  viewDialog?.area_lote?.text.toString()?.toDouble()
+                        val areaLote=  viewDialog?.area_lote?.text.toString().toDouble()
                         if(presenter?.verificateAreaLoteBiggerUp(unidadProductivaGlobalSppiner?.Unidad_Productiva_Id ,areaLote)==true){
                             var focusView:View? =null
                             viewDialog?.area_lote?.setError(getString(R.string.verifcate_area_lote))
@@ -1146,7 +1146,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     }
 
     override fun showAlertTypeLocationLote(): AlertDialog? {
-        var builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.location_lote_select_type))
         Toast.makeText(activity, getString(R.string.message_location_lote), Toast.LENGTH_SHORT).show()
         //var options=arrayOf(getString(R.string.location_type_gps), getString(R.string.location_type_manual))
@@ -1227,9 +1227,9 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     }
 
     override fun showProgressHudCoords(){
-        var imageView = ImageView(activity);
+        val imageView = ImageView(activity);
         imageView.setBackgroundResource(R.drawable.spin_animation);
-        var drawable = imageView.getBackground() as AnimationDrawable;
+        val drawable = imageView.getBackground() as AnimationDrawable;
         drawable.start();
         hudCoords = KProgressHUD.create(activity)
                 .setCustomView(imageView)
@@ -1248,13 +1248,13 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     }
 
     override fun confirmDelete(lote: Lote): AlertDialog? {
-        var builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.confirmation));
         builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
 
         })
         builder.setMessage(getString(R.string.alert_delete_lote));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             presenter?.deleteLote(lote, Unidad_Productiva_Id_Selected)
         })
         builder.setIcon(R.drawable.ic_lote);
@@ -1262,10 +1262,10 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
     }
 
     override fun verificateConnection(): AlertDialog? {
-        var builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.verificate_conexion));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
         })
         builder.setIcon(R.drawable.ic_lote);
@@ -1274,9 +1274,9 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
 
     override fun showAlertDialogSelectUp(): AlertDialog? {
-        var dialog = AlertDialog.Builder(activity!!)
+        val dialog = AlertDialog.Builder(activity!!)
         var upArraString = arrayOf<String>("Todos")
-        for (up in this!!.listUnidadProductivaGlobal!!) {
+        for (up in this.listUnidadProductivaGlobal!!) {
             upArraString += up.nombre.toString()
         }
         //REGISTER
@@ -1289,7 +1289,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 dialog.dismiss()
             } else {
                 DIALOG_SELECT_ALL_UP = false
-                var position = which - 1
+                val position = which - 1
                 Unidad_Productiva_Id_Selected = listUnidadProductivaGlobal!![position].Unidad_Productiva_Id
                 unidadProductivaGlobalDialog = listUnidadProductivaGlobal!![position]
                 DIALOG_SELECTT_POSITION_UP = which
@@ -1298,13 +1298,13 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
                 dialog.dismiss()
             }
         })
-        dialog?.setTitle(getString(R.string.title_filter_unidad_productiva))
-        dialog?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        dialog.setTitle(getString(R.string.title_filter_unidad_productiva))
+        dialog.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             presenter?.getLotes(Unidad_Productiva_Id_Selected)
         })
         // dialog?.setMessage(getString(R.string.message_add_lote))
-        dialog?.setIcon(R.drawable.ic_lote)
-        return dialog?.show()
+        dialog.setIcon(R.drawable.ic_lote)
+        return dialog.show()
     }
     //endregion
 
@@ -1390,7 +1390,7 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
             }
 
             if (extras.containsKey("is_enabled_gps")) {
-                var state_gps = intent.extras!!.getBoolean("is_enabled_gps")
+                val state_gps = intent.extras!!.getBoolean("is_enabled_gps")
                 if(!state_gps){
                     setPropertiesDisabledGps()
                 }

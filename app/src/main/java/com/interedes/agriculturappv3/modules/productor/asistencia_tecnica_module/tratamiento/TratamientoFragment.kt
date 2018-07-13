@@ -275,10 +275,10 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
     }
 
     override fun verificateConnection(): AlertDialog? {
-        var builder = AlertDialog.Builder(context!!)
+        val builder = AlertDialog.Builder(context!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.verificate_conexion));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
             if (_dialogSendCalificacion != null) {
                 _dialogSendCalificacion?.dismiss()

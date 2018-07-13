@@ -81,7 +81,7 @@ class ProduccionRepository :IMainProduccion.Repository {
                                     produccion.ProduccionId = las_prduccion.ProduccionId!! + 1
                                 }
                                 produccion.Estado_Sincronizacion = true
-                                produccion?.Estado_SincronizacionUpdate = true
+                                produccion.Estado_SincronizacionUpdate = true
                                 produccion.save()
                                 postEventOk(RequestEventProduccion.SAVE_EVENT, getProductions(cultivo_id), produccion)
                             }else{
@@ -116,7 +116,7 @@ class ProduccionRepository :IMainProduccion.Repository {
             produccion.ProduccionId = las_prduccion.ProduccionId!! + 1
         }
         produccion.save()
-        var listProduccion = getProductions(cultivo_id)
+        val listProduccion = getProductions(cultivo_id)
         postEventOk(RequestEventProduccion.SAVE_EVENT,listProduccion,null);
     }
 
@@ -143,8 +143,8 @@ class ProduccionRepository :IMainProduccion.Repository {
                     override fun onResponse(call: Call<PostProduccion>?, response: Response<PostProduccion>?) {
                         if (response != null && response.code() == 200) {
 
-
-                            produccion?.Estado_SincronizacionUpdate = true
+                            produccion.Estado_Sincronizacion = true
+                            produccion.Estado_SincronizacionUpdate = true
                             produccion.update()
                             postEventOk(RequestEventProduccion.UPDATE_EVENT, getProductions(cultivo_id), produccion)
                         } else {
@@ -159,14 +159,14 @@ class ProduccionRepository :IMainProduccion.Repository {
             }
             //TODO con  conexion a internet, pero no se ha sincronizado, actualizacion local
             else {
-                produccion?.Estado_SincronizacionUpdate = false
+                produccion.Estado_SincronizacionUpdate = false
                 produccion.update()
                 postEventOk(RequestEventProduccion.UPDATE_EVENT, getProductions(cultivo_id), produccion)
             }
         }
         //TODO sin conexion a internet, actualizacion local
         else{
-            produccion?.Estado_SincronizacionUpdate = false
+            produccion.Estado_SincronizacionUpdate = false
             produccion.update()
             postEventOk(RequestEventProduccion.UPDATE_EVENT, getProductions(cultivo_id), produccion)
         }
@@ -200,17 +200,17 @@ class ProduccionRepository :IMainProduccion.Repository {
     }
 
     override fun getListProduccion(cultivo_id:Long?) {
-        var listaProduccion = getProductions(cultivo_id)
+        val listaProduccion = getProductions(cultivo_id)
         postEventOk(RequestEventProduccion.READ_EVENT,listaProduccion,null);
     }
 
     override fun getCultivo(cultivo_id:Long?) {
-        var cultivo = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
+        val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
         postEventOkCultivo(RequestEventProduccion.GET_EVENT_CULTIVO,cultivo)
     }
 
     override fun getListas() {
-        var usuario=getLastUserLogued()
+        val usuario=getLastUserLogued()
 
         val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
@@ -221,7 +221,7 @@ class ProduccionRepository :IMainProduccion.Repository {
                 .queryList()
 
 
-        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+        val listCultivos = SQLite.select().from(Cultivo::class.java)
                 .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
                 .queryList()
 
@@ -238,11 +238,11 @@ class ProduccionRepository :IMainProduccion.Repository {
     override fun getProductions(cultivo_id:Long?):List<Produccion> {
         var listResponse:List<Produccion>?=null
         if(cultivo_id==null){
-            listResponse = SQLite.select().from(Produccion::class.java!!)
+            listResponse = SQLite.select().from(Produccion::class.java)
                     .where(Produccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
                     .queryList()
         }else{
-            listResponse = SQLite.select().from(Produccion::class.java!!)
+            listResponse = SQLite.select().from(Produccion::class.java)
                     .where(Produccion_Table.CultivoId.eq(cultivo_id))
                     .and(Produccion_Table.UsuarioId.eq(getLastUserLogued()?.Id))
                     .queryList()
@@ -259,22 +259,22 @@ class ProduccionRepository :IMainProduccion.Repository {
     //region Events
 
     private fun postEventListUnidadMedida(type: Int, listUnidadMedida:List<Unidad_Medida>?, messageError:String?) {
-        var upMutable= listUnidadMedida as MutableList<Object>
+        val upMutable= listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }
 
     private fun postEventListUnidadProductiva(type: Int, listUnidadMedida:List<Unidad_Productiva>?, messageError:String?) {
-        var upMutable= listUnidadMedida as MutableList<Object>
+        val upMutable= listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }
 
     private fun postEventListLotes(type: Int, listUnidadMedida:List<Lote>?, messageError:String?) {
-        var upMutable= listUnidadMedida as MutableList<Object>
+        val upMutable= listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }
 
     private fun postEventListCultivos(type: Int, listUnidadMedida:List<Cultivo>?, messageError:String?) {
-        var upMutable= listUnidadMedida as MutableList<Object>
+        val upMutable= listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }
 
@@ -287,7 +287,7 @@ class ProduccionRepository :IMainProduccion.Repository {
     }
 
     private fun postEventOk(type: Int, producciones: List<Produccion>?, produccion:Produccion?) {
-        var produccionListMitable= producciones as MutableList<Object>
+        val produccionListMitable= producciones as MutableList<Object>
         var ProducciconMutable:Object?=null
         if(produccion!=null){
             ProducciconMutable = produccion as Object

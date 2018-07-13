@@ -295,7 +295,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     }
 
     override fun setResults(listProduccion: Int) {
-        var results = String.format(getString(R.string.results_global_search),
+        val results = String.format(getString(R.string.results_global_search),
                 listProduccion);
         txtResults.setText(results);
     }
@@ -517,13 +517,13 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
 
 
     override fun confirmDelete(produccion: Produccion): AlertDialog? {
-        var builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.confirmation));
         builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
 
         })
         builder.setMessage(getString(R.string.title_alert_delete_produccion));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             presenter?.deleteProduccion(produccion, Cultivo_Id)
         })
         builder.setIcon(R.drawable.ic_lote);
@@ -533,7 +533,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
     override fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?) {
         if(viewDialogFilter!=null){
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(null)
-            var unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_list_item_activated_1, listUnidadProductiva)
+            val unidadProductivaArrayAdapter = ArrayAdapter<Unidad_Productiva>(activity, android.R.layout.simple_list_item_activated_1, listUnidadProductiva)
             viewDialogFilter?.spinnerUnidadProductiva!!.setAdapter(unidadProductivaArrayAdapter)
             viewDialogFilter?.spinnerUnidadProductiva!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 viewDialogFilter?.spinnerLote?.setText("")
@@ -556,7 +556,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         viewDialogFilter?.spinnerLote!!.setAdapter(null)
         //viewDialogFilter?.spinnerLote?.setText("")
         //viewDialogFilter?.spinnerLote?.setHint(String.format(getString(R.string.spinner_lote)))
-        var loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_list_item_activated_1, listLotes)
+        val loteArrayAdapter = ArrayAdapter<Lote>(activity, android.R.layout.simple_list_item_activated_1, listLotes)
         viewDialogFilter?.spinnerLote!!.setAdapter(loteArrayAdapter)
         viewDialogFilter?.spinnerLote!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
            viewDialogFilter?.spinnerCultivo?.setText("")
@@ -582,7 +582,7 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         if(viewDialog!=null){
             ///Adapaters
             viewDialog?.spinnerUnidadMedidaProduccion!!.setAdapter(null)
-            var uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listUnidadMedida);
+            val uMedidaArrayAdapter = ArrayAdapter<Unidad_Medida>(activity, android.R.layout.simple_list_item_activated_1, listUnidadMedida);
             viewDialog?.spinnerUnidadMedidaProduccion!!.setAdapter(uMedidaArrayAdapter);
             viewDialog?.spinnerUnidadMedidaProduccion!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
                 unidadMedidaGlobal= listUnidadMedida!![position] as Unidad_Medida
@@ -600,21 +600,21 @@ class ProduccionFragment : Fragment(), View.OnClickListener , SwipeRefreshLayout
         txtNombreLote.setText(String.format(getString(R.string.cantidad_estimada)!!,cultivo?.EstimadoCosecha, cultivo?.Nombre_Unidad_Medida))
 
 
-        var fechaDateInicio= cultivo?.getFechaDate(cultivo.FechaIncio)
-        var fechaDateFin= cultivo?.getFechaDate(cultivo.FechaFin)
+        val fechaDateInicio= cultivo?.getFechaDate(cultivo.FechaIncio)
+        val fechaDateFin= cultivo?.getFechaDate(cultivo.FechaFin)
 
-        var fechaInicioFormat= cultivo?.getFechaFormat(fechaDateInicio)
-        var fechaFinFormat= cultivo?.getFechaFormat(fechaDateFin)
+        val fechaInicioFormat= cultivo?.getFechaFormat(fechaDateInicio)
+        val fechaFinFormat= cultivo?.getFechaFormat(fechaDateFin)
 
         txtPrecio.setText(fechaInicioFormat)
         txtArea.setText(fechaFinFormat)
     }
 
     override fun verificateConnection(): AlertDialog? {
-        var builder = AlertDialog.Builder(context!!)
+        val builder = AlertDialog.Builder(context!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.verificate_conexion));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
         })
         builder.setIcon(R.drawable.ic_lote);

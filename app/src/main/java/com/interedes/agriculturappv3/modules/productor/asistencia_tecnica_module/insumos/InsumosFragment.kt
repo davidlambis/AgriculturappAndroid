@@ -104,7 +104,7 @@ class InsumosFragment : Fragment(), InterfaceInsumos.View, SwipeRefreshLayout.On
     override fun verTratamiento(tratamiento: Tratamiento?) {
         val bundle = Bundle()
         bundle.putLong("insumoId", tratamiento?.InsumoId!!)
-        bundle.putLong("tratamientoId", tratamiento?.Id!!)
+        bundle.putLong("tratamientoId", tratamiento.Id!!)
         bundle.putLong("tipoProductoId", tipoProductoId!!)
         bundle.putString("nombreTipoEnfermedad", nombreTipoEnfermedad)
         bundle.putLong("enfermedadId", enfermedadId!!)

@@ -56,7 +56,7 @@ class CultivoRepository : ICultivo.Repository {
 
     //region Métodos Interfaz
     override fun getListas() {
-        var usuario= getLastUserLogued()
+        val usuario= getLastUserLogued()
 
 
         //get Unidades Productivas
@@ -146,15 +146,15 @@ class CultivoRepository : ICultivo.Repository {
             //val areaBig = BigDecimal(mCultivo!!, MathContext.DECIMAL64)
             if (lote?.EstadoSincronizacion == true) {
                 val postCultivo = PostCultivo(0,
-                        mCultivo?.Descripcion,
-                        mCultivo?.DetalleTipoProductoId,
+                        mCultivo.Descripcion,
+                        mCultivo.DetalleTipoProductoId,
                         mCultivo.Unidad_Medida_Id,
-                        mCultivo?.EstimadoCosecha,
-                        mCultivo?.stringFechaFin,
-                        mCultivo?.stringFechaInicio,
-                        lote?.Id_Remote,
-                        mCultivo?.Nombre,
-                        mCultivo?.siembraTotal)
+                        mCultivo.EstimadoCosecha,
+                        mCultivo.stringFechaFin,
+                        mCultivo.stringFechaInicio,
+                        lote.Id_Remote,
+                        mCultivo.Nombre,
+                        mCultivo.siembraTotal)
 
                 val call = apiService?.postCultivo(postCultivo)
                 call?.enqueue(object : Callback<Cultivo> {
@@ -162,11 +162,11 @@ class CultivoRepository : ICultivo.Repository {
                         if (response != null && response.code() == 201) {
                             val value = response.body()
                             if(value?.Id_Remote!!>0){
-                                mCultivo?.Id_Remote = value?.Id_Remote!!
-                                mCultivo?.FechaIncio = value.FechaIncio
-                                mCultivo?.FechaFin = value.FechaFin
-                                mCultivo?.EstadoSincronizacion = true
-                                mCultivo?.Estado_SincronizacionUpdate = true
+                                mCultivo.Id_Remote = value?.Id_Remote!!
+                                mCultivo.FechaIncio = value.FechaIncio
+                                mCultivo.FechaFin = value.FechaFin
+                                mCultivo.EstadoSincronizacion = true
+                                mCultivo.Estado_SincronizacionUpdate = true
                                 saveCultivoLocal(mCultivo,loteId)
                             }else{
                                 postEventError(CultivoEvent.ERROR_EVENT, "Por favor intente nuevamente")
@@ -228,7 +228,8 @@ class CultivoRepository : ICultivo.Repository {
                 call?.enqueue(object : Callback<Cultivo> {
                     override fun onResponse(call: Call<Cultivo>?, response: Response<Cultivo>?) {
                         if (response != null && response.code() == 200) {
-                            mCultivo?.Estado_SincronizacionUpdate = true
+                            mCultivo.EstadoSincronizacion=true
+                            mCultivo.Estado_SincronizacionUpdate = true
                             mCultivo.update()
                             postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
                         } else {
@@ -242,14 +243,14 @@ class CultivoRepository : ICultivo.Repository {
             }
             //TODO con  conexion a internet, pero no se ha sincronizado,actualizacion local
             else {
-                mCultivo?.Estado_SincronizacionUpdate = false
+                mCultivo.Estado_SincronizacionUpdate = false
                 mCultivo.update()
                 postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
             }
         }
         //TODO sin conexion a internet, actualizacion local
         else{
-            mCultivo?.Estado_SincronizacionUpdate = false
+            mCultivo.Estado_SincronizacionUpdate = false
             mCultivo.update()
             postEventOk(CultivoEvent.UPDATE_EVENT, getCultivos(mCultivo.LoteId), mCultivo)
         }
@@ -303,7 +304,7 @@ class CultivoRepository : ICultivo.Repository {
                 .where(ControlPlaga_Table.CultivoId.eq(cultivo.CultivoId))
                 .async()
                 .execute()
-        var listTransacciones = SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Cultivo_Id.eq(cultivo?.CultivoId)).queryList()
+        val listTransacciones = SQLite.select().from(Transaccion::class.java).where(Transaccion_Table.Cultivo_Id.eq(cultivo.CultivoId)).queryList()
         for (transaccion in listTransacciones) {
             SQLite.delete<Tercero>(Tercero::class.java)
                     .where(Tercero_Table.TerceroId.eq(transaccion.TerceroId))
@@ -311,9 +312,9 @@ class CultivoRepository : ICultivo.Repository {
                     .execute()
             transaccion.delete()
         }
-        var listProductos = SQLite.select().from(Producto::class.java).where(Producto_Table.cultivoId.eq(cultivo?.CultivoId)).queryList()
+        val listProductos = SQLite.select().from(Producto::class.java).where(Producto_Table.cultivoId.eq(cultivo.CultivoId)).queryList()
         for (producto in listProductos) {
-            var listDetalleOferta = SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.ProductoId.eq(producto?.ProductoId)).queryList()
+            val listDetalleOferta = SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.ProductoId.eq(producto?.ProductoId)).queryList()
             for (detalleoferta in listDetalleOferta) {
 
                 SQLite.delete<Oferta>(Oferta::class.java)

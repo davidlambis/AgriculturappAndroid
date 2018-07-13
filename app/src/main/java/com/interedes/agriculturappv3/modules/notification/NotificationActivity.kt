@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.modules.notification
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
@@ -20,6 +21,10 @@ import android.widget.Toast
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal
 import com.interedes.agriculturappv3.modules.notification.adapters.Notification_Adapter
+import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
+import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
+import com.interedes.agriculturappv3.services.resources.NotificationTypeResources
+import com.interedes.agriculturappv3.services.resources.TagNavigationResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_notification.*
 import kotlinx.android.synthetic.main.content_list_recycler_view.*
@@ -87,13 +92,13 @@ class NotificationActivity : AppCompatActivity(),IMainViewNotification.MainView 
 
     //region IMPLEMENTS IMAIN VIEW NOTIFICATION
     override fun confirmDelete(notification: NotificationLocal): AlertDialog? {
-        var builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.confirmation));
         builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
 
         })
         builder.setMessage(getString(R.string.alert_delete_notification));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             presenter?.deleteNotification(notification)
         })
         builder.setIcon(R.drawable.ic_ic_notificacion_app);
@@ -102,7 +107,36 @@ class NotificationActivity : AppCompatActivity(),IMainViewNotification.MainView 
 
 
     override fun onNavigationdetailNotification(notification: NotificationLocal) {
+        if(notification.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA)){
 
+            val intent = Intent(this, MenuMainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    or Intent.FLAG_ACTIVITY_NEW_TASK
+                    or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.putExtra(TagNavigationResources.TAG_NAVIGATE_OFERTAS,TagNavigationResources.NAVIGATE_OFERTAS)
+            startActivity(intent)
+        }else if(notification.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_REFUSED_OFERTA)){
+            val intent = Intent(this, MenuMainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    or Intent.FLAG_ACTIVITY_NEW_TASK
+                    or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.putExtra(TagNavigationResources.TAG_NAVIGATE_OFERTAS,TagNavigationResources.NAVIGATE_OFERTAS)
+            startActivity(intent)
+        }else if(notification.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_CONFIRM_OFERTA)){
+            val intent = Intent(this, MenuMainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    or Intent.FLAG_ACTIVITY_NEW_TASK
+                    or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.putExtra(TagNavigationResources.TAG_NAVIGATE_OFERTAS,TagNavigationResources.NAVIGATE_OFERTAS)
+            startActivity(intent)
+        }else if(notification.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_CONTROLPLAGA)){
+            val intent = Intent(this, MenuMainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    or Intent.FLAG_ACTIVITY_NEW_TASK
+                    or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.putExtra(TagNavigationResources.TAG_NAVIGATE_CONTROL_PLAGAS,TagNavigationResources.NAVIGATE_CONTROL_PLAGAS)
+            startActivity(intent)
+        }
     }
 
     override fun showProgress() {

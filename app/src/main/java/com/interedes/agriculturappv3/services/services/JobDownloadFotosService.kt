@@ -34,8 +34,6 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 
 
 class JobDownloadFotosService : Service() {
-
-
     private val ADMIN_CHANNEL_ID = "admin_channel"
     private var listInsmo: List<Insumo>? = null
     private var listFotoEnfermedad: List<FotoEnfermedad>? = null

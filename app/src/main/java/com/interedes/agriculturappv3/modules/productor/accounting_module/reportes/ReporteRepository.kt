@@ -24,24 +24,19 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import java.util.*
 import java.text.SimpleDateFormat
 
-
 class ReporteRepository: IMainViewReportes.Repository {
-
 
     var eventBus: EventBus? = null
     init {
         eventBus = GreenRobotEventBus()
     }
 
-
     override fun getTotalTransacciones(cultivo_id: Long?,  dateStart: Date?, dateEnd: Date?) {
 
+        val listCategoriaPuk=ArrayList<CategoriaPuk>()
+        val categoriaPukList=Listas.listCategoriaPuk()
 
-
-        var listCategoriaPuk=ArrayList<CategoriaPuk>()
-        var categoriaPukList=Listas.listCategoriaPuk()
-
-        var usuario= getLastUserLogued()
+        val usuario= getLastUserLogued()
 
         var sumIngresos:CountOfPost?=null
         var sumEgresos:CountOfPost?=null
@@ -50,16 +45,16 @@ class ReporteRepository: IMainViewReportes.Repository {
 
         if(cultivo_id==null && dateStart==null && dateEnd==null){
             for (itemCategorias in categoriaPukList){
-                var listTransaciones=ArrayList<Transaccion>()
+                val listTransaciones=ArrayList<Transaccion>()
                 var valor_total= 0.0
-                var transaccion= SQLite.select().from(Transaccion::class.java!!)
+                val transaccion= SQLite.select().from(Transaccion::class.java)
                         .where(Transaccion_Table.UsuarioId.eq(usuario?.Id))
                         .and(Transaccion_Table.CategoriaPuk_Id.eq(itemCategorias.Id)).queryList()
                 for (item in transaccion){
                     listTransaciones.add(item)
-                    valor_total= valor_total!!+item.Valor_Total!!
+                    valor_total= valor_total+item.Valor_Total!!
                 }
-                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
+                val categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
 
@@ -83,16 +78,16 @@ class ReporteRepository: IMainViewReportes.Repository {
 
         }else if(cultivo_id!=null && dateStart==null && dateEnd==null){
             for (itemCategorias in categoriaPukList){
-                var listTransaciones=ArrayList<Transaccion>()
+                val listTransaciones=ArrayList<Transaccion>()
                 var valor_total= 0.0
-                var transaccion= SQLite.select().from(Transaccion::class.java!!)
+                val transaccion= SQLite.select().from(Transaccion::class.java)
                         .where(Transaccion_Table.CategoriaPuk_Id.eq(itemCategorias.Id))
                         .and(Transaccion_Table.Cultivo_Id.eq(cultivo_id)).queryList()
                 for (item in transaccion){
                     listTransaciones.add(item)
-                    valor_total= valor_total!!+item.Valor_Total!!
+                    valor_total= valor_total+item.Valor_Total!!
                 }
-                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
+                val categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
 
@@ -120,25 +115,25 @@ class ReporteRepository: IMainViewReportes.Repository {
 
 
 
-            var format1 = SimpleDateFormat("MM-dd-yyyy")
-            var formattedStart = format1.format(dateStart.getTime())
-            var formattedEnd = format1.format(dateEnd.getTime())
+            val format1 = SimpleDateFormat("MM-dd-yyyy")
+            val formattedStart = format1.format(dateStart.getTime())
+            val formattedEnd = format1.format(dateEnd.getTime())
 
 
 
             for (itemCategorias in categoriaPukList){
-                var listTransaciones=ArrayList<Transaccion>()
+                val listTransaciones=ArrayList<Transaccion>()
                 var valor_total= 0.0
-                var transaccion= SQLite.select().from(Transaccion::class.java!!)
+                val transaccion= SQLite.select().from(Transaccion::class.java)
                         .where(Transaccion_Table.CategoriaPuk_Id.eq(itemCategorias.Id))
                         .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
                         .and(Transaccion_Table.FechaString.between(formattedStart).and(formattedEnd))
                         .queryList()
                 for (item in transaccion){
                     listTransaciones.add(item)
-                    valor_total= valor_total!!+item.Valor_Total!!
+                    valor_total= valor_total+item.Valor_Total!!
                 }
-                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
+                val categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
 
@@ -166,14 +161,14 @@ class ReporteRepository: IMainViewReportes.Repository {
 
 
 
-            var format1 = SimpleDateFormat("MM-dd-yyyy")
-            var formattedStart = format1.format(dateStart.getTime())
-            var formattedEnd = format1.format(dateEnd.getTime())
+            val format1 = SimpleDateFormat("MM-dd-yyyy")
+            val formattedStart = format1.format(dateStart.getTime())
+            val formattedEnd = format1.format(dateEnd.getTime())
 
             for (itemCategorias in categoriaPukList){
-                var listTransaciones=ArrayList<Transaccion>()
+                val listTransaciones=ArrayList<Transaccion>()
                 var valor_total= 0.0
-                var transaccion= SQLite.select().from(Transaccion::class.java!!)
+                val transaccion= SQLite.select().from(Transaccion::class.java)
                         .where(Transaccion_Table.CategoriaPuk_Id.eq(itemCategorias.Id))
                         .and(Transaccion_Table.Cultivo_Id.eq(cultivo_id))
                         .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
@@ -181,9 +176,9 @@ class ReporteRepository: IMainViewReportes.Repository {
                         .queryList()
                 for (item in transaccion){
                     listTransaciones.add(item)
-                    valor_total= valor_total!!+item.Valor_Total!!
+                    valor_total= valor_total+item.Valor_Total!!
                 }
-                var categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
+                val categoria= CategoriaPuk(itemCategorias.Id, itemCategorias.Nombre,itemCategorias.Sigla,valor_total,null,listTransaciones)
                 listCategoriaPuk.add(categoria)
             }
 
@@ -212,7 +207,7 @@ class ReporteRepository: IMainViewReportes.Repository {
 
 
 
-        var balanceContable= BalanceContable(sumIngresos?.count!!,sumEgresos?.count!!,balance)
+        val balanceContable= BalanceContable(sumIngresos?.count!!,sumEgresos?.count!!,balance)
         postEventOkBalanceContable(RequestEventReporte.EVENT_BALANCE_CONTABLE,balanceContable)
         postEventListCategorias(RequestEventReporte.LIST_EVENT_REPORT_CATEGORIAS,listCategoriaPuk,null)
 
@@ -225,7 +220,7 @@ class ReporteRepository: IMainViewReportes.Repository {
 
 
     override fun getListas() {
-        var usuario= getLastUserLogued()
+        val usuario= getLastUserLogued()
 
         val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
@@ -236,7 +231,7 @@ class ReporteRepository: IMainViewReportes.Repository {
                 .queryList()
 
 
-        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+        val listCultivos = SQLite.select().from(Cultivo::class.java)
                 .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
                 .queryList()
 
@@ -247,34 +242,34 @@ class ReporteRepository: IMainViewReportes.Repository {
     }
 
     override fun getCultivo(cultivo_id: Long?) {
-        var cultivo = SQLite.select().from(Cultivo::class.java!!).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
+        val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo_id)).querySingle()
         postEventOkCultivo(RequestEventReporte.GET_EVENT_CULTIVO,cultivo)
     }
 
 
     //region Events
     private fun postEventListCategorias(type: Int, listCategoriaPuk:List<CategoriaPuk>?, messageError:String?) {
-        var upMutable= listCategoriaPuk as MutableList<Object>
+        val upMutable= listCategoriaPuk as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }
 
     private fun postEventListUnidadMedida(type: Int, listUnidadMedida:List<Unidad_Medida>?, messageError:String?) {
-        var upMutable= listUnidadMedida as MutableList<Object>
+        val upMutable= listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }
 
     private fun postEventListUnidadProductiva(type: Int, listUnidadMedida:List<Unidad_Productiva>?, messageError:String?) {
-        var upMutable= listUnidadMedida as MutableList<Object>
+        val upMutable= listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }
 
     private fun postEventListLotes(type: Int, listUnidadMedida:List<Lote>?, messageError:String?) {
-        var upMutable= listUnidadMedida as MutableList<Object>
+        val upMutable= listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }
 
     private fun postEventListCultivos(type: Int, listUnidadMedida:List<Cultivo>?, messageError:String?) {
-        var upMutable= listUnidadMedida as MutableList<Object>
+        val upMutable= listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable,null,messageError)
     }
 
@@ -289,7 +284,7 @@ class ReporteRepository: IMainViewReportes.Repository {
 
 
     private fun postEventOk(type: Int, transacciones: List<Transaccion>?, trasaccion: Transaccion?) {
-        var transaccionListMitable= transacciones as MutableList<Object>
+        val transaccionListMitable= transacciones as MutableList<Object>
         var ProducciconMutable:Object?=null
         if(trasaccion!=null){
             ProducciconMutable = trasaccion as Object

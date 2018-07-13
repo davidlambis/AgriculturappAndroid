@@ -1,10 +1,8 @@
 package com.interedes.agriculturappv3.services.services.request
 
-import android.content.Context
 import android.util.Log
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
-import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
 import com.interedes.agriculturappv3.modules.models.control_plaga.PostControlPlaga
@@ -34,7 +32,7 @@ import com.interedes.agriculturappv3.modules.models.ventas.Tercero_Table
 import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
 import com.interedes.agriculturappv3.modules.models.ventas.Transaccion_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.interedes.agriculturappv3.services.services.Events.EventsService
+import com.interedes.agriculturappv3.services.services.events.EventsService
 import com.interedes.agriculturappv3.services.services.IMainViewService
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
@@ -47,9 +45,6 @@ import java.math.MathContext
 import java.text.SimpleDateFormat
 
 class RequestPostDataSync : IMainViewService.RepositoryPost {
-    override fun updateSyncData() {
-       
-    }
 
     var eventBus: EventBus? = null
     var apiService: ApiInterface? = null
@@ -199,23 +194,6 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                     postEventError(EventsService.ERROR_EVENT, "UpdateError Failure...")
                 }
             })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }else{
             syncUpdateDataCultivos()
         }
@@ -258,7 +236,7 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                                     .orderBy(Cultivo_Table.CultivoId,false).querySingle()
 
                             if(mCultivo!=null){
-                                syncDataCultivos()
+                                syncUpdateDataCultivos()
                             }else{
                                 syncUpdateDataControlPlagas()
                             }
@@ -274,6 +252,7 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
             syncUpdateDataControlPlagas()
         }
     }
+
 
     private fun syncUpdateDataControlPlagas() {
         val usuario= getLastUserLogued()
@@ -296,10 +275,10 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                     controlPlaga.getFechaErradicacionFormatApi(),
                     controlPlaga.EstadoErradicacion
             )
-            val call = apiService?.updateControlPlaga(postControlPlaga,controlPlaga?.Id_Remote!!)
+            val call = apiService?.updateControlPlaga(postControlPlaga,controlPlaga.Id_Remote!!)
             call?.enqueue(object : Callback<PostControlPlaga> {
                 override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
-                    if (response != null && response?.code() == 200) {
+                    if (response != null && response.code() == 200) {
                         var controlPlagaResponse= response.body()
                         controlPlaga.Estado_Sincronizacion = true
                         controlPlaga.Estado_SincronizacionUpdate = true
@@ -310,7 +289,7 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                                 .and(ControlPlaga_Table.UsuarioId.eq(usuario?.Id))
                                 .orderBy(ControlPlaga_Table.ControlPlagaId,false).querySingle()
                         if(controlPlaga!=null){
-                            syncDataControlPlagas()
+                            syncUpdateDataControlPlagas()
                         }else{
                             syncUpdateDataProduccion()
                         }
@@ -332,13 +311,13 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
         val usuario=getLastUserLogued()
         val produccion= SQLite.select()
                 .from(Produccion::class.java)
-                .where(Produccion_Table.Estado_SincronizacionUpdate.eq(true))
-                .and(Produccion_Table.Estado_Sincronizacion.eq(false))
+                .where(Produccion_Table.Estado_SincronizacionUpdate.eq(false))
+                .and(Produccion_Table.Estado_Sincronizacion.eq(true))
                 .and(Produccion_Table.UsuarioId.eq(usuario?.Id))
                 .orderBy(Produccion_Table.ProduccionId,false).querySingle()
 
         if(produccion!=null){
-            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(produccion?.CultivoId)).querySingle()
+            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(produccion.CultivoId)).querySingle()
             val format1 = SimpleDateFormat("yyyy-MM-dd")
             val fecha_inicio = format1.format(produccion.FechaInicioProduccion)
             val fecha_fecha_fin = format1.format(produccion.FechaFinProduccion)
@@ -359,16 +338,15 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                         produccion.Estado_SincronizacionUpdate = true
                         produccion.update()
 
-
                         val produccionPost= SQLite.select()
                                 .from(Produccion::class.java)
-                                .where(Produccion_Table.Estado_SincronizacionUpdate.eq(true))
-                                .and(Produccion_Table.Estado_Sincronizacion.eq(false))
+                                .where(Produccion_Table.Estado_SincronizacionUpdate.eq(false))
+                                .and(Produccion_Table.Estado_Sincronizacion.eq(true))
                                 .and(Produccion_Table.UsuarioId.eq(usuario?.Id))
                                 .orderBy(Produccion_Table.ProduccionId,false).querySingle()
 
                         if(produccionPost!=null){
-                            syncDataProduccion()
+                            syncUpdateDataProduccion()
                         }else{
                             syncUpdateDataProductos()
                         }
@@ -388,7 +366,7 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
     }
 
     private fun syncUpdateDataProductos() {
-       /* val usuario=getLastUserLogued()
+        val usuario=getLastUserLogued()
         val mProducto= SQLite.select()
                 .from(Producto::class.java)
                 .where(Producto_Table.Estado_Sincronizacion.eq(true))
@@ -397,8 +375,7 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                 .orderBy(Producto_Table.ProductoId,false).querySingle()
 
         if(mProducto!=null){
-
-                val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(cultivo?.CultivoId)).querySingle()
+                val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(mProducto.cultivoId)).querySingle()
                 val postProducto = PostProducto(mProducto.Id_Remote,
                         mProducto.CalidadId,
                         1,
@@ -414,14 +391,14 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                         mProducto.Nombre,
                         mProducto.Unidad_Medida_Id,
                         mProducto.PrecioUnidadMedida,
-                        mProducto?.userId
+                        mProducto.userId
                 )
 
                 val call = apiService?.updateProducto(postProducto, mProducto.Id_Remote!!)
                 call?.enqueue(object : Callback<Producto> {
                     override fun onResponse(call: Call<Producto>?, response: Response<Producto>?) {
                         if (response != null && response.code() == 200) {
-
+                            mProducto.Estado_SincronizacionUpdate=true
                             mProducto.update()
 
                             val mProductoPost= SQLite.select()
@@ -431,9 +408,8 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                                     .and(Producto_Table.userId.eq(usuario?.Id))
                                     .orderBy(Producto_Table.ProductoId,false).querySingle()
 
-
                             if(mProductoPost!=null){
-                                syncDataProductos()
+                                syncUpdateDataProductos()
                             }else{
                                 syncUpdateDataTransacciones()
                             }
@@ -446,25 +422,9 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                         postEventError(EventsService.ERROR_EVENT, "Faillure Productos 500...")
                     }
                 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }else{
             syncUpdateDataTransacciones()
         }
-
-        */
     }
 
     private fun syncUpdateDataTransacciones() {
@@ -473,105 +433,93 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
 
         val transaccion= SQLite.select()
                 .from(Transaccion::class.java)
-                .where(Transaccion_Table.Estado_Sincronizacion.eq(false))
+                .where(Transaccion_Table.Estado_SincronizacionUpdate.eq(false))
+                .and(Transaccion_Table.Estado_Sincronizacion.eq(true))
                 .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
                 .orderBy(Transaccion_Table.TransaccionId,false).querySingle()
 
         val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(transaccion?.Cultivo_Id)).querySingle()
         if(transaccion!=null && cultivo?.EstadoSincronizacion==true){
 
-            val terceroLocal= SQLite.select().from(Tercero::class.java).where(Tercero_Table.TerceroId.eq(transaccion.TerceroId)).querySingle()
+            val terceroLocal=Tercero(TerceroId = transaccion.TerceroId,Nombre = transaccion.Nombre_Tercero,Apellido = "",NitRut = transaccion.Identificacion_Tercero,Usuario_Id = transaccion.UsuarioId)
+
+            val cultivo = SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.CultivoId.eq(transaccion.Cultivo_Id)).querySingle()
+            val tercero = SQLite.select().from(Tercero::class.java).where(Tercero_Table.TerceroId.eq(transaccion.TerceroId)).querySingle()
+            terceroLocal.Id_Remote=tercero?.Id_Remote
             val postTercero = PostTercero(
-                    0,
-                    terceroLocal?.Nombre,
-                    terceroLocal?.Apellido,
-                    terceroLocal?.NitRut,
+                    tercero?.Id_Remote,
+                    terceroLocal.Nombre,
+                    terceroLocal.Apellido,
+                    terceroLocal.NitRut,
                     ""
             )
-            val postTrecero = apiService?.postTercero(postTercero)
-            postTrecero?.enqueue(object : Callback<PostTercero> {
+
+            val call = apiService?.updateTercero(postTercero, tercero?.Id_Remote!!)
+            call?.enqueue(object : Callback<PostTercero> {
                 override fun onResponse(call: Call<PostTercero>?, response: Response<PostTercero>?) {
-                    if (response != null && response.code() == 201 || response?.code() == 200) {
-                        terceroLocal?.Id_Remote = response.body()?.Id!!
+                    if (response != null && response.code() == 200  || response?.code()==204) {
 
-                        if(response.body()?.Id!!>0){
-                            terceroLocal?.Estado_Sincronizacion = true
-                            transaccion.Estado_SincronizacionUpdate = true
-                            terceroLocal?.save()
+                        terceroLocal.update()
 
-                            val decimal = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
-                            val cantidad = BigDecimal(transaccion.Cantidad!!, MathContext.DECIMAL64)
+                        val decimalBig = BigDecimal(transaccion.Valor_Total!!, MathContext.DECIMAL64)
+                        val cantidadBig = BigDecimal(transaccion.Cantidad!!, MathContext.DECIMAL64)
 
-                            val postTransaccion = PostTransaccion(
-                                    0,
-                                    transaccion.Concepto,
-                                    transaccion.EstadoId,
-                                    transaccion.getFechaTransacccionFormatApi(),
-                                    transaccion.NaturalezaId,
-                                    transaccion.PucId,
-                                    terceroLocal?.Id_Remote,
-                                    decimal,
-                                    cantidad,
-                                    cultivo.Id_Remote,
-                                    transaccion.UsuarioId
-                            )
+                        val postTransaccion = PostTransaccion(
+                                transaccion.Id_Remote,
+                                transaccion.Concepto,
+                                transaccion.EstadoId,
+                                transaccion.getFechaTransacccionFormatApi(),
+                                transaccion.NaturalezaId,
+                                transaccion.PucId,
+                                terceroLocal.Id_Remote,
+                                decimalBig,
+                                cantidadBig,
+                                cultivo?.Id_Remote,
+                                getLastUserLogued()?.Id
+                        )
 
-                            val callTransa = apiService?.postTransaccion(postTransaccion)
-                            callTransa?.enqueue(object : Callback<PostTransaccion> {
+                        val calltransaccion = apiService?.updateTransaccion(postTransaccion, transaccion.Id_Remote!!)
+                        calltransaccion?.enqueue(object : Callback<PostTransaccion> {
+                            override fun onResponse(call: Call<PostTransaccion>?, response: Response<PostTransaccion>?) {
+                                if (response != null && response.code() == 200) {
+                                    transaccion.Estado_Sincronizacion=true
+                                    transaccion.Estado_SincronizacionUpdate=true
+                                    transaccion.update()
 
-                                override fun onResponse(call: Call<PostTransaccion>?, response: Response<PostTransaccion>?) {
-                                    if (response != null && response.code() == 201 || response?.code() == 200) {
-                                        transaccion.Id_Remote = response.body()?.Id!!
-                                        transaccion.Estado_Sincronizacion = true
-                                        transaccion.Estado_SincronizacionUpdate = true
-                                        transaccion.save()
+                                    val transaccionPost= SQLite.select()
+                                            .from(Transaccion::class.java)
+                                            .where(Transaccion_Table.Estado_SincronizacionUpdate.eq(false))
+                                            .and(Transaccion_Table.Estado_Sincronizacion.eq(true))
+                                            .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
+                                            .orderBy(Transaccion_Table.TransaccionId,false).querySingle()
 
-                                        val transaccionPost= SQLite.select()
-                                                .from(Transaccion::class.java)
-                                                .where(Transaccion_Table.Estado_Sincronizacion.eq(false))
-                                                .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
-                                                .orderBy(Transaccion_Table.TransaccionId,false).querySingle()
 
-                                        if(transaccionPost!=null){
-                                            syncDataTransacciones()
-                                        }else{
-                                            postEventOk(EventsService.POST_SYNC_EVENT)
-                                        }
-                                    } else {
-                                        postEventError(EventsService.ERROR_EVENT, "Error 500...")
+                                    if(transaccionPost!=null){
+                                        syncUpdateDataTransacciones()
+                                    }else{
+                                        postEventOk(EventsService.POST_SYNC_EVENT)
                                     }
+                                } else {
+                                    postEventError(EventsService.ERROR_EVENT, "Error TransaccionUpdate 500...")
                                 }
-                                override fun onFailure(call: Call<PostTransaccion>?, t: Throwable?) {
-                                    postEventError(EventsService.ERROR_EVENT, "Error Failure...")
-                                }
-                            })
-                        }else{
-                            syncDataTransacciones()
-                        }
-                        //postEventOk(RequestEventTransaccion.SAVE_EVENT, getProductions(cultivo_id), produccion)
+                            }
+                            override fun onFailure(call: Call<PostTransaccion>?, t: Throwable?) {
+                                postEventError(EventsService.ERROR_EVENT, "Faillure TransaccionUpdate 500...")
+                            }
+                        })
                     } else {
-                        postEventError(EventsService.ERROR_EVENT, "Error 500...")
+                        postEventError(EventsService.ERROR_EVENT, "Error TransaccionUpdate 500...")
                     }
                 }
                 override fun onFailure(call: Call<PostTercero>?, t: Throwable?) {
-                    postEventError(EventsService.ERROR_EVENT, "Error Failure...")
+                    postEventError(EventsService.ERROR_EVENT, "Faillure TerceroUpdate 500...")
                 }
             })
         }else{
             postEventOk(EventsService.POST_SYNC_EVENT)
         }
     }
-
-
-
     //endregion
-
-
-
-
-
-
-
 
     //region POST  DATASYNC
     override fun syncData() {
@@ -683,11 +631,11 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
             val areaBig = BigDecimal(mLote.Area!!, MathContext.DECIMAL64)
             val postLote = PostLote(0,
                     areaBig,
-                    mLote.Codigo,
+                    mLote?.Codigo,
                     mLote.Nombre,
                     mLote.Descripcion,
                     mLote.Localizacion,
-                    mLote.Localizacion_Poligono,
+                    mLote?.Localizacion_Poligono,
                     mLote.Unidad_Medida_Id,
                     unidad_productiva.Id_Remote)
 
@@ -1060,7 +1008,7 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                                         if(transaccionPost!=null){
                                             syncDataTransacciones()
                                         }else{
-                                            postEventOk(EventsService.POST_SYNC_EVENT)
+                                            syncUpdateDataUnidadProductiva()
                                         }
                                     } else {
                                         postEventError(EventsService.ERROR_EVENT, "Error 500...")
@@ -1083,7 +1031,7 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
                 }
             })
         }else{
-            postEventOk(EventsService.POST_SYNC_EVENT)
+            syncUpdateDataUnidadProductiva()
         }
     }
 

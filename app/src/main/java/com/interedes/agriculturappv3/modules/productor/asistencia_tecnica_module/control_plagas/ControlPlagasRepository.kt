@@ -133,7 +133,7 @@ class ControlPlagasRepository : IControlPlagas.Repository {
                 val call = apiService?.updateControlPlaga(postControlPlaga,controlPlaga?.Id_Remote!!)
                 call?.enqueue(object : Callback<PostControlPlaga> {
                     override fun onResponse(call: Call<PostControlPlaga>?, response: Response<PostControlPlaga>?) {
-                        if (response != null && response?.code() == 200) {
+                        if (response != null && response.code() == 200) {
                             var controlPlagaResponse= response.body()
                             controlPlaga.Estado_Sincronizacion = true
                             controlPlaga.Estado_SincronizacionUpdate = true
