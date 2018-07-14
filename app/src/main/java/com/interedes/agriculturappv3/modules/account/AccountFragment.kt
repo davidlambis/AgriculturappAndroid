@@ -570,6 +570,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
             R.id.btnSaveAccount -> {
                 if(presenter?.validarUpdateUser()!!){
+                    //showProgressHud()
                     userLogued=presenter?.getUserLogued()
                     saveDataUserLogued()
                 }

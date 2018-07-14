@@ -125,6 +125,8 @@ class AccountRepository:IMainViewAccount.Repository {
                 usuario.RolId,
                 usuario.UserName)
 
+
+
         val call = apiService?.updateUsuario(postUsuario, usuario.Id!!)
         call?.enqueue(object : Callback<PostUsuario> {
             override fun onResponse(call: Call<PostUsuario>?, response: Response<PostUsuario>?) {

@@ -68,8 +68,8 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAdapter()
 
+        initAdapter()
         val b = this.arguments
         if (b != null) {
             tipoProductoIdGlobal = b.getLong("idtipoProducto")
@@ -82,19 +82,18 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
     private fun setupInjection() {
         if(!loadedFragment){
+
             showProgressHud()
             loadFirstPageProducts()
             loadedFragment=true
         }else{
             //setListProducto(list)
-            if(productosList!=null){
-
-                adapter?.setItems(productosList!!)
+            //if(productosList!=null){
+                //adapter?.setItems(productosList!!)
                 /*for (item in productosList!!){
                     adapter?.add(item)
                 }*/
-            }
-
+            //}
             setResults(productosList?.size!!)
         }
 

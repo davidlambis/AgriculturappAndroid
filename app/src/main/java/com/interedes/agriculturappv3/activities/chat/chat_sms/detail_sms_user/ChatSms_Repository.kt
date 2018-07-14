@@ -65,10 +65,10 @@ class ChatSms_Repository: IMainViewDetailSms.Repository {
 
                     val addresSpaceReplace= addresSpaceEmpty.replace(" ","")
 
-                    var newMsg=mensaje.replace(context.getString(R.string.idenfication_send_sms_app),"")
+                    val newMsg=mensaje.replace(context.getString(R.string.idenfication_send_sms_app),"")
                     val contactName = getContactDisplayNameByNumber(addresSpaceReplace,context)
 
-                    var objSms = Sms(
+                    val objSms = Sms(
                             0,
                             c.getString(c!!.getColumnIndexOrThrow("_id")),
                             addresSpaceReplace,

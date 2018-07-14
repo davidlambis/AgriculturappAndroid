@@ -229,8 +229,6 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
     }
 
 
-
-
     //region EVETNS
     private fun postEventChatSmsActivity(type: Int, listModel1:MutableList<Object>?,model:Object?,errorMessage: String?) {
         val event = RequestEventSmsDetail(type, listModel1, model, errorMessage)

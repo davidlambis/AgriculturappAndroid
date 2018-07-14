@@ -155,7 +155,6 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                     .productorPhoto()
                     .into(imgProductor);
 
-
             /*
             val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(data.EmailProductor)
             query?.addListenerForSingleValueEvent(object : ValueEventListener {

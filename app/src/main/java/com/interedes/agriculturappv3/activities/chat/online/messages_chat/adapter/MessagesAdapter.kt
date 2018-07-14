@@ -102,14 +102,14 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(data: ChatMessage, pos: Int) = with(itemView) {
 
-            var messageTextView: TextView = itemView.findViewById(R.id.chatMsgTextView)
-            var txtHour: TextView = itemView.findViewById(R.id.txtHour)
+            val messageTextView: TextView = itemView.findViewById(R.id.chatMsgTextView)
+            val txtHour: TextView = itemView.findViewById(R.id.txtHour)
 
             try {
                 var dateObjStart = Date()
                 val sdfStart = SimpleDateFormat("H:mm")
                 dateObjStart = sdfStart.parse(data.hour)
-                var hora12 = SimpleDateFormat("KK:mm a").format(dateObjStart)
+                val hora12 = SimpleDateFormat("KK:mm a").format(dateObjStart)
                 txtHour.setText(hora12)
 
             } catch (e: ParseException) {
@@ -117,7 +117,7 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
             }
 
             if(getItemViewType()== ITEM_TYPE_RECEIVED){
-                var imageUser: CircleImageView = itemView.findViewById(R.id.imageView2)
+                val imageUser: CircleImageView = itemView.findViewById(R.id.imageView2)
                 if((context as ChatMessageActivity).mReceiverFoto!=null){
                     try {
                         //Picasso.with(context).load((context as ChatMessageActivity).mReceiverFoto).placeholder(R.drawable.default_avata).into(imageUser)
@@ -137,9 +137,12 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
                         e.printStackTrace()
                     }
                 }
-            }
+                messageTextView.setText(data.message)
+            }else{
 
-            messageTextView.setText(data.message)
+
+                messageTextView.setText(data.message)
+            }
         }
     }
 }

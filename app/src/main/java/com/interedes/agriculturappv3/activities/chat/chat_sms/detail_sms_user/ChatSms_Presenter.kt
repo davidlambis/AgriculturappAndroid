@@ -25,6 +25,10 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
     var eventBus: EventBus? = null
     var smsGlobal:Sms?=null
 
+    private var sentStatusReceiver: BroadcastReceiver? = null
+    private var deliveredStatusReceiver: BroadcastReceiver? = null
+
+
     companion object {
         var instance: ChatSms_Presenter? = null
     }
@@ -47,6 +51,7 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
 
     //SMS
 
+    /*
     private val sentStatusReceiver = object : BroadcastReceiver() {
         override fun onReceive(arg0: Context, arg1: Intent) {
             var s = "Unknown Error"
@@ -104,6 +109,8 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
         }
     }
 
+    */
+
     //region Conectividad
     private val mNotificationReceiverApp = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -119,6 +126,57 @@ class ChatSms_Presenter(var mainView: IMainViewDetailSms.MainView?): IMainViewDe
     }
 
     override fun onResume(context: Context) {
+
+        sentStatusReceiver = object : BroadcastReceiver() {
+            override fun onReceive(arg0: Context, arg1: Intent) {
+                var s = "Unknown Error"
+                when (resultCode) {
+                    Activity.RESULT_OK -> s = "Message Sent Successfully !!"
+                    SmsManager.RESULT_ERROR_GENERIC_FAILURE -> s = "Generic Failure Error"
+                    SmsManager.RESULT_ERROR_NO_SERVICE -> s = "Error : No Service Available"
+                    SmsManager.RESULT_ERROR_NULL_PDU -> s = "Error : Null PDU"
+                    SmsManager.RESULT_ERROR_RADIO_OFF -> s = "Error : Radio is off"
+                    else -> {
+                    }
+                }
+                if(!s.equals("Message Sent Successfully !!")){
+                    mainView?.onMessageToas("Mensage no enviado", R.color.red_900)
+                    mainView?.hideProgressHud()
+                }
+            }
+        }
+
+        deliveredStatusReceiver = object : BroadcastReceiver() {
+            override fun onReceive(arg0: Context, arg1: Intent) {
+                var s = "Message Not Delivered"
+                when (resultCode) {
+                    Activity.RESULT_OK -> s = "Message Delivered Successfully"
+                    Activity.RESULT_CANCELED -> {
+                    }
+                }
+                if(s.contains("Successfully")){
+                    //smsGlobal!!.save()
+                    val lastSms = getLastSms()
+                    if (lastSms == null) {
+                        smsGlobal?.Id = 1
+                    } else {
+                        smsGlobal?.Id = lastSms.Id!! + 1
+                    }
+                    smsGlobal!!.save()
+
+                    mainView?.onMessageToas("Mensage enviado correctamente", R.color.green)
+                    mainView?.limpiarCampos()
+                    mainView?.hideProgressHud()
+                    mainView?.getListSms(false)
+                    smsGlobal=null
+                }else{
+                    mainView?.onMessageToas("Mensage no enviado", R.color.red_900)
+                    mainView?.hideProgressHud()
+                }
+            }
+        }
+
+
         //On Activity Chat_Sms_Activity
         context.registerReceiver(sentStatusReceiver, IntentFilter(Const_Resources.SERVICE_SMS_SENT))
         context.registerReceiver(deliveredStatusReceiver, IntentFilter(Const_Resources.SERVICE_SMS_DELIVERED))

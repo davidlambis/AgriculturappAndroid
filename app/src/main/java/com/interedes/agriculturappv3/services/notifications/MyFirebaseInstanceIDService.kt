@@ -17,11 +17,9 @@ class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
 
 
     var repository: IMainFirebaseInstance.Repository? = null
-    var eventBus: EventBus? = null
 
     init {
         repository = FirebaseInstanceRepository()
-        eventBus = GreenRobotEventBus()
     }
 
      private val TAG = "MyFirebaseIIDService"
@@ -58,19 +56,6 @@ class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
     }
 
 
-    //region Suscribe Events
-    @Subscribe
-    fun onEventMainThread(event: RequestEventFirebaseService?) {
-        when (event?.eventType) {
-            RequestEventFirebaseService.POST_SYNC_EVENT_TOKEN -> {
-                Toast.makeText(this, "Token Efectuado...", Toast.LENGTH_SHORT).show()
-            }
-            RequestEventFirebaseService.ERROR_EVENT -> {
-                Toast.makeText(this, event.mensajeError, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-    //endregion
 
     private fun sendRegistrationToServer(token: String) {
         // Add custom implementation, as needed.
@@ -81,13 +66,11 @@ class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
         //Log.d(TAG, "+onCreate()")
         super.onCreate()
         //Log.d(TAG, "-onCreate()")
-        eventBus?.register(this)
     }
 
 
     override fun onDestroy() {
         Log.d(TAG, "+onDestroy()")
         super.onDestroy()
-        eventBus?.unregister(this)
     }
 }

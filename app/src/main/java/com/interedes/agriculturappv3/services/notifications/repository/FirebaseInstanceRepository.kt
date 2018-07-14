@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.services.notifications.repository
 
 import android.app.Notification
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.interedes.agriculturappv3.libs.EventBus
@@ -39,9 +40,11 @@ class FirebaseInstanceRepository:IMainFirebaseInstance.Repository {
                 userTokenMessaginStatus?.setValue(true)
                 userTokenMessaging?.setValue(token)
             }
-            postEventOk(RequestEventFirebaseService.POST_SYNC_EVENT_TOKEN)
+            //postEventOk(RequestEventFirebaseService.POST_SYNC_EVENT_TOKEN)
+            Log.d("TOKEN", "Token Generate ")
         }else{
-            postEventError(RequestEventFirebaseService.ERROR_EVENT,"No existe un usuario logueado para el token: $token")
+            Log.d("TOKEN", "userLogued is null, token no generate ")
+            //postEventError(RequestEventFirebaseService.ERROR_EVENT,"No existe un usuario logueado para el token: $token")
         }
     }
 
@@ -70,23 +73,4 @@ class FirebaseInstanceRepository:IMainFirebaseInstance.Repository {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
         return usuarioLogued
     }
-
-
-    //region Events
-    private fun postEventOk(type: Int) {
-        postEvent(type, null,null,null)
-    }
-
-
-    private fun postEventError(type: Int,messageError:String?) {
-        postEvent(type, null,null,messageError)
-    }
-
-    //Main Post Event
-    private fun postEvent(type: Int, listModel1:MutableList<Object>?,model:Object?,errorMessage: String?) {
-        val event = RequestEventFirebaseService(type, listModel1, model, errorMessage)
-        event.eventType = type
-        eventBus?.post(event)
-    }
-    //endregion
 }

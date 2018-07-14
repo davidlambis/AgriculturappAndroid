@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_chat_users.*
 import java.util.ArrayList
 
 import com.interedes.agriculturappv3.modules.models.chat.RoomConversation
+import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 
@@ -61,7 +62,7 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
     override fun setListRoom(sms: List<RoomConversation>) {
         adapter?.clear()
         adapter?.setItems(sms)
-        setResult(sms.size)
+        setResults(sms.size)
     }
 
     override fun showProgress() {
@@ -140,6 +141,9 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
     }
     private fun goToSignIn() {
         //startActivity(Intent(this, LoginActivity::class.java))
+        val i = Intent(this, MenuMainActivity::class.java)
+        i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(i)
     }
 
     //endregion

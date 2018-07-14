@@ -169,7 +169,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         //var intent:Intent?=null
         val intent = Intent(context, MenuMainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
         if(fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA) ||
                 fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_CONFIRM_OFERTA) ||
                 fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_REFUSED_OFERTA)){
@@ -191,7 +191,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val pendingIntent: PendingIntent
             setupChannels(context)
             builder = NotificationCompat.Builder(context, ADMIN_CHANNEL_ID)
-
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    or Intent.FLAG_ACTIVITY_NEW_TASK
+                    or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             pendingIntent = PendingIntent.getActivity(context, notificationId+1, intent, PendingIntent.FLAG_ONE_SHOT)
             builder.setContentTitle(fcmNotificationLocalBuilder.title)
                     .setSmallIcon(getNotificationIcon()) // required
@@ -236,6 +238,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             //intent.putExtra(TagSmsResources.PHONE_NUMBER,smsAddress)
             //intent.putExtra(TagSmsResources.CONTACT_NAME,messageAdress)
             var pendingIntent: PendingIntent? = null
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    or Intent.FLAG_ACTIVITY_NEW_TASK
+                    or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             pendingIntent = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_ONE_SHOT)
             val notificationBuilder = NotificationCompat.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)

@@ -119,7 +119,7 @@ class AccountPresenter (var mainView: IMainViewAccount.MainView?):IMainViewAccou
     }
 
     override fun setListSpinnerDetalleMetodoPago(metodopagoId: Long?) {
-        var list = listDetalleMetodo?.filter { detalleMetodoPago: DetalleMetodoPago -> detalleMetodoPago.MetodoPagoId == metodopagoId }
+        val list = listDetalleMetodo?.filter { detalleMetodoPago: DetalleMetodoPago -> detalleMetodoPago.MetodoPagoId == metodopagoId }
         mainView?.setListDetalleMetodoPago(list)
     }
 

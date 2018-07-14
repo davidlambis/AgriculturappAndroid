@@ -141,7 +141,7 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
             txtUserType.setText(data.UserFirebase?.Rol)
 
 
-            try {
+            /*try {
                 //Picasso.with(context).load(data.Imagen).placeholder(R.drawable.default_avata).into(contentIconUser)
                     Picasso.get()
                             .load(data.UserFirebase?.Imagen)
@@ -154,7 +154,7 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
 
             } catch (e: Exception) {
                 e.printStackTrace()
-            }
+            }*/
 
             //Change State
             mRoomDBRef?.child(data.UserFirebase?.User_Id)?.child(Chat_Resources.getRoomById(data.Room?.User_From))?.addValueEventListener(object : ValueEventListener {
@@ -201,10 +201,10 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                 }
             })
 
-             val apiService = ApiInterface.create()
+              val apiService = ApiInterface.create()
               val queryCustom = Listas.queryGeneral("Email",data.UserFirebase?.Correo!!)
               val callusuario = apiService.getUserByEmail(queryCustom)
-              callusuario.delay(500, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
+              callusuario.delay(100, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
                   //Log.d("search", searchString)
                   val usuario =searchResponse.value
                   if(usuario!=null){
@@ -217,9 +217,9 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                                   .into(contentIconUser);
                       }
                   }
-              },{ throwable ->{
+              },{ throwable ->
                   val error= throwable.toString()
-              }
+
               })
 
             itemView.setOnClickListener {

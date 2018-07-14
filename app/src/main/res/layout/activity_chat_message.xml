@@ -41,7 +41,7 @@
                         android:src="@drawable/default_avata" />
 
                     <TextView
-                        android:text="sdfsdf"
+                        android:text=""
                         android:textSize="@dimen/text_size_15"
                         android:id="@+id/nameUserTo"
                         android:textColor="@color/white_solid"

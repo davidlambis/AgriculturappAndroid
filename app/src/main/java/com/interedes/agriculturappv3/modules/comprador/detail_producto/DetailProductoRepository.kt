@@ -242,7 +242,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
                 val room = Room(Chat_Resources.getRoomByCompradorProductor(mCompradorSenderId,mProductorReceiverId), mCompradorSenderId, mProductorReceiverId, 0, 0,dateString,"")
                 mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId))?.setValue(room)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
                     if (!task.isSuccessful) {
-                        var error = task.exception
+                        val error = task.exception
                         postEventError(RequestEventDetalleProducto.ERROR_EVENT, error.toString())
                     } else {
                         createRoomUser(user,mProductorReceiverId,false,oferta,userFirebase)
@@ -306,30 +306,29 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         precioOferta=String.format("$ %,.0f %2s",
                 oferta?.Valor_Oferta, oferta?.NombreUnidadMedidaPrecio)
 
-        val usuarioTo= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
-
-         message=String.format("%s %s te oferto %s a un precio de %s por el cultivo de %s de %s"
-                ,usuarioTo?.Nombre,usuarioTo?.Apellidos,productoCantidad,precioOferta,producto?.Nombre,calidad)
-
+        //val usuarioTo= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+        val userLogued= getLastUserLogued()
+         message=String.format("%s %s oferto %s a un precio de %s por el cultivo de %s de %s"
+                ,userLogued?.Nombre,userLogued?.Apellidos,productoCantidad,precioOferta,producto?.Nombre,calidad)
         return  message
     }
 
     private fun updateDatesRoomUser() {
         //success adding user to db as well
-        var roomDateLastComprador= mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId)+"/date_Last")
+        val roomDateLastComprador= mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId)+"/date_Last")
         roomDateLastComprador?.setValue(ServerValue.TIMESTAMP);
 
-        var roomDateLastProductor= mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId)+"/date_Last")
+        val roomDateLastProductor= mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId)+"/date_Last")
         roomDateLastProductor?.setValue(ServerValue.TIMESTAMP);
     }
 
 
     private fun updateLastMessageRoomUser(message:String?) {
         //success adding user to db as well
-        var lastMessageRoomComprador= mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId)+"/lastMessage")
+        val lastMessageRoomComprador= mRoomDBRef?.child(mCompradorSenderId)?.child(Chat_Resources.getRoomById(mProductorReceiverId)+"/lastMessage")
         lastMessageRoomComprador?.setValue(message)
 
-        var lastMessageRoomProductor= mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId)+"/lastMessage")
+        val lastMessageRoomProductor= mRoomDBRef?.child(mProductorReceiverId)?.child(Chat_Resources.getRoomById(mCompradorSenderId)+"/lastMessage")
         lastMessageRoomProductor?.setValue(message)
     }
 

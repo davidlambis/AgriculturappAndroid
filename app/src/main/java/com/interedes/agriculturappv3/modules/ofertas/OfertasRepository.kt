@@ -455,21 +455,21 @@ class OfertasRepository : IOfertas.Repository {
         if(usuario?.RolNombre.equals(RolResources.COMPRADOR)){
 
             if (productoId == null) {
-                var ofertaResponse = SQLite.select()
+                val ofertaResponse = SQLite.select()
                         .from(Oferta::class.java)
                         .where(Oferta_Table.UsuarioId.eq(usuario?.Id))
                         .queryList()
 
                 for (oferta in ofertaResponse){
-                    var usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+                    val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
                     if(usuario!=null){
                         oferta.Usuario=usuario
                     }
 
-                    var detalleOferta= SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
+                    val detalleOferta= SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
                     if(detalleOferta!=null){
                         oferta.DetalleOfertaSingle=detalleOferta
-                        var producto=SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(detalleOferta.ProductoId)).querySingle()
+                        val producto=SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(detalleOferta.ProductoId)).querySingle()
                         if(producto!=null){
                             oferta.Producto=producto
                         }
@@ -479,19 +479,19 @@ class OfertasRepository : IOfertas.Repository {
             } else {
 
 
-                var ofertaResponse = SQLite.select().from(Oferta::class.java)
+                val ofertaResponse = SQLite.select().from(Oferta::class.java)
                         .where(Oferta_Table.ProductoId.eq(productoId))
                         .and(Oferta_Table.UsuarioTo.eq(usuario?.Id))
                         .queryList()
                 for (oferta in ofertaResponse){
-                    var usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioId)).querySingle()
+                    val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
                     if(usuario!=null){
                         oferta.Usuario=usuario
                     }
-                    var detalleOferta= SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
+                    val detalleOferta= SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
                     if(detalleOferta!=null){
                         oferta.DetalleOfertaSingle=detalleOferta
-                        var producto=SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(detalleOferta.ProductoId)).querySingle()
+                        val producto=SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(detalleOferta.ProductoId)).querySingle()
                         if(producto!=null){
                             oferta.Producto=producto
                         }
@@ -506,19 +506,21 @@ class OfertasRepository : IOfertas.Repository {
                         .from(Oferta::class.java)
                         .queryList()
 
-                var ofertaResponse = SQLite.select()
+                val ofertaResponse = SQLite.select()
                         .from(Oferta::class.java)
                         .where(Oferta_Table.UsuarioTo.eq(usuario?.Id))
                         .queryList()
+
+
                 for (oferta in ofertaResponse){
-                    var usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+                    val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioId)).querySingle()
                     if(usuario!=null){
                         oferta.Usuario=usuario
                     }
-                    var detalleOferta= SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
+                    val detalleOferta= SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
                     if(detalleOferta!=null){
                         oferta.DetalleOfertaSingle=detalleOferta
-                        var producto=SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(detalleOferta.ProductoId)).querySingle()
+                        val producto=SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(detalleOferta.ProductoId)).querySingle()
                         if(producto!=null){
                             oferta.Producto=producto
                         }
@@ -526,19 +528,19 @@ class OfertasRepository : IOfertas.Repository {
                     listResponse.add(oferta)
                 }
             } else {
-                var ofertaResponse = SQLite.select().from(Oferta::class.java)
+                val ofertaResponse = SQLite.select().from(Oferta::class.java)
                         .where(Oferta_Table.ProductoId.eq(productoId))
                         .and(Oferta_Table.UsuarioTo.eq(usuario?.Id))
                         .queryList()
                 for (oferta in ofertaResponse){
-                    var usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+                    val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioId)).querySingle()
                     if(usuario!=null){
                         oferta.Usuario=usuario
                     }
-                    var detalleOferta= SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
+                    val detalleOferta= SQLite.select().from(DetalleOferta::class.java).where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id)).querySingle()
                     if(detalleOferta!=null){
                         oferta.DetalleOfertaSingle=detalleOferta
-                        var producto=SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(detalleOferta.ProductoId)).querySingle()
+                        val producto=SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(detalleOferta.ProductoId)).querySingle()
                         if(producto!=null){
                             oferta.Producto=producto
                         }
