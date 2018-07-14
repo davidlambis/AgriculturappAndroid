@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.activities.login.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
@@ -14,8 +15,11 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.interedes.agriculturappv3.AgriculturApplication
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenter
@@ -77,6 +81,22 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
                 .playOn(fabLogin)
         //Registra al receiver de Internet
         registerInternetReceiver()
+
+
+        //Toast.makeText(this,"Google play service no available",Toast.LENGTH_LONG).show()
+
+    }
+
+    fun isGooglePlayServicesAvailable(): Boolean {
+        val googleApiAvailability = GoogleApiAvailability.getInstance();
+        val status = googleApiAvailability.isGooglePlayServicesAvailable(this);
+        if (status != ConnectionResult.SUCCESS) {
+            if (googleApiAvailability.isUserResolvableError(status)) {
+                googleApiAvailability.getErrorDialog(this, status, 9000).show();
+            }
+            return false;
+        }
+        return true;
     }
 
     private fun getRememberedUser() {
@@ -100,7 +120,10 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.fabLogin -> {
-                ingresar()
+                val responseService=isGooglePlayServicesAvailable()
+                if(responseService){
+                    ingresar()
+                }
             }
             R.id.tvRegistrarse -> {
                 tvRegistrarse.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
@@ -201,9 +224,9 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     }
 
     override fun showProgress() {
-        var imageView = ImageView(this);
+        val imageView = ImageView(this);
         imageView.setBackgroundResource(R.drawable.spin_animation_login);
-        var drawable = imageView.getBackground() as AnimationDrawable;
+        val drawable = imageView.getBackground() as AnimationDrawable;
         drawable.start();
         hud = KProgressHUD.create(this)
                 .setCustomView(imageView)

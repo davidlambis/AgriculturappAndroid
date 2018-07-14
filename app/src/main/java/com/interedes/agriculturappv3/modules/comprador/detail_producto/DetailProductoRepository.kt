@@ -34,8 +34,6 @@ import com.interedes.agriculturappv3.services.resources.*
 
 class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
-
-
     var eventBus: EventBus? = null
     var apiService: ApiInterface? = null
     var apiServiceFcm: ApiInterface? = null
@@ -44,9 +42,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     var mRoomDBRef: DatabaseReference? = null
     private var mProductorReceiverId: String? = null
     private var mCompradorSenderId: String? = null
-
     private var roomId: String? = null
-
 
     init {
         eventBus = GreenRobotEventBus()
@@ -58,7 +54,6 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
     }
 
     //region Métodos Interfaz
-
     override fun getLastUserLogued(): Usuario? {
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
         return usuarioLogued
@@ -81,7 +76,7 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
     override fun verificateCantProducto(producto_id:Long?,cantidad:Double?):Boolean? {
         var response= false
-        var producto= SQLite.select().from(Producto::class.java).where(Producto_Table.ProductoId.eq(producto_id)).querySingle()
+        val producto= SQLite.select().from(Producto::class.java).where(Producto_Table.ProductoId.eq(producto_id)).querySingle()
         if(cantidad!!<=producto?.Stock!!){
             response=true
         }
@@ -449,8 +444,6 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
         val upMutable = listUnidadMedida as MutableList<Object>
         postEvent(type, upMutable, null, messageError)
     }
-
-
 
 
     private fun postEventOk(type: Int, listProducto: List<Producto>?, producto: Producto?) {

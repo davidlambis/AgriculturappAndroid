@@ -171,7 +171,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
                     //Picasso.with(activity).load(userPhoto).placeholder(R.drawable.ic_foto_producto_square).into(user_image)
                 }catch (ex:Exception){
-                    var ss= ex.toString()
+                    val ss= ex.toString()
                     Log.d("Convert Image", "defaultValue = " + ss);
                 }
             }

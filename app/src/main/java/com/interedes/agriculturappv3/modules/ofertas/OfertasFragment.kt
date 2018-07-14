@@ -105,11 +105,11 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
     private fun setupInitDesign() {
        // (activity as MenuMainActivity).toolbar.title = getString(R.string.title_module_comercial)
         (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.blue));
-        var iconMenu = (activity as MenuMainActivity).menuItemGlobal
+        val iconMenu = (activity as MenuMainActivity).menuItemGlobal
         iconMenu?.isVisible = true
 
-        var iconc = iconMenu?.setIcon(ContextCompat.getDrawable((activity as MenuMainActivity), R.drawable.ic_icon_comercial))
-        var icon = iconc?.icon?.mutate()
+        val iconc = iconMenu?.setIcon(ContextCompat.getDrawable((activity as MenuMainActivity), R.drawable.ic_icon_comercial))
+        val icon = iconc?.icon?.mutate()
         icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -174,7 +174,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
     }
 
     override fun setResults(ofertas: Int) {
-        var results = String.format(getString(R.string.results_global_search),
+        val results = String.format(getString(R.string.results_global_search),
                 ofertas)
         txtResults.setText(results)
     }
@@ -426,7 +426,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
     }
 
     override fun confirmResusedOferta(oferta: Oferta): AlertDialog?{
-        var builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.confirmation));
         builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()

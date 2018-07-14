@@ -47,14 +47,12 @@ class AccountingFragment : Fragment(), View.OnClickListener {
 
 
         (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.green));
-        var iconMenu = (activity as MenuMainActivity).menuItemGlobal
+        val iconMenu = (activity as MenuMainActivity).menuItemGlobal
         iconMenu?.isVisible = true
 
-        var iconc = iconMenu?.setIcon(ContextCompat.getDrawable((activity as MenuMainActivity), R.drawable.ic_contabilidad))
-        var icon = iconc?.icon?.mutate()
+        val iconc = iconMenu?.setIcon(ContextCompat.getDrawable((activity as MenuMainActivity), R.drawable.ic_contabilidad))
+        val icon = iconc?.icon?.mutate()
         icon?.setColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_IN);
-
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val window = (activity as MenuMainActivity).getWindow()

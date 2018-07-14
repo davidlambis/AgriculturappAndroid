@@ -272,10 +272,10 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
 
     override fun onMessageToas(message: String, color: Int) {
         val inflater = this.layoutInflater
-        var viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        val viewToast = inflater.inflate(R.layout.custom_message_toast, null)
         viewToast.txtMessageToastCustom.setText(message)
         viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(this, color))
-        var mytoast =  Toast(this);
+        val mytoast =  Toast(this);
         mytoast.setView(viewToast);
         mytoast.setDuration(Toast.LENGTH_SHORT);
         mytoast.show();

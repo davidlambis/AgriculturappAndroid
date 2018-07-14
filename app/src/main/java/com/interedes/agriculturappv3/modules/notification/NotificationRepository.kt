@@ -24,7 +24,6 @@ class NotificationRepository:IMainViewNotification.Repository {
         val userlogued= getLastUserLogued()
         val listNotification= SQLite.select().from(NotificationLocal::class.java)
                 .where(NotificationLocal_Table.userLoguedId.eq(userlogued?.Id))
-                .and(NotificationLocal_Table.ReadNotification.eq(false))
                 .queryList()
         for (item in listNotification){
             postEventOk(RequestEventsNotification.ITEM_NEW_EVENT,null,item)

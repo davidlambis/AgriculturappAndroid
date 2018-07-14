@@ -231,7 +231,7 @@ class PermissionsIntro: AppIntro() {
     }
 
     private fun getLastUserLogued(): Usuario? {
-        var usuarioLoguedHome = SQLite.select().from(Usuario::class.java)
+        val usuarioLoguedHome = SQLite.select().from(Usuario::class.java)
                 .where(Usuario_Table.UsuarioRemembered.eq(true))
                 .querySingle()
         return usuarioLoguedHome

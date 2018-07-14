@@ -79,16 +79,17 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
 
                 var messageContent=""
                 if (notificationsOn) {
-
                     messageContent= smsBody.replace(context.getString(R.string.idenfication_send_sms_app),"")
                     var messageAdress=getContactDisplayNameByNumber(smsAddress,context)
                     if(messageAdress.equals("")){
                         messageAdress=smsAddress
                     }
-
                     postEventUserSmsActivity(RequestEventUserSms.NEW_MESSAGE_EVENT,null,null,smsMessageStr)
                     postEventChatSmsActivity(RequestEventSmsDetail.NEW_MESSAGE_EVENT,null,null,smsMessageStr)
+
                     //Build the notification:
+
+                    displayCustomNotificationForOrders(messageAdress, messageContent, context,smsAddress,messageAdress)
                 }
 
                 if (!messageContent.contains(context.getString(R.string.idenfication_send_sms_oferta_app))) {
@@ -108,6 +109,9 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
                     postEventMenu(RequestEventMainMenu.UPDATE_BADGE_NOTIIFCATIONS,null,null,null)
                     postEventNotifications(RequestEventsNotification.RELOAD_LIST_NOTIFICATION,null,null,null)
                 }
+
+
+
             }
         }
     }

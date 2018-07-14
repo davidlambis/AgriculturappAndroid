@@ -196,7 +196,7 @@ class LoginRepositoryImpl : LoginRepository {
         mAuth = FirebaseAuth.getInstance()
         mAuth?.signInWithEmailAndPassword(usuario.Email!!, usuario.Contrasena!!)?.addOnCompleteListener({ task ->
             if (task.isSuccessful) {
-                var mCurrentUserID =task.result.user.uid
+                val mCurrentUserID =task.result.user.uid
                 usuario.IdFirebase=mCurrentUserID
                 usuario.save()
 

@@ -67,7 +67,7 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
 
     private fun setupInit() {
         (activity as MenuMainActivity).toolbar.title = getString(R.string.title_menu)
-        var sdk = android.os.Build.VERSION.SDK_INT;
+        val sdk = android.os.Build.VERSION.SDK_INT;
         if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
             (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary));
 
@@ -75,7 +75,7 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
             (activity as MenuMainActivity).toolbar.setBackgroundColor(ContextCompat.getColor((activity as MenuMainActivity), R.color.colorPrimary));
         }
         (activity as MenuMainActivity).toolbar.setTitleTextColor(resources.getColor(R.color.white))
-        var iconMenu = (activity as MenuMainActivity).menuItemGlobal
+        val iconMenu = (activity as MenuMainActivity).menuItemGlobal
         iconMenu?.isVisible = false
 
 
@@ -140,7 +140,7 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
     }
 
     override fun setResults(listProduccion: Int) {
-        var results = String.format(getString(R.string.results_global_search),
+        val results = String.format(getString(R.string.results_global_search),
                 listProduccion);
         txtResults.setText(results);
     }

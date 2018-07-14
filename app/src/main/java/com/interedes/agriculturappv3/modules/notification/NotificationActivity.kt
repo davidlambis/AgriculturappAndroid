@@ -182,10 +182,10 @@ class NotificationActivity : AppCompatActivity(),IMainViewNotification.MainView 
 
     override fun onMessageToas(message:String,color:Int){
         val inflater = this.layoutInflater
-        var viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        val viewToast = inflater.inflate(R.layout.custom_message_toast, null)
         viewToast.txtMessageToastCustom.setText(message)
         viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(this, color))
-        var mytoast =  Toast(this);
+        val mytoast =  Toast(this);
         mytoast.setView(viewToast);
         mytoast.setDuration(Toast.LENGTH_SHORT);
         mytoast.show();
@@ -227,7 +227,7 @@ class NotificationActivity : AppCompatActivity(),IMainViewNotification.MainView 
     }
 
     override fun setResults(notifications: Int) {
-        var results = String.format(getString(R.string.results_global_search),
+        val results = String.format(getString(R.string.results_global_search),
                 notifications);
         txtResults.setText(results);
     }
@@ -249,7 +249,7 @@ class NotificationActivity : AppCompatActivity(),IMainViewNotification.MainView 
         ///Metodo que permite no recargar la pagina al devolverse
             android.R.id.home -> {
                 // Obtener intent de la actividad padre
-                var upIntent = NavUtils.getParentActivityIntent(this);
+                val upIntent = NavUtils.getParentActivityIntent(this);
                 upIntent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                 // Comprobar si DetailActivity no se creó desde CourseActivity

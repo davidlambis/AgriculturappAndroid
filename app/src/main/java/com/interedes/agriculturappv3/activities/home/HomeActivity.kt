@@ -129,7 +129,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
 
     private fun goToMainActivity() {
         var list = SQLite.select().from(Usuario::class.java).queryList()
-        var usuario= getLastUserLogued()
+        val usuario= getLastUserLogued()
         if (usuario != null) {
             SharedPreferenceHelper.getInstance(this).savePostSyncData(Status_Sync_Data_Resources.STOP);
             val i = Intent(this, MenuMainActivity::class.java)
@@ -229,7 +229,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener, ConnectivityRece
     }
 
     private fun getLastUserLogued(): Usuario? {
-        var usuarioLoguedHome = SQLite.select().from(Usuario::class.java)
+        val usuarioLoguedHome = SQLite.select().from(Usuario::class.java)
                 .where(Usuario_Table.UsuarioRemembered.eq(true))
                 .querySingle()
         return usuarioLoguedHome
