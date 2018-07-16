@@ -93,6 +93,9 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
         if (status != ConnectionResult.SUCCESS) {
             if (googleApiAvailability.isUserResolvableError(status)) {
                 googleApiAvailability.getErrorDialog(this, status, 9000).show();
+            }else{
+                onMessageError(R.color.red_900,"Este dispositivo no soporta los servicios de Google Play.");
+                finish();
             }
             return false;
         }
@@ -103,7 +106,6 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
         if (getLastUser() != null) {
             edtCorreo?.setText(getLastUser()?.Email)
             edtContrasena?.setText(getLastUser()?.Contrasena)
-
         }
     }
 
@@ -138,7 +140,6 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
                      presenter?.resetPassword(edtCorreo?.text?.trim().toString())
                  } */
             }
-
         }
     }
     //endregion

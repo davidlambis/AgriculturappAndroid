@@ -304,6 +304,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         if (Build.VERSION.SDK_INT >= 23) {
             if (!hasPermissions(this, *PERMISSIONS)) {
                 startActivity(Intent(getBaseContext(), PermissionsIntro::class.java))
+                finish()
+                return
             }
         }
 

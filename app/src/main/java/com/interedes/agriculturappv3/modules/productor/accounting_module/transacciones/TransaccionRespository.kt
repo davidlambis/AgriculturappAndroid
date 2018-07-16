@@ -276,8 +276,8 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                                     if (response != null && response.code() == 200) {
                                         transaccion.Estado_SincronizacionUpdate=true
                                         transaccion.update()
-                                        val listProduccion = getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id)
-                                        postEventOk(RequestEventTransaccion.UPDATE_EVENT, listProduccion, transaccion)
+                                        val listTransaccion = getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id)
+                                        postEventOk(RequestEventTransaccion.UPDATE_EVENT, listTransaccion, transaccion)
                                     } else {
                                         postEventError(RequestEventTransaccion.ERROR_EVENT, "Comprueba tu conexión")
                                     }
@@ -304,17 +304,21 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                 transaccion.Estado_SincronizacionUpdate = false
                 transaccion.update()
 
+                val listTransaccion = getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id)
+                postEventOk(RequestEventTransaccion.UPDATE_EVENT, listTransaccion, transaccion)
                 //postEventError(RequestEventLote.ERROR_EVENT, "Error!. El lote no se ha subido")
             }
         }
         //TODO sin conexion a internet, actualizacion local
         else{
-
             terceroLocal.Estado_SincronizacionUpdate = false
             terceroLocal.update()
 
             transaccion.Estado_SincronizacionUpdate = false
             transaccion.update()
+
+            val listTransaccion = getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id)
+            postEventOk(RequestEventTransaccion.UPDATE_EVENT, listTransaccion, transaccion)
         }
     }
 
@@ -360,6 +364,7 @@ class TransaccionRespository: IMainViewTransacciones.Repository {
                 postEventError(RequestEventTransaccion.ERROR_VERIFICATE_CONECTION, null)
             }
         } else {
+
             //TODO No sincronizado, Eliminar de manera local
             transaccion.delete()
             postEventOk(RequestEventTransaccion.DELETE_EVENT,  getTransaccion(cultivo_id,transaccion.CategoriaPuk_Id), transaccion)

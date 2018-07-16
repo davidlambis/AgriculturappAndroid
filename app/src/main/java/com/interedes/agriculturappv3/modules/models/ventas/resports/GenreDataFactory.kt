@@ -74,7 +74,7 @@ class GenreDataFactory {
     }
 
     fun makeBluegrassGenre(): Genre {
-        return Genre("Bluegrass", makeBluegrassArtists(), R.drawable.ic_banjo)
+        return Genre("Bluegrass", makeBluegrassArtists(), R.drawable.ic_lote)
     }
 
     fun makeBluegrassArtists(): List<Artist> {

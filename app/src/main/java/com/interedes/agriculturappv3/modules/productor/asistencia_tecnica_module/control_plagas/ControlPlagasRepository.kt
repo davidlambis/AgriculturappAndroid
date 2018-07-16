@@ -170,17 +170,17 @@ class ControlPlagasRepository : IControlPlagas.Repository {
 
     //region Events
     private fun postEventListUnidadProductiva(type: Int, listUp: List<Unidad_Productiva>?, messageError: String?) {
-        var upMutable = listUp as MutableList<Object>
+        val upMutable = listUp as MutableList<Object>
         postEvent(type, upMutable, null, messageError)
     }
 
     private fun postEventListLotes(type: Int, listLote: List<Lote>?, messageError: String?) {
-        var loteMutable = listLote as MutableList<Object>
+        val loteMutable = listLote as MutableList<Object>
         postEvent(type, loteMutable, null, messageError)
     }
 
     private fun postEventListCultivos(type: Int, listCultivo: List<Cultivo>?, messageError: String?) {
-        var cultivoMutable = listCultivo as MutableList<Object>
+        val cultivoMutable = listCultivo as MutableList<Object>
         postEvent(type, cultivoMutable, null, messageError)
     }
 

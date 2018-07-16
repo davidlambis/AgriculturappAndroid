@@ -286,6 +286,7 @@ class CultivoRepository : ICultivo.Repository {
         } else {
             //TODO No sincronizado, Eliminar de manera local
             deleteCultivo(mCultivo)
+            postEventOk(CultivoEvent.DELETE_EVENT, getCultivos(loteId), mCultivo)
             //Verificate if cultivos register
            /* var vericateRegisterProduccion= SQLite.select().from(Produccion::class.java).where(Produccion_Table.CultivoId.eq(mCultivo.CultivoId)).querySingle()
             if(vericateRegisterProduccion!=null){

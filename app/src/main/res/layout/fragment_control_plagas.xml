@@ -64,9 +64,8 @@
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/margin_5"
                 android:paddingRight="@dimen/margin_5"
-
                 android:paddingTop="@dimen/margin_5"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <View
                     android:id="@+id/indicator_element_sincronize_status"

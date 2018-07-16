@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="48dp"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="16dp"
-        tools:src="@drawable/ic_banjo" />
+        app:srcCompat="@drawable/ic_ic_ingreso_egreso" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -48,6 +49,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
         android:layout_marginRight="16dp"
-        android:src="@drawable/ic_arrow_down" />
+        app:srcCompat="@drawable/ic_arrow_down" />
 
 </FrameLayout>

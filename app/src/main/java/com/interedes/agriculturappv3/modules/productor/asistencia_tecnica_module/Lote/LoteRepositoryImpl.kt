@@ -269,10 +269,10 @@ class LoteRepositoryImpl : MainViewLote.Repository {
         } else {
             //TODO No sincronizado, Eliminar de manera local
             deleteLote(mLote)
+            postEventOk(RequestEventLote.DELETE_EVENT, getLotes(unidad_productiva_id), mLote)
             //Verificate if cultivos register
             /*var vericateRegisterCultivos= SQLite.select().from(Cultivo::class.java).where(Cultivo_Table.LoteId.eq(mLote.LoteId)).querySingle()
             if(vericateRegisterCultivos!=null){
-
                 postEventError(RequestEventLote.ERROR_EVENT, "Error!. El lote no se ha podido eliminar, recuerde eliminar los cultivos")
             }else{
                 mLote.delete()

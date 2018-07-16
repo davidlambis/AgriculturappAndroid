@@ -137,22 +137,22 @@ class LotePresenterImpl(var loteMainView: MainViewLote.View?) : MainViewLote.Pre
     override fun onEventMainThread(eventLote: RequestEventLote?) {
         when (eventLote?.eventType) {
             RequestEventLote.READ_EVENT -> {
-                var loteList = eventLote.mutableList as List<Lote>
+                val loteList = eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
             }
             RequestEventLote.SAVE_EVENT -> {
                 onLoteSaveOk()
-                var loteList = eventLote.mutableList as List<Lote>
+                val loteList = eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
             }
             RequestEventLote.UPDATE_EVENT -> {
                 onLoteUpdateOk()
-                var loteList = eventLote.mutableList as List<Lote>
+                val loteList = eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
             }
             RequestEventLote.DELETE_EVENT -> {
                 onLoteDeleteOk()
-                var loteList = eventLote.mutableList as List<Lote>
+                val loteList = eventLote.mutableList as List<Lote>
                 loteMainView?.setListLotes(loteList)
             }
             RequestEventLote.ERROR_EVENT -> {
@@ -161,20 +161,20 @@ class LotePresenterImpl(var loteMainView: MainViewLote.View?) : MainViewLote.Pre
 
         //EVENTS ONITEM CLICK
             RequestEventLote.ITEM_EVENT -> {
-                var lote = eventLote.objectMutable as Lote
+                val lote = eventLote.objectMutable as Lote
                 loteMainView?.onMessageOk(R.color.colorPrimary, "Item: " + lote.Nombre)
             }
             RequestEventLote.ITEM_READ_EVENT -> {
-                var lote = eventLote.objectMutable as Lote
+                val lote = eventLote.objectMutable as Lote
                 loteMainView?.onMessageOk(R.color.colorPrimary, "Leer: " + lote.Nombre)
                 ///  Toast.makeText(activity,"Leer: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
             RequestEventLote.ITEM_EDIT_EVENT -> {
-                var lote = eventLote.objectMutable as Lote
+                val lote = eventLote.objectMutable as Lote
                 loteMainView?.showAlertDialogAddLote(lote)
             }
             RequestEventLote.ITEM_DELETE_EVENT -> {
-                var lote = eventLote.objectMutable as Lote
+                val lote = eventLote.objectMutable as Lote
                 loteMainView?.confirmDelete(lote)
                 //// Toast.makeText(activity,"Eliminar: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }

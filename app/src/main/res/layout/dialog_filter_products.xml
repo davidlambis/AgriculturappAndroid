@@ -126,12 +126,10 @@
                     </RelativeLayout>
 
 
-
-
                     <Button
                         android:padding="@dimen/margin_10"
                         android:gravity="center"
-                        android:id="@+id/button1"
+                        android:id="@+id/btnFilterDepartment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
@@ -139,6 +137,13 @@
                         android:background="@drawable/style_buttons"
                         android:text="Ubicación"
                         />
+
+                    <TextView
+                        android:text="Departamento/Ciudad"
+                        android:id="@+id/txtCityDepartment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
 
                 </LinearLayout>
             </LinearLayout>

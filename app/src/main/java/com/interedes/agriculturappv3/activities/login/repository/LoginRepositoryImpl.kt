@@ -48,6 +48,14 @@ import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.resources.Status_Sync_Data_Resources
 import java.io.IOException
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table.Nombre_Departamento
+import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table.Nombre_Ciudad
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase_Table.Telefono
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase_Table.Cedula
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+
+
 
 
 class LoginRepositoryImpl : LoginRepository {
@@ -86,7 +94,6 @@ class LoginRepositoryImpl : LoginRepository {
                                 val ultimo_usuario = getLastUser()
 
                                 for (item in user_login!!) {
-
 
                                     var session_id: Long?
                                     if (ultimo_usuario == null) {
@@ -377,6 +384,24 @@ class LoginRepositoryImpl : LoginRepository {
         val usuario_sqlite = getUsuario(login)
         if (usuario_sqlite != null) {
 
+            /*SQLite.update(Usuario::class.java)
+                    .set(Usuario_Table.UsuarioRemembered.eq(false)
+                    )
+                    .where(Usuario_Table.Id.`is`(usuario_sqlite.Id))
+                    //   .and(Usuario_Table.IsRemembered.is(true))
+                    .async()
+                    .execute() // non-UI blocking*/
+
+            SQLite.update(Usuario::class.java)
+                    .set(Usuario_Table.UsuarioRemembered.eq(false)
+                    )
+                    .where(Usuario_Table.Id.notEq(usuario_sqlite.Id))
+                    //   .and(Usuario_Table.IsRemembered.is(true))
+                    .async()
+                    .execute() // non-UI blocking*/
+
+
+
             val ultimo_usuario = getLastUser()
             val session_id: Long?
             if (ultimo_usuario == null) {
@@ -385,7 +410,7 @@ class LoginRepositoryImpl : LoginRepository {
                 session_id = ultimo_usuario.SessionId!! + 1
             }
 
-            if(usuario_sqlite?.RolNombre.equals(RolResources.PRODUCTOR) && ultimo_usuario?.RolNombre.equals(RolResources.COMPRADOR) || usuario_sqlite?.RolNombre.equals(RolResources.COMPRADOR) && ultimo_usuario?.RolNombre.equals(RolResources.PRODUCTOR)){
+            if(usuario_sqlite.RolNombre.equals(RolResources.PRODUCTOR) && ultimo_usuario?.RolNombre.equals(RolResources.COMPRADOR) || usuario_sqlite?.RolNombre.equals(RolResources.COMPRADOR) && ultimo_usuario?.RolNombre.equals(RolResources.PRODUCTOR)){
                 cleanDataSqlite()
             }
 
