@@ -26,6 +26,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
+import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.departments.Ciudad
@@ -46,6 +47,12 @@ import com.google.android.gms.cast.CastRemoteDisplayLocalService
 import com.google.android.gms.cast.CastRemoteDisplayLocalService.startService
 import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 import com.interedes.agriculturappv3.services.resources.RequestAccessPhoneResources
+import com.takusemba.spotlight.OnSpotlightStateChangedListener
+import com.takusemba.spotlight.Spotlight
+import com.takusemba.spotlight.shape.Circle
+import com.takusemba.spotlight.target.CustomTarget
+import com.takusemba.spotlight.target.Target
+import com.takusemba.spotlight.target.SimpleTarget
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import java.io.IOException
 import java.util.*
@@ -110,6 +117,8 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
         fabAddUnidadProductiva.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         ivBackButton.setOnClickListener(this)
+
+
         setupInjection()
 
         YoYo.with(Techniques.Pulse)
@@ -349,7 +358,8 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             unidadProductiva?.Configuration_Poligon = unidadProductivaGlobal!!.Configuration_Poligon
             unidadProductiva?.Latitud = latitud
             unidadProductiva?.Longitud = longitud
-            unidadProductiva?.DireccionAproximadaGps=getAddressGps(latitud!!,longitud!!)
+            unidadProductiva?.DireccionAproximadaGps=""
+            //unidadProductiva?.DireccionAproximadaGps=getAddressGps(latitud!!,longitud!!)
             presenter?.updateUP(unidadProductiva!!)
         }
     }
@@ -757,6 +767,9 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
                     registerUp()
                 }
             }
+
+
+
         }
     }
 

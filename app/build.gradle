@@ -21,8 +21,7 @@ android {
         //buildConfigField "String", "ps", getPs()
 
 
-        vectorDrawables.useSupportLibrary =
-                true
+        vectorDrawables.useSupportLibrary =true
     }
     buildTypes {
 
@@ -115,8 +114,6 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.1'
 
-    //Maps MapDrawingTools
-    implementation "com.github.bkhezry:MapDrawingTools:$mapDrawingVersion"
 
     //DIALOGS
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
@@ -153,6 +150,9 @@ dependencies {
     implementation 'com.daimajia.easing:library:2.0@aar'
     implementation 'com.daimajia.androidanimations:library:2.3@aar'
 
+
+    implementation 'com.github.takusemba:spotlight:1.6.1'
+
     //Picaso
     //implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.squareup.picasso:picasso:2.71828'
@@ -177,9 +177,6 @@ dependencies {
 
 
 
-
-
-
     //Glide
     //implementation 'com.github.bumptech.glide:glide:4.7.1'
    // annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
@@ -187,12 +184,16 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.7.1'
 
 
+    /*
+    //Maps MapDrawingTools
+    implementation "com.github.bkhezry:MapDrawingTools:$mapDrawingVersion"
+
     def SupportLibVersion = '27.1.0'
     implementation "com.android.support:appcompat-v7:$SupportLibVersion",
             "com.android.support:design:$SupportLibVersion"
     implementation('com.github.bkhezry:ExtraMapUtils:v1.2.0') {
         exclude group: 'com.android.support'
-    }
+    }*/
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
@@ -204,7 +205,7 @@ dependencies {
 kapt {
     generateStubs = true
 }
-
+/*
 def getEm() {
     Properties properties = new Properties()
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -216,6 +217,6 @@ def getPs() {
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
     return properties.getProperty("ps")
 }
-
+*/
 
 apply plugin: 'com.google.gms.google-services'

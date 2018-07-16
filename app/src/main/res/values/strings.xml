@@ -130,7 +130,7 @@
 
 
     <string name="verifcate_area_lote">Verifica. El área  total de lotes supera el área de la Unidad Productiva</string>
-
+    <string name="add_new_lote_info">Haga click para registrar su lote</string>
 
     <!--Unidad Prodductiva-->
     <string name="tittle_add_unidadproductiva">Agregar Unidad Productiva</string>

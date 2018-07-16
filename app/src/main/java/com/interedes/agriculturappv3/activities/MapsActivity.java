@@ -18,7 +18,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
-
+/*
 import com.github.bkhezry.extramaputils.builder.ExtraMarkerBuilder;
 import com.github.bkhezry.extramaputils.builder.ExtraPolygonBuilder;
 import com.github.bkhezry.extramaputils.builder.ViewOptionBuilder;
@@ -28,6 +28,7 @@ import com.github.bkhezry.extramaputils.utils.MapUtils;
 import com.github.bkhezry.mapdrawingtools.model.DataModel;
 import com.github.bkhezry.mapdrawingtools.model.DrawingOption;
 import com.github.bkhezry.mapdrawingtools.model.DrawingOptionBuilder;
+*/
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -42,20 +43,20 @@ import com.interedes.agriculturappv3.util.ConexionInternet;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.bkhezry.mapdrawingtools.ui.MapsActivity.POINTS;
+//import static com.github.bkhezry.mapdrawingtools.ui.MapsActivity.POINTS;
 
 /**
  * Created by Sebastian Polania on 6/03/18.
  * Android Developer and Apps Web
  */
+//public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity  {
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
-
-    public static final int REQUEST_CODE = 1;
+   /* public static final int REQUEST_CODE = 1;
     private GoogleMap googleMap;
-    private DrawingOption.DrawingType currentDrawingType;
+    private DrawingOption.DrawingType currentDrawingType;*/
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+    /*private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
@@ -66,13 +67,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 doZoom(coords);
             }
         }
-    };
+    };*/
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_layout);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+
+        /*AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -84,8 +87,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (onConnection()){
             new CoordsService(this);
             setUpButtons();
-        }
+        }*/
     }
+
+    /*
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -215,5 +220,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onResume() {
         super.onResume();
         registerReceiver(receiver,new IntentFilter("LOCATION"));
-    }
+    }*/
 }

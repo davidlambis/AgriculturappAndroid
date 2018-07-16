@@ -16,10 +16,6 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-    <permission
-        android:name="com.interedes.agriculturappv3.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-
     <uses-permission android:name="com.interedes.agriculturappv3.permission.C2D_MESSAGE" />
 
     <!-- SMS -->
@@ -34,9 +30,13 @@
     <!-- INtent Service Job -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <uses-feature
+    <permission
+        android:name="com.interedes.agriculturappv3.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <!--<uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true" />
+        android:required="true" />-->
 
     <application
         android:name=".AgriculturApplication"
@@ -102,9 +102,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.MenuMain" />
 
-        <activity
+        <!--<activity
             android:name=".activities.MapsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />-->
         <activity
             android:name=".activities.chat.online.conversations_user.ConversationsUsersActivity"
             android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
@@ -131,37 +131,27 @@
             android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
             android:name=".modules.notification.NotificationActivity"></activity>
 
-        <!-- Maps -->
+        <!-- Maps-->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/maps" />
-
         <!-- fabric -->
 
-        <receiver
-            android:name=".services.internet_connection.ConnectivityReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
 
+
+        <!--SERVICES-->
         <service
             android:name=".services.sms.NotificationService"
             android:enabled="true"
             android:exported="true" />
 
-        <receiver
-            android:name=".services.sms.MySmsBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter android:priority="999">
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
+
+
+
+
 
         <service android:name=".services.coords.CoordsServiceKotlin" />
 
@@ -201,6 +191,28 @@
             android:name=".services.services.JobSyncService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <!--End Services-->
+
+        <!--Receivers-->
+
+        <receiver
+            android:name=".services.sms.MySmsBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="999">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".services.internet_connection.ConnectivityReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <!--Endreceivers-->
 
         <!-- CHAT SERVICE -->
         <!--<service

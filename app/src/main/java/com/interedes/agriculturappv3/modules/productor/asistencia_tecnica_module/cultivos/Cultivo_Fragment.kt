@@ -238,9 +238,11 @@ class Cultivo_Fragment : Fragment(), View.OnClickListener, ICultivo.View, SwipeR
             focusView = viewDialog?.edtFechaFin
             cancel = true
         } else if (viewDialog?.spinnerTipoProducto?.text.toString().isEmpty()) {
+            viewDialog?.spinnerTipoProducto?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerTipoProducto
             cancel = true
         } else if (viewDialog?.spinnerDetalleTipoProducto?.text.toString().isEmpty()) {
+            viewDialog?.spinnerDetalleTipoProducto?.setError(getString(R.string.error_field_required))
             focusView = viewDialog?.spinnerDetalleTipoProducto
             cancel = true
         } else if (Fecha_Inicio?.after(Fecha_Fin) == true) {

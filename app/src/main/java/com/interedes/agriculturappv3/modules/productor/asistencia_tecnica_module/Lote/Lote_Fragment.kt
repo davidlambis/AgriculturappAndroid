@@ -33,6 +33,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
@@ -55,11 +56,17 @@ import com.interedes.agriculturappv3.services.coords.CoordsServiceKotlin
 import com.interedes.agriculturappv3.services.resources.RequestAccessPhoneResources
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.takusemba.spotlight.OnSpotlightStateChangedListener
+import com.takusemba.spotlight.Spotlight
+import com.takusemba.spotlight.shape.Circle
+import com.takusemba.spotlight.target.CustomTarget
+import com.takusemba.spotlight.target.Target
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.content_recyclerview.*
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_form_lote.view.*
 import kotlinx.android.synthetic.main.fragment_lote.*
+import kotlinx.android.synthetic.main.layout_target.view.*
 import java.util.ArrayList
 
 
@@ -1401,17 +1408,61 @@ class Lote_Fragment : Fragment(), MainViewLote.View, OnMapReadyCallback, SwipeRe
 
                 if (UBICATION_GPS == true) {
 
+
+                    if(hudCoords?.isShowing!!){
+                        val inflater = LayoutInflater.from(activity!!)
+                        val targets = ArrayList<Target>()
+                        // make an target
+                        val first = inflater.inflate(R.layout.layout_target, null)
+                        val firstTarget = CustomTarget.Builder(activity!!).setPoint(fabAddLote)
+                                .setShape(Circle(100f))
+                                .setOverlay(first)
+                                .build()
+
+                        targets.add(firstTarget)
+                        //targets.add(thirdTarget)
+                        val spotlight =
+                                Spotlight.with(activity!!)
+                                        .setOverlayColor(R.color.background)
+                                        .setDuration(500L)
+                                        .setAnimation(DecelerateInterpolator(2f))
+                                        .setTargets(targets)
+                                        .setClosedOnTouchedOutside(false)
+                                        .setOnSpotlightStateListener(object : OnSpotlightStateChangedListener {
+                                            override fun onStarted() {
+                                                //Toast.makeText(activity!!, "spotlight is started", Toast.LENGTH_SHORT)
+                                                    //    .show()
+                                            }
+
+                                            override fun onEnded() {
+                                               /// Toast.makeText(activity!!, "spotlight is ended", Toast.LENGTH_SHORT).show()
+                                            }
+                                        })
+                        spotlight.start()
+
+
+
+                        val closeSpotlight = View.OnClickListener { spotlight.closeSpotlight() }
+                        first.close_spotlight.setOnClickListener(closeSpotlight)
+
+
+                    }
+
+
+
                     latitud = intent.extras!!.getDouble("latitud")
                     longitud = intent.extras!!.getDouble("longitud")
 
 
                     addMarkerLocation(latitud!!, longitud!!)
-                    hideProgressHudCoords()
+
                     txtCoordsLote.setText(String.format(getString(R.string.coords), latitud, longitud))
 
                     YoYo.with(Techniques.Pulse)
                             .repeat(2)
                             .playOn(fabAddLote)
+
+                    hideProgressHudCoords()
 
                     if(viewDialog != null){
                         viewDialog?.edtLatitud?.setText(latitud.toString())
