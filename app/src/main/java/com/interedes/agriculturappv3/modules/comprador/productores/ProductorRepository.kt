@@ -4,18 +4,14 @@ import android.util.Base64
 import android.util.Log
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.libs.eventbus_rx.Rx_Bus
 import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
-import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
-import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleTipoProducto
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
-import com.interedes.agriculturappv3.modules.models.produccion.Produccion
-import com.interedes.agriculturappv3.modules.models.producto.GetProductosByTipoResponse
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
-import com.interedes.agriculturappv3.modules.models.producto.ViewProducto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
@@ -27,19 +23,19 @@ import com.interedes.agriculturappv3.services.listas.Listas
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import android.R.attr.delay
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 
 import java.util.concurrent.TimeUnit;
-import android.widget.Toast
+import com.interedes.agriculturappv3.modules.models.departments.Ciudad
+import com.interedes.agriculturappv3.modules.models.departments.Departamento
+import com.interedes.agriculturappv3.modules.comprador.productores.events.EventDepartamentCities
 
 class ProductorRepository:IMainViewProductor.Repository {
+
+
 
 
     var eventBus: EventBus? = null
@@ -51,6 +47,25 @@ class ProductorRepository:IMainViewProductor.Repository {
         mCompositeDisposable = CompositeDisposable()
     }
 
+    override fun getListDepartmentCities() {
+        val listDepartamentos = SQLite.select().from(Departamento::class.java).queryList()
+        val listCiudades = SQLite.select().from(Ciudad::class.java).queryList()
+
+        val eventDepartment= EventDepartamentCities(listDepartamentos, listCiudades)
+        Rx_Bus.publish(eventDepartment)
+        //postEventListDepartamentos(RequestEventProductor.LIST_EVENT_DEPARTAMENTOS, listDepartamentos, null)
+        ///postEventListCiudades(RequestEventProductor.LIST_EVENT_CIUDADES, listCiudades, null)
+    }
+
+    private fun postEventListDepartamentos(type: Int, listDepartamentos: List<Departamento>?, messageError: String?) {
+        val departamentoMutable = listDepartamentos as MutableList<Object>
+        postEvent(type, departamentoMutable, null, messageError)
+    }
+
+    private fun postEventListCiudades(type: Int, listCiudades: List<Ciudad>?, messageError: String?) {
+        val ciudadMutable = listCiudades as MutableList<Object>
+        postEvent(type, ciudadMutable, null, messageError)
+    }
 
     override fun getTipoProducto(tipoProducto: Long): TipoProducto? {
         val tipoProducto= SQLite.select().from(TipoProducto::class.java).where(TipoProducto_Table.Id.eq(tipoProducto)).querySingle()

@@ -7,6 +7,8 @@ import android.content.IntentFilter
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
+import com.interedes.agriculturappv3.modules.models.departments.Ciudad
+import com.interedes.agriculturappv3.modules.models.departments.Departamento
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.services.resources.Const_Resources
@@ -19,6 +21,10 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
 
     var interactor: IMainViewProductor.Interactor? = null
     var eventBus: EventBus? = null
+
+    //List
+    var listDepartamentoGlobal: List<Departamento>? = ArrayList<Departamento>()
+    var listMunicipiosGlobal: List<Ciudad>? = ArrayList<Ciudad>()
 
     //GLOBALS
     var listTipoProducto:List<Producto>?= ArrayList<Producto>()
@@ -121,6 +127,10 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
 
     override fun getTipoProducto(tipoProducto: Long): TipoProducto? {
         return interactor?.getTipoProducto(tipoProducto)
+    }
+
+    override fun getListDepartmentCities() {
+        interactor?.getListDepartmentCities()
     }
 
     //region Messages/Notificaciones

@@ -149,11 +149,18 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
             txtUbicacion.setText(String.format("%s / %s", data.Ciudad, data.Departamento))
             txtFechaDisponibilidad.setText(data.getFechaLimiteDisponibilidadFormat())
 
-            GlideApp.with(contextLocal!!)
-                    .load(S3Resources.RootImage+"${data.Usuario?.Fotopefil}")
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .productorPhoto()
-                    .into(imgProductor);
+            if(data.Usuario?.Fotopefil!=null){
+                GlideApp.with(contextLocal!!)
+                        .load(S3Resources.RootImage+"${data.Usuario?.Fotopefil}")
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .productorPhoto()
+                        .into(imgProductor);
+            }else{
+                imgProductor.setImageResource(R.drawable.ic_account_box_green)
+                imgProductor.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            }
+
+
 
             /*
             val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(data.EmailProductor)

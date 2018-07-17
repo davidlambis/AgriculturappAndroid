@@ -134,6 +134,12 @@
     </style>
 
 
+    <!--Animation Dialog-->
+    <style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/green_transparent</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@color/green_transparent</item>
+    </style>
 
 <!--
     <style name="foodRatingBar" parent="@android:style/Widget.RatingBar">

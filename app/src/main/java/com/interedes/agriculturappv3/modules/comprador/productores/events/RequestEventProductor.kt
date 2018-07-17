@@ -25,7 +25,5 @@ data class RequestEventProductor (var eventType: Int,
 
         //List
         val LIST_EVENT: Int = 11
-
-
     }
 }

@@ -19,4 +19,8 @@ class ProductorInteractor:IMainViewProductor.Interactor {
     override fun getTipoProducto(tipoProducto: Long): TipoProducto? {
         return repository?.getTipoProducto(tipoProducto)
     }
+
+    override fun getListDepartmentCities() {
+        repository?.getListDepartmentCities()
+    }
 }

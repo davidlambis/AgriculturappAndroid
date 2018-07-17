@@ -164,11 +164,21 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
             txtFechaDisponibilidad?.setText(productoGlobal?.getFechaLimiteDisponibilidadFormat())
 
             val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(productoGlobal?.userId)).querySingle()
-            GlideApp.with(activity!!)
-                    .load(S3Resources.RootImage+"${usuario?.Fotopefil}")
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .productorPhotoCenterCrop()
-                    .into(contentIcon)
+
+
+            if(usuario?.Fotopefil!=null){
+                GlideApp.with(activity!!)
+                        .load(S3Resources.RootImage+"${usuario?.Fotopefil}")
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .productorPhotoCenterCrop()
+                        .into(contentIcon)
+            }else{
+                contentIcon.setImageResource(R.drawable.ic_account_box_green)
+                contentIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            }
+
+
+
 
 
             if(productoGlobal?.blobImagen!=null){
@@ -184,11 +194,18 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                 }
             }else{
 
-                GlideApp.with(activity!!)
-                        .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .productoPhotoCenterCrop()
-                        .into(contenIconProducto)
+                if(productoGlobal?.Imagen!=null){
+                    GlideApp.with(activity!!)
+                            .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .productoPhotoCenterCrop()
+                            .into(contenIconProducto)
+                }else{
+                    contentIcon.setImageResource(R.drawable.ic_foto_producto)
+                    contentIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                }
+
+
 
                /* Picasso.get()
                         .load(S3Resources.RootImage+"${productoGlobal?.Imagen}")

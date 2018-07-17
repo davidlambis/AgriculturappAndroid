@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/container_fragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".modules.comprador.productores.ProductoresFragment">
 
@@ -42,9 +43,19 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:layout_toEndOf="@+id/logoTipoProducto"
-                android:text=""
+                android:text="Cafe"
                 android:textAlignment="center"
                 android:textColor="@color/grey_luiyi" />
+
+            <ImageView
+                android:foreground="?android:attr/selectableItemBackground"
+                android:layout_marginRight="@dimen/margin_5"
+                android:id="@+id/imageViewFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/ic_filter_list" />
 
         </RelativeLayout>
 
@@ -79,6 +90,5 @@
 
 
     </LinearLayout>
-  
 
 </FrameLayout>

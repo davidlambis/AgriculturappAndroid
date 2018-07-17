@@ -117,7 +117,6 @@ class LoginRepositoryImpl : LoginRepository {
                                     usuario.EmailConfirmed = item.emailConfirmed
                                     usuario.PhoneNumber = item.phoneNumber
                                     usuario.PhoneNumberConfirmed = item.phoneNumberConfirmed
-                                    usuario.UsuarioRemembered = true
                                     usuario.AccessToken = access_token
                                     usuario.RolNombre = rolNombre
                                     usuario.SessionId = session_id
@@ -205,6 +204,7 @@ class LoginRepositoryImpl : LoginRepository {
             if (task.isSuccessful) {
                 val mCurrentUserID =task.result.user.uid
                 usuario.IdFirebase=mCurrentUserID
+                usuario.UsuarioRemembered = true
                 usuario.save()
 
                 val reference: DatabaseReference?  = Chat_Resources.mUserDBRef

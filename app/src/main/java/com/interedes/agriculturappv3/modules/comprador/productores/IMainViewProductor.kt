@@ -31,6 +31,7 @@ interface IMainViewProductor {
 
         //Dialog
         fun verificateConnection(): AlertDialog?
+        fun showAlertDialogFilterProducts()
 
         //Navigate
         fun navigateDetalleTipoProductoUser(poducto:Producto)
@@ -53,6 +54,9 @@ interface IMainViewProductor {
         fun getListProducto(tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean)
         fun getTipoProducto(tipoProducto:Long):TipoProducto?
 
+        //Listas
+        fun getListDepartmentCities()
+
         //Conecttion
         fun checkConnection(): Boolean
     }
@@ -60,11 +64,15 @@ interface IMainViewProductor {
     interface Interactor {
         fun getTipoProducto(tipoProducto:Long):TipoProducto?
         fun execute(checkConection:Boolean,tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean)
+
+        fun getListDepartmentCities()
     }
 
     interface Repository {
         fun getTipoProducto(tipoProducto:Long):TipoProducto?
         fun getListTipoProductos(checkConection:Boolean,tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean)
+
+        fun getListDepartmentCities()
     }
 
 }

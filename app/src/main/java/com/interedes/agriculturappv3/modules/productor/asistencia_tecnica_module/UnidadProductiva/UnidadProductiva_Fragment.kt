@@ -605,6 +605,15 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
                 .setView(viewDialog)
                 .create()
 
+        dialog.setOnKeyListener(DialogInterface.OnKeyListener { dialogInterface, i, keyEvent ->
+            if (i == KeyEvent.KEYCODE_BACK) {
+                presenter?.closeServiceGps(activity!!)
+                return@OnKeyListener true
+            }
+            false
+        })
+
+
 
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow()?.getAttributes())
@@ -742,24 +751,19 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
             }
 
             R.id.imageViewStopLocalizarUnidadProductiva -> {
-
                 /*var intent =  Intent(activity, CoordsServiceKotlin::class.java);
                 activity!!.stopService(intent)*/
-
                 presenter?.closeServiceGps(activity!!)
                 presenter?.setStatusServiceCoords(false)
                 viewDialog?.imageViewStopLocalizarUnidadProductiva?.visibility=View.GONE
             }
 
             R.id.ivBackButton -> {
-
                 /*var intent =  Intent(activity, CoordsServiceKotlin::class.java);
                 activity!!.stopService(intent)*/
-
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).onBackPressed()
             }
-
             R.id.btnSaveUnidadProductiva -> {
                 if (unidadProductivaGlobal != null) {
                     updateUp(unidadProductivaGlobal)
@@ -767,9 +771,6 @@ class UnidadProductiva_Fragment : Fragment(), View.OnClickListener, SwipeRefresh
                     registerUp()
                 }
             }
-
-
-
         }
     }
 

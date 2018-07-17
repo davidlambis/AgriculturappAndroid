@@ -1,6 +1,7 @@
 package com.interedes.agriculturappv3.modules.comprador.productores
 
 
+import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -12,23 +13,31 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.kaopiz.kprogresshud.KProgressHUD
-import kotlinx.android.synthetic.main.activity_menu_main.*
-import kotlinx.android.synthetic.main.fragment_productores.*
-import kotlinx.android.synthetic.main.fragment_productos_comprador.*
 import android.support.v7.widget.LinearLayoutManager
+import android.view.*
 import android.widget.Toast
 import com.interedes.agriculturappv3.modules.comprador.detail_producto.DetalleProductoFragment
 import com.interedes.agriculturappv3.modules.comprador.productores.adapter.*
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
-
+import android.view.ViewAnimationUtils
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.os.Build
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
+import com.interedes.agriculturappv3.libs.eventbus_rx.Rx_Bus
+import com.interedes.agriculturappv3.modules.models.departments.Departamento
+import com.interedes.agriculturappv3.modules.comprador.productores.events.EventDepartamentCities
+import com.raizlabs.android.dbflow.sql.language.SQLite
+import kotlinx.android.synthetic.main.activity_menu_main.*
+import kotlinx.android.synthetic.main.dialog_filter_products.view.*
+import kotlinx.android.synthetic.main.fragment_productores.*
 
 class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.MainView, SwipeRefreshLayout.OnRefreshListener {
 
@@ -42,14 +51,16 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     val TAG = ProductoresFragment::class.java!!.getSimpleName()
     //Progress
     private var hud: KProgressHUD?=null
-
-
     private var loadedFragment:Boolean=false
 
 
     //Productos
     var PAGE_SIZE=4
     var pastVisiblesItems: Int? = 0
+
+    //DialogsFilter
+    var _dialogDepartments: MaterialDialog? = null
+    var _dialogCities: MaterialDialog? = null
 
 
 
@@ -76,6 +87,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         }
         (activity as MenuMainActivity).toolbar.title=getString(R.string.tittle_productos)
         ivBackButton.setOnClickListener(this)
+        imageViewFilter.setOnClickListener(this)
        // swipeRefreshLayout.setOnRefreshListener(this)
         setupInjection()
     }
@@ -229,9 +241,11 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     }
 
     override fun setResults(listProduccion: Int) {
-        var results = String.format(getString(R.string.results_global_search),
+        val results = String.format(getString(R.string.results_global_search),
                 listProduccion);
-        txtResults.setText(results);
+        if(txtResults!=null){
+            txtResults.setText(results);
+        }
     }
 
     override fun requestResponseOK() {
@@ -244,8 +258,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
     override fun onMessageOk(colorPrimary: Int, message: String?) {
         val color = Color.WHITE
-        val snackbar = Snackbar
-                .make(container_fragment, message!!, Snackbar.LENGTH_LONG)
+        val snackbar = Snackbar.make(container_fragment, message!!, Snackbar.LENGTH_LONG)
         val sbView = snackbar.view
         sbView.setBackgroundColor(ContextCompat.getColor(activity!!.applicationContext, colorPrimary))
         val textView = sbView.findViewById<View>(android.support.design.R.id.snackbar_text) as TextView
@@ -261,10 +274,10 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     }
 
     override fun verificateConnection(): AlertDialog? {
-        var builder = AlertDialog.Builder(context!!)
+        val builder = AlertDialog.Builder(context!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.verificate_conexion));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
         })
         builder.setIcon(R.drawable.ic_produccion_cultivo);
@@ -278,6 +291,151 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             }
         }
     }
+
+
+
+    override fun showAlertDialogFilterProducts() {
+        val inflater = this.layoutInflater
+        val viewDialog  = inflater.inflate(R.layout.dialog_filter_products, null)
+
+        // get seekbar from view
+        val rangeSeekbar = viewDialog.rangeSeekbar5
+
+        // get min and max text view
+        val tvMin = viewDialog.textMin5
+        val tvMax = viewDialog.textMax5
+
+        val departments = View.OnClickListener { showDialogDepartment() }
+        viewDialog.btnFilterDepartment.setOnClickListener(departments)
+
+        // set listener
+        rangeSeekbar.setOnRangeSeekbarChangeListener { minValue, maxValue ->
+            //tvMin.text = minValue.toString()
+            //tvMax.text = maxValue.toString()
+            tvMin.text=String.format(context!!.getString(R.string.price),
+                    minValue.toDouble())
+            tvMax.text=String.format(context!!.getString(R.string.price),
+                    maxValue.toDouble())
+        }
+
+
+
+
+        val dialog = AlertDialog.Builder(context!!, R.style.MyAlertDialogStyle)
+                .setView(viewDialog)
+                .create()
+        //dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+
+       /* val dialog = Dialog(context!!, R.style.MyAlertDialogStyle)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(viewDialog)*/
+
+        dialog.setOnShowListener { revealShow(viewDialog!!, true, null) }
+        dialog.setOnKeyListener(DialogInterface.OnKeyListener { dialogInterface, i, keyEvent ->
+            if (i == KeyEvent.KEYCODE_BACK) {
+                revealShow(viewDialog!!, false, dialog)
+                return@OnKeyListener true
+            }
+            false
+        })
+
+        val closeDialog = View.OnClickListener {  revealShow(viewDialog!!, false, dialog)}
+        viewDialog.ivClosetDialogFilter.setOnClickListener(closeDialog)
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        //lp.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //Hide KeyBoard
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+
+        dialog.show()
+        //dialog.getWindow().setAttributes(lp)
+        //_dialogRegisterUpdate=dialog
+    }
+
+    private fun showDialogDepartment() {
+        val adapter = MaterialSimpleListAdapter { dialog, index1, item ->  onMessageOk(R.color.orange,String.format("%s : %s",index1 , item)) }
+        MaterialDialog.Builder(activity!!)
+                .title(R.string.department)
+                .positiveText(android.R.string.cancel)
+                .adapter(adapter, null)
+                .show()
+
+        Rx_Bus.listen(EventDepartamentCities::class.java).subscribe({
+            val items= it.departamentos
+            for (item in items!!){
+                adapter.add(
+                        MaterialSimpleListItem.Builder(activity)
+                                .content(item.Nombre)
+                                //.icon(R.drawable.ic_account_circle)
+                                .backgroundColor(Color.WHITE)
+                                .build())
+            }
+        })
+        presenter?.getListDepartmentCities()
+        //val departments= SQLite.select().from(Departamento::class.java).queryList()
+        /*val dialog = MaterialDialog.Builder(activity!!)
+                .title(R.string.department)
+                .items()
+                .itemsCallback({ dialog, view, which, text -> onMessageOk(R.color.orange,String.format("%s : %s",which , text)) })
+                .positiveText(android.R.string.cancel)
+                .build()
+        _dialogDepartments=dialog*/
+
+
+    }
+
+    private fun showDialogCities() {
+
+        val departments= SQLite.select().from(Departamento::class.java).queryList()
+        MaterialDialog.Builder(activity!!)
+                .title(R.string.department)
+                .items(departments)
+                .itemsCallback({ dialog, view, which, text -> onMessageOk(R.color.orange,String.format("%s : %s",which , text)) })
+                .positiveText(android.R.string.cancel)
+                .show()
+    }
+
+    private fun revealShow(dialogView: View, b: Boolean, dialog: Dialog?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val view = dialogView.dialogFilter
+            val w = view.getWidth()
+            val h = view.getHeight()
+
+            val endRadius = Math.hypot(w.toDouble(), h.toDouble()).toInt()
+            val cx = (imageViewFilter.getX() + imageViewFilter.getWidth() / 2)
+            val cy = imageViewFilter.getY()  + imageViewFilter.getHeight() + 56
+
+            if (b) {
+                val revealAnimator = ViewAnimationUtils.createCircularReveal(view, cx.toInt(), cy.toInt(), 0f, endRadius.toFloat())
+                view.setVisibility(View.VISIBLE)
+                revealAnimator.duration = 700
+                revealAnimator.start()
+            } else {
+
+                val anim = ViewAnimationUtils.createCircularReveal(view, cx.toInt(), cy.toInt(), endRadius.toFloat(), 0f)
+                anim.addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        super.onAnimationEnd(animation)
+                        dialog?.dismiss()
+                        view.setVisibility(View.INVISIBLE)
+                    }
+                })
+
+                anim.duration = 700
+                anim.start()
+            }
+        }else{
+            if (b) {
+                dialog?.show()
+            } else {
+               dialog?.dismiss()
+            }
+        }
+    }
     //endregion
 
 
@@ -288,6 +446,10 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             R.id.ivBackButton -> {
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).onBackPressed()
+            }
+
+            R.id.imageViewFilter->{
+                showAlertDialogFilterProducts()
             }
         }
     }

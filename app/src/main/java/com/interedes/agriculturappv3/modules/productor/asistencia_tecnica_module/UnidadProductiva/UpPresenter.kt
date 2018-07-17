@@ -51,7 +51,7 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
     //region Conectividad
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
+            val extras = intent.extras
             IUpView?.onEventBroadcastReceiver(extras, intent);
         }
     }
