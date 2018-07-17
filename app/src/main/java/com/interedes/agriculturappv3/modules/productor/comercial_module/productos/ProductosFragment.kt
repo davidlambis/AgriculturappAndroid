@@ -63,10 +63,21 @@ import kotlinx.android.synthetic.main.dialog_form_producto.*
 import kotlinx.android.synthetic.main.dialog_form_producto.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_productos.*
+import pl.aprilapps.easyphotopicker.DefaultCallback
 import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.*
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
+
+
+
+import id.zelory.compressor.Compressor;
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.custom_message_toast.view.*
+import java.text.DecimalFormat
 
 
 class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -98,11 +109,11 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     var unidadMedidaCantidadGlobal: Unidad_Medida? = null
     var unidadMedidaPrecioGlobal: Unidad_Medida? = null
 
-    //CÁMARA
-    val IMAGE_DIRECTORY = "/Productos"
 
 
-
+    //EASY CAMERA
+    private val PHOTOS_KEY = "easy_image_photos"
+    private var photos:File? =null
 
     var imageGlobal: ByteArray? = null
     // var imageGlobalRutaFoto: String? = null
@@ -141,6 +152,25 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         (activity as MenuMainActivity).toolbar.title = getString(R.string.title_productos)
+
+
+
+        //EASY CAMERA
+        if (savedInstanceState != null) {
+            photos = savedInstanceState.getSerializable(PHOTOS_KEY) as File
+        }
+
+        /*EasyImage.configuration(activity)
+                .setImagesFolderName("AgriculturApp") // images folder name, default is "EasyImage"
+                .setCopyExistingPicturesToPublicLocation(true) // if you want to use root internal memory for storying images
+                .saveInAppExternalFilesDir()
+                .saveInRootPicturesDirectory(); // if you want to use internal memory for storying images - default
+                */
+
+
+
+        //.setAllowMultiplePickInGallery(true) // allows multiple picking in galleries that handle it. Also only for phones with API 18+ but it won't crash lower APIs. False by default
+
         ivBackButton.setOnClickListener(this)
         swipeRefreshLayout.setOnRefreshListener(this)
         searchFilter.setOnClickListener(this)
@@ -195,14 +225,17 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                     } else {
                         val response = doPermissionGrantedStuffs()
                         if (response) {
-                            takePictureWithCamera(this)
+                            EasyImage.openCamera(this, 0);
+                            //EasyImage.openChooserWithGallery(this, "Pick source", 0);
+                            //takePictureWithCamera(this)
                             //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                         }
                     }
                 } else {
                     val response = doPermissionGrantedStuffs()
                     if (response) {
-                        takePictureWithCamera(this)
+                        //takePictureWithCamera(this)
+                        EasyImage.openCamera(this, 0);
                         //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                     }
                 }
@@ -214,14 +247,16 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                     } else {
                         val response = doPermissionGrantedStuffs()
                         if (response) {
-                            choosePhotoFromGallery(this)
+                            EasyImage.openChooserWithGallery(this, "Pick source", 0);
+                            //choosePhotoFromGallery(this)
                             //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                         }
                     }
                 } else {
                     val response = doPermissionGrantedStuffs()
                     if (response) {
-                        choosePhotoFromGallery(this)
+                        //choosePhotoFromGallery(this)
+                        EasyImage.openChooserWithGallery(this, "Pick source", 0);
                         //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                     }
                 }
@@ -347,6 +382,10 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialog?.txtLoteSelected?.setText(loteGlobal?.Nombre)
             viewDialog?.txtCultivoSelected?.setText(cultivoGlobal?.Nombre)
             viewDialog?.txtDetalleTipoProductoSelected?.setText(cultivoGlobal?.Nombre_Detalle_Tipo_Producto)
+
+
+            isFoto=false
+            imageGlobal = null
         }
         //UPDATE
         else {
@@ -358,6 +397,8 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                 val byte = producto.blobImagen?.getBlob()
                 val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
                 viewDialog?.product_image?.setImageBitmap(bitmap)
+                isFoto=true
+                imageGlobal = byte
             }else{
                 Picasso.get()
                         .load(S3Resources.RootImage+"${producto.Imagen}")
@@ -514,9 +555,6 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     }
 
 
-
-
-
     override fun setListCalidad(listCalidadProducto: List<CalidadProducto>?) {
         if (viewDialog != null) {
             viewDialog?.spinnerCalidadProducto?.setAdapter(null)
@@ -545,8 +583,8 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
 
 
-        txtPrecio.setText(cultivo?.getFechaFormat(cultivo?.getFechaDate(cultivo.FechaIncio)))
-        txtArea.setText(cultivo?.getFechaFormat(cultivo?.getFechaDate(cultivo.FechaFin)))
+        txtPrecio.setText(cultivo?.getFechaFormat(cultivo.getFechaDate(cultivo.FechaIncio)))
+        txtArea.setText(cultivo?.getFechaFormat(cultivo.getFechaDate(cultivo.FechaFin)))
 
     }
 
@@ -592,8 +630,10 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             focusView = viewDialog?.spinnerUnidadMedidaCosecha
             cancel = true
         } else if (isFoto == false) {
-            onMessageError(R.color.grey_luiyi, getString(R.string.error_image_selected))
-            focusView = viewDialog?.spinnerMonedaPrecio
+
+            onMessageToas( getString(R.string.error_image_selected),R.color.red_900)
+            //onMessageError(R.color.grey_luiyi, getString(R.string.error_image_selected))
+            //focusView = viewDialog?.spinnerMonedaPrecio
             cancel = true
         }
 
@@ -693,7 +733,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     }
 
     override fun setResults(productos: Int) {
-        var results = String.format(getString(R.string.results_global_search),
+        val results = String.format(getString(R.string.results_global_search),
                 productos)
         txtResults.setText(results)
     }
@@ -713,7 +753,80 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_CANCELED) {
+
+        EasyImage.handleActivityResult(requestCode, resultCode, data, activity, object :  DefaultCallback() {
+
+            override fun onImagePicked(imageFile: File?, source: EasyImage.ImageSource?, type: Int) {
+                if(imageFile!=null){
+                    /*Compressor(activity)
+                    .compressToFileAsFlowable(imageFile)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        fun  accept( file:File) {
+                            val compressedImage = file;
+                            setCompressedImage(file);
+                        }
+                    }, {
+
+                        fun  accept(throwable:Throwable ) {
+                            throwable.printStackTrace();
+                            onMessageToas(getString(R.string.verificate_again_select_picture_producto),R.color.red_900)
+                            //showError(throwable.getMessage());
+                        }
+                    });*/
+
+                    val compressedImage = Compressor(activity)
+                            .setMaxWidth(500)
+                            .setMaxHeight(500)
+                            .setQuality(80)
+                            .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                            .compressToFile(imageFile)
+
+                    Toast.makeText(activity, "Compressed image save in " + String.format("Size : %s", getReadableFileSize(compressedImage.length())), Toast.LENGTH_SHORT).show();
+                    // Compress image using RxJava in background thread
+
+
+                    val compressedImagetwo = Compressor(activity)
+                            .setMaxWidth(500)
+                            .setMaxHeight(500)
+                            .setQuality(100)
+                            .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                            .compressToBitmap(compressedImage)
+                    //Toast.makeText(activity, "Compressed image save in " + String.format("Size : %s", getReadableFileSize(compressedImagetwo.byteCount.toLong())), Toast.LENGTH_SHORT).show();
+
+
+                    isFoto=true
+                    imageGlobal = convertBitmapToByte(compressedImagetwo)
+                    viewDialog?.product_image?.setImageBitmap(compressedImagetwo)
+
+                    //viewDialog?.product_image?.setImageBitmap(BitmapFactory.decodeFile(compressedImage.getAbsolutePath()));
+
+
+
+
+                }else{
+                    onMessageToas(getString(R.string.verificate_again_select_picture_producto),R.color.red_900)
+                }
+                //onPhotosReturned(imageFiles);
+            }
+
+            override fun onImagePickerError(e: Exception?, source: EasyImage.ImageSource?, type: Int) {
+                super.onImagePickerError(e, source, type)
+                e?.printStackTrace();
+
+            }
+
+            override fun onCanceled(source: EasyImage.ImageSource?, type: Int) {
+                super.onCanceled(source, type)
+                if (source == EasyImage.ImageSource.CAMERA) {
+                    val photoFile = EasyImage.lastlyTakenButCanceledPhoto(activity);
+                    if (photoFile != null) photoFile.delete();
+                }
+            }
+        })
+
+        /*if (resultCode == Activity.RESULT_CANCELED) {
             return
         } else if (resultCode == Activity.RESULT_OK) {
             if (requestCode == RequestAccessPhoneResources.ACCESS_REQUEST_GALLERY) {
@@ -744,43 +857,43 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                     // Toast.makeText(context, thumbnail.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
-        }
+        }*/
     }
 
-    fun saveImage(myBitmap: Bitmap): String {
-        val bytes = ByteArrayOutputStream()
-        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
-        val wallpaperDirectory = File(
-                Environment.getExternalStorageDirectory().toString() + IMAGE_DIRECTORY)
-        // have the object build the directory structure, if needed.
-        if (!wallpaperDirectory.exists()) {
-            wallpaperDirectory.mkdirs()
+
+    fun  setCompressedImage(file:File) {
+        viewDialog?.product_image?.setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
+
+        Toast.makeText(activity, "Compressed image save in " + String.format("Size : %s", getReadableFileSize(file.length())), Toast.LENGTH_LONG).show();
+
+    }
+
+    fun getReadableFileSize(size: Long): String {
+        if (size <= 0) {
+            return "0"
         }
+        val units = arrayOf("B", "KB", "MB", "GB", "TB")
+        val digitGroups = (Math.log10(size.toDouble()) / Math.log10(1024.0)).toInt()
+        return DecimalFormat("#,##0.#").format(size / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
+    }
 
-        try {
-            val f = File(wallpaperDirectory, Calendar.getInstance()
-                    .timeInMillis.toString() + ".jpg")
-            f.createNewFile()
-            val fo = FileOutputStream(f)
-            fo.write(bytes.toByteArray())
-            MediaScannerConnection.scanFile(context,
-                    arrayOf(f.path),
-                    arrayOf("image/jpeg"), null)
-            fo.close()
-            Log.d("TAG", "File Saved::--->" + f.absolutePath)
 
-            return f.absolutePath
-        } catch (e1: IOException) {
-            e1.printStackTrace()
-        }
-
-        return ""
+    fun onMessageToas(message:String,color:Int){
+        val inflater = this.layoutInflater
+        val viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        viewToast.txtMessageToastCustom.setText(message)
+        viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(activity!!, color))
+        val mytoast =  Toast(activity);
+        mytoast.setView(viewToast);
+        mytoast.setDuration(Toast.LENGTH_LONG);
+        mytoast.show();
+        ///onMessageError(R.color.red_900, getString(R.string.disabledGPS))
     }
 
 
     fun convertBitmapToByte(bitmapCompressed: Bitmap): ByteArray? {
         val stream = ByteArrayOutputStream()
-        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 80, stream)
+        bitmapCompressed.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         return stream.toByteArray()
         //return BitmapFactory.decodeByteArray(byteFormat, 0, byteFormat.size)
     }
@@ -863,6 +976,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     override fun requestResponseOK() {
         if (_dialogRegisterUpdate != null) {
             _dialogRegisterUpdate?.dismiss()
+
         }
         onMessageOk(R.color.colorPrimary, getString(R.string.request_ok));
        /// Snackbar.make(container_fragment, getString(R.string.request_ok), Snackbar.LENGTH_SHORT).show()
@@ -1032,6 +1146,16 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
     override fun onResume() {
         presenter?.onResume(activity!!.applicationContext)
         super.onResume()
+    }
+
+    //endregion
+
+
+    //region Easy Image
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(PHOTOS_KEY, photos)
     }
 
     //endregion

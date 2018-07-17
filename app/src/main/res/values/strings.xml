@@ -253,7 +253,7 @@
     <string name="title_adapter_precio_producto">%1$,.0f</string>
 
     <string name="error_date">La fecha limite no puede ser inferior a la fecha actual</string>
-
+    <string name="verificate_again_select_picture_producto">Intenta nuevamente tomar o seleccionar la fotografia del producto, se produjo un error</string>
 
     <string name="title_alert_delete_producto">¿Está seguro que desea eliminar este Producto? , se perderan todos los registros de Oferta</string>
 
