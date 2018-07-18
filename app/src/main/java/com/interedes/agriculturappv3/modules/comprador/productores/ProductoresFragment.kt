@@ -63,11 +63,10 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
     //DialogsFilter
     var _viewdialogFilterProducts: View? = null
-    var _dialogFilterProducts: AlertDialog? = null
     var selectedIndexCiudades=-1
     var selectedDepartment:Departamento?=null
     var selectedCity:Ciudad?=null
-    var priceFilterMin:Double=1.0
+    var priceFilterMin:Double=0.0
     var priceFilterMax:Double=10000000.0
 
 
@@ -102,7 +101,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     private fun setupInjection() {
         if(!loadedFragment){
 
-            showProgressHud()
+
             loadFirstPageProducts()
             loadedFragment=true
         }else{
@@ -202,7 +201,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     }
 
     fun loadFirstPageProducts() {
-
+        showProgressHud()
         var ciudadId=0L
         if(selectedIndexCiudades>=0){
             ciudadId=selectedCity?.Id!!
@@ -358,6 +357,8 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
         viewDialog.txtSetFilter.setOnClickListener(this)
 
+
+
         val departments = View.OnClickListener { showDialogDepartment() }
         viewDialog.btnFilterDepartment.setOnClickListener(departments)
 
@@ -366,29 +367,33 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         }
 
 
-        rangeSeekbar.setMaxValue(1500000F)
-        rangeSeekbar.setMinValue(0F)
-        rangeSeekbar.setSteps(50000F)
+        //rangeSeekbar.setMaxValue(10000000F)
+        //rangeSeekbar.setMinValue(0F)
+        //rangeSeekbar.setSteps(50000F)
+
+        //rangeSeekbar.setMinStartValue(20000F)
+        //rangeSeekbar.setMaxStartValue(9000000F)
+
 
         // set listener
         rangeSeekbar.setOnRangeSeekbarChangeListener { minValue, maxValue ->
             //tvMin.text = minValue.toString()
             //tvMax.text = maxValue.toString()
 
-            if(minValue.toLong()>=1200000L ){
+            /*if(minValue.toLong()>=1200000L ){
                     rangeSeekbar.setSteps(100000F)
+                    rangeSeekbar.setMinValue(0F)
                     rangeSeekbar.setMaxValue(10000000F)
             }else if(minValue.toLong()<1200000L){
                 rangeSeekbar.setSteps(50000F)
+                rangeSeekbar.setMinValue(0F)
                 rangeSeekbar.setMaxValue(1500000F)
-            }
+            }*/
 
             tvMin.text=String.format(context!!.getString(R.string.price),
                     priceFilterMin)
-
             tvMax.text=String.format(context!!.getString(R.string.price),
                     priceFilterMax)
-
 
             priceFilterMin=minValue.toDouble()
             priceFilterMax=maxValue.toDouble()
@@ -416,8 +421,22 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             false
         })
 
+
+
+
+
+        val filter = View.OnClickListener {
+            if(dialog!=null){
+                dialog.dismiss()
+            }
+            loadFirstPageProducts()
+        }
+        viewDialog.txtSetFilter.setOnClickListener(filter)
+
         val closeDialog = View.OnClickListener {  revealShow(viewDialog!!, false, dialog)}
         viewDialog.ivClosetDialogFilter.setOnClickListener(closeDialog)
+
+
 
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())
@@ -427,7 +446,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         //Hide KeyBoard
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
 
-        _dialogFilterProducts=dialog
         dialog.show()
         //dialog.getWindow().setAttributes(lp)
         //_dialogRegisterUpdate=dialog
@@ -594,13 +612,9 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
                 showAlertDialogFilterProducts()
             }
 
-            R.id.txtSetFilter->{
 
-                if(_dialogFilterProducts!=null){
-                    _dialogFilterProducts?.dismiss()
-                }
-                loadFirstPageProducts()
-            }
+
+
         }
     }
 
