@@ -358,6 +358,8 @@
     <string name="tittle_filter">Filtros de búsqueda</string>
     <string name="error_results">No se encontraron resultados</string>
 
+    <string name="select">Seleccionar</string>
+
     <string name="range_dates">De %1$s A %2$s</string>
 
 

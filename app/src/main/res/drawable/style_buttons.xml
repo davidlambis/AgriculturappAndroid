@@ -15,11 +15,11 @@
         <corners android:radius="25dp" />
         <gradient
             android:angle="45"
-            android:endColor="#65c74a"
-            android:startColor="#558B2F"
+            android:endColor="@color/green_transparent"
+            android:startColor="@color/green_transparent"
             android:type="linear" />
         <stroke
-            android:width="2dp"
+            android:width="1dp"
             android:color="#FFFFFF" />
     </shape>
 

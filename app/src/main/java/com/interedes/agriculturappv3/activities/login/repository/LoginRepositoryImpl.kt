@@ -124,7 +124,7 @@ class LoginRepositoryImpl : LoginRepository {
                                 }
 
                                 //Verificate Rol User
-                                val call_usuario = apiService?.getUsuarioLogued(usuario?.Id.toString())
+                                val call_usuario = apiService?.getUsuarioLogued(usuario.Id.toString())
                                 call_usuario?.enqueue(object : Callback<Usuario> {
                                     override fun onResponse(call: Call<Usuario>?, response: Response<Usuario>?) {
                                         if (response != null && response.code() == 200) {
@@ -132,13 +132,13 @@ class LoginRepositoryImpl : LoginRepository {
                                             val userLoguedResponse: Usuario = response.body()!!
 
                                             val rol = Rol()
-                                            rol.Id=userLoguedResponse?.Rol?.Id
-                                            rol.Nombre=userLoguedResponse?.Rol?.Nombre
+                                            rol.Id=userLoguedResponse.Rol?.Id
+                                            rol.Nombre=userLoguedResponse.Rol?.Nombre
                                             rol.save()
 
 
-                                            if(rol?.Nombre.equals(RolResources.PRODUCTOR) && ultimo_usuario?.RolNombre.equals(RolResources.COMPRADOR) ||
-                                                    rol?.Nombre.equals(RolResources.COMPRADOR) && ultimo_usuario?.RolNombre.equals(RolResources.PRODUCTOR)){
+                                            if(rol.Nombre.equals(RolResources.PRODUCTOR) && ultimo_usuario?.RolNombre.equals(RolResources.COMPRADOR) ||
+                                                    rol.Nombre.equals(RolResources.COMPRADOR) && ultimo_usuario?.RolNombre.equals(RolResources.PRODUCTOR)){
                                                 cleanDataSqlite()
                                             }
 
@@ -163,9 +163,10 @@ class LoginRepositoryImpl : LoginRepository {
                                             loginFirebaseUser(usuario,context)
                                         } else {
                                             postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
-                                            Log.e("Get Login User Response", response?.body().toString())
+                                            Log.e("GetUser ById Response", response?.body()?.Id.toString())
                                         }
                                     }
+
                                     override fun onFailure(call: Call<Usuario>?, t: Throwable?) {
                                         postEventError(LoginEvent.ERROR_EVENT, "No puede ingresar, compruebe su conexión")
                                         Log.e("Failure Get Login User", t?.message.toString())
@@ -295,7 +296,7 @@ class LoginRepositoryImpl : LoginRepository {
         //val uuid_tipo_user = user.Tipouser as UUID?
         val rolName =usuario.RolNombre
         val reference: DatabaseReference?  = FirebaseDatabase.getInstance().reference.child("Users")
-        var userFirebase = UserFirebase(user_id, usuario.Nombre, usuario.Apellidos, usuario.Identificacion, usuario.Email, rolName, usuario.PhoneNumber, Status_Chat.OFFLINE, 0, usuario.Contrasena,usuario.Id.toString())
+        val userFirebase = UserFirebase(user_id, usuario.Nombre, usuario.Apellidos, usuario.Identificacion, usuario.Email, rolName, usuario.PhoneNumber, Status_Chat.OFFLINE, 0, usuario.Contrasena,usuario.Id.toString())
         reference?.child(user_id)?.setValue(userFirebase)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
             if (!task.isSuccessful) {
                 //error
@@ -304,7 +305,7 @@ class LoginRepositoryImpl : LoginRepository {
             } else {
                 //success adding user to db as well
                 //go to users chat list
-                var userLastOnlineRef= reference?.child(user_id+"/last_Online")
+                val userLastOnlineRef= reference?.child(user_id+"/last_Online")
                 userLastOnlineRef?.setValue(ServerValue.TIMESTAMP);
                 loginFirebaseUser(usuario,context)
             }

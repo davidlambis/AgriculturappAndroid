@@ -34,10 +34,13 @@ import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
 import com.interedes.agriculturappv3.libs.eventbus_rx.Rx_Bus
 import com.interedes.agriculturappv3.modules.models.departments.Departamento
 import com.interedes.agriculturappv3.modules.comprador.productores.events.EventDepartamentCities
-import com.raizlabs.android.dbflow.sql.language.SQLite
+import com.interedes.agriculturappv3.modules.comprador.productores.resources.RequestFilter
+import com.interedes.agriculturappv3.modules.models.departments.Ciudad
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.dialog_filter_products.view.*
 import kotlinx.android.synthetic.main.fragment_productores.*
+import java.math.BigDecimal
+import java.math.MathContext
 
 class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.MainView, SwipeRefreshLayout.OnRefreshListener {
 
@@ -59,9 +62,13 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     var pastVisiblesItems: Int? = 0
 
     //DialogsFilter
-    var _dialogDepartments: MaterialDialog? = null
-    var _dialogCities: MaterialDialog? = null
-
+    var _viewdialogFilterProducts: View? = null
+    var _dialogFilterProducts: AlertDialog? = null
+    var selectedIndexCiudades=-1
+    var selectedDepartment:Departamento?=null
+    var selectedCity:Ciudad?=null
+    var priceFilterMin:Double=1.0
+    var priceFilterMax:Double=10000000.0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -168,11 +175,57 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     private fun loadMore(index: Int) {
         productosList?.add(Producto(Enabled = false))
         adapter?.notifyItemInserted(productosList?.size!! - 1)
-        presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,index,false)
+
+
+        var ciudadId=0L
+        if(selectedIndexCiudades>=0){
+            ciudadId=selectedCity?.Id!!
+        }else{
+            ciudadId=0
+        }
+
+        val priceMaxBig = BigDecimal(priceFilterMax, MathContext.DECIMAL64)
+        val priceMinBig = BigDecimal(priceFilterMin, MathContext.DECIMAL64)
+
+        val filter= RequestFilter(
+                false,
+                tipoProductoIdGlobal,
+                ciudadId,
+                priceMinBig,
+                priceMaxBig,
+                false,
+                PAGE_SIZE,
+                index
+        )
+
+        presenter?.getListProducto(filter)
     }
 
     fun loadFirstPageProducts() {
-       presenter?.getListProducto(tipoProductoIdGlobal,PAGE_SIZE,0,true)
+
+        var ciudadId=0L
+        if(selectedIndexCiudades>=0){
+            ciudadId=selectedCity?.Id!!
+        }else{
+            ciudadId=0
+        }
+
+        val priceMaxBig = BigDecimal(priceFilterMax, MathContext.DECIMAL64)
+        val priceMinBig = BigDecimal(priceFilterMin, MathContext.DECIMAL64)
+
+
+        val filter= RequestFilter(
+               false,
+                tipoProductoIdGlobal,
+                ciudadId,
+                priceMinBig,
+                priceMaxBig,
+          true,
+                PAGE_SIZE,
+           0
+        )
+
+       presenter?.getListProducto(filter)
     }
 
     //region IMPLEMENTS METHODS INTERFACE
@@ -202,8 +255,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             hud?.dismiss()
         }
     }
-
-
 
     override fun setListProductoFirts(listProducto: List<Producto>) {
         productosList?.clear()
@@ -297,7 +348,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     override fun showAlertDialogFilterProducts() {
         val inflater = this.layoutInflater
         val viewDialog  = inflater.inflate(R.layout.dialog_filter_products, null)
-
+        _viewdialogFilterProducts=viewDialog
         // get seekbar from view
         val rangeSeekbar = viewDialog.rangeSeekbar5
 
@@ -305,17 +356,42 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         val tvMin = viewDialog.textMin5
         val tvMax = viewDialog.textMax5
 
+        viewDialog.txtSetFilter.setOnClickListener(this)
+
         val departments = View.OnClickListener { showDialogDepartment() }
         viewDialog.btnFilterDepartment.setOnClickListener(departments)
+
+        if(selectedIndexCiudades>=0){
+            viewDialog?.txtCityDepartment?.setText(String.format("%s / %s", selectedDepartment?.Nombre, selectedCity?.Nombre))
+        }
+
+
+        rangeSeekbar.setMaxValue(1500000F)
+        rangeSeekbar.setMinValue(0F)
+        rangeSeekbar.setSteps(50000F)
 
         // set listener
         rangeSeekbar.setOnRangeSeekbarChangeListener { minValue, maxValue ->
             //tvMin.text = minValue.toString()
             //tvMax.text = maxValue.toString()
+
+            if(minValue.toLong()>=1200000L ){
+                    rangeSeekbar.setSteps(100000F)
+                    rangeSeekbar.setMaxValue(10000000F)
+            }else if(minValue.toLong()<1200000L){
+                rangeSeekbar.setSteps(50000F)
+                rangeSeekbar.setMaxValue(1500000F)
+            }
+
             tvMin.text=String.format(context!!.getString(R.string.price),
-                    minValue.toDouble())
+                    priceFilterMin)
+
             tvMax.text=String.format(context!!.getString(R.string.price),
-                    maxValue.toDouble())
+                    priceFilterMax)
+
+
+            priceFilterMin=minValue.toDouble()
+            priceFilterMax=maxValue.toDouble()
         }
 
 
@@ -351,51 +427,117 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         //Hide KeyBoard
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
 
+        _dialogFilterProducts=dialog
         dialog.show()
         //dialog.getWindow().setAttributes(lp)
         //_dialogRegisterUpdate=dialog
     }
 
     private fun showDialogDepartment() {
-        val adapter = MaterialSimpleListAdapter { dialog, index1, item ->  onMessageOk(R.color.orange,String.format("%s : %s",index1 , item)) }
+
+        val listCiudades:ArrayList<Ciudad> = ArrayList<Ciudad>()
+        val listDepartamentos:ArrayList<Departamento> = ArrayList<Departamento>()
+        val departamentoOptionAll=Departamento()
+
+        //Add new item
+        departamentoOptionAll.Id=0
+        departamentoOptionAll.Nombre="Todos"
+        departamentoOptionAll.codigodpto=0
+        listDepartamentos.add(departamentoOptionAll)
+
+        val adapter = MaterialSimpleListAdapter { dialog, index1, item ->
+            if(index1>0){
+                val itemSelected= listDepartamentos.get(index1)
+                val listCiuudad= listCiudades.filter { ciudad: Ciudad -> ciudad.departmentoId==itemSelected.Id }
+                showDialogCities(itemSelected,dialog,itemSelected.Nombre,listCiuudad)
+            }else{
+                selectedIndexCiudades=-1
+                if(_viewdialogFilterProducts!=null){
+                    _viewdialogFilterProducts?.txtCityDepartment?.setText(String.format("%s", "Todos"))
+                }
+                dialog.dismiss()
+            }
+            ///onMessageOk(R.color.orange,String.format("%s : %s",index1 , item))
+        }
+
         MaterialDialog.Builder(activity!!)
                 .title(R.string.department)
-                .positiveText(android.R.string.cancel)
+                .negativeText(android.R.string.cancel)
                 .adapter(adapter, null)
+                .onNegative({ dialog1, which ->
+                    if(selectedIndexCiudades>0){
+                        dialog1.dismiss()
+                       // Toast.makeText(activity,selectedDepartment?.Nombre+" /"+selectedCity?.Nombre,Toast.LENGTH_LONG).show()
+                    }else{
+                         selectedIndexCiudades=-1
+                         dialog1.dismiss()
+                        _viewdialogFilterProducts?.txtCityDepartment?.setText(String.format("%s", "Todos"))
+                        //Toast.makeText(activity,selectedDepartment?.Nombre+" /"+selectedCity?.Nombre,Toast.LENGTH_LONG).show()
+                    }
+                })
                 .show()
 
+        adapter.add(
+                MaterialSimpleListItem.Builder(activity)
+                        .content("Todos")
+                        .backgroundColor(Color.WHITE)
+                        .build())
+
         Rx_Bus.listen(EventDepartamentCities::class.java).subscribe({
-            val items= it.departamentos
-            for (item in items!!){
+            val items= it.departamentos as List<Departamento>
+            for (item in items){
+                listDepartamentos.add(item)
                 adapter.add(
                         MaterialSimpleListItem.Builder(activity)
                                 .content(item.Nombre)
                                 //.icon(R.drawable.ic_account_circle)
                                 .backgroundColor(Color.WHITE)
                                 .build())
+
             }
+            //listDepartamentos.addAll(items)
+            val ciudades = it.cities as List<Ciudad>
+            listCiudades.addAll(ciudades)
         })
+
         presenter?.getListDepartmentCities()
-        //val departments= SQLite.select().from(Departamento::class.java).queryList()
-        /*val dialog = MaterialDialog.Builder(activity!!)
-                .title(R.string.department)
-                .items()
-                .itemsCallback({ dialog, view, which, text -> onMessageOk(R.color.orange,String.format("%s : %s",which , text)) })
-                .positiveText(android.R.string.cancel)
-                .build()
-        _dialogDepartments=dialog*/
-
-
     }
 
-    private fun showDialogCities() {
 
-        val departments= SQLite.select().from(Departamento::class.java).queryList()
+
+    private fun showDialogCities(departamento:Departamento,dialogDepartment:MaterialDialog,departament:String?,listCiuudad: List<Ciudad>) {
+
         MaterialDialog.Builder(activity!!)
-                .title(R.string.department)
-                .items(departments)
-                .itemsCallback({ dialog, view, which, text -> onMessageOk(R.color.orange,String.format("%s : %s",which , text)) })
-                .positiveText(android.R.string.cancel)
+                .title(R.string.city)
+                .items(listCiuudad)
+                //.itemsDisabledIndices(1, 3)
+                .itemsCallbackSingleChoice(
+                        selectedIndexCiudades,
+                        { dialog, view, index, text ->
+                            val itemSelected= listCiuudad.get(index)
+
+                            selectedDepartment=departamento
+                            selectedCity=itemSelected
+                            selectedIndexCiudades= index
+
+                            if(_viewdialogFilterProducts!=null){
+                                _viewdialogFilterProducts?.txtCityDepartment?.setText(String.format("%s / %s", departament, itemSelected.Nombre))
+                            }
+                            dialog.dismiss()
+                            dialogDepartment.dismiss()
+                            //Toast.makeText(activity,selectedDepartment?.Nombre+" /"+selectedCity?.Nombre,Toast.LENGTH_LONG).show()
+                            true // allow selection
+                        })
+                .positiveText(R.string.select)
+                .negativeText(android.R.string.cancel)
+                .onNegative({ dialog1, which ->
+                    if(selectedIndexCiudades>=0){
+                        //Toast.makeText(activity,selectedDepartment?.Nombre+" /"+selectedCity?.Nombre,Toast.LENGTH_LONG).show()
+                      dialog1.dismiss()
+                    }else{
+                        dialog1.dismiss()
+                    }
+                })
                 .show()
     }
 
@@ -450,6 +592,14 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
             R.id.imageViewFilter->{
                 showAlertDialogFilterProducts()
+            }
+
+            R.id.txtSetFilter->{
+
+                if(_dialogFilterProducts!=null){
+                    _dialogFilterProducts?.dismiss()
+                }
+                loadFirstPageProducts()
             }
         }
     }

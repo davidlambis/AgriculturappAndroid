@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
+import com.interedes.agriculturappv3.modules.comprador.productores.resources.RequestFilter
 import com.interedes.agriculturappv3.modules.models.departments.Ciudad
 import com.interedes.agriculturappv3.modules.models.departments.Departamento
 import com.interedes.agriculturappv3.modules.models.producto.Producto
@@ -119,10 +120,9 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
     //endregion
 
     //region Request Repository
-    override fun getListProducto(tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean) {
-        mainView?.showProgress()
-        //mainView?.showProgressHud()
-        interactor?.execute(checkConnection(),tipoProducto,top,skip,isFirst)
+    override fun  getListProducto(filter: RequestFilter) {
+        filter.checkConection=checkConnection()
+        interactor?.execute(filter)
     }
 
     override fun getTipoProducto(tipoProducto: Long): TipoProducto? {

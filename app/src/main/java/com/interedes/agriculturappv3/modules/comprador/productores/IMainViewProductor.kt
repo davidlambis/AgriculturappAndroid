@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
+import com.interedes.agriculturappv3.modules.comprador.productores.resources.RequestFilter
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 
@@ -51,7 +52,9 @@ interface IMainViewProductor {
         fun onEventMainThread(requestEvent: RequestEventProductor?)
 
         //Methods
-        fun getListProducto(tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean)
+
+        fun getListProducto(filter: RequestFilter)
+
         fun getTipoProducto(tipoProducto:Long):TipoProducto?
 
         //Listas
@@ -63,14 +66,15 @@ interface IMainViewProductor {
 
     interface Interactor {
         fun getTipoProducto(tipoProducto:Long):TipoProducto?
-        fun execute(checkConection:Boolean,tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean)
+
+        fun execute(filter: RequestFilter)
 
         fun getListDepartmentCities()
     }
 
     interface Repository {
         fun getTipoProducto(tipoProducto:Long):TipoProducto?
-        fun getListTipoProductos(checkConection:Boolean,tipoProducto:Long,top:Int,skip:Int,isFirst:Boolean)
+        fun getListTipoProductos(filter: RequestFilter)
 
         fun getListDepartmentCities()
     }

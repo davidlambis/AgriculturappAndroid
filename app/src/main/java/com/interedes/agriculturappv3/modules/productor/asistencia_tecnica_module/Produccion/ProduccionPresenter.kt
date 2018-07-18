@@ -214,12 +214,12 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
 
     //region METHODS VIEWS
     override fun setListSpinnerLote(unidad_productiva_id: Long?) {
-        var list= listLoteGlobal?.filter { lote: Lote -> lote.Unidad_Productiva_Id==unidad_productiva_id }
+        val list= listLoteGlobal?.filter { lote: Lote -> lote.Unidad_Productiva_Id==unidad_productiva_id }
         mainView?.setListLotes(list)
     }
 
     override fun setListSpinnerCultivo(lote_id: Long?) {
-        var list= listCultivosGlobal?.filter { cultivo: Cultivo -> cultivo.LoteId==lote_id }
+        val list= listCultivosGlobal?.filter { cultivo: Cultivo -> cultivo.LoteId==lote_id }
         mainView?.setListCultivos(list)
     }
 

@@ -32,6 +32,9 @@ import java.util.concurrent.TimeUnit;
 import com.interedes.agriculturappv3.modules.models.departments.Ciudad
 import com.interedes.agriculturappv3.modules.models.departments.Departamento
 import com.interedes.agriculturappv3.modules.comprador.productores.events.EventDepartamentCities
+import com.interedes.agriculturappv3.modules.comprador.productores.resources.RequestFilter
+import java.math.BigDecimal
+import java.math.MathContext
 
 class ProductorRepository:IMainViewProductor.Repository {
 
@@ -72,12 +75,30 @@ class ProductorRepository:IMainViewProductor.Repository {
         return tipoProducto
     }
 
-    override fun getListTipoProductos(checkConection: Boolean,tipoProductoId:Long,top:Int,skip:Int,isFirst:Boolean) {
+    override   fun getListTipoProductos(filter: RequestFilter) {
 
-        if(checkConection){
+        if(filter.checkConection){
             //Get Productos by user
-            val queryProductos = Listas.queryGeneralLong("tipo_producto_id",tipoProductoId)
-            val callProductos = apiService?.getProductosByTipoProductos(queryProductos,top,skip)
+            //val queryProductos = Listas.queryGeneralLong("tipo_producto_id",tipoProductoId)
+            //val queryProductos = Listas.queryGeneralLong("tipo_producto_id",tipoProductoId)
+
+            var queryProductos=""
+
+            if(filter.ciudadId>0){
+                queryProductos = Listas.queryFilterProductsRangeAndCriterioCiudad("tipo_producto_id",filter.tipoProductoId,
+                        "ciudad_id",filter.ciudadId,
+                        "precio_producto ",filter.priceMin,
+                        "precio_producto ",filter.priceMax
+                )
+            }else{
+                queryProductos = Listas.queryFilterProductsRangeAndCriterioDepartamentoAll("tipo_producto_id",filter.tipoProductoId,
+                        "precio_producto ",filter.priceMin,
+                        "precio_producto ",filter.priceMax
+                )
+            }
+
+
+            val callProductos = apiService?.getProductosByTipoProductos(queryProductos,filter.top,filter.skip)
             //val callProductos = apiService?.getProductosByTipoProductos(queryProductos)
            // mCompositeDisposable?.add(callProductos?.observeOn(AndroidSchedulers.mainThread())?.subscribeOn(Schedulers.io())?.subscribe(this::handleResponse,this::handleError)!!);
             callProductos?.delay(500, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
@@ -249,6 +270,8 @@ class ProductorRepository:IMainViewProductor.Repository {
                             producto.ProductoId = last_producto.ProductoId!! + 1
                         }
                     }
+
+
                     producto.Usuario= usuario
                     producto.userId=item.usuario_id
                     producto.Id_Remote= item.id
@@ -292,7 +315,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                         val byte = Base64.decode(base64Image, Base64.DEFAULT)
                         producto.blobImagen = Blob(byte)
                     }catch (ex:Exception){
-                        var ss= ex.toString()
+                        val ss= ex.toString()
                         Log.d("Convert Image", "defaultValue = " + ss);
                     }
                     producto.save()
@@ -303,7 +326,7 @@ class ProductorRepository:IMainViewProductor.Repository {
 
                 //postEventOk(RequestEventProductor.LIST_EVENT,listProductos,null)
 
-                if(isFirst){
+                if(filter.isFirst){
                     postEventOk(RequestEventProductor.LOAD_DATA_FIRTS,listProductos,null)
                 }else{
                     postEventOk(RequestEventProductor.READ_EVENT,listProductos,null)
@@ -311,10 +334,10 @@ class ProductorRepository:IMainViewProductor.Repository {
                 //view.showSearchResult(searchResponse.items())
             },
 
-            { throwable ->{
+            { throwable ->
                     val error= throwable.toString()
                     postEventError(RequestEventProductor.ERROR_EVENT, error)
-                }
+
             })
 
 
@@ -791,8 +814,7 @@ class ProductorRepository:IMainViewProductor.Repository {
             }*/
 
         }else{
-
-            val list= getListProductos(tipoProductoId)
+            val list= getListProductos(filter.tipoProductoId)
             if(list!=null){
                 for(item in list!!){
                     postEventOk(RequestEventProductor.ITEM_NEW_EVENT,null,item)
@@ -801,9 +823,6 @@ class ProductorRepository:IMainViewProductor.Repository {
             }else{
                 postEventOk(RequestEventProductor.LIST_EVENT, ArrayList<Producto>(),null)
             }
-
-
-
         }
     }
 

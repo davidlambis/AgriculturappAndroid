@@ -18,6 +18,7 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.ventas.CategoriaPuk
 import com.interedes.agriculturappv3.modules.models.ventas.Estado_Transaccion
 import com.interedes.agriculturappv3.modules.models.ventas.Puk
+import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -360,6 +361,19 @@ class Listas {
             return queryFilter
         }
 
+
+        fun queryFilterProductsRangeAndCriterioDepartamentoAll(criterio: String, valor: Long, criterio2:String,mayor:BigDecimal,criterio3:String, menor:BigDecimal): String {
+            val queryFilter = "$criterio eq $valor and $criterio2 gt $mayor and $criterio3 lt $menor"
+            ///http://18.233.87.16/odata/Agp2/ViewProductos?&$filter=tipo_producto_id eq 1 and precio_producto gt 0 and precio_producto lt 10000000&$top=20&$skip=0&$count=true
+            return queryFilter
+        }
+
+
+        fun queryFilterProductsRangeAndCriterioCiudad(criterio: String, valor: Long, criterio2:String,valor2:Long, criterio3:String,mayor:BigDecimal,criterio4:String, menor:BigDecimal ): String {
+            val queryFilter = "$criterio eq $valor and $criterio2 eq $valor2 and $criterio3 gt $mayor and $criterio4 lt $menor"
+            ///http://18.233.87.16/odata/Agp2/ViewProductos?&$filter=tipo_producto_id eq 1 and precio_producto gt 0 and precio_producto lt 10000000&$top=20&$skip=0&$count=true
+            return queryFilter
+        }
 
 
 
