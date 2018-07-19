@@ -42,6 +42,12 @@ import kotlinx.android.synthetic.main.fragment_productores.*
 import java.math.BigDecimal
 import java.math.MathContext
 
+
+import com.interedes.agriculturappv3.libs.widgets.MyRangeSeekbar
+import com.jaygoo.widget.OnRangeChangedListener
+import com.jaygoo.widget.RangeSeekBar
+
+
 class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.MainView, SwipeRefreshLayout.OnRefreshListener {
 
 
@@ -367,30 +373,65 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         }
 
 
-        //rangeSeekbar.setMaxValue(10000000F)
-        //rangeSeekbar.setMinValue(0F)
-        //rangeSeekbar.setSteps(50000F)
+       /* viewDialog?.rangeSeekbar5?.setIndicatorTextDecimalFormat("0");
 
-        //rangeSeekbar.setMinStartValue(20000F)
-        //rangeSeekbar.setMaxStartValue(9000000F)
+        viewDialog?.rangeSeekbar5?.setOnRangeChangedListener( object :OnRangeChangedListener {
 
+            override fun onRangeChanged(view: RangeSeekBar,  leftValue:Float,  rightValue:Float,  isFromUser:Boolean) {
+                if (leftValue <= 50){
+                    view.setProgressColor(getResources().getColor(R.color.colorAccent));
+                    view.getLeftSeekBar().setThumbDrawableId(R.drawable.thumb_activated);
+                    view.getLeftSeekBar().setIndicatorBackgroundColor(getResources().getColor(R.color.colorAccent));
+                }else {
+                    view.setProgressColor(getResources().getColor(R.color.colorPrimary));
+                    view.getLeftSeekBar().setIndicatorBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    view.getLeftSeekBar().setThumbDrawableId(R.drawable.thumb_pressed);
+                }
+            }
+
+            override fun onStartTrackingTouch(view:RangeSeekBar , isLeft:Boolean ) {
+
+            }
+
+            override fun onStopTrackingTouch(view:RangeSeekBar , isLeft:Boolean ) {
+
+            }
+        });*/
+
+
+        rangeSeekbar.setMaxValue(10000000F)
+        rangeSeekbar.setMinValue(0F)
+        rangeSeekbar.setSteps(50000F)
+
+        rangeSeekbar.setMinStartValue(2000000F).apply()
+        rangeSeekbar.setMaxStartValue(9000000F).apply()
+        var firts= true
 
         // set listener
         rangeSeekbar.setOnRangeSeekbarChangeListener { minValue, maxValue ->
             //tvMin.text = minValue.toString()
             //tvMax.text = maxValue.toString()
 
-            /*if(minValue.toLong()>=1200000L ){
+            if(!firts){
+
+                if(minValue.toLong()>=1200000L ){
                     rangeSeekbar.setSteps(100000F)
                     rangeSeekbar.setMinValue(0F)
                     rangeSeekbar.setMaxValue(10000000F)
-            }else if(minValue.toLong()<1200000L){
-                rangeSeekbar.setSteps(50000F)
-                rangeSeekbar.setMinValue(0F)
-                rangeSeekbar.setMaxValue(1500000F)
-            }*/
+                }else if(minValue.toLong()<1200000L){
+                    rangeSeekbar.setSteps(50000F)
+                    rangeSeekbar.setMinValue(0F)
+                    rangeSeekbar.setMaxValue(1500000F)
+                }
 
-            tvMin.text=String.format(context!!.getString(R.string.price),
+
+                firts=false
+            }else{
+                firts=false
+            }
+
+
+           tvMin.text=String.format(context!!.getString(R.string.price),
                     priceFilterMin)
             tvMax.text=String.format(context!!.getString(R.string.price),
                     priceFilterMax)

@@ -117,10 +117,6 @@
                             app:bar_color="#F7BB88"
                             app:bar_highlight_color="#E07416"
                             app:corner_radius="10"
-                            app:min_value="0"
-                            app:max_value="10000000"
-                            app:min_start_value="2000"
-                            app:max_start_value="9000000"
                             app:data_type="_integer"
 
                             app:left_thumb_image="@drawable/thumb"
