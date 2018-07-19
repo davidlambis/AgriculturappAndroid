@@ -65,7 +65,7 @@ class OfertasRepository : IOfertas.Repository {
 
     //region Métodos Interfaz
     override fun getListas() {
-        var usuario=getLastUserLogued()
+        val usuario=getLastUserLogued()
 
         val listUnidadProductiva: List<Unidad_Productiva> = SQLite.select().from(Unidad_Productiva::class.java)
                 .where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id))
@@ -76,7 +76,7 @@ class OfertasRepository : IOfertas.Repository {
                 .queryList()
 
 
-        var listCultivos = SQLite.select().from(Cultivo::class.java!!)
+        val listCultivos = SQLite.select().from(Cultivo::class.java!!)
                 .where(Cultivo_Table.UsuarioId.eq(usuario?.Id))
                 .queryList()
 
@@ -670,7 +670,7 @@ class OfertasRepository : IOfertas.Repository {
                     //roomId=room.get("idRoom") as String;
                     var roomFind= Room()
                     for (issue in dataSnapshot.children) {
-                        var room = issue.getValue<Room>(Room::class.java)
+                        val room = issue.getValue<Room>(Room::class.java)
                         //roomId=room?.IdRoom
                         roomFind= room!!
                     }
@@ -684,6 +684,7 @@ class OfertasRepository : IOfertas.Repository {
                     }
                 }
             }
+
             override fun onCancelled(databaseError: DatabaseError) {
                 var error = databaseError.message
                 //postEventError(OfertasEvent.ERROR_EVENT, error)

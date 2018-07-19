@@ -25,6 +25,8 @@ import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenter
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenterImpl
 import com.interedes.agriculturappv3.activities.registration.register_rol.RegisterRolActivity
+import com.interedes.agriculturappv3.activities.reset_password.ResetPasswordActivity
+import com.interedes.agriculturappv3.modules.models.ResetPassword
 import com.interedes.agriculturappv3.modules.models.login.Login
 import com.interedes.agriculturappv3.modules.models.rol.Rol
 import com.interedes.agriculturappv3.modules.models.rol.RolResponse
@@ -127,18 +129,23 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
                     ingresar()
                 }
             }
+
             R.id.tvRegistrarse -> {
                 tvRegistrarse.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
                 val i = Intent(this, RegisterRolActivity::class.java)
                 //i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(i)
             }
+
             R.id.tvResetPassword -> {
-                /* if (edtCorreo?.text.toString().isEmpty()) {
+                tvResetPassword.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                val i = Intent(this, ResetPasswordActivity::class.java)
+                startActivity(i)
+                /*if (edtCorreo?.text.toString().isEmpty()) {
                      edtCorreo?.setError(getString(R.string.error_field_required))
-                 } else {
+                } else {
                      presenter?.resetPassword(edtCorreo?.text?.trim().toString())
-                 } */
+                }*/
             }
         }
     }

@@ -27,7 +27,10 @@ import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActi
 import android.view.ViewAnimationUtils
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.graphics.drawable.AnimationDrawable
 import android.os.Build
+import android.os.Handler
+import android.widget.ImageView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
@@ -44,8 +47,7 @@ import java.math.MathContext
 
 
 import com.interedes.agriculturappv3.libs.widgets.MyRangeSeekbar
-import com.jaygoo.widget.OnRangeChangedListener
-import com.jaygoo.widget.RangeSeekBar
+
 
 
 class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.MainView, SwipeRefreshLayout.OnRefreshListener {
@@ -72,8 +74,10 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     var selectedIndexCiudades=-1
     var selectedDepartment:Departamento?=null
     var selectedCity:Ciudad?=null
-    var priceFilterMin:Double=0.0
-    var priceFilterMax:Double=10000000.0
+
+
+    var priceFilterMin=0f
+    var priceFilterMax=10000000f
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -189,8 +193,8 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             ciudadId=0
         }
 
-        val priceMaxBig = BigDecimal(priceFilterMax, MathContext.DECIMAL64)
-        val priceMinBig = BigDecimal(priceFilterMin, MathContext.DECIMAL64)
+        val priceMaxBig = BigDecimal(priceFilterMax.toDouble(), MathContext.DECIMAL64)
+        val priceMinBig = BigDecimal(priceFilterMin.toDouble(), MathContext.DECIMAL64)
 
         val filter= RequestFilter(
                 false,
@@ -215,8 +219,8 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             ciudadId=0
         }
 
-        val priceMaxBig = BigDecimal(priceFilterMax, MathContext.DECIMAL64)
-        val priceMinBig = BigDecimal(priceFilterMin, MathContext.DECIMAL64)
+        val priceMaxBig = BigDecimal(priceFilterMax.toDouble(), MathContext.DECIMAL64)
+        val priceMinBig = BigDecimal(priceFilterMin.toDouble(), MathContext.DECIMAL64)
 
 
         val filter= RequestFilter(
@@ -248,10 +252,15 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     }
 
     override fun showProgressHud(){
+        val imageView = ImageView(activity);
+        imageView.setBackgroundResource(R.drawable.spin_animation_load_comprador);
+        val drawable = imageView.getBackground() as AnimationDrawable;
+        drawable.start();
         hud = KProgressHUD.create(activity)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCustomView(imageView)
                 .setWindowColor(getResources().getColor(R.color.colorPrimary))
-                .setLabel("Cargando...", resources.getColor(R.color.white))
+                //.setLabel("Cargando...", resources.getColor(R.color.white_solid))
+                .setDetailsLabel("Cargando Informacion")
         hud?.show()
     }
 
@@ -398,21 +407,19 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             }
         });*/
 
+        Handler().postDelayed({
+            rangeSeekbar.setSteps(50000f).setMinValue(0f).setMaxValue(10000000f).setMinStartValue(priceFilterMin).setMaxStartValue(priceFilterMax).apply()
+            // rangeSeekbar.setMinValue(10000).setMaxValue(20000).setMinStartValue(12000).setMaxStartValue(12000).apply();
+        }, 500)
 
-        rangeSeekbar.setMaxValue(10000000F)
-        rangeSeekbar.setMinValue(0F)
-        rangeSeekbar.setSteps(50000F)
 
-        rangeSeekbar.setMinStartValue(2000000F).apply()
-        rangeSeekbar.setMaxStartValue(9000000F).apply()
         var firts= true
-
         // set listener
         rangeSeekbar.setOnRangeSeekbarChangeListener { minValue, maxValue ->
             //tvMin.text = minValue.toString()
             //tvMax.text = maxValue.toString()
 
-            if(!firts){
+            /*if(!firts){
 
                 if(minValue.toLong()>=1200000L ){
                     rangeSeekbar.setSteps(100000F)
@@ -423,36 +430,45 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
                     rangeSeekbar.setMinValue(0F)
                     rangeSeekbar.setMaxValue(1500000F)
                 }
+                firts=false
+            }else{
+                firts=false
+            }*/
+            if(!firts){
 
+
+                if(minValue.toLong()>=1200000L && priceFilterMin>=1200000L ){
+                    rangeSeekbar.setSteps(50000f).setMinValue(0f).setMaxValue(10000000f)
+
+
+                }else if(minValue.toLong()<1200000L){
+                    rangeSeekbar.setSteps(50000f).setMinValue(0f).setMaxValue(1500000f)
+
+                }
+
+
+                priceFilterMin= minValue.toFloat()
+                priceFilterMax= maxValue.toFloat()
+
+                tvMin.text=String.format(context!!.getString(R.string.price),
+                        priceFilterMin.toDouble())
+                tvMax.text=String.format(context!!.getString(R.string.price),
+                        priceFilterMax.toDouble())
 
                 firts=false
             }else{
                 firts=false
             }
-
-
-           tvMin.text=String.format(context!!.getString(R.string.price),
-                    priceFilterMin)
-            tvMax.text=String.format(context!!.getString(R.string.price),
-                    priceFilterMax)
-
-            priceFilterMin=minValue.toDouble()
-            priceFilterMax=maxValue.toDouble()
         }
-
-
-
 
         val dialog = AlertDialog.Builder(context!!, R.style.MyAlertDialogStyle)
                 .setView(viewDialog)
                 .create()
         //dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-
        /* val dialog = Dialog(context!!, R.style.MyAlertDialogStyle)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(viewDialog)*/
-
         dialog.setOnShowListener { revealShow(viewDialog!!, true, null) }
         dialog.setOnKeyListener(DialogInterface.OnKeyListener { dialogInterface, i, keyEvent ->
             if (i == KeyEvent.KEYCODE_BACK) {
@@ -461,9 +477,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             }
             false
         })
-
-
-
 
 
         val filter = View.OnClickListener {
@@ -476,8 +489,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
         val closeDialog = View.OnClickListener {  revealShow(viewDialog!!, false, dialog)}
         viewDialog.ivClosetDialogFilter.setOnClickListener(closeDialog)
-
-
 
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.getWindow().getAttributes())

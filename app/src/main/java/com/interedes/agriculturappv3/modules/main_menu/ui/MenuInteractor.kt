@@ -6,6 +6,7 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 class MenuInteractor:MainViewMenu.Interactor {
 
 
+
     var repository: MainViewMenu.Repository? = null
 
     init {
@@ -49,6 +50,10 @@ class MenuInteractor:MainViewMenu.Interactor {
     }
 
 
+    //Navigation to chat
+    override fun navigateChatOnline(checkConection: Boolean, usuario: Usuario) {
+       repository?.navigateChatOnline(checkConection,usuario)
+    }
 
     //Notifications
     override fun getCountNotifications(): Int {

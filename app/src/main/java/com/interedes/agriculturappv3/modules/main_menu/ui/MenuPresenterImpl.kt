@@ -109,6 +109,10 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
                 mainView?.verificateConnection()
             }
 
+            RequestEventMainMenu.ERROR_VERIFICATE_CONECTION -> {
+                mainView?.verificateConnection()
+            }
+
 
 
             /*RequestEventMainMenu.SYNC_FOTOS_INSUMOS_PLAGAS -> {
@@ -153,6 +157,10 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
         return  interactor?.getLastUserLogued()
     }
 
+
+    override fun navigateChatOnline( usuario: Usuario) {
+        interactor?.navigateChatOnline(checkConnection()!!,usuario)
+    }
     /*override fun getListSyncEnfermedadesAndTratamiento() {
         mainView?.showProgressBar()
         interactor?.getListSyncEnfermedadesAndTratamiento()

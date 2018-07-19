@@ -16,6 +16,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.provider.BaseColumns
+import android.provider.ContactsContract
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -52,15 +54,20 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.auth.FirebaseAuth
 import com.interedes.agriculturappv3.AgriculturApplication
+import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
 import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.UserSmsActivity
 import com.interedes.agriculturappv3.activities.chat.online.conversations_user.ConversationsUsersActivity
+import com.interedes.agriculturappv3.activities.chat.online.messages_chat.ChatMessageActivity
 import com.interedes.agriculturappv3.activities.intro.PermissionsIntro
 import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.libs.eventbus_rx.Rx_Bus
 import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
+import com.interedes.agriculturappv3.modules.credentials.CredentialsFragment
+import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestSendChat
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
+import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.modules.notification.NotificationActivity
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.AsistenciaTecnicaFragment
@@ -94,7 +101,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
 
     var isAppRunning: Boolean = false
-
     // var coordsService: CoordsService? = null
     //var coordsGlobal:Coords?=null
     var presenter: MenuPresenterImpl? = null
@@ -102,7 +108,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     var inflaterGlobal: MenuInflater? = null
     var menuItemGlobal: MenuItem? = null
     var menuItemNotificationsGlobal: View? = null
-    var mPhoneNumber: String? = null
 
 
     //Progress
@@ -111,7 +116,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     //Firebase
     //FIREBASE
     var mCurrentUserID: String? = null
-    var mAuth: FirebaseAuth? = null
     //Alert Dialog Sync
     var viewDialogSync:View?= null
     var _dialogSync: AlertDialog? = null
@@ -466,7 +470,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     .subButtonsShadow(Util.getInstance().dp2px(2F), Util.getInstance().dp2px(2F))
                     .onSubButtonClick { buttonIndex ->
                         if(circleSubButtonTexts!![buttonIndex].equals(MenuBoomResources.CHAT)){
-                            showAlertTypeChat()
+                            showAlertTypeChat(null)
                         }else if(circleSubButtonTexts!![buttonIndex].equals(MenuBoomResources.SINCRONIZAR)){
                             presenter?.syncQuantityData(false)
 
@@ -775,7 +779,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     Log.d("Convert Image", "defaultValue = " + ss);
                 }
             }
-
             headerViewHolder.tvNombreUsuario.setText(String.format(getString(R.string.nombre_usuario_nav), userLogued.Nombre, userLogued.Apellidos))
             headerViewHolder.tvIdentificacion.setText(userLogued?.Email)
         }
@@ -802,6 +805,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         headerViewHolder.itemCerrarSesion.setOnClickListener(this)
         headerViewHolder.itemOfertas.setOnClickListener(this)
         headerViewHolder.itemSyncCloud.setOnClickListener(this)
+        headerViewHolder.itemCredentials.setOnClickListener(this)
 
        // headerViewHolder.itemStartJob.setOnClickListener(this)
        // headerViewHolder.itemStopJob.setOnClickListener(this)
@@ -834,6 +838,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val itemComprasRealizadas: LinearLayout = view.findViewById(R.id.itemComprasRealizadas)
         val itemSyncronizarDatos: LinearLayout = view.findViewById(R.id.itemSyncronizarDatos)
         val itemCerrarSesion: LinearLayout = view.findViewById(R.id.itemCerrarSesion)
+        val itemCredentials: LinearLayout = view.findViewById(R.id.itemCredentials)
+
     }
 
 
@@ -943,20 +949,52 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }*/
 
 
-    override fun showAlertTypeChat(){
+    override fun showAlertTypeChat(usuario: Usuario?){
 
         val adapter=MaterialSimpleListAdapter({dialog, index, item ->
             if(index==0){
                 dialog.dismiss()
-                val chat = Intent(this, UserSmsActivity::class.java)
-                chat.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity(chat)
+                if(usuario!=null){
+                    val contactName = getContactDisplayNameByNumber(usuario.PhoneNumber,this)
+                    val sms= Sms(0,
+                            "",
+                            usuario.PhoneNumber,
+                            "",
+                            "",
+                            System.currentTimeMillis().toString(),
+                            MessageSmsType.MESSAGE_TYPE_SENT,
+                            EmisorType_Message_Resources.MESSAGE_EMISOR_TYPE_SMS,
+                            contactName
+                    )
 
+                    val goToUpdate = Intent(this, Chat_Sms_Activity::class.java)
+                    goToUpdate.putExtra(TagSmsResources.TAG_SMS_SEND, sms)
+                    goToUpdate.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    //goToUpdate.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(goToUpdate)
+                }else{
+                        val chat = Intent(this, UserSmsActivity::class.java)
+                        chat.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        startActivity(chat)
+                }
             }else{
-                dialog.dismiss()
-                val chatOnline = Intent(this, ConversationsUsersActivity::class.java)
-                chatOnline.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity(chatOnline)
+                if(usuario!=null){
+                    Rx_Bus.listen(RequestSendChat::class.java).subscribe({
+                        val goToUpdate = Intent(this, ChatMessageActivity::class.java)
+                        goToUpdate.putExtra("USER_FIREBASE", it.userFirebase)
+                        goToUpdate.putExtra("ROOM", it.room)
+                        goToUpdate.putExtra("USER_ID", it.userFirebase?.User_Id)
+                        goToUpdate.putExtra("FOTO", it.userFirebase?.Imagen)
+                        startActivity(goToUpdate)
+                    })
+                    presenter?.navigateChatOnline(usuario)
+
+                }else{
+                    dialog.dismiss()
+                    val chatOnline = Intent(this, ConversationsUsersActivity::class.java)
+                    chatOnline.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(chatOnline)
+                }
             }
         })
 
@@ -979,7 +1017,22 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 .autoDismiss(true)
                 .adapter(adapter, null).show();
     }
-
+    fun getContactDisplayNameByNumber(number: String?,context: Activity): String {
+        val uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number))
+        var name = "Desconocido"
+        val contentResolver = context.contentResolver
+        val contactLookup = contentResolver.query(uri, arrayOf(BaseColumns._ID, ContactsContract.PhoneLookup.DISPLAY_NAME), null, null, null)
+        try {
+            if (contactLookup != null && contactLookup.count > 0) {
+                contactLookup.moveToNext()
+                name = contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME))
+                //String contactId = contactLookup.getString(contactLookup.getColumnIndex(BaseColumns._ID));
+            }
+        } finally {
+            contactLookup?.close()
+        }
+        return name
+    }
 
 
     //endregion
@@ -1068,6 +1121,11 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             R.id.itemCerrarSesion -> {
             showExit()
                 }
+            R.id.itemCredentials -> {
+                drawer_layout.closeDrawer(GravityCompat.START)
+                replaceFragment(CredentialsFragment())
+            }
+
             R.id.itemSyncCloud -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
                 presenter?.syncQuantityData(false)
@@ -1420,10 +1478,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     override fun verificateConnection(): AlertDialog? {
-        var builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.verificate_conexion));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
         })
         builder.setIcon(R.mipmap.ic_launcher_round);
@@ -1446,7 +1504,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         */
         val retIntent = Intent(Const_Resources.SERVICE_CONECTIVITY)
         retIntent.putExtra("state_conectivity", true)
-        this?.sendBroadcast(retIntent)
+        this.sendBroadcast(retIntent)
         onMessageOk(R.color.colorPrimary, getString(R.string.on_connectividad))
 
 
@@ -1472,7 +1530,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
        // mUserDBRef?.database?.goOffline()
         val retIntent = Intent(Const_Resources.SERVICE_CONECTIVITY)
         retIntent.putExtra("state_conectivity", false)
-        this?.sendBroadcast(retIntent)
+        this.sendBroadcast(retIntent)
         onMessageError(R.color.grey_luiyi, getString(R.string.off_connectividad))
         presenter?.makeUserOffline(this)
 
@@ -1498,10 +1556,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     override fun onMessageToast(colorPrimary: Int, message: String?){
         val inflater = this.layoutInflater
-        var viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        val viewToast = inflater.inflate(R.layout.custom_message_toast, null)
         viewToast.txtMessageToastCustom.setText(message)
         viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(this,colorPrimary))
-        var mytoast =  Toast(this);
+        val mytoast =  Toast(this);
         mytoast.setView(viewToast);
         mytoast.setDuration(Toast.LENGTH_LONG);
         mytoast.show();

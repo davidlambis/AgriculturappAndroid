@@ -15,7 +15,6 @@
     <!-- PERMISSION GMS -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-
     <uses-permission android:name="com.interedes.agriculturappv3.permission.C2D_MESSAGE" />
 
     <!-- SMS -->
@@ -33,11 +32,11 @@
     <permission
         android:name="com.interedes.agriculturappv3.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-
-    <!--<uses-feature
+    <!--
+    <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true" />-->
-
+        android:required="true" />
+    -->
     <application
         android:name=".AgriculturApplication"
         android:icon="@mipmap/ic_launcher"
@@ -56,16 +55,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".activities.intro.PermissionsIntro"
             android:theme="@style/AppTheme.Intro" />
 
-         <!--
+        <!--
           <activity
             android:name="com.interedes.agriculturappv3.asistencia_tecnica.activities.login.ui.LoginActivity"
             android:configChanges="screenSize|orientation"
@@ -84,11 +81,16 @@
             android:configChanges="screenSize|orientation"
             android:theme="@style/AppTheme.Login"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".activities.registration.register_rol.RegisterRolActivity"
             android:parentActivityName=".activities.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:parentActivityName=".activities.login.ui.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:name=".activities.reset_password.ResetPasswordActivity"></activity>
 
         <activity
             android:name=".activities.registration.register_user.ui.RegisterUserActivity"
@@ -96,15 +98,16 @@
             android:parentActivityName=".activities.registration.register_rol.RegisterRolActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
             android:name=".modules.productor.ui.main_menu.MenuMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.MenuMain" />
 
-        <!--<activity
+        <!--
+            <activity
             android:name=".activities.MapsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />-->
+            android:theme="@style/AppTheme.NoActionBar" />
+        -->
         <activity
             android:name=".activities.chat.online.conversations_user.ConversationsUsersActivity"
             android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
@@ -125,13 +128,12 @@
             android:name=".activities.chat.chat_sms.user_sms_ui.UserSmsActivity"
             android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".modules.notification.NotificationActivity"
             android:parentActivityName=".modules.productor.ui.main_menu.MenuMainActivity"
-            android:name=".modules.notification.NotificationActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        <!-- Maps-->
+        <!-- Maps -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -141,18 +143,11 @@
         <!-- fabric -->
 
 
-
-        <!--SERVICES-->
+        <!-- SERVICES -->
         <service
             android:name=".services.sms.NotificationService"
             android:enabled="true"
             android:exported="true" />
-
-
-
-
-
-
         <service android:name=".services.coords.CoordsServiceKotlin" />
 
         <!--
@@ -192,9 +187,10 @@
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <!--End Services-->
+        <!-- End Services -->
 
-        <!--Receivers-->
+
+        <!-- Receivers -->
 
         <receiver
             android:name=".services.sms.MySmsBroadcastReceiver"
@@ -212,23 +208,30 @@
             </intent-filter>
         </receiver>
 
-        <!--Endreceivers-->
+        <!-- Endreceivers -->
+
 
         <!-- CHAT SERVICE -->
-        <!--<service
+        <!--
+        <service
             android:name=".services.chat.ChatService"
             android:exported="false"
             android:persistent="true">
-        </service>-->
-        <!-- SERVICE INSUMOS
+        </service>
+        -->
+        <!--
+        SERVICE INSUMOS
         <service
             android:name=".services.services.JobDownloadFotosService"
             android:exported="false">
 
-        </service>-->
+        </service>
+        -->
         <!--
         <service android:name=".services.services.JobServiceExample"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         -->
+
     </application>
+
 </manifest>

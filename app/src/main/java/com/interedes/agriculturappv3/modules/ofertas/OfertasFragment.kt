@@ -481,13 +481,13 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
 
 
             val inflater = this.layoutInflater
-            var viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
+            val viewDialogConfirm = inflater.inflate(R.layout.dialog_confirm, null)
 
             viewDialogConfirm?.txtTitleConfirm?.setText("")
             viewDialogConfirm?.txtTitleConfirm?.setText(usuario?.Nombre+" ${usuario?.Apellidos}")
 
 
-            var content =String.format(getString(R.string.user_navigation_chat_sms),usuario?.Nombre+" ${usuario?.Apellidos}")
+            val content =String.format(getString(R.string.user_navigation_chat_sms),usuario?.Nombre+" ${usuario?.Apellidos}")
             viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
 
 

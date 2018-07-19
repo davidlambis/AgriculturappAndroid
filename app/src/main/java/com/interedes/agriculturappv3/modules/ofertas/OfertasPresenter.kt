@@ -90,7 +90,7 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
             }
 
             OfertasEvent.UPDATE_EVENT -> {
-                var list = event.mutableList as List<Oferta>
+                val list = event.mutableList as List<Oferta>
                 view?.setListOfertas(list)
                 onUpdateOk()
             }
@@ -121,24 +121,24 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
 
 
             OfertasEvent.REQUEST_CONFIRM_ITEM_EVENT -> {
-                var oferta = event.objectMutable as Oferta
+                val oferta = event.objectMutable as Oferta
                 view?.confirmAceptOferta(oferta)
             }
 
             OfertasEvent.REQUEST_CHAT_ITEM_EVENT -> {
-                var oferta = event.objectMutable as Oferta
+                val oferta = event.objectMutable as Oferta
                 navigationChat(oferta)
             }
 
             OfertasEvent.NAVIGATION_CHAT_ONLINE -> {
-                var room = event.objectMutable as Room
-                var userFirebase = event.objectMutable2 as UserFirebase
+                val room = event.objectMutable as Room
+                val userFirebase = event.objectMutable2 as UserFirebase
                 view?.navigationChatOnline(room,userFirebase)
 
             }
 
             OfertasEvent.NAVIGATION_CHAT_SMS -> {
-                var usuario = event.objectMutable as Usuario
+                val usuario = event.objectMutable as Usuario
                 view?.navigationChatSms(usuario)
             }
 

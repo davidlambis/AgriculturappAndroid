@@ -79,7 +79,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
-
+    <!--Reset Password-->
+    <string name="title_reset_password">Digita tu correo electronico para restablecer tu contraseña</string>
+    <string name="btn_send_reset_password">Enviar Email</string>
+    <string name="send_email_reset_password_ok">Se ha enviado un link a su direccion de correo electronico  </string>
 
     <!-- MAPS API -->
     <string name="maps">AIzaSyA8ttTHUZLtDLvxcRY56H8iVcTt9Fofo3U</string>
@@ -197,7 +200,6 @@
     <string name="verifcate_conection_info">Verifica tu conexion a internet e intenta nuevamente</string>
 
 
-
     <!-- Insumos -->
     <string name="ver_insumos">Ver Insumos</string>
     <string name="ver_tratamiento">Ver Tratamiento</string>
@@ -311,9 +313,13 @@
 
     <!--Cuenta-->
     <string name="tittle_account">Cuenta</string>
+    <string name="edit_text_contrasena_old">Contraseña Antigua</string>
+    <string name="edit_text_contrasena_new">Nueva Contraseña</string>
+    <string name="tittle_credentials">Credenciales</string>
+
+    <string name="title_change_password_account">Cambiar Credenciales</string>
 
     <string name="tittle_verificate_conection">Verifique su conexion a internet para actualizar su imagen de perfil</string>
-
 
 
     <!--GLobals-->
@@ -344,6 +350,7 @@
     <string name="cantidad">Cantidad</string>
     <string name="venta">Precio $</string>
     <string name="subtotal">Subtotal $</string>
+    <string name="btn_save_changes">Guardar Cambios</string>
 
     <string name="total">Total $</string>
     <string name="cantidad_estimada">%1$,.0f / %2$s</string>
@@ -395,6 +402,7 @@
     <string name="need_internet_register">Necesitas internet para registrarte</string>
     <string name="Sincronizado">Sincronizado</string>
     <string name="noSincronizado">No Sincronizado</string>
+    <string name="error_request_reset_password">Estamos experimentando problemas, intenta nuevamente porfavor</string>
 
     <string name="init_service_coords">Iniciar servicio de coordenadas para obtener ubicación</string>
 
@@ -462,6 +470,7 @@
 
     <!--COMPRADOR MODULE-->
     <string name="tittle_productos">Productos</string>
+
     <string name="tittle_detail_productos">Detalle Productos</string>
 
     <string name="tittle_ofertar">Ofertar !</string>

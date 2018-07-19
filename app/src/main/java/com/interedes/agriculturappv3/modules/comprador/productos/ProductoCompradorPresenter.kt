@@ -44,7 +44,7 @@ class ProductoCompradorPresenter(var mainView: IMainViewProductoComprador.MainVi
     //region Conectividad
     private val mNotificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var extras = intent.extras
+            val extras = intent.extras
             if (extras != null) {
                 mainView?.onEventBroadcastReceiver(extras, intent)
             }
@@ -70,7 +70,7 @@ class ProductoCompradorPresenter(var mainView: IMainViewProductoComprador.MainVi
     override fun onEventMainThread(event: RequestEventProductosComprador?) {
         when (event?.eventType) {
             RequestEventProductosComprador.LIST_EVENT_TIPO_PRODUCTO -> {
-                var list = event.mutableList as List<TipoProducto>
+                val list = event.mutableList as List<TipoProducto>
                 listTipoProducto=list
                 mainView?.setListTipoProducto(list)
                 mainView?.hideProgress()
@@ -83,7 +83,7 @@ class ProductoCompradorPresenter(var mainView: IMainViewProductoComprador.MainVi
             }
 
             RequestEventProductosComprador.ITEM_EVENT -> {
-                var tipoProducto = event.objectMutable as TipoProducto
+                val tipoProducto = event.objectMutable as TipoProducto
                 mainView?.navigateDetalleTipoProducto(tipoProducto.Id!!)
             }
         }
@@ -106,7 +106,7 @@ class ProductoCompradorPresenter(var mainView: IMainViewProductoComprador.MainVi
 
     private fun onMessageError(error: String?) {
         mainView?.hideProgress()
-        mainView?.showProgressHud()
+        mainView?.hideProgressHud()
         mainView?.requestResponseError(error)
     }
 

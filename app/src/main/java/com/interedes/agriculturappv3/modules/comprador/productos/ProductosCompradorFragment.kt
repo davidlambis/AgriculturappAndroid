@@ -3,6 +3,7 @@ package com.interedes.agriculturappv3.modules.comprador.productos
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -16,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.TextView
 
 import com.interedes.agriculturappv3.R
@@ -120,10 +122,16 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
     }
 
     override fun showProgressHud(){
+
+        val imageView = ImageView(activity);
+        imageView.setBackgroundResource(R.drawable.spin_animation_load_comprador);
+        val drawable = imageView.getBackground() as AnimationDrawable;
+        drawable.start();
         hud = KProgressHUD.create(activity)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCustomView(imageView)
                 .setWindowColor(getResources().getColor(R.color.colorPrimary))
-                .setLabel("Cargando...", resources.getColor(R.color.white))
+                //.setLabel("Cargando...", resources.getColor(R.color.white_solid))
+                .setDetailsLabel("Cargando Informacion")
         hud?.show()
     }
 

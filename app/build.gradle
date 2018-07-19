@@ -21,7 +21,7 @@ android {
         //buildConfigField "String", "ps", getPs()
 
 
-        vectorDrawables.useSupportLibrary =true
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
 
@@ -58,6 +58,7 @@ dependencies {
 
     //Glide
     implementation "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
+    implementation 'com.android.support:support-v4:27.1.1'
     annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.ext.glideVersion"
 
     //Constrain
@@ -115,7 +116,6 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.1'
 
-
     //DIALOGS
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
@@ -167,7 +167,6 @@ dependencies {
     //Crash Analitics
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
 
-
     //JOB
     implementation 'com.evernote:android-job:1.2.4'
 
@@ -175,15 +174,11 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.0.2'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
-
-
-
     //Glide
     //implementation 'com.github.bumptech.glide:glide:4.7.1'
-   // annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+    // annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     kapt "android.arch.lifecycle:compiler:1.0.0"
     kapt 'com.github.bumptech.glide:compiler:4.7.1'
-
 
     /*
     //Maps MapDrawingTools

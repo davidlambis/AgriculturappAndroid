@@ -36,7 +36,7 @@ interface MainViewMenu {
         fun verificateConnection(): AlertDialog?
         fun  verificateSync(quantitySync: QuantitySync?): AlertDialog?
        // fun showAlertTypeChat(): AlertDialog?
-        fun showAlertTypeChat()
+        fun showAlertTypeChat(usuario: Usuario?)
         //fun showAlertDialogSyncDataConfirm()
 
         fun setQuantitySync(quantitySync: QuantitySync?)
@@ -65,6 +65,7 @@ interface MainViewMenu {
         //Conection
         fun checkConnection(): Boolean?
 
+
         //
         fun getListasIniciales()
         fun getLastUserLogued(): Usuario?
@@ -75,6 +76,9 @@ interface MainViewMenu {
         //Notifications
         fun getCountNotifications():Int
 
+
+        //Navigate to ChatOnline
+        fun navigateChatOnline(usuario:Usuario)
 
     }
 
@@ -89,7 +93,8 @@ interface MainViewMenu {
 
         //Notifications
         fun getCountNotifications():Int
-
+        //Navigate to ChatOnline
+        fun navigateChatOnline(checkConection:Boolean,usuario:Usuario)
 
         fun logOut(usuario: Usuario?)
     }
@@ -107,7 +112,8 @@ interface MainViewMenu {
         fun checkListPlagas():Long
         //Notifications
         fun getCountNotifications():Int
-
+        //Navigate to ChatOnline
+        fun navigateChatOnline(checkConection:Boolean,usuario:Usuario)
 
         fun getListasIniciales()
         fun syncQuantityData(automatic:Boolean)

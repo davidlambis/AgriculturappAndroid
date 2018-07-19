@@ -477,7 +477,6 @@ class LoginRepositoryImpl : LoginRepository {
         return preferences.getString(Const_Resources.FIREBASE_TOKEN, null);
     }
 
-
     override fun resetPassword(correo: String) {
         val resetPassword = ResetPassword(correo)
         val call = apiService?.resetPassword(resetPassword)

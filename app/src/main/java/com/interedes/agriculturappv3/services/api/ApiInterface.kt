@@ -294,6 +294,13 @@ interface ApiInterface {
     //endregion
 
 
+    //region ACCOUNT
+    @Headers("Content-Type: application/json")
+    @POST("auth/change-password")
+    fun changePasswordAccount(@Header("Authorization") token: String,@Body body: RequestCredentials): Call<RequestCredentials>
+
+    //endregion
+
 
     //region Contabilidad
     @GET("odata/Agp2/CategoriaPucs?\$expand=Pucs")

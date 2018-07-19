@@ -113,8 +113,34 @@
                   android:layout_height="wrap_content" />
 
           </LinearLayout>-->
+        <LinearLayout
+            android:id="@+id/itemCredentials"
+            android:padding="@dimen/margin_5"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center|left"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-          <LinearLayout
+            <ImageView
+                android:tint="@color/white_solid"
+                android:src="@drawable/ic_candado_nav_drawer"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+
+            <TextView
+                android:textSize="@dimen/text_size_18"
+                android:textColor="@color/white_solid"
+                android:paddingStart="@dimen/margin_5"
+                android:textAlignment="textStart"
+                android:text="Credenciales"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
               android:id="@+id/itemSyncCloud"
               android:padding="@dimen/margin_5"
               android:foreground="?android:attr/selectableItemBackground"

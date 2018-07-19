@@ -1,5 +1,6 @@
 package com.interedes.agriculturappv3.activities.registration.register_user.ui
 
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
@@ -25,7 +26,9 @@ import com.interedes.agriculturappv3.modules.models.metodopago.MetodoPago
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
 import kotlinx.android.synthetic.main.activity_register_user.*
 import android.text.TextUtils
+import android.util.Log
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
@@ -302,7 +305,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
 
      fun showAlertRegistroExitoso() {
         val inflater = this.layoutInflater
-        var viewDialogFilter = inflater.inflate(R.layout.alert_success, null)
+        val viewDialogFilter = inflater.inflate(R.layout.alert_success, null)
 
         val dialog = MaterialDialog.Builder(this)
                 .title(title)
@@ -356,6 +359,8 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
         onMessageOk(R.color.grey_luiyi, getString(R.string.need_internet_register))
     }
 
+
+
     private fun setInputs(b: Boolean) {
         textInputLayoutNombres?.isEnabled = b
         textInputLayoutApellidos?.isEnabled = b
@@ -376,6 +381,7 @@ class RegisterUserActivity : AppCompatActivity(), RegisterUserView, View.OnClick
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.ivBackButton -> {
+
                 navigateToParentActivity()
             }
             R.id.btnRegistrar -> {

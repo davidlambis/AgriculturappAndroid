@@ -20,6 +20,8 @@ data class RequestEventMainMenu (var eventType: Int,
         val UPDATE_BADGE_NOTIIFCATIONS=6
         val SYNC_FOTOS_PRODUCTOS=7
 
+        val SEND_CHAT_USER_SELECTED=8
+
 
     }
 }

@@ -111,6 +111,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
         ivBackButton.setOnClickListener(this)
         btnConatctProductor.setOnClickListener(this)
         btnOfertar.setOnClickListener(this)
+        btnChatUser.setOnClickListener(this)
 
     }
 
@@ -247,16 +248,10 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                         .error(R.drawable.ic_foto_producto)
                         .into(contenIconProducto)*/
             }
-
-
-
         }
     }
 
-
-
     //region IMPLEMENTS METHODS
-
     override fun showProgress() {
         //  swipeRefreshLayout.setRefreshing(true);
     }
@@ -630,8 +625,8 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
 
         if(presenter?.validarCamposAddOferta()!!){
 
-            var oferta= Oferta()
-            var date= Calendar.getInstance().time
+            val oferta= Oferta()
+            val date= Calendar.getInstance().time
 
             oferta.UpdatedOn=oferta.getDateFormatApi(date)
             oferta.CreatedOn=oferta.getDateFormatApi(date)
@@ -694,6 +689,11 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                 if(presenter?.validarCamposAddOferta()!!){
                     showConfirmOferta()
                 }
+            }
+
+            R.id.btnChatUser->{
+                val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(productoGlobal?.userId)).querySingle()
+                (activity as MenuMainActivity).showAlertTypeChat(usuario)
             }
         }
     }

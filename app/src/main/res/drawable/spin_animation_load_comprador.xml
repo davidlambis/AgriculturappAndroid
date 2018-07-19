@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/selected"
+android:oneshot="false">
+<item android:drawable="@drawable/gif_comprador_1" android:duration="100"/>
+<item android:drawable="@drawable/gif_comprador_2" android:duration="100"/>
+<item android:drawable="@drawable/gif_comprador_3" android:duration="100"/>
+<item android:drawable="@drawable/gif_comprador_4" android:duration="100"/>
+<item android:drawable="@drawable/gif_comprador_5" android:duration="100"/>
+<item android:drawable="@drawable/gif_comprador_6" android:duration="100"/>
+<item android:drawable="@drawable/gif_comprador_7" android:duration="100"/>
+</animation-list>

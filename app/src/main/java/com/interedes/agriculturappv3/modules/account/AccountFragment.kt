@@ -412,7 +412,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     }
 
     override fun verificateConnection(): AlertDialog? {
-        var builder = AlertDialog.Builder(context!!)
+        val builder = AlertDialog.Builder(context!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.verificate_conexion));
         builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
@@ -857,7 +857,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         }*/
         if(photoByteArray != null)
         {
-           var progressDialog =  ProgressDialog(activity);
+           val progressDialog =  ProgressDialog(activity);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 

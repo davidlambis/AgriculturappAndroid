@@ -5,20 +5,24 @@ import android.graphics.Bitmap
 import android.preference.PreferenceManager
 import android.util.Base64
 import android.util.Log
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ServerValue
+import com.google.firebase.database.*
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.libs.eventbus_rx.Rx_Bus
 import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
+import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestSendChat
 import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal
 import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal_Table
+import com.interedes.agriculturappv3.modules.models.chat.Room
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga
 import com.interedes.agriculturappv3.modules.models.control_plaga.ControlPlaga_Table
 import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo
@@ -65,9 +69,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MenuRepository: MainViewMenu.Repository {
-
 
 
     var eventBus: EventBus? = null
@@ -75,9 +80,18 @@ class MenuRepository: MainViewMenu.Repository {
 
     //FIREBASE
     private var mUserDBRef: DatabaseReference? = null
+    var mRoomDBRef: DatabaseReference? = null
+
     private var mStorageRef: StorageReference? = null
     var mAuth: FirebaseAuth? = null
     private var  mCurrentUserID: String? = null
+
+
+    //Chat
+    private var mReceiverId: String? = null
+    private var mSenderId: String? = null
+    private var roomGlobalUserSender: Room? = null
+    private var roomGlobalUserReceiver: Room? = null
 
     init {
         eventBus = GreenRobotEventBus()
@@ -91,6 +105,7 @@ class MenuRepository: MainViewMenu.Repository {
 
         mAuth= FirebaseAuth.getInstance()
         mUserDBRef = Chat_Resources.mUserDBRef
+        mRoomDBRef = Chat_Resources.mRoomDBRef
         mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
     }
 
@@ -174,6 +189,148 @@ class MenuRepository: MainViewMenu.Repository {
             }
         })
     }
+
+
+
+    //region CHAT ONLINE
+
+    override fun navigateChatOnline(checkConection: Boolean, usuario: Usuario) {
+       if(checkConection){
+           getUserToFirebase(usuario)
+       }else{
+           postEventError(RequestEventMainMenu.ERROR_EVENT, "Verifique su conexion")
+       }
+    }
+
+    private fun getUserToFirebase(usuarioTo: Usuario?) {
+        if(usuarioTo!=null){
+            val query = mUserDBRef?.orderByChild("correo")?.equalTo(usuarioTo?.Email)
+            query?.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // dataSnapshot is the "issue" node with all children with id 0
+                        var user: UserFirebase?=null
+                        for (issue in dataSnapshot.children) {
+                            // do something with the individual "issues"
+                            user = issue.getValue<UserFirebase>(UserFirebase::class.java)
+                            mReceiverId=user?.User_Id
+                            mSenderId=FirebaseAuth.getInstance().currentUser!!.uid
+                            //if not current user, as we do not want to show ourselves then chat with ourselves lol
+                        }
+
+                        findRoomUser(user!!)
+                        //sendMessageToFirebase(message, senderId, mReceiverId)
+                    }
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
+                    val error = databaseError.message
+                    postEventError(RequestEventMainMenu.ERROR_EVENT, error)
+                    //postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
+                }
+            })
+        }
+    }
+
+    private fun findRoomUser(userFirebase: UserFirebase) {
+        //val query = mRoomDBRef?.child("/"+mCompradorSenderId+"/"+mProductorReceiverId)
+        val query = mRoomDBRef?.child(mSenderId)?.orderByChild("user_To")?.equalTo(Chat_Resources.getRoomById(mReceiverId))
+        query?.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    //var room = dataSnapshot.value as HashMap<*, *>
+                    //roomId=room.get("idRoom") as String;
+                    var roomFind= Room()
+
+                    for (issue in dataSnapshot.children) {
+                        val room = issue.getValue<Room>(Room::class.java)
+                        //roomId=room?.IdRoom
+                        roomGlobalUserSender= room!!
+                    }
+
+                    //sendMessageToFirebase(message,oferta,userFirebase)
+
+
+
+                    val sendChatRequest= RequestSendChat(roomGlobalUserSender,userFirebase)
+                    Rx_Bus.publish(sendChatRequest)
+
+
+                }else{
+                    createRoomUser(userFirebase,mReceiverId,true,userFirebase)
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                val error = databaseError.message
+                postEventError(RequestEventMainMenu.ERROR_EVENT, error)
+            }
+        })
+    }
+
+    fun getDateFormatApi(date: Date): String? {
+        val format1 = SimpleDateFormat("yyyy-MM-dd")
+        return format1.format(date)
+    }
+
+    private fun createRoomUser(user: UserFirebase?, idProductor:String?, roomComprador:Boolean, userFirebase: UserFirebase) {
+        val date= Calendar.getInstance().time
+        val dateString =getDateFormatApi(date)
+
+        if(idProductor!= null){
+            if(roomComprador){
+
+                val room = Room(Chat_Resources.getRoomByCompradorProductor(mSenderId,mReceiverId), mSenderId, mReceiverId, 0, 0,dateString,"")
+                mRoomDBRef?.child(mSenderId)?.child(Chat_Resources.getRoomById(mReceiverId))?.setValue(room)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
+                    if (!task.isSuccessful) {
+                        val error = task.exception
+                        postEventError(RequestEventMainMenu.ERROR_EVENT, error.toString())
+                    } else {
+                        roomGlobalUserSender=room
+                        createRoomUser(user,mReceiverId,false,userFirebase)
+                    }
+                })
+            }else{
+                val room = Room(Chat_Resources.getRoomByCompradorProductor(mSenderId,mReceiverId), mReceiverId, mSenderId, 0, 0,dateString,"")
+                mRoomDBRef?.child(mReceiverId)?.child(Chat_Resources.getRoomById(mSenderId))?.setValue(room)?.addOnCompleteListener(OnCompleteListener<Void> { task ->
+                    if (!task.isSuccessful) {
+                        val error = task.exception
+                        postEventError(RequestEventMainMenu.ERROR_EVENT, error.toString())
+                        //error
+                    } else {
+                        roomGlobalUserReceiver=room
+                        createRoomUser(user,null,false,userFirebase)
+                    }
+                })
+            }
+        }else{
+            updateDatesRoomUser()
+
+            val roomDateComprador= mRoomDBRef?.child(mSenderId)?.child(Chat_Resources.getRoomById(mReceiverId)+"/date")
+            roomDateComprador?.setValue(ServerValue.TIMESTAMP);
+
+            val roomDateProductor= mRoomDBRef?.child(mReceiverId)?.child(Chat_Resources.getRoomById(mSenderId)+"/date")
+            roomDateProductor?.setValue(ServerValue.TIMESTAMP);
+
+            val sendChatRequest= RequestSendChat(roomGlobalUserSender,userFirebase)
+            Rx_Bus.publish(sendChatRequest)
+
+        }
+    }
+
+
+    private fun updateDatesRoomUser() {
+        //success adding user to db as well
+        val roomDateLastComprador= mRoomDBRef?.child(mSenderId)?.child(Chat_Resources.getRoomById(mReceiverId)+"/date_Last")
+        roomDateLastComprador?.setValue(ServerValue.TIMESTAMP);
+
+        val roomDateLastProductor= mRoomDBRef?.child(mReceiverId)?.child(Chat_Resources.getRoomById(mSenderId)+"/date_Last")
+        roomDateLastProductor?.setValue(ServerValue.TIMESTAMP);
+    }
+
+
+
+
+
+    //endregion
 
     //region TOKEN
     private fun resetTokenFCM(context: Context) {
