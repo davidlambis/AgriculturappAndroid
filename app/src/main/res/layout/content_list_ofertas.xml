@@ -51,21 +51,25 @@ android:layout_margin="@dimen/margin_10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleView"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_below="@+id/header_text"
-                android:src="@drawable/default_avata" />
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/circleView"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_below="@+id/header_text"
+                    android:src="@drawable/default_avata" />
 
-            <TextView
-                android:id="@+id/publisher_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="@color/grey_luiyi"
-                android:textSize="14sp" />
-
+                <TextView
+                    android:id="@+id/publisher_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/grey_luiyi"
+                    android:textSize="14sp" />
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/btnChatItem"
                 android:foreground="?android:attr/selectableItemBackground"
@@ -90,7 +94,7 @@ android:layout_margin="@dimen/margin_10"
                     android:layout_width="wrap_content"
                     android:text="Chat"
                     android:textColor="@color/grey_luiyi"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/text_size_18" />
             </LinearLayout>
 
         </LinearLayout>

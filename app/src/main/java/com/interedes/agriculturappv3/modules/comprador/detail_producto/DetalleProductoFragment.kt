@@ -6,6 +6,7 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -49,6 +50,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.alert_success.view.*
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
+import kotlinx.android.synthetic.main.dialog_detail_foto.view.*
 import java.util.*
 
 
@@ -109,10 +111,11 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
         // swipeRefreshLayout.setOnRefreshListener(this)
         setupInjection()
         ivBackButton.setOnClickListener(this)
-        btnConatctProductor.setOnClickListener(this)
+        //btnConatctProductor.setOnClickListener(this)
         btnOfertar.setOnClickListener(this)
         btnChatUser.setOnClickListener(this)
-
+        contenIconProducto.setOnClickListener(this)
+        contentIcon.setOnClickListener(this)
     }
 
     private fun setupInjection() {
@@ -300,10 +303,10 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
 
     override fun onMessageToas(message:String,color:Int){
         val inflater = this.layoutInflater
-        var viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        val viewToast = inflater.inflate(R.layout.custom_message_toast, null)
         viewToast.txtMessageToastCustom.setText(message)
         viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(activity!!, color))
-        var mytoast =  Toast(activity);
+        val mytoast =  Toast(activity);
         mytoast.setView(viewToast);
         mytoast.setDuration(Toast.LENGTH_LONG);
         mytoast.show();
@@ -534,7 +537,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
         viewDialogConfirm?.txtTitleConfirm?.setText(productoGlobal?.NombreProductor)
 
 
-        var content =String.format(getString(R.string.content_sms_message),productoGlobal?.NombreProductor)
+        val content =String.format(getString(R.string.content_sms_message),productoGlobal?.NombreProductor)
         viewDialogConfirm?.txtDescripcionConfirm?.setText(content)
 
         MaterialDialog.Builder(activity!!)
@@ -577,6 +580,44 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                     onMessageToas(getString(R.string.content_sms_not_send),R.color.red_900)
                 })
                 .show()
+    }
+
+
+    override fun showViewDialogImage(ruta: String?) {
+
+         val inflater = this.layoutInflater
+         val viewDialogImage = inflater.inflate(R.layout.dialog_detail_foto, null)
+
+        if(ruta!=null){
+            GlideApp.with(activity!!)
+                    .load(S3Resources.RootImage+"$ruta")
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .fotoDetailCenterCrop()
+                    .into(viewDialogImage.imgIcon)
+        }else{
+            viewDialogImage.imgIcon.setImageResource(R.drawable.ic_no_image_icon)
+            viewDialogImage.imgIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        }
+
+         ///ImagePlagaGlobal=enfermedad.RutaImagenEnfermedad
+
+
+         val dialog = AlertDialog.Builder(context!!)
+                 .setView(viewDialogImage!!)
+                 .create()
+         dialog.getWindow().setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.white_transaparent)))
+
+        val closeDialog = View.OnClickListener { dialog.dismiss() }
+        viewDialogImage.ivClosetDialogImage?.setOnClickListener(closeDialog)
+
+
+        val lp = WindowManager.LayoutParams()
+         lp.copyFrom(dialog.getWindow().getAttributes())
+         lp.width = WindowManager.LayoutParams.MATCH_PARENT
+         lp.height = WindowManager.LayoutParams.MATCH_PARENT
+         dialog.show()
+         dialog.getWindow().setAttributes(lp)
+
     }
 
 
@@ -677,9 +718,6 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                     showAlertDialogOfertar(productoGlobal)
                 }
             }
-            R.id.btnConatctProductor->{
-
-            }
 
             R.id.ivClosetDialogOferta->{
                 _dialogOferta?.dismiss()
@@ -695,6 +733,20 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                 val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(productoGlobal?.userId)).querySingle()
                 (activity as MenuMainActivity).showAlertTypeChat(usuario)
             }
+
+            R.id.contentIcon->{
+
+
+                val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(productoGlobal?.userId)).querySingle()
+                showViewDialogImage(usuario?.Fotopefil)
+            }
+
+            R.id.contenIconProducto->{
+                showViewDialogImage(productoGlobal?.Imagen)
+
+            }
+
+
         }
     }
     //endregio

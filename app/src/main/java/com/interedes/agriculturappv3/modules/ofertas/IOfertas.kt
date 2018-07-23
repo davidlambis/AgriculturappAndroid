@@ -37,9 +37,9 @@ interface IOfertas {
         fun setResults(ofertas: Int)
 
         //Navigation Chat
-        fun navigationChatOnline(room: Room?, userFirebase: UserFirebase?)
-        fun navigationChatSms(usuario: Usuario?)
-
+        //fun navigationChatOnline(room: Room?, userFirebase: UserFirebase?)
+        //fun navigationChatSms(usuario: Usuario?)
+        fun navigationChat(oferta:Oferta)
 
         //Listas
         fun setListUnidadProductiva(listUnidadProductiva: List<Unidad_Productiva>?)
@@ -97,7 +97,7 @@ interface IOfertas {
         fun updateOferta(oferta: Oferta,productoId:Long?,checkConection:Boolean)
 
 
-        fun navigationChat(oferta: Oferta,checkConection: Boolean)
+        //fun navigationChat(oferta: Oferta,checkConection: Boolean)
     }
 
     interface Repository {
@@ -107,7 +107,7 @@ interface IOfertas {
         fun getOfertas(productoId: Long?): List<Oferta>
         fun getProducto(productoId: Long?)
 
-        fun navigationChat(oferta: Oferta,checkConection: Boolean)
+        //fun navigationChat(oferta: Oferta,checkConection: Boolean)
 
         fun updateOferta(oferta: Oferta,productoId:Long?,checkConection:Boolean)
     }

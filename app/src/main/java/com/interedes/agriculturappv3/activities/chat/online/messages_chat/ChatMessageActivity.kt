@@ -27,17 +27,25 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.thunder413.datetimeutils.DateTimeUtils
 import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
+import com.interedes.agriculturappv3.libs.GlideApp
+import com.interedes.agriculturappv3.libs.eventbus_rx.Rx_Bus
 import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.modules.models.sms.Sms
+import com.interedes.agriculturappv3.services.api.ApiInterface
+import com.interedes.agriculturappv3.services.listas.Listas
 import com.interedes.agriculturappv3.services.resources.*
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.squareup.picasso.Picasso
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 
@@ -130,13 +138,32 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
 
     private fun listenerChangesUserSelected(receiverId: String?,userFirebase: UserFirebase?) {
 
-        Picasso.get()
-                .load(userFirebase?.Imagen)
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.default_avata)
-                .error(R.drawable.default_avata)
-                .into(imgUserTo);
+        val apiService = ApiInterface.create()
+        val queryCustom = Listas.queryGeneral("Email",userFirebase?.Correo!!)
+        val callusuario = apiService.getUserByEmail(queryCustom)
+        callusuario.delay(100, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
+            //Log.d("search", searchString)
+            val usuario =searchResponse.value
+            if(usuario!=null){
+                for (item in usuario){
+                    if(item.Fotopefil!=null){
+                        userFirebaeSelected?.Imagen=item.Fotopefil
+                        //data.UserFirebase?.Imagen=S3Resources.RootImage+"${item.Fotopefil}"
+                        GlideApp.with(applicationContext)
+                                .load(S3Resources.RootImage+"${item.Fotopefil}")
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .productorPhoto()
+                                .into(imgUserTo);
+
+                        Rx_Bus.publish(userFirebaeSelected!!)
+                    }
+                }
+            }
+        },{ throwable ->
+            val error= throwable.toString()
+
+        })
+
 
 
         mUsersRef?.child(receiverId)?.addValueEventListener(object : ValueEventListener {
@@ -364,6 +391,11 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
             }
         }
         return super.onOptionsItemSelected(item)
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
 
     }
 

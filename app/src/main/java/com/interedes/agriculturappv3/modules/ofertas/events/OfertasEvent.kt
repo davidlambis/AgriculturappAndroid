@@ -23,8 +23,8 @@ data class OfertasEvent(var eventType: Int,
 
 
         //Navigation
-        val NAVIGATION_CHAT_ONLINE: Int = 13
-        val NAVIGATION_CHAT_SMS: Int = 14
+        //val NAVIGATION_CHAT_ONLINE: Int = 13
+        //val NAVIGATION_CHAT_SMS: Int = 14
 
         //Error Connection
         val ERROR_VERIFICATE_CONECTION: Int = 11

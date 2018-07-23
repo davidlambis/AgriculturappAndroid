@@ -173,11 +173,11 @@ class MenuRepository: MainViewMenu.Repository {
     {
         mAuth?.signInWithEmailAndPassword(usuario.Email!!, usuario.Contrasena!!)?.addOnCompleteListener({ task ->
             if (task.isSuccessful) {
-                val mCurrentUserID =task.result.user.uid
-                usuario.IdFirebase=mCurrentUserID
+                val mCurrentUserIDLogin =task.result.user.uid
+                usuario.IdFirebase=mCurrentUserIDLogin
                 usuario.save()
-
                 resetTokenFCM(context)
+                mCurrentUserID = mCurrentUserIDLogin
                 makeUserOnlineSet()
             } else {
                 try {

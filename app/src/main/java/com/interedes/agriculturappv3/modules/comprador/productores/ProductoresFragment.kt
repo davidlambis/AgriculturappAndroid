@@ -13,14 +13,12 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.widget.TextView
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.kaopiz.kprogresshud.KProgressHUD
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
-import android.widget.Toast
 import com.interedes.agriculturappv3.modules.comprador.detail_producto.DetalleProductoFragment
 import com.interedes.agriculturappv3.modules.comprador.productores.adapter.*
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
@@ -30,7 +28,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Handler
-import android.widget.ImageView
+import android.widget.*
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
@@ -47,7 +45,9 @@ import java.math.MathContext
 
 
 import com.interedes.agriculturappv3.libs.widgets.MyRangeSeekbar
-
+import com.interedes.agriculturappv3.modules.models.producto.RangePrice
+import com.interedes.agriculturappv3.services.listas.Listas
+import kotlinx.android.synthetic.main.dialog_filter_products.*
 
 
 class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.MainView, SwipeRefreshLayout.OnRefreshListener {
@@ -66,7 +66,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
 
     //Productos
-    var PAGE_SIZE=4
+    var PAGE_SIZE=10
     var pastVisiblesItems: Int? = 0
 
     //DialogsFilter
@@ -76,8 +76,13 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     var selectedCity:Ciudad?=null
 
 
+
+
+
     var priceFilterMin=0f
-    var priceFilterMax=10000000f
+    var priceFilterMax=1000000f
+
+    var itemPriceRangeFilter:RangePrice=RangePrice(1000000.0)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,7 +163,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         /*For Load More Pagination*/
 
 
-       adapter = ProductorMoreAdapter(productosList, activity)
+       adapter = ProductorMoreAdapter(productosList!!, activity)
         adapter?.setLoadMoreListener(object : ProductorMoreAdapter.OnLoadMoreListener {
             override fun onLoadMore() {
                 if(pastVisiblesItems!!>=PAGE_SIZE){
@@ -372,7 +377,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
         viewDialog.txtSetFilter.setOnClickListener(this)
 
-
+        setListRangePrice(viewDialog)
 
         val departments = View.OnClickListener { showDialogDepartment() }
         viewDialog.btnFilterDepartment.setOnClickListener(departments)
@@ -406,46 +411,20 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
             }
         });*/
+        
+        setRangeSnackbar(viewDialog)
 
-        Handler().postDelayed({
-            rangeSeekbar.setSteps(50000f).setMinValue(0f).setMaxValue(10000000f).setMinStartValue(priceFilterMin).setMaxStartValue(priceFilterMax).apply()
+      /*  Handler().postDelayed({
+            rangeSeekbar.setSteps(50000f).setMinValue(0F).setMaxValue(1000000F).setMinStartValue(priceFilterMin).setMaxStartValue(priceFilterMax).apply()
             // rangeSeekbar.setMinValue(10000).setMaxValue(20000).setMinStartValue(12000).setMaxStartValue(12000).apply();
-        }, 500)
+        }, 500)*/
 
 
         var firts= true
         // set listener
         rangeSeekbar.setOnRangeSeekbarChangeListener { minValue, maxValue ->
-            //tvMin.text = minValue.toString()
-            //tvMax.text = maxValue.toString()
 
-            /*if(!firts){
-
-                if(minValue.toLong()>=1200000L ){
-                    rangeSeekbar.setSteps(100000F)
-                    rangeSeekbar.setMinValue(0F)
-                    rangeSeekbar.setMaxValue(10000000F)
-                }else if(minValue.toLong()<1200000L){
-                    rangeSeekbar.setSteps(50000F)
-                    rangeSeekbar.setMinValue(0F)
-                    rangeSeekbar.setMaxValue(1500000F)
-                }
-                firts=false
-            }else{
-                firts=false
-            }*/
             if(!firts){
-
-
-                if(minValue.toLong()>=1200000L && priceFilterMin>=1200000L ){
-                    rangeSeekbar.setSteps(50000f).setMinValue(0f).setMaxValue(10000000f)
-
-
-                }else if(minValue.toLong()<1200000L){
-                    rangeSeekbar.setSteps(50000f).setMinValue(0f).setMaxValue(1500000f)
-
-                }
-
 
                 priceFilterMin= minValue.toFloat()
                 priceFilterMax= maxValue.toFloat()
@@ -485,6 +464,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             }
             loadFirstPageProducts()
         }
+
         viewDialog.txtSetFilter.setOnClickListener(filter)
 
         val closeDialog = View.OnClickListener {  revealShow(viewDialog!!, false, dialog)}
@@ -501,6 +481,113 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         dialog.show()
         //dialog.getWindow().setAttributes(lp)
         //_dialogRegisterUpdate=dialog
+    }
+
+    private fun setRangeSnackbar(viewD: View) {
+        if(priceFilterMax<=1000f){
+            Handler().postDelayed({
+                viewD.rangeSeekbar5.setSteps(100f).setMinValue(0f).setMaxValue(1000f).setMinStartValue(priceFilterMin).setMaxStartValue(priceFilterMax).apply()
+                // rangeSeekbar.setMinValue(10000).setMaxValue(20000).setMinStartValue(12000).setMaxStartValue(12000).apply();
+            }, 500)
+        }
+        else if(priceFilterMax>1000f && priceFilterMax<=10000f){
+            Handler().postDelayed({
+                viewD.rangeSeekbar5.setSteps(500f).setMinValue(0f).setMaxValue(10000f).setMinStartValue(priceFilterMin).setMaxStartValue(priceFilterMax).apply()
+                // rangeSeekbar.setMinValue(10000).setMaxValue(20000).setMinStartValue(12000).setMaxStartValue(12000).apply();
+            }, 500)
+        }
+
+        else if(priceFilterMax>10000f && priceFilterMax<=100000f){
+            Handler().postDelayed({
+                viewD.rangeSeekbar5.setSteps(5000f).setMinValue(0f).setMaxValue(100000f).setMinStartValue(priceFilterMin).setMaxStartValue(priceFilterMax).apply()
+                // rangeSeekbar.setMinValue(10000).setMaxValue(20000).setMinStartValue(12000).setMaxStartValue(12000).apply();
+            }, 500)
+        }
+
+        else if(priceFilterMax>100000f && priceFilterMax<=1000000f){
+            Handler().postDelayed({
+                viewD.rangeSeekbar5.setSteps(50000f).setMinValue(0F).setMaxValue(1000000F).setMinStartValue(priceFilterMin).setMaxStartValue(priceFilterMax).apply()
+                // rangeSeekbar.setMinValue(10000).setMaxValue(20000).setMinStartValue(12000).setMaxStartValue(12000).apply();
+            }, 500)
+        }
+
+        else if(priceFilterMax>1000000f && priceFilterMax<=10000000f){
+
+            Handler().postDelayed({
+                viewD.rangeSeekbar5.setSteps(500000f).setMinValue(0f).setMaxValue(10000000f).setMinStartValue(priceFilterMin).setMaxStartValue(priceFilterMax).apply()
+                // rangeSeekbar.setMinValue(10000).setMaxValue(20000).setMinStartValue(12000).setMaxStartValue(12000).apply();
+            }, 500)
+        }
+
+        else if(priceFilterMax>10000000f && priceFilterMax<=100000000f){
+            Handler().postDelayed({
+                viewD.rangeSeekbar5.setSteps(1000000f).setMinValue(0f).setMaxValue(100000000f).setMinStartValue(priceFilterMin).setMaxStartValue(priceFilterMax).apply()
+                // rangeSeekbar.setMinValue(10000).setMaxValue(20000).setMinStartValue(12000).setMaxStartValue(12000).apply();
+            }, 500)
+        }
+    }
+
+    override fun setListRangePrice(viewD:View) {
+        val listRangePrice= Listas.listaRangePrice()
+            ///Adapaters
+        viewD.spinnerRangePrice.setAdapter(null)
+            val uMedidaArrayAdapter = ArrayAdapter<RangePrice>(activity, android.R.layout.simple_list_item_activated_1, listRangePrice);
+        viewD.spinnerRangePrice.setAdapter(uMedidaArrayAdapter);
+        viewD.spinnerRangePrice.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
+
+                itemPriceRangeFilter= listRangePrice[position] as RangePrice
+
+                if(itemPriceRangeFilter.Valor_Producto==1000.0){
+                    viewD.rangeSeekbar5.setSteps(100f).setMinValue(0f).setMaxValue(1000f)
+                    priceFilterMin= 0f
+                    priceFilterMax= 1000f
+
+                }
+                else if(itemPriceRangeFilter.Valor_Producto==10000.0){
+                    viewD.rangeSeekbar5.setSteps(500f).setMinValue(0f).setMaxValue(10000f)
+                    priceFilterMin= 0f
+                    priceFilterMax= 10000f
+                }
+
+                else if(itemPriceRangeFilter.Valor_Producto==100000.0){
+                    viewD.rangeSeekbar5.setSteps(5000f).setMinValue(0f).setMaxValue(100000f)
+                    priceFilterMin= 0f
+                    priceFilterMax= 100000f
+                }
+
+                else if(itemPriceRangeFilter.Valor_Producto==1000000.0){
+                    viewD.rangeSeekbar5.setSteps(50000f).setMinValue(0f).setMaxValue(1000000f)
+                    priceFilterMin= 0f
+                    priceFilterMax= 1000000f
+                }
+
+                else if(itemPriceRangeFilter.Valor_Producto==10000000.0){
+                    viewD.rangeSeekbar5.setSteps(500000f).setMinValue(0f).setMaxValue(10000000f)
+                    priceFilterMin= 0f
+                    priceFilterMax= 10000000f
+                }
+
+                else if(itemPriceRangeFilter.Valor_Producto==100000000.0){
+                    viewD.rangeSeekbar5.setSteps(1000000f).setMinValue(0f).setMaxValue(100000000f)
+                    priceFilterMin= 0f
+                    priceFilterMax= 100000000f
+                }
+
+
+
+                viewD.textMax5.text=String.format(context!!.getString(R.string.price),
+                        priceFilterMax.toDouble())
+                viewD.textMin5.text=String.format(context!!.getString(R.string.price),
+                    priceFilterMin.toDouble())
+
+
+                //Toast.makeText(activity,""+ unidadMedidaGlobal!!.Id.toString(),Toast.LENGTH_SHORT).show()
+            }
+
+        if(itemPriceRangeFilter!=null){
+            viewD.spinnerRangePrice?.setText(itemPriceRangeFilter.toString())
+
+        }
     }
 
     private fun showDialogDepartment() {

@@ -5,14 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.auth.FirebaseAuth
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.online.messages_chat.ChatMessageActivity
 import com.interedes.agriculturappv3.libs.EventBus
+import com.interedes.agriculturappv3.libs.GlideApp
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
+import com.interedes.agriculturappv3.libs.eventbus_rx.Rx_Bus
 import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
+import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
+import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.activity_chat_message.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -118,25 +124,22 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
 
             if(getItemViewType()== ITEM_TYPE_RECEIVED){
                 val imageUser: CircleImageView = itemView.findViewById(R.id.imageView2)
-                if((context as ChatMessageActivity).mReceiverFoto!=null){
-                    try {
-                        //Picasso.with(context).load((context as ChatMessageActivity).mReceiverFoto).placeholder(R.drawable.default_avata).into(imageUser)
-                        Picasso.get()
-                                .load((context as ChatMessageActivity).mReceiverFoto)
-                                .into( imageUser, object : com.squareup.picasso.Callback {
-                                    override fun onError(e: java.lang.Exception?) {
-                                        imageUser.setImageResource(R.drawable.default_avata)
-                                    }
-                                    override fun onSuccess() {
-                                        // Toast.makeText(context,"Loaded foto",Toast.LENGTH_LONG).show()
-                                    }
-                                })
+                Rx_Bus.listen(UserFirebase::class.java).subscribe({
+                        //data.UserFirebase?.Imagen=S3Resources.RootImage+"${item.Fotopefil}"
+                        /*GlideApp.with(context)
+                                .load(S3Resources.RootImage+"${it.Imagen}")
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .productorPhoto()
+                                .into(imageUser);*/
+                    Picasso.get()
+                            .load(S3Resources.RootImage+"${it.Imagen}")
+                            .fit()
+                            .centerCrop()
+                            .placeholder(R.drawable.default_avata)
+                            .error(R.drawable.default_avata)
+                            .into(imageUser)
 
-
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
+                })
                 messageTextView.setText(data.message)
             }else{
 

@@ -23,7 +23,10 @@ import com.interedes.agriculturappv3.activities.chat.chat_sms.user_sms_ui.events
 import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestEventMainMenu
+import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.modules.notification.events.RequestEventsNotification
+import com.interedes.agriculturappv3.services.resources.EmisorType_Message_Resources
+import com.interedes.agriculturappv3.services.resources.MessageSmsType
 import com.interedes.agriculturappv3.services.resources.NotificationTypeResources
 import com.interedes.agriculturappv3.services.resources.TagSmsResources
 import com.interedes.agriculturappv3.services.sms.repository.IMainViewSms
@@ -146,8 +149,21 @@ class MySmsBroadcastReceiver: BroadcastReceiver() {
             val builder: NotificationCompat.Builder
             val intent = Intent(context, Chat_Sms_Activity::class.java)
 
-            intent.putExtra(TagSmsResources.PHONE_NUMBER,smsAddress)
-            intent.putExtra(TagSmsResources.CONTACT_NAME,messageAdress)
+
+            val sms= Sms(0,
+                    "",
+                    smsAddress,
+                    "",
+                    "",
+                    System.currentTimeMillis().toString(),
+                    MessageSmsType.MESSAGE_TYPE_SENT,
+                    EmisorType_Message_Resources.MESSAGE_EMISOR_TYPE_SMS,
+                    messageAdress,
+                    selectedItemList = false
+            )
+
+            intent.putExtra(TagSmsResources.TAG_SMS,sms)
+            
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val pendingIntent: PendingIntent
             setupChannels(context)

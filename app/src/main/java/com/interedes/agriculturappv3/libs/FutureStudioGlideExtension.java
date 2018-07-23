@@ -38,6 +38,15 @@ public class FutureStudioGlideExtension {
                 .centerCrop();
     }
 
+    @GlideOption
+    public static void fotoDetailCenterCrop(RequestOptions options) {
+        options
+
+                .placeholder(R.drawable.ic_no_image_icon)
+                .error(R.drawable.ic_no_image_icon)
+                .centerCrop();
+    }
+
 
     @GlideOption
     public static void productoPhoto(RequestOptions options) {

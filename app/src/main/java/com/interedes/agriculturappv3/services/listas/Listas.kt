@@ -11,6 +11,7 @@ import com.interedes.agriculturappv3.modules.models.plagas.Enfermedad
 import com.interedes.agriculturappv3.modules.models.plagas.FotoEnfermedad
 import com.interedes.agriculturappv3.modules.models.plagas.TipoEnfermedad
 import com.interedes.agriculturappv3.modules.models.producto.CalidadProducto
+import com.interedes.agriculturappv3.modules.models.producto.RangePrice
 import com.interedes.agriculturappv3.modules.models.tipoproducto.TipoProducto
 import com.interedes.agriculturappv3.modules.models.tratamiento.Tratamiento
 import com.interedes.agriculturappv3.modules.models.unidad_medida.Unidad_Medida
@@ -94,6 +95,18 @@ class Listas {
             lista_comercial_productor.add(ItemLista("Gastos", Imagen = R.drawable.ic_gasto_contable2, Identificador = "gastos"))
             lista_comercial_productor.add(ItemLista("Reportes", Imagen = R.drawable.ic_reporte_contable, Identificador = "reportes"))
             return lista_comercial_productor
+        }
+
+
+        fun listaRangePrice(): ArrayList<RangePrice> {
+            val listRange = ArrayList<RangePrice>()
+            listRange.add(RangePrice(1000.0))
+            listRange.add(RangePrice(10000.0))
+            listRange.add(RangePrice(100000.0))
+            listRange.add(RangePrice(1000000.0))
+            listRange.add(RangePrice(10000000.0))
+            listRange.add(RangePrice(100000000.0))
+            return listRange
         }
 
         /*fun listaUP(): ArrayList<Unidad_Productiva> {

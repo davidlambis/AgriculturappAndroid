@@ -554,6 +554,7 @@ class OfertasRepository : IOfertas.Repository {
         return listResponse;
     }
 
+    /*
     override fun navigationChat(oferta: Oferta,checkConection: Boolean) {
 
         if(checkConection){
@@ -582,6 +583,7 @@ class OfertasRepository : IOfertas.Repository {
             postEventNavigationToChatSMS(OfertasEvent.NAVIGATION_CHAT_SMS,usuario)
         }
     }
+    */
 
     override fun updateOferta(oferta: Oferta,productoId:Long?,checkConection:Boolean){
         //TODO si existe coneccion a internet
@@ -601,7 +603,7 @@ class OfertasRepository : IOfertas.Repository {
                         if (response != null && response.code() == 200) {
                             oferta.update()
                             val usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioId)).querySingle()
-                            sendMessageNotificationUser(usuario,oferta,false)
+                            sendMessageNotificationUser(usuario,oferta)
                             postEventOk(OfertasEvent.UPDATE_EVENT, getOfertas(productoId), oferta)
                         } else {
                             postEventError(OfertasEvent.ERROR_EVENT, "Comprueba tu conexión")
@@ -619,8 +621,7 @@ class OfertasRepository : IOfertas.Repository {
     }
 
 
-
-    private fun sendMessageNotificationUser(usuarioFrom: Usuario?,oferta:Oferta?,navigateChat:Boolean) {
+    private fun sendMessageNotificationUser(usuarioFrom: Usuario?,oferta:Oferta?) {
         if(usuarioFrom!=null){
             val query = mUserDBRef?.orderByChild("correo")?.equalTo(usuarioFrom.Email)
             query?.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -644,15 +645,11 @@ class OfertasRepository : IOfertas.Repository {
                             }
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                         }
-
-                        //if(user?.Status.equals(Status_Chat.ONLINE)){
-                        findRoomUser(user!!,oferta,navigateChat)
-                            //sendMessageToFirebase(message, senderId, mReceiverId)
-                       // }
+                        findRoomUser(user!!,oferta)
                     }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
-                    var error = databaseError.message
+                    //var error = databaseError.message
                     //postEventError(OfertasEvent.ERROR_EVENT, error)
                     //postEvent(RequestEventDetalleProducto.OK_SEND_EVENT_OFERTA, null, null,null)
                 }
@@ -660,7 +657,7 @@ class OfertasRepository : IOfertas.Repository {
         }
     }
 
-    private fun findRoomUser(userFirebase: UserFirebase,oferta:Oferta?,navigateChat:Boolean) {
+    private fun findRoomUser(userFirebase: UserFirebase,oferta:Oferta?) {
         //val query = mRoomDBRef?.child("/"+mCompradorSenderId+"/"+mProductorReceiverId)
         val query = mRoomDBRef?.child(mSenderId)?.orderByChild("user_To")?.equalTo(Chat_Resources.getRoomById(mReceiverId))
         query?.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -674,19 +671,17 @@ class OfertasRepository : IOfertas.Repository {
                         //roomId=room?.IdRoom
                         roomFind= room!!
                     }
-                    if(navigateChat){
+                    val message=getMessageOferta(oferta!!,userFirebase)
+                    val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
+                    sendPushNotificationToReceiver(message,userFirebase,producto?.Imagen,roomFind,oferta!!)
+                   /* if(navigateChat){
                         postEventNavigationToChat(OfertasEvent.NAVIGATION_CHAT_ONLINE,roomFind,userFirebase)
-
                     }else{
-                        val message=getMessageOferta(oferta!!,userFirebase)
-                        val producto =SQLite.select().from(Producto::class.java).where(Producto_Table.Id_Remote.eq(oferta.ProductoId)).querySingle()
-                        sendPushNotificationToReceiver(message,userFirebase,producto?.Imagen,roomFind,oferta!!)
-                    }
+                    }*/
                 }
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
-                var error = databaseError.message
+                //val error = databaseError.message
                 //postEventError(OfertasEvent.ERROR_EVENT, error)
             }
         })
@@ -694,14 +689,12 @@ class OfertasRepository : IOfertas.Repository {
 
 
     private fun sendPushNotificationToReceiver(message: String,userSelected:UserFirebase,imagen:String?,room:Room,oferta:Oferta) {
-
         var NOTIFICATION_TYPE_CONFIRM_OFERTA=""
         if(oferta.Nombre_Estado_Oferta.equals(EstadosOfertasResources.RECHAZADO_STRING)){
             NOTIFICATION_TYPE_CONFIRM_OFERTA=NotificationTypeResources.NOTIFICATION_TYPE_REFUSED_OFERTA
         }else if(oferta.Nombre_Estado_Oferta.equals(EstadosOfertasResources.CONFIRMADO_STRING)){
             NOTIFICATION_TYPE_CONFIRM_OFERTA=NotificationTypeResources.NOTIFICATION_TYPE_CONFIRM_OFERTA
         }
-
         val fcmNotificationBuilder= FcmNotificationBuilder()
         fcmNotificationBuilder.title=userSelected.Nombre+" ${userSelected.Apellido}"
         fcmNotificationBuilder.image_url=imagen

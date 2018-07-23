@@ -56,7 +56,9 @@ import com.raizlabs.android.dbflow.annotation.Table
         var Hour: String? = null,
 
         @Column(name = "Timestamp")
-        var Timestamp:Long=0
+        var Timestamp:Long=0,
+
+        var selectedItemList:Boolean=false
 
 
  ): KParcelable {

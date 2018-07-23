@@ -40,6 +40,7 @@ class ConversationsUsersActivity : AppCompatActivity(), IMainViewConversacion.Ma
         presenter?.onCreate()
         setToolbarInjection()
         initAdapter()
+        showProgressHud()
         //presenter?.getListRoom()
     }
 

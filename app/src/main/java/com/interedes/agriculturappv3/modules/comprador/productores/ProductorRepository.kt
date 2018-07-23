@@ -325,12 +325,17 @@ class ProductorRepository:IMainViewProductor.Repository {
                 }
 
                 //postEventOk(RequestEventProductor.LIST_EVENT,listProductos,null)
-
                 if(filter.isFirst){
                     postEventOk(RequestEventProductor.LOAD_DATA_FIRTS,listProductos,null)
                 }else{
                     postEventOk(RequestEventProductor.READ_EVENT,listProductos,null)
                 }
+
+                /*if(filter.isFirst){
+                    postEventOk(RequestEventProductor.LOAD_DATA_FIRTS,listProductos,null)
+                }else{
+                    postEventOk(RequestEventProductor.READ_EVENT,listProductos,null)
+                }*/
                 //view.showSearchResult(searchResponse.items())
             },
 
@@ -815,14 +820,20 @@ class ProductorRepository:IMainViewProductor.Repository {
 
         }else{
             val list= getListProductos(filter.tipoProductoId)
+            if(filter.isFirst){
+                postEventOk(RequestEventProductor.LOAD_DATA_FIRTS,list,null)
+            }else{
+                postEventOk(RequestEventProductor.READ_EVENT,list,null)
+            }
+            /*
             if(list!=null){
-                for(item in list!!){
+                for(item in list){
                     postEventOk(RequestEventProductor.ITEM_NEW_EVENT,null,item)
                 }
                 postEventOk(RequestEventProductor.LIST_EVENT,list,null)
             }else{
                 postEventOk(RequestEventProductor.LIST_EVENT, ArrayList<Producto>(),null)
-            }
+            }*/
         }
     }
 

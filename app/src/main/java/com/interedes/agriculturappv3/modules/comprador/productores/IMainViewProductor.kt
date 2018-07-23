@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.view.View
 import com.interedes.agriculturappv3.modules.comprador.productores.events.RequestEventProductor
 import com.interedes.agriculturappv3.modules.comprador.productores.resources.RequestFilter
 import com.interedes.agriculturappv3.modules.models.producto.Producto
@@ -33,6 +34,7 @@ interface IMainViewProductor {
         //Dialog
         fun verificateConnection(): AlertDialog?
         fun showAlertDialogFilterProducts()
+        fun setListRangePrice(viewDialog: View)
 
         //Navigate
         fun navigateDetalleTipoProductoUser(poducto:Producto)

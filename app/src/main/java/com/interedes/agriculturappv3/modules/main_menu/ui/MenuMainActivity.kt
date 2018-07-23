@@ -964,7 +964,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                             System.currentTimeMillis().toString(),
                             MessageSmsType.MESSAGE_TYPE_SENT,
                             EmisorType_Message_Resources.MESSAGE_EMISOR_TYPE_SMS,
-                            contactName
+                            contactName,
+                            selectedItemList = false
                     )
 
                     val goToUpdate = Intent(this, Chat_Sms_Activity::class.java)
@@ -973,14 +974,19 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     //goToUpdate.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(goToUpdate)
                 }else{
-                        val chat = Intent(this, UserSmsActivity::class.java)
-                        chat.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        startActivity(chat)
+                        val chatSms = Intent(this, UserSmsActivity::class.java)
+                        chatSms.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        startActivity(chatSms)
                 }
             }else{
+
                 if(usuario!=null){
+                    showProgressHud()
                     Rx_Bus.listen(RequestSendChat::class.java).subscribe({
+                        dialog.dismiss()
+                        hideProgressHud()
                         val goToUpdate = Intent(this, ChatMessageActivity::class.java)
+                        goToUpdate.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         goToUpdate.putExtra("USER_FIREBASE", it.userFirebase)
                         goToUpdate.putExtra("ROOM", it.room)
                         goToUpdate.putExtra("USER_ID", it.userFirebase?.User_Id)
@@ -1345,7 +1351,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setWindowColor(getResources().getColor(R.color.colorPrimary))
                 .setLabel("Cargando...", resources.getColor(R.color.white_solid))
-                .setDetailsLabel("Sincronizando Informacion")
+                //.setDetailsLabel("Sincronizando Informacion")
         hud?.show()
     }
 

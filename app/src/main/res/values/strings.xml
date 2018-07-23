@@ -380,6 +380,8 @@
     <string name="search_cultivo">Buscar Cultivo</string>
     <string name="configuration">Configuracion</string>
 
+    <string name="title_range_price">Rango Maximo</string>
+
     <!--Cliente-->
     <string name="name_usuario">Nombre Usuario</string>
     <string name="identificacion_usuario">Identificación Usuario</string>

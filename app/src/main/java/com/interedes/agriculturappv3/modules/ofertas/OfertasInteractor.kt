@@ -35,8 +35,9 @@ class OfertasInteractor : IOfertas.Interactor {
         return repository?.getUserLogued()
     }
 
+    /*
     override fun navigationChat(oferta: Oferta,checkConection: Boolean) {
         repository?.navigationChat(oferta,checkConection)
-    }
+    }*/
     //endregion
 }

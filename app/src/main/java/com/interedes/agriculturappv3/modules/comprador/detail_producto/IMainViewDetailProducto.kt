@@ -39,6 +39,7 @@ interface IMainViewDetailProducto {
         fun showConfirmOferta()
         fun showConfirmSendSmsOferta(oferta:Oferta)
         fun sucessResponseOferta()
+        fun showViewDialogImage(ruta: String?)
 
 
 

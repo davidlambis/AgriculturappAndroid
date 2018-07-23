@@ -106,21 +106,20 @@ class Chat_Sms_Activity : AppCompatActivity(),View.OnClickListener, IMainViewDet
             contactNumber=sms?.Address
             contactUserName=sms?.ContactName
 
-            getListSms(false)
-        }else if(intent.extras.containsKey(TagSmsResources.PHONE_NUMBER)){
-            sms=Sms()
-            sms?.Address=intent.getStringExtra(TagSmsResources.PHONE_NUMBER)
-            sms?.ContactName=intent.getStringExtra(TagSmsResources.CONTACT_NAME)
-            contactNumber=sms?.Address
-            contactUserName=sms?.ContactName
-            getListSms(true)
+            if(sms?.selectedItemList==true){
+                getListSms(false)
+            }else{
+                getListSms(true)
+            }
         }
 
         if (intent.extras.containsKey(TagSmsResources.TAG_SMS_SEND)) {
             sms = intent.getParcelableExtra(TagSmsResources.TAG_SMS_SEND)
             contactNumber=sms?.Address
             contactUserName=sms?.ContactName
-            getListSms(false)
+
+            getListSms(true)
+            //getListSms(false)
             messageEditText.setText(sms?.Message)
         }
 

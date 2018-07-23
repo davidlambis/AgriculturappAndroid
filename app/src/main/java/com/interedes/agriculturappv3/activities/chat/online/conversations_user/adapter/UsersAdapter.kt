@@ -210,11 +210,18 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
                   if(usuario!=null){
                       for (item in usuario){
                           data.UserFirebase?.Imagen=S3Resources.RootImage+"${item.Fotopefil}"
-                          GlideApp.with(context)
-                                  .load(S3Resources.RootImage+"${item.Fotopefil}")
-                                  .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                  .productorPhoto()
-                                  .into(contentIconUser);
+                          if(item.Fotopefil!=null){
+
+                              GlideApp.with(context)
+                                      .load(S3Resources.RootImage+"${item.Fotopefil}")
+                                      .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                      .productorPhoto()
+                                      .into(contentIconUser);
+                          }else{
+                              contentIconUser.setImageResource(R.drawable.ic_account_box_green)
+                              contentIconUser.scaleType= ImageView.ScaleType.CENTER_INSIDE
+                          }
+
                       }
                   }
               },{ throwable ->

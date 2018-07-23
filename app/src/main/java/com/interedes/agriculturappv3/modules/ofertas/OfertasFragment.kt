@@ -38,13 +38,12 @@ import com.interedes.agriculturappv3.modules.models.ofertas.Oferta
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.ofertas.adapters.OfertasAdapter
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
-import com.interedes.agriculturappv3.services.resources.EmisorType_Message_Resources
-import com.interedes.agriculturappv3.services.resources.EstadosOfertasResources
-import com.interedes.agriculturappv3.services.resources.MessageSmsType
-import com.interedes.agriculturappv3.services.resources.TagSmsResources
+import com.interedes.agriculturappv3.services.resources.*
 import com.kaopiz.kprogresshud.KProgressHUD
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
@@ -468,6 +467,22 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         //txtNombreProducto?.setText(producto?.Nom)
     }
 
+
+
+    override fun navigationChat(oferta:Oferta){
+        val userLogued= presenter?.getUserLogued()
+        var usuario:Usuario?=null
+        if(userLogued?.RolNombre.equals(RolResources.COMPRADOR)){
+            usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioTo)).querySingle()
+        }else{
+            usuario= SQLite.select().from(Usuario::class.java).where(Usuario_Table.Id.eq(oferta.UsuarioId)).querySingle()
+        }
+
+        (activity as MenuMainActivity).showAlertTypeChat(usuario)
+    }
+
+    /*
+
     override fun navigationChatOnline(room: Room?, userFirebase: UserFirebase?){
         val goToUpdate = Intent(activity, ChatMessageActivity::class.java)
         goToUpdate.putExtra("USER_FIREBASE", userFirebase)
@@ -476,7 +491,6 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         goToUpdate.putExtra("FOTO", userFirebase?.Imagen)
         startActivity(goToUpdate)
     }
-
     override  fun navigationChatSms(usuario: Usuario?){
 
 
@@ -537,8 +551,7 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
                     .show()
 
     }
-
-
+*/
     //endregion
 
     //region Methods

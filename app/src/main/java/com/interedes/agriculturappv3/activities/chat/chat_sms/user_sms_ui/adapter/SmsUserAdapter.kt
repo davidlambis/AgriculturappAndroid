@@ -134,6 +134,8 @@ class SmsUserAdapter(var lista: ArrayList<Sms>) : RecyclerView.Adapter<SmsUserAd
                 e.printStackTrace()
             }
 
+            data.selectedItemList=true
+
             itemView.setOnClickListener {
                 //postEventc(RequestEventProduccion.ITEM_EVENT,data)
                 postEventc(RequestEventUserSms.ITEM_EVENTS_DETAIL_SMS, data)

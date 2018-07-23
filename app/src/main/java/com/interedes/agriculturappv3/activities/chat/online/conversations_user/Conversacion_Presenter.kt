@@ -77,6 +77,7 @@ class Conversacion_Presenter (var mainView: IMainViewConversacion.MainView?): IM
             RequestEventChatOnline.LIST_ROOM_EVENT -> {
                 val list = event.mutableList as List<RoomConversation>
                 mainView?.setListRoom(list)
+                mainView?.hideProgressHud()
             }
 
             RequestEventChatOnline.LIST_ROOM_EVENT_EMPTY -> {

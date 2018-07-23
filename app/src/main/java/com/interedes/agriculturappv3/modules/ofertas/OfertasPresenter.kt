@@ -127,10 +127,10 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
 
             OfertasEvent.REQUEST_CHAT_ITEM_EVENT -> {
                 val oferta = event.objectMutable as Oferta
-                navigationChat(oferta)
+                view?.navigationChat(oferta)
             }
 
-            OfertasEvent.NAVIGATION_CHAT_ONLINE -> {
+           /* OfertasEvent.NAVIGATION_CHAT_ONLINE -> {
                 val room = event.objectMutable as Room
                 val userFirebase = event.objectMutable2 as UserFirebase
                 view?.navigationChatOnline(room,userFirebase)
@@ -140,11 +140,11 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
             OfertasEvent.NAVIGATION_CHAT_SMS -> {
                 val usuario = event.objectMutable as Usuario
                 view?.navigationChatSms(usuario)
-            }
+            }*/
 
 
             OfertasEvent.REQUEST_REFUSED_ITEM_EVENT -> {
-                var oferta = event.objectMutable as Oferta
+                val oferta = event.objectMutable as Oferta
                 view?.confirmResusedOferta(oferta)
             }
 
@@ -182,7 +182,7 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
 
 
     override fun navigationChat(oferta: Oferta) {
-        interactor?.navigationChat(oferta,checkConnection())
+       // interactor?.navigationChat(oferta,checkConnection())
     }
 
     //SET Listas
