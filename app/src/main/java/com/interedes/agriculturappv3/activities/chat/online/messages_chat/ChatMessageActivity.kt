@@ -22,6 +22,7 @@ import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.content.ContextCompat
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.TextView
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
@@ -59,6 +60,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
     var mReceiverFoto: String? = null
     var mReceiverRoom: Room? = null
     var userFirebaeSelected: UserFirebase? = null
+    var fotoUserSelected: String = ""
     private var mReceiverName: String? = null
 
 
@@ -144,7 +146,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
         callusuario.delay(100, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
             //Log.d("search", searchString)
             val usuario =searchResponse.value
-            if(usuario!=null){
+            /*if(usuario!=null){
                 for (item in usuario){
                     if(item.Fotopefil!=null){
                         userFirebaeSelected?.Imagen=item.Fotopefil
@@ -158,7 +160,40 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
                         Rx_Bus.publish(userFirebaeSelected!!)
                     }
                 }
+            }*/
+
+            var foto= ""
+            if(usuario!=null){
+                for (item in usuario){
+                    if(item.Fotopefil!=null){
+                       // userFirebaeSelected?.Imagen=item.Fotopefil
+                        foto=S3Resources.RootImage+"${item.Fotopefil}"
+                    }else{
+                        foto=""
+                        //contentIconUser.setImageResource(R.drawable.ic_account_box_green)
+                        /// contentIconUser.scaleType= ImageView.ScaleType.CENTER_INSIDE
+                    }
+                }
+
+                fotoUserSelected=foto
+                //userFirebaeSelected?.Imagen=foto
+
+                GlideApp.with(this)
+                        .load(foto)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .productorPhoto()
+                        .into(imgUserTo);
+
+                //Rx_Bus.publish(userFirebaeSelected!!)
+
+            }else{
+                imgUserTo.setImageResource(R.drawable.default_avata)
+               // imgUserTo.scaleType= ImageView.ScaleType.CENTER_INSIDE
             }
+
+
+
+
         },{ throwable ->
             val error= throwable.toString()
 
@@ -170,7 +205,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val recepient = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
                 userFirebaeSelected=recepient
-                mReceiverName = recepient!!.Nombre+" "+recepient!!.Apellido
+                mReceiverName = recepient!!.Nombre+" "+recepient.Apellido
                 try {
                     nameUserTo.setText(mReceiverName)
                     /*Picasso.get()

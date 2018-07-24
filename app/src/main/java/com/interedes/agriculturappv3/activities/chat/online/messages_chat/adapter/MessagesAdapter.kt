@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.auth.FirebaseAuth
@@ -124,25 +125,22 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
 
             if(getItemViewType()== ITEM_TYPE_RECEIVED){
                 val imageUser: CircleImageView = itemView.findViewById(R.id.imageView2)
-                Rx_Bus.listen(UserFirebase::class.java).subscribe({
-                        //data.UserFirebase?.Imagen=S3Resources.RootImage+"${item.Fotopefil}"
-                        /*GlideApp.with(context)
-                                .load(S3Resources.RootImage+"${it.Imagen}")
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .productorPhoto()
-                                .into(imageUser);*/
+
+                if(!(context as ChatMessageActivity).fotoUserSelected.isEmpty()){
                     Picasso.get()
-                            .load(S3Resources.RootImage+"${it.Imagen}")
+                            .load((context as ChatMessageActivity).fotoUserSelected)
                             .fit()
                             .centerCrop()
                             .placeholder(R.drawable.default_avata)
                             .error(R.drawable.default_avata)
                             .into(imageUser)
+                }else{
+                    imageUser.setImageResource(R.drawable.default_avata)
+                }
 
-                })
+
                 messageTextView.setText(data.message)
             }else{
-
 
                 messageTextView.setText(data.message)
             }

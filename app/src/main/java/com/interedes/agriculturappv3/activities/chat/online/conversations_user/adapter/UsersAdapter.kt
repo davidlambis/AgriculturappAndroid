@@ -207,26 +207,33 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
               callusuario.delay(100, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
                   //Log.d("search", searchString)
                   val usuario =searchResponse.value
+                  var foto= ""
                   if(usuario!=null){
                       for (item in usuario){
                           data.UserFirebase?.Imagen=S3Resources.RootImage+"${item.Fotopefil}"
                           if(item.Fotopefil!=null){
-
-                              GlideApp.with(context)
-                                      .load(S3Resources.RootImage+"${item.Fotopefil}")
-                                      .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                      .productorPhoto()
-                                      .into(contentIconUser);
+                              foto=S3Resources.RootImage+"${item.Fotopefil}"
                           }else{
-                              contentIconUser.setImageResource(R.drawable.ic_account_box_green)
-                              contentIconUser.scaleType= ImageView.ScaleType.CENTER_INSIDE
+                              foto=""
+                              //contentIconUser.setImageResource(R.drawable.ic_account_box_green)
+                             /// contentIconUser.scaleType= ImageView.ScaleType.CENTER_INSIDE
                           }
-
                       }
+                  }else{
+                      contentIconUser.setImageResource(R.drawable.ic_account_box_green)
+                      contentIconUser.scaleType= ImageView.ScaleType.CENTER_INSIDE
                   }
+
+                  GlideApp.with(context)
+                          .load(foto)
+                          .diskCacheStrategy(DiskCacheStrategy.ALL)
+                          .productorPhoto()
+                          .into(contentIconUser);
+
               },{ throwable ->
                   val error= throwable.toString()
-
+                  contentIconUser.setImageResource(R.drawable.ic_account_box_green)
+                  contentIconUser.scaleType= ImageView.ScaleType.CENTER_INSIDE
               })
 
             itemView.setOnClickListener {
