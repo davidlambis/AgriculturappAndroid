@@ -723,8 +723,10 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             navigationViewBotom.visibility=View.GONE
             AdapterFragmetMenu(MainMenuFragment, fragmentManager, R.id.container)
         } else if (getLastUserLogued()?.RolNombre.equals(RolResources.COMPRADOR)) {
-            container.setPadding(0,0,0, resources.getDimension(R.dimen.margin_55).toInt())
-            navigationViewBotom.visibility=View.VISIBLE
+            //container.setPadding(0,0,0, resources.getDimension(R.dimen.margin_55).toInt())
+            //navigationViewBotom.visibility=View.VISIBLE
+            container.setPadding(0,0,0,0)
+            navigationViewBotom.visibility=View.GONE
             AdapterFragmetMenu(ProductosCompradorFragment, fragmentManager, R.id.container)
         }
     }
@@ -735,7 +737,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     //region SETUP INJECTION
-
 
     private fun setToolbarInjection() {
         setSupportActionBar(toolbar)
