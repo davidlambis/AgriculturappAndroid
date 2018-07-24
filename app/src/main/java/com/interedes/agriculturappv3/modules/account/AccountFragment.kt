@@ -30,9 +30,6 @@ import com.daimajia.androidanimations.library.YoYo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageMetadata
-import com.google.firebase.storage.StorageReference
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
@@ -72,7 +69,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
     //FIREBASE
     private var mUserDBRef: DatabaseReference? = null
-    private var mStorageRef: StorageReference? = null
+    //private var mStorageRef: StorageReference? = null
     private var mCurrentUserID: String? = null
 
     private var userFirebaseVerificate:FirebaseUser?=null
@@ -141,7 +138,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
         //init firebase
         mUserDBRef = FirebaseDatabase.getInstance().reference.child("Users")
-        mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
+        //mStorageRef = FirebaseStorage.getInstance().reference.child("Photos").child("Users")
 
         /**populate views initially**/
         //populateTheViews()
@@ -832,7 +829,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
 
 
     //region METHODS FIREBASE
-
+/*
     private fun updateUserPhoto(photoByteArray: ByteArray?) {
         // Create file metadata with property to delete
         val metadata = StorageMetadata.Builder()
@@ -840,21 +837,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                 .setContentLanguage("en")
                 .build()
 
-        /*mStorageRef?.child(mCurrentUserID!!)?.putBytes(photoByteArray!!, metadata)?.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                //error saving photo
-                Toast.makeText(activity, "Error", Toast.LENGTH_LONG).show()
-            } else {
-                //success saving photo
-                val userPhotoLink = task.result.downloadUrl!!.toString()
-                //now update the database with this user photo
-                val childUpdates = HashMap<String, Any>()
-                childUpdates["imagen"] = userPhotoLink
-                mUserDBRef?.child(mCurrentUserID)?.updateChildren(childUpdates)
 
-                Toast.makeText(activity, "Foto Actualizada", Toast.LENGTH_LONG).show()
-            }
-        }*/
         if(photoByteArray != null)
         {
            val progressDialog =  ProgressDialog(activity);
@@ -905,7 +888,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
               }
         }
     }
-
+    */
 
     //endregion
 
