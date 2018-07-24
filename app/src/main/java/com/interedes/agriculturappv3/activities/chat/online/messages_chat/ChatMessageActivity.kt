@@ -184,16 +184,14 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
                         .productorPhoto()
                         .into(imgUserTo);
 
-                //Rx_Bus.publish(userFirebaeSelected!!)
+                Rx_Bus.publish(userFirebaeSelected!!)
+
+
 
             }else{
                 imgUserTo.setImageResource(R.drawable.default_avata)
                // imgUserTo.scaleType= ImageView.ScaleType.CENTER_INSIDE
             }
-
-
-
-
         },{ throwable ->
             val error= throwable.toString()
 

@@ -49,7 +49,7 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         //Llama al método del holder para cargar los items
-        var item = mMessagesList[position]
+        val item = mMessagesList[position]
 
 
         holder.bindItems(item, position)
@@ -138,6 +138,21 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
                     imageUser.setImageResource(R.drawable.default_avata)
                 }
 
+
+                //Events change image
+                Rx_Bus.listen(UserFirebase::class.java).subscribe({
+                    if(!(context as ChatMessageActivity).fotoUserSelected.isEmpty()){
+                        Picasso.get()
+                                .load((context as ChatMessageActivity).fotoUserSelected)
+                                .fit()
+                                .centerCrop()
+                                .placeholder(R.drawable.default_avata)
+                                .error(R.drawable.default_avata)
+                                .into(imageUser)
+                    }else{
+                        imageUser.setImageResource(R.drawable.default_avata)
+                    }
+                })
 
                 messageTextView.setText(data.message)
             }else{
