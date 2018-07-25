@@ -177,7 +177,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         }else if(fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_MESSAGE_ONLINE)){
 
+
             intent.putExtra(TagNavigationResources.TAG_NAVIGATE_CHAT_ONLINE,TagNavigationResources.NAVIGATE_CHAT_ONLINE)
+            intent.putExtra(TagNavigationResources.TAG_NOTIFICATION,fcmNotificationLocalBuilder)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

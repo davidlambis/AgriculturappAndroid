@@ -29,6 +29,9 @@ data class OfertasEvent(var eventType: Int,
         //Error Connection
         val ERROR_VERIFICATE_CONECTION: Int = 11
         val ERROR_EVENT: Int = 12
+
+
+        val ITEM_EVENT_IMAGE: Int = 13
     }
 
 }

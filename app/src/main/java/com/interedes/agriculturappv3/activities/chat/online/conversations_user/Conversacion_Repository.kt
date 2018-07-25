@@ -151,7 +151,6 @@ class Conversacion_Repository:IMainViewConversacion.Repository {
     private fun getAllFriendInfo(index: Int) {
         if (index === listRoom?.size) {
                 postEventOk(RequestEventChatOnline.LIST_ROOM_EVENT,mUsersList,null)
-
             //populaterecyclerView()
             //save list friend
             /*adapter.notifyDataSetChanged()

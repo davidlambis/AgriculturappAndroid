@@ -53,7 +53,11 @@ import kotlinx.android.synthetic.main.navigation_drawer_header.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import id.zelory.compressor.Compressor;
+import kotlinx.android.synthetic.main.custom_message_toast.view.*
+import pl.aprilapps.easyphotopicker.DefaultCallback
+import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.File
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -97,6 +101,10 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     private var destFile: File? = null
     private var imageCaptureUri: Uri? = null
 
+    //EASY CAMERA
+    private val PHOTOS_KEY = "easy_image_photos"
+    private var photos:File? =null
+
 
 
     private val PERMISSION_REQUEST_CODE = 1
@@ -127,6 +135,11 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         user_take_picture_gallery.setOnClickListener(this)
         user_image_cancel.setOnClickListener(this)
         user_image_check.setOnClickListener(this)
+
+        //EASY CAMERA
+        if (savedInstanceState != null) {
+            photos = savedInstanceState.getSerializable(PHOTOS_KEY) as File
+        }
 
        userFirebaseVerificate=presenter?.verificateUserLoguedFirebaseFirebase()
         if(userFirebaseVerificate==null){
@@ -382,7 +395,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                 imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
                 user_image.setImageBitmap(imageBitmapAccountGlobal)
             }catch (ex:Exception){
-                var ss= ex.toString()
+                val ss= ex.toString()
                 Log.d("Convert Image", "defaultValue = " + ss);
             }
         }else{
@@ -412,7 +425,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         val builder = AlertDialog.Builder(context!!)
         builder.setTitle(getString(R.string.alert));
         builder.setMessage(getString(R.string.verificate_conexion));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             errorUpdatePhotoAccount()
             dialog.dismiss()
 
@@ -433,7 +446,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     override fun setListMetodoPago(listMetodoPago: List<MetodoPago>?) {
         ///Adapaters
         spinnerMetodoPago!!.setAdapter(null)
-        var uMedidaArrayAdapter = ArrayAdapter<MetodoPago>(activity, android.R.layout.simple_spinner_dropdown_item, listMetodoPago);
+        val uMedidaArrayAdapter = ArrayAdapter<MetodoPago>(activity, android.R.layout.simple_spinner_dropdown_item, listMetodoPago);
         spinnerMetodoPago!!.setAdapter(uMedidaArrayAdapter);
         spinnerMetodoPago!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             metodoPagoGlobal = listMetodoPago!![position]
@@ -449,7 +462,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     override fun setListDetalleMetodoPago(listDetalleMetodoPago: List<DetalleMetodoPago>?) {
         ///Adapaters
         spinnerDetalleMetodoPago!!.setAdapter(null)
-        var uMedidaArrayAdapter = ArrayAdapter<DetalleMetodoPago>(activity, android.R.layout.simple_spinner_dropdown_item, listDetalleMetodoPago);
+        val uMedidaArrayAdapter = ArrayAdapter<DetalleMetodoPago>(activity, android.R.layout.simple_spinner_dropdown_item, listDetalleMetodoPago);
         spinnerDetalleMetodoPago!!.setAdapter(uMedidaArrayAdapter);
         spinnerDetalleMetodoPago!!.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
             detalleMetodoPagoGlobal = listDetalleMetodoPago!![position]
@@ -494,14 +507,18 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     } else {
                         val response = doPermissionGrantedStuffs()
                         if (response) {
-                            takePictureWithCamera(this)
+
+                            EasyImage.openCamera(this, 0);
+                            //takePictureWithCamera(this)
                             //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                         }
                     }
                 } else {
                     val response = doPermissionGrantedStuffs()
                     if (response) {
-                        takePictureWithCamera(this)
+
+                        EasyImage.openCamera(this, 0);
+                        //takePictureWithCamera(this)
                         //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                     }
                 }
@@ -516,14 +533,17 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     } else {
                         val response = doPermissionGrantedStuffs()
                         if (response) {
-                            choosePhotoFromGallery(this)
+                            //choosePhotoFromGallery(this)
+
+                            EasyImage.openChooserWithGallery(this, "Pick source", 0);
                             //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                         }
                     }
                 } else {
                     val response = doPermissionGrantedStuffs()
                     if (response) {
-                        choosePhotoFromGallery(this)
+                        //choosePhotoFromGallery(this)
+                        EasyImage.openChooserWithGallery(this, "Pick source", 0);
                         //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                     }
                 }
@@ -618,163 +638,75 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
     //endregion
 
     //region METHODS CAMERA
-     fun takePictureWithCamera(fragment: AccountFragment) {
-        //EasyImage.openCamera(fragment, 0)
-
-       /* mCurrentPhotoFile =  File(Environment.getExternalStorageDirectory().path+"/" + IMAGE_DIRECTORY);
-        if (!mCurrentPhotoFile?.exists()!!) {
-            mCurrentPhotoFile?.mkdirs();
-        }
-        destFile = File(mCurrentPhotoFile, "img_"
-                + dateFormatter?.format(Date()).toString() + ".png")
-        imageCaptureUri = Uri.fromFile(destFile)
-
-        val intentCamera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, imageCaptureUri)
-        startActivityForResult(intentCamera, REQUEST_CAMERA)*/
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, RequestAccessPhoneResources.ACCESS_REQUEST_CAMERA)
-
-       /* val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(activity?.getPackageManager()) != null) {
-            // Create the File where the photo should go
-            var photoFile: File? = null
-            try {
-                photoFile = createImageFile()
-                mCurrentPhotoFile=photoFile
-            } catch (ex: IOException) {
-                // Error occurred while creating the File
-                //Log.i(TAG, "IOException")
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile))
-                startActivityForResult(intent, REQUEST_CAMERA)
-                //startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
-            }
-        }*/
-    }
-
-
-    fun  createImageFile():File? {
-
-        var image:File? =null
-
-        try {
-            // Create an image file name
-            var timeStamp =  SimpleDateFormat("yyyyMMdd_HHmmss").format( Date())
-            var imageFileName = "JPEG_" + timeStamp + "_"
-            var storageDir = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES);
-            image = File.createTempFile(
-                    imageFileName,  // prefix
-                    ".jpg",         // suffix
-                    storageDir      // directory
-            );
-            // Save a file: path for use with ACTION_VIEW intents
-            mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        }catch (ex:Exception){
-            image=null
-        }
-        return image;
-    }
-
-
-     fun choosePhotoFromGallery(fragment: AccountFragment) {
-        val galleryIntent = Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-         galleryIntent.setType("image/*")
-        startActivityForResult(galleryIntent, RequestAccessPhoneResources.ACCESS_REQUEST_GALLERY)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_CANCELED) {
-            return
-        } else if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == RequestAccessPhoneResources.ACCESS_REQUEST_GALLERY) {
-                if (data != null) {
-                    val contentURI = data.data
-                    try {
-                        isFoto = true
 
-                        val rutaGaleria=getRealPathFromURI(contentURI)
-                        val file=getFileRuta(rutaGaleria)
-                        val compressedImage = Compressor(activity)
-                                .setMaxHeight(400)
-                                .setQuality(100)
-                                .compressToBitmap(file)
+        EasyImage.handleActivityResult(requestCode, resultCode, data, activity, object :  DefaultCallback() {
 
-                        imageBitmapAccountGlobal =compressedImage
-                        ///imageBitmapAccountGlobal = MediaStore.Images.Media.getBitmap(context?.contentResolver, contentURI)
-
-                        imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
-
-                        hideButtonsImageUser()
-
-                        YoYo.with(Techniques.Pulse)
-                                .repeat(5)
-                                .playOn(user_image_check)
-
-
-                        //imageGlobalRutaFoto = saveImage(bitmap)
-                        //Toast.makeText(context, "Image Saved!", Toast.LENGTH_SHORT).show()
-                        user_image?.setImageBitmap(imageBitmapAccountGlobal)
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-            } else if (requestCode == RequestAccessPhoneResources.ACCESS_REQUEST_CAMERA) {
-                if (data != null) {
-
-                    try{
-                        /*   val contentURI = data.data
-                    var rutaGaleria=getRealPathFromURI(contentURI)
-                    var file=getFileRuta(rutaGaleria)
+            override fun onImagePicked(imageFile: File?, source: EasyImage.ImageSource?, type: Int) {
+                if(imageFile!=null){
                     val compressedImage = Compressor(activity)
-                            .setMaxHeight(400)
+                            .setMaxWidth(500)
+                            .setMaxHeight(500)
+                            .setQuality(70)
+                            .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                            .compressToFile(imageFile)
+
+                    Toast.makeText(activity, "Compressed image save in " + String.format("Size : %s", getReadableFileSize(compressedImage.length())), Toast.LENGTH_SHORT).show();
+                    // Compress image using RxJava in background thread
+                    val compressedImagetwo = Compressor(activity)
+                            .setMaxWidth(500)
+                            .setMaxHeight(500)
                             .setQuality(100)
-                            .compressToBitmap(file)*/
+                            .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                            .compressToBitmap(compressedImage)
 
 
-                        //isFoto = true
-                        ////imageBitmapAccountGlobal = compressedImage
-                        imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
-                        Toast.makeText(context, imageCaptureUri.toString(), Toast.LENGTH_SHORT).show()
-
-                        //imageBitmapAccountGlobal = data.extras?.get("data") as Bitmap
-                        /* val compressedImage = Compressor(activity)
-                                 .setMaxHeight(400)
-                                 .setQuality(100)
-                                 .compressToBitmap(mCurrentPhotoFile)
-                         imageBitmapAccountGlobal=compressedImage*/
-                        imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
-                        //user_image?.setImageBitmap(imageBitmapAccountGlobal)
-
-                        hideButtonsImageUser()
-
-                        YoYo.with(Techniques.Pulse)
-                                .repeat(5)
-                                .playOn(user_image_check)
+                    //Toast.makeText(activity, "Compressed image save in " + String.format("Size : %s", getReadableFileSize(compressedImagetwo.byteCount.toLong())), Toast.LENGTH_SHORT).show();
 
 
-                        user_image?.setImageBitmap(imageBitmapAccountGlobal)
-                        //imageGlobalRutaFoto = saveImage(thumbnail)
-                        // Toast.makeText(context, thumbnail.toString(), Toast.LENGTH_SHORT).show()
+                    isFoto=true
 
+                    imageBitmapAccountGlobal =compressedImagetwo
+                    ///imageBitmapAccountGlobal = MediaStore.Images.Media.getBitmap(context?.contentResolver, contentURI)
+                    imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
+                    hideButtonsImageUser()
+                    YoYo.with(Techniques.Pulse)
+                            .repeat(5)
+                            .playOn(user_image_check)
+                    user_image?.setImageBitmap(imageBitmapAccountGlobal)
+                    //viewDialog?.product_image?.setImageBitmap(BitmapFactory.decodeFile(compressedImage.getAbsolutePath()));
+                }else{
+                    onMessageToas(getString(R.string.verificate_again_select_picture_account),R.color.red_900)
+                }
+                //onPhotosReturned(imageFiles);
+            }
 
-                    } catch (e: IOException) {
-                    e.printStackTrace()
-                    Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show()
-                    }
+            override fun onImagePickerError(e: java.lang.Exception?, source: EasyImage.ImageSource?, type: Int) {
+                super.onImagePickerError(e, source, type)
+                e?.printStackTrace();
 
+            }
+
+            override fun onCanceled(source: EasyImage.ImageSource?, type: Int) {
+                super.onCanceled(source, type)
+                if (source == EasyImage.ImageSource.CAMERA) {
+                    val photoFile = EasyImage.lastlyTakenButCanceledPhoto(activity);
+                    if (photoFile != null) photoFile.delete();
                 }
             }
-        }
+        })
     }
 
+
+    fun getReadableFileSize(size: Long): String {
+        if (size <= 0) {
+            return "0"
+        }
+        val units = arrayOf("B", "KB", "MB", "GB", "TB")
+        val digitGroups = (Math.log10(size.toDouble()) / Math.log10(1024.0)).toInt()
+        return DecimalFormat("#,##0.#").format(size / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
+    }
 
     private fun showButtonsImageUser(){
         user_image_check.visibility=View.GONE
@@ -791,28 +723,20 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         user_take_picture_gallery.visibility=View.GONE
     }
 
-    private fun getFileRuta(path: String): File? {
-        var file: File? = null
-        file = File(path)
-        return file
-    }
 
-    private fun getRealPathFromURI(contentURI: Uri): String {
-        val result: String
-        val cursor = activity?.getContentResolver()?.query(contentURI, null, null, null, null)
-        if (cursor == null) { // Source is Dropbox or other similar local file path
-            result = contentURI.path
-        } else {
-            cursor.moveToFirst()
-            val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-            result = cursor.getString(idx)
-            cursor.close()
-        }
-        return result
+    fun onMessageToas(message:String,color:Int){
+        val inflater = this.layoutInflater
+        val viewToast = inflater.inflate(R.layout.custom_message_toast, null)
+        viewToast.txtMessageToastCustom.setText(message)
+        viewToast.contetnToast.setBackgroundColor(ContextCompat.getColor(activity!!, color))
+        val mytoast =  Toast(activity);
+        mytoast.setView(viewToast);
+        mytoast.setDuration(Toast.LENGTH_LONG);
+        mytoast.show();
+        ///onMessageError(R.color.red_900, getString(R.string.disabledGPS))
     }
 
     override fun uplodateFotoUserAccount(){
-
         saveDataUserLogued()
         //mCurrentUserID=presenter?.verificateUserLoguedFirebaseFirebase()?.uid
        /// updateUserPhoto(imageAccountGlobal)
@@ -939,19 +863,19 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
             PERMISSION_REQUEST_CODE -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if(doPermissionGrantedStuffs()){
                     if(IS_ACCESS_CAMERA){
-                        takePictureWithCamera(this)
+                        //takePictureWithCamera(this)
+                        EasyImage.openCamera(this, 0);
                     }else{
-                        choosePhotoFromGallery(this)
+                        //choosePhotoFromGallery(this)
+                        EasyImage.openChooserWithGallery(this, "Pick source", 0);
                     }
                 }
             } else {
                 Toast.makeText(activity,
                         "Permiso denegado", Toast.LENGTH_LONG).show()
-
             }
         }
     }
-
 
     fun doPermissionGrantedStuffs(): Boolean {
         /// String SIMSerialNumber=tm.getSimSerialNumber();
@@ -964,7 +888,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
         val response = true
         return response
     }
-
     //endregion
 
 }

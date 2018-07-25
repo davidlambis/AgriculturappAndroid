@@ -20,7 +20,6 @@ import org.greenrobot.eventbus.Subscribe
 class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityReceiver.connectivityReceiverListener, MainViewMenu.Presenter {
 
 
-
     private var INSTANCE_CONECTION: Boolean = false
 
     var eventBus: EventBus? = null
@@ -161,6 +160,11 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
     override fun navigateChatOnline( usuario: Usuario) {
         interactor?.navigateChatOnline(checkConnection()!!,usuario)
     }
+
+    override fun navigateChatOnlineNotification(uiFirebase: String) {
+        interactor?.navigateChatOnlineNotification(uiFirebase)
+    }
+
     /*override fun getListSyncEnfermedadesAndTratamiento() {
         mainView?.showProgressBar()
         interactor?.getListSyncEnfermedadesAndTratamiento()

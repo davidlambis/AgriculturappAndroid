@@ -55,6 +55,10 @@ class MenuInteractor:MainViewMenu.Interactor {
        repository?.navigateChatOnline(checkConection,usuario)
     }
 
+    override fun navigateChatOnlineNotification(uiFirebase: String) {
+        repository?.navigateChatOnlineNotification(uiFirebase)
+    }
+
     //Notifications
     override fun getCountNotifications(): Int {
         return  repository?.getCountNotifications()!!

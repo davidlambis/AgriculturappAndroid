@@ -689,6 +689,14 @@ class OfertasRepository : IOfertas.Repository {
 
 
     private fun sendPushNotificationToReceiver(message: String,userSelected:UserFirebase,imagen:String?,room:Room,oferta:Oferta) {
+        val userLogued= getLastUserLogued()
+        var uiUserFirebase:String?=null
+        uiUserFirebase = FirebaseAuth.getInstance().currentUser?.uid
+        if(uiUserFirebase==null){
+            uiUserFirebase=getLastUserLogued()?.IdFirebase
+        }
+
+
         var NOTIFICATION_TYPE_CONFIRM_OFERTA=""
         if(oferta.Nombre_Estado_Oferta.equals(EstadosOfertasResources.RECHAZADO_STRING)){
             NOTIFICATION_TYPE_CONFIRM_OFERTA=NotificationTypeResources.NOTIFICATION_TYPE_REFUSED_OFERTA
@@ -696,11 +704,11 @@ class OfertasRepository : IOfertas.Repository {
             NOTIFICATION_TYPE_CONFIRM_OFERTA=NotificationTypeResources.NOTIFICATION_TYPE_CONFIRM_OFERTA
         }
         val fcmNotificationBuilder= FcmNotificationBuilder()
-        fcmNotificationBuilder.title=userSelected.Nombre+" ${userSelected.Apellido}"
+        fcmNotificationBuilder.title=userLogued?.Nombre+" ${userLogued?.Apellidos}"
         fcmNotificationBuilder.image_url=imagen
         fcmNotificationBuilder.message=message
-        fcmNotificationBuilder.user_name=userSelected.Nombre+" ${userSelected.Apellido}"
-        fcmNotificationBuilder.ui=userSelected.User_Id
+        fcmNotificationBuilder.user_name=userLogued?.Nombre+" ${userLogued?.Apellidos}"
+        fcmNotificationBuilder.ui=uiUserFirebase
         fcmNotificationBuilder.receiver_firebase_token=userSelected.TokenFcm
         fcmNotificationBuilder.room_id=room.IdRoom
         fcmNotificationBuilder.type_notification= NOTIFICATION_TYPE_CONFIRM_OFERTA
@@ -710,6 +718,7 @@ class OfertasRepository : IOfertas.Repository {
 
     private fun getMessageOferta(oferta: Oferta,userFirebase: UserFirebase): String {
 
+        val userLogued= getLastUserLogued()
         var message= ""
         var disponibilidad = ""
         var productoCantidad=""
@@ -732,7 +741,7 @@ class OfertasRepository : IOfertas.Repository {
         }
 
         message=String.format("El productor %s %s ha  %s tu oferta de %s de  %s de %s"
-                ,userFirebase.Nombre,userFirebase.Apellido,oferta.Nombre_Estado_Oferta,productoCantidad, oferta.Producto?.Nombre,calidad)
+                ,userLogued?.Nombre,userLogued?.Apellidos,oferta.Nombre_Estado_Oferta,productoCantidad, oferta.Producto?.Nombre,calidad)
 
         return  message
     }

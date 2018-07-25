@@ -373,12 +373,19 @@ class DetailProductoRepository :IMainViewDetailProducto.Repository {
 
 
     private fun sendPushNotificationToReceiver(message: String,userSelected:UserFirebase,imagen:String) {
+        val userLogued= getLastUserLogued()
+        var uiUserFirebase:String?=null
+        uiUserFirebase = FirebaseAuth.getInstance().currentUser?.uid
+        if(uiUserFirebase==null){
+            uiUserFirebase=getLastUserLogued()?.IdFirebase
+        }
+
         val fcmNotificationBuilder= FcmNotificationBuilder()
-        fcmNotificationBuilder.title=userSelected.Nombre+" ${userSelected.Apellido}"
+        fcmNotificationBuilder.title=userLogued?.Nombre+" ${userLogued?.Apellidos}"
         fcmNotificationBuilder.image_url=imagen
         fcmNotificationBuilder.message=message
-        fcmNotificationBuilder.user_name=userSelected.Nombre+" ${userSelected.Apellido}"
-        fcmNotificationBuilder.ui=userSelected.User_Id
+        fcmNotificationBuilder.user_name=userLogued?.Nombre+" ${userLogued?.Apellidos}"
+        fcmNotificationBuilder.ui=uiUserFirebase
         fcmNotificationBuilder.receiver_firebase_token=userSelected.TokenFcm
         fcmNotificationBuilder.room_id=roomId
         fcmNotificationBuilder.type_notification=NotificationTypeResources.NOTIFICATION_TYPE_OFERTA

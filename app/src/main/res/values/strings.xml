@@ -321,6 +321,7 @@
 
     <string name="tittle_verificate_conection">Verifique su conexion a internet para actualizar su imagen de perfil</string>
 
+    <string name="verificate_again_select_picture_account">Intenta nuevamente tomar o seleccionar la fotografia de perfil, se produjo un error</string>
 
     <!--GLobals-->
     <string name="coordenadas">Coordenadas</string>

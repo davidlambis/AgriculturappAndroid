@@ -388,9 +388,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
 
        /* viewDialog?.rangeSeekbar5?.setIndicatorTextDecimalFormat("0");
-
         viewDialog?.rangeSeekbar5?.setOnRangeChangedListener( object :OnRangeChangedListener {
-
             override fun onRangeChanged(view: RangeSeekBar,  leftValue:Float,  rightValue:Float,  isFromUser:Boolean) {
                 if (leftValue <= 50){
                     view.setProgressColor(getResources().getColor(R.color.colorAccent));
@@ -402,13 +400,10 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
                     view.getLeftSeekBar().setThumbDrawableId(R.drawable.thumb_pressed);
                 }
             }
-
             override fun onStartTrackingTouch(view:RangeSeekBar , isLeft:Boolean ) {
 
             }
-
             override fun onStopTrackingTouch(view:RangeSeekBar , isLeft:Boolean ) {
-
             }
         });*/
         

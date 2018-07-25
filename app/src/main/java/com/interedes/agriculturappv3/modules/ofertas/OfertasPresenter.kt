@@ -130,6 +130,11 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
                 view?.navigationChat(oferta)
             }
 
+            OfertasEvent.ITEM_EVENT_IMAGE -> {
+                val oferta = event.objectMutable as Oferta
+                view?.showViewDialogImage(oferta.Usuario?.Fotopefil)
+            }
+
            /* OfertasEvent.NAVIGATION_CHAT_ONLINE -> {
                 val room = event.objectMutable as Room
                 val userFirebase = event.objectMutable2 as UserFirebase

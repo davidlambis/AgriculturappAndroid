@@ -331,6 +331,9 @@ class UpRepository() : IUnidadProductiva.Repo {
     }
 
     override fun getUPs(): List<Unidad_Productiva> {
+        val list = SQLite.select()
+                .from(Unidad_Productiva::class.java).queryList()
+
         val usuario = getLastUserLogued()
         return SQLite.select().from(Unidad_Productiva::class.java).where(Unidad_Productiva_Table.UsuarioId.eq(usuario?.Id)).queryList()
     }

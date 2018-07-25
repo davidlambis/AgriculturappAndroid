@@ -141,26 +141,19 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
 
 
             if(data.Producto!=null){
-
-               /* if( data.Producto?.blobImagen!=null){
-                    val byte = data.Producto?.blobImagen?.getBlob()
-                    val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
-                    contentIcon.setImageBitmap(bitmap)
-                }*/
-
                 if( data.Producto?.blobImagen!=null){
                     val byte = data.Producto?.blobImagen?.getBlob()
                     val bitmap = BitmapFactory.decodeByteArray(byte, 0, byte!!.size)
                     contentIcon.setImageBitmap(bitmap)
+                    contentIcon.scaleType=ImageView.ScaleType.CENTER_CROP
                 }else{
 
                     GlideApp.with(context)
                             .load(S3Resources.RootImage+"${data.Producto?.Imagen}")
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .productorPhoto()
+                            .productoPhotoCenterCrop()
                             .into(contentIcon);
                 }
-
                 txtTitle.setText(data.Producto?.Nombre)
                 productoCantidad= String.format("%s %s ", disponibilidad, data.Producto?.NombreUnidadMedidaCantidad)
                 calidad= String.format("%s",data.Producto?.NombreCalidad)
@@ -170,38 +163,20 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
             }
 
             if(data.Usuario!=null){
-
                 //TODO se valida que el usuario sea productor para mostrar opciones de editar la oferta
                 publisher_name.text=data.Usuario?.Nombre+" ${data.Usuario?.Apellidos}"
-                GlideApp.with(context)
-                        .load(S3Resources.RootImage+"${data.Usuario?.Fotopefil}")
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .productorPhoto()
-                        .into(circleView);
+                if(data.Usuario?.Fotopefil!=null){
+                    GlideApp.with(context)
+                            .load(S3Resources.RootImage+"${data.Usuario?.Fotopefil}")
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .productorPhotoCenterCrop()
+                            .into(circleView)
+                }else{
+                    circleView.setImageResource(R.drawable.ic_account_box_green)
 
-                /*
-                try {
-                    val foto = data.Usuario?.blobImagenUser?.blob
-                    var imageBitmapAccountGlobal = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
-                    circleView.setImageBitmap(imageBitmapAccountGlobal)
-                }catch (ex:Exception){
-                    var ss= ex.toString()
-                    Log.d("Convert Image", "defaultValue = " + ss);
                 }
-                */
-
-               // if(data.Usuario?.Fotopefil!=null){
-               /* try {
-                    Picasso.with(context).load("https://s3.amazonaws.com/datatakefiles/ic_asistencia_tecnica_color_500.png").placeholder(R.drawable.default_avata).into(circleView)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }*/
-               // }
-
-
 
                 //txtDescription.text= "${data.Usuario?.Nombre} ${data.Usuario?.Apellidos}  te oferto $productoCantidad a un precio de  $precioOferta por el cultivo de ${data.Producto?.Nombre}   de $calidad"
-
                 if(rolUserLogied.equals(RolResources.COMPRADOR)){
                     optionsButtons.visibility=View.GONE
                     txtDescription.text=String.format(context.getString(R.string.descripcion_oferta_comprador)
@@ -275,6 +250,12 @@ class OfertasAdapter(var lista: ArrayList<Oferta>,rolNameUserLogued:String?) : R
             btnChatItem.setOnClickListener{
                 postEvent(OfertasEvent.REQUEST_CHAT_ITEM_EVENT, data)
             }
+
+            circleView.setOnClickListener{
+                postEvent(OfertasEvent.ITEM_EVENT_IMAGE, data)
+            }
+
+
         }
     }
 }

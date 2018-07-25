@@ -16,7 +16,11 @@ import java.util.ArrayList
 import com.interedes.agriculturappv3.R.string.send
 import com.interedes.agriculturappv3.modules.models.Notification.FcmNotificationBuilder
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario
+import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.resources.NotificationTypeResources
+import com.interedes.agriculturappv3.services.resources.S3Resources
+import com.raizlabs.android.dbflow.sql.language.SQLite
 
 
 class ChatMessage_Repository:IMainViewChatMessages.Repository {
@@ -98,14 +102,26 @@ class ChatMessage_Repository:IMainViewChatMessages.Repository {
        }
     }
 
+     fun getLastUserLogued(): Usuario? {
+
+        val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered.eq(true)).querySingle()
+        return usuarioLogued
+    }
 
     private fun sendPushNotificationToReceiver(message: ChatMessage,room:Room,userSelected:UserFirebase) {
+        val userLogued= getLastUserLogued()
+        var uiUserFirebase:String?=null
+        uiUserFirebase = FirebaseAuth.getInstance().currentUser?.uid
+        if(uiUserFirebase==null){
+            uiUserFirebase=getLastUserLogued()?.IdFirebase
+        }
+
         val fcmNotificationBuilder=FcmNotificationBuilder()
-        fcmNotificationBuilder.title=userSelected.Nombre+" ${userSelected.Apellido}"
-        fcmNotificationBuilder.image_url=userSelected.Imagen
+        fcmNotificationBuilder.title=userLogued?.Nombre+" ${userLogued?.Apellidos}"
+        fcmNotificationBuilder.image_url= S3Resources.RootImage+"${userLogued?.Fotopefil}"
         fcmNotificationBuilder.message=message.message
-        fcmNotificationBuilder.user_name=userSelected.Nombre+" ${userSelected.Apellido}"
-        fcmNotificationBuilder.ui=userSelected.User_Id
+        fcmNotificationBuilder.user_name=userSelected.Nombre+" ${userLogued?.Apellidos}"
+        fcmNotificationBuilder.ui=uiUserFirebase
         fcmNotificationBuilder.receiver_firebase_token=userSelected.TokenFcm
         fcmNotificationBuilder.room_id=room.IdRoom
         fcmNotificationBuilder.type_notification=NotificationTypeResources.NOTIFICATION_TYPE_MESSAGE_ONLINE

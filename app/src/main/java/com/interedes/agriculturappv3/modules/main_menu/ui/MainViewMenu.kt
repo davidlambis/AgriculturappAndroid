@@ -78,6 +78,7 @@ interface MainViewMenu {
 
 
         //Navigate to ChatOnline
+        fun navigateChatOnlineNotification(uiFirebase:String)
         fun navigateChatOnline(usuario:Usuario)
 
     }
@@ -94,6 +95,7 @@ interface MainViewMenu {
         //Notifications
         fun getCountNotifications():Int
         //Navigate to ChatOnline
+        fun navigateChatOnlineNotification(uiFirebase:String)
         fun navigateChatOnline(checkConection:Boolean,usuario:Usuario)
 
         fun logOut(usuario: Usuario?)
@@ -113,6 +115,7 @@ interface MainViewMenu {
         //Notifications
         fun getCountNotifications():Int
         //Navigate to ChatOnline
+        fun navigateChatOnlineNotification(uiFirebase:String)
         fun navigateChatOnline(checkConection:Boolean,usuario:Usuario)
 
         fun getListasIniciales()

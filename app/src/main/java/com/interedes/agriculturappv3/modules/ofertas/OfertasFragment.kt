@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -19,15 +20,18 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 import com.interedes.agriculturappv3.R
 import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
 import com.interedes.agriculturappv3.activities.chat.online.messages_chat.ChatMessageActivity
+import com.interedes.agriculturappv3.libs.GlideApp
 import com.interedes.agriculturappv3.modules.models.chat.ChatMessage
 import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
@@ -46,6 +50,7 @@ import com.kaopiz.kprogresshud.KProgressHUD
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
+import kotlinx.android.synthetic.main.dialog_detail_foto.view.*
 import kotlinx.android.synthetic.main.dialog_select_spinners.view.*
 import kotlinx.android.synthetic.main.fragment_ofertas.*
 import java.util.ArrayList
@@ -442,19 +447,49 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
 
 
     override fun confirmAceptOferta(oferta: Oferta): AlertDialog?{
-        var builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(getString(R.string.confirmation));
         builder.setNegativeButton(getString(R.string.close), DialogInterface.OnClickListener { dialog, which ->
             dialog.dismiss()
         })
         builder.setMessage(getString(R.string.title_alert_acept_oferta));
-        builder?.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
+        builder.setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, which ->
             oferta.EstadoOfertaId=EstadosOfertasResources.CONFIRMADO
             oferta.Nombre_Estado_Oferta=EstadosOfertasResources.CONFIRMADO_STRING
             presenter?.updateOferta(oferta, Producto_Id)
         })
         builder.setIcon(R.drawable.ic_ofertas);
         return builder.show();
+    }
+
+    override fun showViewDialogImage(ruta: String?) {
+        val inflater = this.layoutInflater
+        val viewDialogImage = inflater.inflate(R.layout.dialog_detail_foto, null)
+        if(ruta!=null){
+            GlideApp.with(activity!!)
+                    .load(S3Resources.RootImage+"$ruta")
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .fotoDetailCenterCrop()
+                    .into(viewDialogImage.imgIcon)
+        }else{
+            viewDialogImage.imgIcon.setImageResource(R.drawable.ic_no_image_icon)
+            viewDialogImage.imgIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        }
+        ///ImagePlagaGlobal=enfermedad.RutaImagenEnfermedad
+        val dialog = AlertDialog.Builder(context!!)
+                .setView(viewDialogImage!!)
+                .create()
+        dialog.getWindow().setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.white_transaparent)))
+        val closeDialog = View.OnClickListener { dialog.dismiss() }
+        viewDialogImage.ivClosetDialogImage?.setOnClickListener(closeDialog)
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow().getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.show()
+        dialog.getWindow().setAttributes(lp)
+
     }
 
     override fun setProducto(producto: Producto?) {

@@ -54,6 +54,7 @@ interface IOfertas {
 
         fun confirmResusedOferta(oferta: Oferta): AlertDialog?
         fun confirmAceptOferta(oferta: Oferta): AlertDialog?
+        fun showViewDialogImage(ruta: String?)
 
 
         fun setProducto(producto: Producto?)

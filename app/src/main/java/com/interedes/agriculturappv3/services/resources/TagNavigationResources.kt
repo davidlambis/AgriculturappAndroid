@@ -12,5 +12,8 @@ class TagNavigationResources {
         val NAVIGATE_CHAT_SMS:Long=2
         val NAVIGATE_OFERTAS:Long=3
         val NAVIGATE_CONTROL_PLAGAS:Long=4
+
+        //Resources
+        val TAG_NOTIFICATION:String="Notificacion"
     }
 }

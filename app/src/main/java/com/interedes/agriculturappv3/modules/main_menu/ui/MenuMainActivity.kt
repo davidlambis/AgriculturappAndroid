@@ -66,6 +66,7 @@ import com.interedes.agriculturappv3.modules.account.AccountFragment
 import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.credentials.CredentialsFragment
 import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestSendChat
+import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal
 import com.interedes.agriculturappv3.modules.models.sincronizacion.QuantitySync
 import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.modules.notification.NotificationActivity
@@ -345,12 +346,39 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         extrasGlobal= intent.extras
         if (extrasGlobal != null) {
             if (extrasGlobal!!.containsKey(TagNavigationResources.TAG_NAVIGATE_CHAT_ONLINE)) {
-                val chatOnline = Intent(this, ConversationsUsersActivity::class.java)
-                chatOnline.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity(chatOnline)
+               // val chatOnline = Intent(this, ConversationsUsersActivity::class.java)
+               // chatOnline.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+               // startActivity(chatOnline)
+                val notification= extrasGlobal!!.getParcelable<NotificationLocal>(TagNavigationResources.TAG_NOTIFICATION)
+
+                if(notification!=null){
+                    showProgressHud()
+                    Rx_Bus.listen(RequestSendChat::class.java).subscribe({
+                        hideProgressHud()
+                        val goToUpdate = Intent(this, ChatMessageActivity::class.java)
+                        goToUpdate.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        goToUpdate.putExtra("USER_FIREBASE", it.userFirebase)
+                        goToUpdate.putExtra("ROOM", it.room)
+                        goToUpdate.putExtra("USER_ID", it.userFirebase?.User_Id)
+                        goToUpdate.putExtra("FOTO", it.userFirebase?.Imagen)
+                        startActivity(goToUpdate)
+                    })
+                    if(notification.ui!=null){
+                        presenter?.navigateChatOnlineNotification(notification.ui!!)
+                    }
+                }else{
+                    val chatOnline = Intent(this, ConversationsUsersActivity::class.java)
+                    chatOnline.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(chatOnline)
+                }
+
+
+
+
             }else if(extrasGlobal!!.containsKey(TagNavigationResources.TAG_NAVIGATE_OFERTAS)){
                 replaceFragment(OfertasFragment())
             }else if(extrasGlobal!!.containsKey(TagNavigationResources.TAG_NAVIGATE_CHAT_SMS)){
+
                 val chat = Intent(this, UserSmsActivity::class.java)
                 chat.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(chat)
@@ -531,7 +559,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     private fun getBoomType(): BoomType {
-        var random= Random().nextInt(5);  // [0...4] [min = 0, max = 4] Equivalente a BoomType.HORIZONTAL_THROW_2
+        val random= Random().nextInt(5);  // [0...4] [min = 0, max = 4] Equivalente a BoomType.HORIZONTAL_THROW_2
 
         if (random==0) {
             return BoomType.LINE

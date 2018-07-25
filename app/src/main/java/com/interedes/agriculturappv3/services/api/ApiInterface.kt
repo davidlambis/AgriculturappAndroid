@@ -469,8 +469,10 @@ interface ApiInterface {
     companion object Factory {
 
         internal val okHttpClient = OkHttpClient.Builder()
-                .readTimeout(5, TimeUnit.MINUTES) //Tiempo de respuesta del servicio
-                .connectTimeout(5, TimeUnit.MINUTES)
+               // .readTimeout(5, TimeUnit.MINUTES) //Tiempo de respuesta del servicio
+               // .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(100, TimeUnit.SECONDS)
+                .connectTimeout(100, TimeUnit.SECONDS)
                 .build()
 
         /*var gson = GsonBuilder()

@@ -1,7 +1,12 @@
 package com.interedes.agriculturappv3.modules.models.Notification
 
+import android.os.Parcel
 import com.google.gson.annotations.SerializedName
 import com.interedes.agriculturappv3.config.DataSource
+import com.interedes.agriculturappv3.modules.models.parcelable.KParcelable
+import com.interedes.agriculturappv3.modules.models.parcelable.parcelableCreator
+import com.interedes.agriculturappv3.modules.models.parcelable.readBoolean
+import com.interedes.agriculturappv3.modules.models.parcelable.writeBoolean
 import com.raizlabs.android.dbflow.annotation.Column
 import com.raizlabs.android.dbflow.annotation.PrimaryKey
 import com.raizlabs.android.dbflow.annotation.Table
@@ -55,7 +60,43 @@ data class NotificationLocal(
         var parameter: String? = null,
 
         @Column(name = "time")
-        var time: Long? = null
+        var time: Long = 0
 
-        ) {
+        ): KParcelable {
+
+        private constructor(p: Parcel) : this(
+                Id = p.readLong(),
+                title = p.readString(),
+                message = p.readString(),
+                image_url = p.readString(),
+                user_name = p.readString(),
+                ui = p.readString(),
+                fcm_token = p.readString(),
+                room_id = p.readString(),
+                type_notification = p.readString(),
+                ReadNotification = p.readBoolean(),
+                parameter = p.readString(),
+                time = p.readLong()
+
+        )
+
+
+        override fun writeToParcel(dest: Parcel, flags: Int) {
+                dest.writeLong(Id!!)
+                dest.writeString(title)
+                dest.writeString(message)
+                dest.writeString(image_url)
+                dest.writeString(user_name)
+                dest.writeString(ui)
+                dest.writeString(fcm_token)
+                dest.writeString(room_id)
+                dest.writeString(type_notification)
+                dest.writeBoolean(ReadNotification)
+                dest.writeString(parameter)
+                dest.writeLong(time!!)
+        }
+
+        companion object {
+                @JvmField val CREATOR = parcelableCreator(::NotificationLocal)
+        }
 }

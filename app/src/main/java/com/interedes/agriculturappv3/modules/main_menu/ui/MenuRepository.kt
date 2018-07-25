@@ -60,8 +60,10 @@ import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.raizlabs.android.dbflow.config.FlowManager
 import com.raizlabs.android.dbflow.data.Blob
+import com.raizlabs.android.dbflow.kotlinextensions.async
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
+import com.raizlabs.android.dbflow.sql.language.Delete
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction
 import retrofit2.Call
@@ -73,6 +75,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MenuRepository: MainViewMenu.Repository {
+
 
 
     var eventBus: EventBus? = null
@@ -202,6 +205,23 @@ class MenuRepository: MainViewMenu.Repository {
        }
     }
 
+    override fun navigateChatOnlineNotification(uiFirebase: String) {
+        mUserDBRef?.child("$uiFirebase")?.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.value != null) {
+                    val user = dataSnapshot.getValue<UserFirebase>(UserFirebase::class.java)
+                    //user = issue.getValue<UserFirebase>(UserFirebase::class.java)
+                    mReceiverId=user?.User_Id
+                    mSenderId=FirebaseAuth.getInstance().currentUser!!.uid
+                    findRoomUser(user!!)
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                postEventError(RequestEventMainMenu.ERROR_EVENT,databaseError.message)
+            }
+        })
+    }
+
     private fun getUserToFirebase(usuarioTo: Usuario?) {
         if(usuarioTo!=null){
             val query = mUserDBRef?.orderByChild("correo")?.equalTo(usuarioTo?.Email)
@@ -217,7 +237,6 @@ class MenuRepository: MainViewMenu.Repository {
                             mSenderId=FirebaseAuth.getInstance().currentUser!!.uid
                             //if not current user, as we do not want to show ourselves then chat with ourselves lol
                         }
-
                         findRoomUser(user!!)
                         //sendMessageToFirebase(message, senderId, mReceiverId)
                     }
@@ -246,15 +265,9 @@ class MenuRepository: MainViewMenu.Repository {
                         //roomId=room?.IdRoom
                         roomGlobalUserSender= room!!
                     }
-
                     //sendMessageToFirebase(message,oferta,userFirebase)
-
-
-
                     val sendChatRequest= RequestSendChat(roomGlobalUserSender,userFirebase)
                     Rx_Bus.publish(sendChatRequest)
-
-
                 }else{
                     createRoomUser(userFirebase,mReceiverId,true,userFirebase)
                 }
@@ -653,8 +666,51 @@ class MenuRepository: MainViewMenu.Repository {
                     if (response != null && response.code() == 200) {
 
                         val unidadesProductivas = response.body()?.value as MutableList<Unidad_Productiva>
+
+
                         //TODO Delete information in local, add new remote
-                        SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
+                       SQLite.select()
+                                .from(Unidad_Productiva::class.java)
+                                .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true))
+                                .and(Unidad_Productiva_Table.UsuarioId.eq(usuario.Id))
+                                .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(true))
+                                .queryList().forEach{it.delete()}
+
+                        SQLite.select()
+                                .from(Lote::class.java)
+                                .where(Lote_Table.EstadoSincronizacion.eq(true))
+                                .and(Lote_Table.UsuarioId.eq(usuario.Id))
+                                .and(Lote_Table.Estado_SincronizacionUpdate.eq(true))
+                                .queryList()
+                                .forEach{it.delete()}
+
+                        SQLite.select()
+                                .from(Cultivo::class.java)
+                                .where(Cultivo_Table.EstadoSincronizacion.eq(true))
+                                .and(Cultivo_Table.UsuarioId.eq(usuario.Id))
+                                .and(Cultivo_Table.Estado_SincronizacionUpdate.eq(true))
+                                .queryList().forEach{it.delete()}
+
+                        SQLite.select()
+                                .from(Produccion::class.java)
+                                .where(Produccion_Table.Estado_Sincronizacion.eq(true))
+                                .and(Produccion_Table.UsuarioId.eq(usuario.Id))
+                                .and(Produccion_Table.Estado_SincronizacionUpdate.eq(true))
+                                .queryList().forEach{it.delete()}
+
+                        SQLite.select()
+                                .from(ControlPlaga::class.java)
+                                .where(ControlPlaga_Table.Estado_Sincronizacion.eq(true))
+                                .and(ControlPlaga_Table.UsuarioId.eq(usuario.Id))
+                                .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(true))
+                                .queryList().forEach{it.delete()}
+
+                       /*Delete.table(Unidad_Productiva::class.java);
+                        Delete.table(Lote::class.java);
+                        Delete.table(Cultivo::class.java);
+                        Delete.table(Produccion::class.java);
+                        Delete.table(ControlPlaga::class.java);*/
+                       /*SQLite.delete<Unidad_Productiva>(Unidad_Productiva::class.java)
                                 .where(Unidad_Productiva_Table.Estado_Sincronizacion.eq(true))
                                 .and(Unidad_Productiva_Table.UsuarioId.eq(usuario.Id))
                                 .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(true))
@@ -667,7 +723,6 @@ class MenuRepository: MainViewMenu.Repository {
                                 .and(Lote_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
-
 
                         SQLite.delete<Cultivo>(Cultivo::class.java)
                                 .where(Cultivo_Table.EstadoSincronizacion.eq(true))
@@ -689,6 +744,7 @@ class MenuRepository: MainViewMenu.Repository {
                                 .and(ControlPlaga_Table.Estado_SincronizacionUpdate.eq(true))
                                 .async()
                                 .execute()
+                                */
 
 
                         //TODO Add information new remote
@@ -698,6 +754,8 @@ class MenuRepository: MainViewMenu.Repository {
                                     .where(Unidad_Productiva_Table.Id_Remote.eq(item.Id_Remote))
                                     .and(Unidad_Productiva_Table.Estado_SincronizacionUpdate.eq(false))
                                     .querySingle()
+
+
                             //TODO Verifica si tiene pendiente actualizacion por sincronizar
                             if (unidadProductivaVerficateSave !=null){
                                 item.Unidad_Productiva_Id=unidadProductivaVerficateSave.Unidad_Productiva_Id
@@ -888,6 +946,8 @@ class MenuRepository: MainViewMenu.Repository {
                             }
                         }
 
+
+
                         Log.d("SYNC DATA", "UP, Lotes, Cultivos,Produccion,ControlPlagas Loaded" )
 
                         loadTransacciones(usuario)
@@ -908,13 +968,15 @@ class MenuRepository: MainViewMenu.Repository {
         else if(usuario.RolNombre?.equals(RolResources.COMPRADOR)!!){
             //Limpiar BD con informacion de un productor
             //TODO Delete information in local, add new remote
-            SQLite.delete<Oferta>(Oferta::class.java)
-                    .async()
-                    .execute()
 
-            SQLite.delete<DetalleOferta>(DetalleOferta::class.java)
-                    .async()
-                    .execute()
+
+            SQLite.select()
+                    .from(Oferta::class.java)
+                    .queryList().forEach{it.delete()}
+
+            SQLite.select()
+                    .from(DetalleOferta::class.java)
+                    .queryList().forEach{it.delete()}
 
             loadOfertas(usuario)
 
@@ -1061,14 +1123,13 @@ class MenuRepository: MainViewMenu.Repository {
                     if (response != null && response.code() == 200) {
                         val departamentos: MutableList<Departamento> = response.body()?.value!!
 
+                        SQLite.select()
+                                .from(Departamento::class.java)
+                                .queryList().forEach{it.delete()}
 
-                        SQLite.delete<Departamento>(Departamento::class.java)
-                                .async()
-                                .execute()
-
-                        SQLite.delete<Ciudad>(Ciudad::class.java)
-                                .async()
-                                .execute()
+                        SQLite.select()
+                                .from(Ciudad::class.java)
+                                .queryList().forEach{it.delete()}
 
 
 
@@ -1212,19 +1273,21 @@ class MenuRepository: MainViewMenu.Repository {
                 if (response != null && response.code() == 200) {
                     val transacciones = response.body()?.value as MutableList<Transaccion>
 
-                    SQLite.delete<Transaccion>(Transaccion::class.java)
+                    SQLite.select()
+                            .from(Transaccion::class.java)
                             .where(Transaccion_Table.Estado_Sincronizacion.eq(true))
                             .and(Transaccion_Table.UsuarioId.eq(usuario?.Id))
                             .and(Transaccion_Table.Estado_SincronizacionUpdate.eq(true))
-                            .async()
-                            .execute()
+                            .queryList().forEach{it.delete()}
 
-                    SQLite.delete<Tercero>(Tercero::class.java)
+
+                    SQLite.select()
+                            .from(Tercero::class.java)
                             .where(Tercero_Table.Estado_Sincronizacion.eq(true))
                             .and(Tercero_Table.Usuario_Id.eq(usuario?.Id))
                             .and(Tercero_Table.Estado_SincronizacionUpdate.eq(true))
-                            .async()
-                            .execute()
+                            .queryList().forEach{it.delete()}
+
 
                     for (item in transacciones) {
 
@@ -1316,15 +1379,12 @@ class MenuRepository: MainViewMenu.Repository {
                 if (response != null && response.code() == 200) {
                     val productos = response.body()?.value as MutableList<Producto>
 
-
-                    SQLite.delete<Producto>(Producto::class.java)
+                    SQLite.select()
+                            .from(Producto::class.java)
                             .where(Producto_Table.userId.eq(usuario?.Id))
                             .and(Producto_Table.Estado_Sincronizacion.eq(true))
                             .and(Producto_Table.Estado_SincronizacionUpdate.eq(true))
-                            .async()
-                            .execute()
-
-
+                            .queryList().forEach{it.delete()}
 
                     for(producto in productos){
 
@@ -1418,10 +1478,11 @@ class MenuRepository: MainViewMenu.Repository {
                     if (usuario?.RolNombre.equals(RolResources.PRODUCTOR)) {
                         val listOferta = SQLite.select().from(Oferta::class.java).where(Oferta_Table.UsuarioTo.eq(usuario?.Id)).queryList()
                         for (oferta in listOferta) {
-                            SQLite.delete<DetalleOferta>(DetalleOferta::class.java)
+                            SQLite.select()
+                                    .from(DetalleOferta::class.java)
                                     .where(DetalleOferta_Table.OfertasId.eq(oferta.Oferta_Id))
-                                    .async()
-                                    .execute()
+                                    .queryList().forEach{it.delete()}
+
                             oferta.delete()
                         }
                     }

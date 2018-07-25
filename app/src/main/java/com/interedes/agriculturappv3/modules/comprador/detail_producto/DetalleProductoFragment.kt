@@ -588,6 +588,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
          val inflater = this.layoutInflater
          val viewDialogImage = inflater.inflate(R.layout.dialog_detail_foto, null)
 
+
         if(ruta!=null){
             GlideApp.with(activity!!)
                     .load(S3Resources.RootImage+"$ruta")
