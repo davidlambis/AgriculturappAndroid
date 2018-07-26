@@ -864,7 +864,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         val itemSyncCloud: LinearLayout = view.findViewById(R.id.itemSyncCloud)
         val itemOfertas: LinearLayout = view.findViewById(R.id.itemOfertas)
-        val itemComprasRealizadas: LinearLayout = view.findViewById(R.id.itemComprasRealizadas)
+      //  val itemComprasRealizadas: LinearLayout = view.findViewById(R.id.itemComprasRealizadas)
         val itemSyncronizarDatos: LinearLayout = view.findViewById(R.id.itemSyncronizarDatos)
         val itemCerrarSesion: LinearLayout = view.findViewById(R.id.itemCerrarSesion)
         val itemCredentials: LinearLayout = view.findViewById(R.id.itemCredentials)
