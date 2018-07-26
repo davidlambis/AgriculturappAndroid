@@ -78,6 +78,8 @@ ext {
     //Firebase
     firebaseVersion = '11.8.0'
 
+    ///Search
+    searchView= "1.0.0"
 
     //ProgresHud
     kprogresshudVersion='1.1.0'

@@ -46,7 +46,7 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
 
         var eventBus: EventBus? = null
         fun postEvento(type: Int, producto: Producto) {
-            var productonMutable = producto as Object
+            val productonMutable = producto as Object
             val event = RequestEventProductor(type, null, productonMutable, null)
             event.eventType = type
             eventBus?.post(event)
@@ -137,7 +137,7 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                 disponibilidad = data.Stock.toString()
             }
 
-            ratingBar.rating = 3.5f
+           // ratingBar.rating = 3.5f
 
             txtNombreProductor.setText(data.NombreProductor)
             txtDisponibilidad.setText(String.format("%s: %s %s", data.NombreCalidad, disponibilidad, data.NombreUnidadMedidaCantidad))
@@ -159,9 +159,6 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
                 imgProductor.setImageResource(R.drawable.ic_account_box_green)
                 imgProductor.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             }
-
-
-
             /*
             val query = mUsersDBRef?.child("Users")?.orderByChild("correo")?.equalTo(data.EmailProductor)
             query?.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -216,7 +213,6 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
         }
     }
 
-
     class LoadHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     fun setMoreDataAvailable(moreDataAvailable: Boolean) {
@@ -230,7 +226,6 @@ class ProductorMoreAdapter(val lista: ArrayList<Producto>?, context: Context?) :
         notifyDataSetChanged()
         isLoading = false
     }
-
 
     interface OnLoadMoreListener {
         fun onLoadMore()

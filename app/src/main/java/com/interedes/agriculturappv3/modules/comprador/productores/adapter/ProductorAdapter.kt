@@ -37,7 +37,7 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
             private var mUsersDBRef: DatabaseReference? = null
             var eventBus: EventBus? = null
             fun postEvento(type: Int, producto: Producto) {
-                var productonMutable= producto as Object
+                val productonMutable= producto as Object
                 val event = RequestEventProductor(type,null, productonMutable,null)
                 event.eventType = type
                 eventBus?.post(event)
@@ -84,7 +84,6 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
             list.add(notification)
             notifyDataSetChanged()
         }*/
-
         if (!alreadyInAdapter(producto)) {
             //list.add(notification)
             //notifyDataSetChanged()
@@ -92,7 +91,6 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
             notifyItemInserted(0)
             notifyDataSetChanged()
         }
-
         //notifyItemInserted(position)
     }
 
@@ -104,7 +102,6 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
             }
             position++
         }
-
         return position
     }
 
@@ -141,15 +138,15 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
             fun bindItems(data: Producto, pos: Int) = with(itemView) {
 
 
-                var txtNombreProductor: TextView = itemView.findViewById(R.id.txtNombreProductor)
-                var imgProductor: ImageView = itemView.findViewById(R.id.imgProductor)
+                val txtNombreProductor: TextView = itemView.findViewById(R.id.txtNombreProductor)
+                val imgProductor: ImageView = itemView.findViewById(R.id.imgProductor)
 
-                var ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
-                var txtProducto: TextView = itemView.findViewById(R.id.txtProducto)
-                var txtUbicacion: TextView = itemView.findViewById(R.id.txtUbicacion)
-                var txtFechaDisponibilidad:TextView = itemView.findViewById(R.id.txtFechaDisponibilidad)
-                var txtDisponibilidad: TextView = itemView.findViewById(R.id.txtDisponibilidad)
-                var txtPrecio: TextView = itemView.findViewById(R.id.txtPrecio)
+                val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
+                val txtProducto: TextView = itemView.findViewById(R.id.txtProducto)
+                val txtUbicacion: TextView = itemView.findViewById(R.id.txtUbicacion)
+                val txtFechaDisponibilidad:TextView = itemView.findViewById(R.id.txtFechaDisponibilidad)
+                val txtDisponibilidad: TextView = itemView.findViewById(R.id.txtDisponibilidad)
+                val txtPrecio: TextView = itemView.findViewById(R.id.txtPrecio)
 
 
 
@@ -164,7 +161,7 @@ class ProductorAdapter(val lista: ArrayList<Producto>) : RecyclerView.Adapter<Pr
                     disponibilidad = data.Stock.toString()
                 }
 
-                ratingBar?.rating = 3.5f
+                //ratingBar?.rating = 3.5f
 
                 txtNombreProductor?.setText(data.NombreProductor)
                 txtDisponibilidad?.setText(String.format("%s: %s %s", data.NombreCalidad, disponibilidad, data.NombreUnidadMedidaCantidad))

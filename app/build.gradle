@@ -138,6 +138,9 @@ dependencies {
     //Loader Files
     implementation 'com.github.kk121:File-Loader:1.2'
 
+    ///Search
+    implementation "com.github.claudiodegio:MsvSearch:$rootProject.ext.searchView"
+
     /*
     //Extenciones Kotlin (QUERYS LIST)
     compile "com.github.vicpinm:krealmextensions:$krealmextensionsVersion"

@@ -155,7 +155,7 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
                 disponibilidad = productoGlobal?.Stock.toString()
             }
 
-            ratingBar?.rating = 3.5f
+           //ratingBar?.rating = 3.5f
 
             txtNombreProductor?.setText(productoGlobal?.NombreProductor)
             txtDisponibilidad?.setText(String.format("%s: %s %s", productoGlobal?.NombreCalidad, disponibilidad, productoGlobal?.NombreUnidadMedidaCantidad))

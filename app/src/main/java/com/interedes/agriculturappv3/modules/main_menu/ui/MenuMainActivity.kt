@@ -48,6 +48,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem
+import com.claudiodegio.msv.OnSearchViewListener
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 import com.google.android.gms.common.ConnectionResult
@@ -98,7 +99,7 @@ import java.text.Normalizer
 import java.util.*
 
 
-class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu.MainView,View.OnClickListener {
+class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainViewMenu.MainView,View.OnClickListener, OnSearchViewListener {
 
 
     var isAppRunning: Boolean = false
@@ -187,6 +188,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         getListasIniciales()
         setupMenuFloating()
         septupInjection()
+        mSearchView.setOnSearchViewListener(this);
     }
 
     fun navigationVerificateDownloadPlagasyEnfermedades(){
@@ -883,7 +885,7 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         menuItemGlobal?.isVisible = false
 
 
-
+        mSearchView.setMenuItem(menu?.findItem(R.id.action_search));
 
         val menuItemNotification = menu?.findItem(R.id.action_cartNotification)
         menuItemNotificationsGlobal = menu?.findItem(R.id.action_cartNotification)?.getActionView()
@@ -947,6 +949,104 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             else -> return super.onOptionsItemSelected(item)
         }
     }
+
+
+
+    //region Properties Search
+    /*--------------------------------------------------------------------------------*/
+
+
+    override fun  onSearchViewShown() {
+       /// Toast.makeText(this, "onSearchViewShown", Toast.LENGTH_SHORT).show();
+    }
+
+
+    override fun onSearchViewClosed() {
+       /// Toast.makeText(this, "onSearchViewClosed", Toast.LENGTH_SHORT).show();
+       /* try{
+            if(adapter!=null)
+                adapter.setFilter(vehicles);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }*/
+    }
+
+    override fun onQueryTextSubmit(query: String ):Boolean {
+        ///Toast.makeText(this, "onQueryTextSubmit: " + query, Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
+   override fun  onQueryTextChange(query: String) {
+        /*try{
+           // Toast.makeText(this, "onSearchViewWrite", Toast.LENGTH_SHORT).show();
+            List<Vehicle> listaFiltrado= filterVehicle(vehicles,query);
+            adapter.setFilter(listaFiltrado);
+            resultsLis(listaFiltrado);
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }*/
+    }
+
+/*
+    private static List<Vehicle> filterVehicle(List<Vehicle> models, String query) {
+        final String lowerCaseQuery = query.toLowerCase();
+        final List<Vehicle> filteredModelList = new ArrayList<>();
+        for (Vehicle model : models) {
+            final String placa = model.getPlaca().toLowerCase();
+            final String chasis = model.getChasis().toLowerCase();
+            final String codPlaca = model.getPlaca().toLowerCase();
+            final String marca = model.getDes_Marca().toLowerCase();
+            //final String rank = String.valueOf(model.getKilometraje());
+            if (placa.contains(lowerCaseQuery) || chasis.contains(lowerCaseQuery) || codPlaca.contains(lowerCaseQuery) || marca.contains(lowerCaseQuery)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
+    }
+
+    */
+
+
+
+    /*
+    private List<Vehicle>filter(List<Vehicle> vehicles, String texto){
+        List<Vehicle> listaFiltrada= new ArrayList<>();
+        try {
+            texto= texto.toLowerCase();
+            for(Vehicle vehicle: vehicles){
+                String vehi= vehicle.getChasis().toLowerCase();
+                if(vehi.contains(texto)){
+
+                    listaFiltrada.add(vehicle);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return listaFiltrada;
+    }*/
+    /*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public static void launch(MenuActivity context, int position) {
+        Intent intent = new Intent(context, VehicleActivity.class);
+       // intent.putExtra(EXTRA_POSITION, position);
+
+        // Los elementos 4, 5 y 6 usan elementos compartidos,
+        ActivityOptions options0 = ActivityOptions.makeSceneTransitionAnimation(context);
+        context.startActivity(intent, options0.toBundle());
+
+    }*/
+
+    //endregion
+    /*--------------------------------------------------------------------------------*/
+
+
     /*
     override fun showAlertTypeChat(): AlertDialog? {
         var builder = AlertDialog.Builder(this)

@@ -67,6 +67,7 @@ class LoginRepositoryImpl : LoginRepository {
     var apiService: ApiInterface? = null
 
     init {
+        mAuth = FirebaseAuth.getInstance()
         eventBus = GreenRobotEventBus()
         mDatabase = FirebaseDatabase.getInstance().reference
         apiService = ApiInterface.create()
@@ -200,7 +201,7 @@ class LoginRepositoryImpl : LoginRepository {
     }
 
     private fun loginFirebaseUser(usuario: Usuario, context:Context) {
-        mAuth = FirebaseAuth.getInstance()
+
         mAuth?.signInWithEmailAndPassword(usuario.Email!!, usuario.Contrasena!!)?.addOnCompleteListener({ task ->
             if (task.isSuccessful) {
                 val mCurrentUserID =task.result.user.uid

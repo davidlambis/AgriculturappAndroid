@@ -16,6 +16,8 @@
             android:orientation="vertical">
 
             <LinearLayout
+
+                android:id="@+id/contentFilterProductor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/blue"
@@ -52,6 +54,43 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/contentFilterComprador"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/margin_10"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/ivBackButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tint="@color/grey_luiyi"
+                    android:src="@drawable/ic_back_button"/>
+                <TextView
+                    android:id="@+id/txtTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="11dp"
+                    android:layout_toEndOf="@+id/ivClosetDialogProduccion"
+                    android:gravity="center"
+                    android:text="@string/title_ofertas"
+                    android:textColor="@color/purple"
+                    android:textSize="@dimen/text_size_18"
+                    android:textStyle="bold" />
+                <View
+                    android:id="@+id/division"
+                    android:layout_below="@+id/txtTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/purple" />
+
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/productoSelectedContainer"

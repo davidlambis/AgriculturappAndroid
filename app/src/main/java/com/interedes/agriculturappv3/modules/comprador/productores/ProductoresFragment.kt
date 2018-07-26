@@ -130,7 +130,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             setResults(productosList?.size!!)
         }
 
-
         val tipoProducto= presenter?.getTipoProducto(tipoProductoIdGlobal)
         if(tipoProducto!=null){
             txtTipoProducto.setText(tipoProducto.Nombre)
@@ -142,7 +141,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
                     val bitmapBlob = BitmapFactory.decodeByteArray(foto, 0, foto!!.size)
                     logoTipoProducto.setImageBitmap(bitmapBlob)
                 }catch (ex:Exception){
-                    var ss= ex.toString()
+                    val ss= ex.toString()
                     Log.d("Convert Image", "defaultValue = " + ss);
                 }
             }
@@ -155,14 +154,11 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
     //region ADAPTER
     private fun initAdapter() {
-
         //recyclerView.layoutManager = LinearLayoutManager(activity)
         //adapter = ProductorAdapter(ArrayList<Producto>())
        // recyclerView.adapter = adapter
        //recyclerView.addItemDecoration(VerticalLineDecorator(2))
         /*For Load More Pagination*/
-
-
        adapter = ProductorMoreAdapter(productosList!!, activity)
         adapter?.setLoadMoreListener(object : ProductorMoreAdapter.OnLoadMoreListener {
             override fun onLoadMore() {

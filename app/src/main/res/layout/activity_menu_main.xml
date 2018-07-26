@@ -112,6 +112,12 @@
 
         </LinearLayout>
 
+        <com.claudiodegio.msv.MaterialSearchView
+            android:id="@+id/mSearchView"
+            android:elevation="5dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </com.claudiodegio.msv.MaterialSearchView>
     </android.support.design.widget.CoordinatorLayout>
 
     <!--
