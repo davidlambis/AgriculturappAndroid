@@ -68,7 +68,7 @@ class AccountRepository:IMainViewAccount.Repository {
 
 
     override fun changeFotoUserAccount(checkConction:Boolean){
-        var usuarioLogued= getUserLogued()
+        val usuarioLogued= getUserLogued()
         if(checkConction){
             if(verificateUserLoguedFirebaseFirebase()!=null){
                 postEvent(RequestEventAccount.UPDATE_FOTO_ACCOUNT_EVENT, null,null,null)
@@ -85,7 +85,7 @@ class AccountRepository:IMainViewAccount.Repository {
     {
         mAuth?.signInWithEmailAndPassword(usuario?.Email!!, usuario?.Contrasena!!)?.addOnCompleteListener({ task ->
             if (task.isSuccessful) {
-                var mCurrentUserID =task.result.user.uid
+                val mCurrentUserID =task.result.user.uid
                 usuario.IdFirebase=mCurrentUserID
                 usuario.save()
 
@@ -175,9 +175,10 @@ class AccountRepository:IMainViewAccount.Repository {
                     loginFirebase(usuario,false)
                 }
             }else{
-                usuario.Estado_SincronizacionUpdate=false
-                usuario.update()
-                postEventOk(RequestEventAccount.UPDATE_EVENT,null,null)
+                postEventError(RequestEventAccount.ERROR_VERIFICATE_CONECTION,null)
+                //usuario.Estado_SincronizacionUpdate=false
+                //usuario.update()
+                //postEventOk(RequestEventAccount.UPDATE_EVENT,null,null)
             }
         }
     }

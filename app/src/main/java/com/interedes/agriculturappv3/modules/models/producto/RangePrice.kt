@@ -1,6 +1,6 @@
 package com.interedes.agriculturappv3.modules.models.producto
 
-class RangePrice(
+data class RangePrice(
                    var Valor_Producto: Double = 0.0) {
 
     override fun toString(): String {

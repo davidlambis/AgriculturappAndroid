@@ -151,7 +151,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
 
 
         val inflater = this.layoutInflater
-        var viewDialogCalificate = inflater.inflate(R.layout.dialog_calificacion_tratamiento, null)
+        val viewDialogCalificate = inflater.inflate(R.layout.dialog_calificacion_tratamiento, null)
 
         viewDialogCalificate.ratingBarCalificate.setOnRatingBarChangeListener(RatingBar.OnRatingBarChangeListener(
                 { ratingBarThis, float, boolean ->
@@ -164,7 +164,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
 
 
 
-        var dialog =MaterialDialog.Builder(context!!)
+        val dialog =MaterialDialog.Builder(context!!)
                 .iconRes(R.drawable.ic_calification)
                 .customView(viewDialogCalificate!!, true)
                 .dividerColorRes(R.color.colorPrimary)
@@ -361,7 +361,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
 
     override fun setDisabledCalificacion(calificacionTra: Calificacion_Tratamiento?) {
 
-        var calificacionTratamiento:Float?= calificacionTra?.Valor_Promedio?.toFloat()
+        val calificacionTratamiento:Float?= calificacionTra?.Valor_Promedio?.toFloat()
         ratingBar.rating=calificacionTratamiento!!
 
         txtRatingTratamiento.setText(String.format(getString(R.string.calificacion_tratamiento),calificacionTra?.Valor_Promedio))
@@ -376,7 +376,7 @@ class TratamientoFragment : Fragment(), ITratamiento.View, View.OnClickListener 
 
     override fun setEnabledCalificacion(calificacionTra: Calificacion_Tratamiento?) {
 
-        var calificacionTratamiento:Float?= calificacionTra?.Valor_Promedio?.toFloat()
+        val calificacionTratamiento:Float?= calificacionTra?.Valor_Promedio?.toFloat()
 
         txtRatingTratamiento.setText(String.format(getString(R.string.calificacion_tratamiento),calificacionTra?.Valor_Promedio))
         txtStatusCalificacion.setText(getString(R.string.tittle_not_calificate_tratamiento))

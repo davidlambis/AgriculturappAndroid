@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <!--
     <RatingBar
@@ -26,7 +25,7 @@
         android:secondaryProgressTint="@color/colorPrimary"
         android:stepSize=".5" />-->
 
-    <RatingBar
+    <!--<RatingBar
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,8 +39,20 @@
         android:progressBackgroundTint="@color/colorPrimary"
         android:progressTint="@color/dark_green"
         android:secondaryProgressTint="@color/colorPrimary"
-        android:max="5"/>
+        android:max="5"/>-->
 
+    <me.zhanghai.android.materialratingbar.MaterialRatingBar
+        android:layout_marginTop="@dimen/margin_5"
+        android:id="@+id/ratingBarCalificate"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        android:layout_height="wrap_content"
+        android:isIndicator="false"
+        app:mrb_progressBackgroundTint="@color/grey_luiyi"
+        app:mrb_progressTint="@color/orange"
+        style="@style/Widget.MaterialRatingBar.RatingBar" />
 
     <TextView
         android:id="@+id/txtRatingTratamientoCalificate"

@@ -112,7 +112,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/txtIngredienteActivo"
                             android:gravity="center"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                            <!-- <android.support.v7.widget.AppCompatRatingBar
                                 android:id="@+id/ratingBar"
@@ -123,7 +123,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent" />-->
 
-                            <android.support.v7.widget.AppCompatRatingBar
+                           <!-- <android.support.v7.widget.AppCompatRatingBar
                                 android:id="@+id/ratingBar"
                                 android:numStars="5"
                                 android:stepSize=".1"
@@ -132,7 +132,33 @@
                                 android:progressBackgroundTint="@color/colorPrimary"
                                 android:progressTint="@color/dark_green"
                                 android:secondaryProgressTint="@color/colorPrimary"
-                                android:layout_height="match_parent" />
+                                android:layout_height="match_parent" />-->
+
+                            <!--<RatingBar
+                                android:layout_gravity="center"
+                                android:layout_width="200dp"
+                                android:layout_height="wrap_content"
+                                style="?android:attr/ratingBarStyle"
+                                android:scaleX=".6"
+                                android:stepSize=".1"
+                                android:scaleY=".6"
+                                android:transformPivotX="10dp"
+                                android:transformPivotY="0dp"
+                                android:id="@+id/ratingBar"
+                                android:progressBackgroundTint="@color/colorPrimary"
+                                android:progressTint="@color/dark_green"
+                                android:secondaryProgressTint="@color/colorPrimary"
+                                android:max="5"/>-->
+
+                            <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                                android:id="@+id/ratingBar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:stepSize="0.01"
+                                android:rating="4"
+                                app:mrb_progressBackgroundTint="@color/grey_luiyi"
+                                app:mrb_progressTint="@color/orange"
+                                style="@style/Widget.MaterialRatingBar.RatingBar.Indicator" />
 
                         </LinearLayout>
 

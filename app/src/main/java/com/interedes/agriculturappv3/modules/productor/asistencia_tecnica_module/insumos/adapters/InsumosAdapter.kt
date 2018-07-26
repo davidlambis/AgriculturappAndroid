@@ -23,6 +23,7 @@ import com.interedes.agriculturappv3.R.id.imageView
 import android.graphics.Bitmap
 import android.os.Handler
 import com.squareup.picasso.Picasso
+import me.zhanghai.android.materialratingbar.MaterialRatingBar
 import java.io.File
 
 
@@ -78,13 +79,13 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
            /// val expandable: Expandable = itemView.findViewById(R.id.expandable)
             //val txt_descripcion_insumo: TextView = itemView.findViewById(R.id.txtIngredienteActivo)
             val btn_ver_tratamiento: Button = itemView.findViewById(R.id.btnVerTratamiento)
-            val rating_bar: RatingBar = itemView.findViewById(R.id.ratingBar)
+            val rating_bar: MaterialRatingBar = itemView.findViewById(R.id.ratingBar)
             val txtrating_bar: TextView = itemView.findViewById(R.id.txtRating)
 
 
 
             txt_nombre_insumo.text = data.Nombre_Insumo
-            var firtsInsumo= SQLite.select().from(Insumo::class.java).where(Insumo_Table.Id.eq(data.InsumoId)).querySingle()
+            val firtsInsumo= SQLite.select().from(Insumo::class.java).where(Insumo_Table.Id.eq(data.InsumoId)).querySingle()
             if(firtsInsumo!=null){
 
 
@@ -133,7 +134,7 @@ class InsumosAdapter(val lista: ArrayList<Tratamiento>) : RecyclerView.Adapter<I
             text_descripcion_insumo.maxLines=2
             text_descripcion_insumo.ellipsize= TextUtils.TruncateAt.END
 
-            var calificacionTratamiento:Float?= data?.CalificacionPromedio?.toFloat()
+            val calificacionTratamiento:Float?= data.CalificacionPromedio?.toFloat()
             rating_bar.rating = calificacionTratamiento!!
             rating_bar.setIsIndicator(true)
             rating_bar.isClickable = false

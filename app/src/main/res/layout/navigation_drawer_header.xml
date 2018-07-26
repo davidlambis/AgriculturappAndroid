@@ -192,7 +192,8 @@
 
         </LinearLayout>
 
-        <LinearLayout
+
+        <!--<LinearLayout
             android:id="@+id/itemComprasRealizadas"
             android:padding="@dimen/margin_5"
             android:foreground="?android:attr/selectableItemBackground"
@@ -214,8 +215,7 @@
                 android:text="Compras Realizadas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
-        </LinearLayout>
+        </LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/itemSyncronizarDatos"

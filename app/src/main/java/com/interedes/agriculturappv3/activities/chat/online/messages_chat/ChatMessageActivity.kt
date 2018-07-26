@@ -28,6 +28,7 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.thunder413.datetimeutils.DateTimeUtils
 import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
@@ -133,7 +134,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
     }
 
     private fun iniAdapter() {
-        adapter = MessagesAdapter(ArrayList<ChatMessage>())
+        adapter = MessagesAdapter(GlideApp.with(this),ArrayList<ChatMessage>())
         messagesRecyclerView?.setAdapter(adapter)
     }
 
@@ -178,11 +179,15 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
                 fotoUserSelected=foto
                 //userFirebaeSelected?.Imagen=foto
 
-                GlideApp.with(this)
-                        .load(foto)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .productorPhoto()
-                        .into(imgUserTo);
+
+                    GlideApp.with(this)
+                            .load(foto)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .productorPhoto()
+                            .into(imgUserTo);
+
+
+
 
                 Rx_Bus.publish(userFirebaeSelected!!)
 

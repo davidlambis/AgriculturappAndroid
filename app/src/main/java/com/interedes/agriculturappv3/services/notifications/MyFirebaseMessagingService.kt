@@ -218,12 +218,18 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             if (fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_MESSAGE_ONLINE)) {
                 builder.setStyle( NotificationCompat.BigTextStyle()
-                        .bigText(fcmNotificationLocalBuilder.message))
+                        .bigText(fcmNotificationLocalBuilder?.message))
             }else if(fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA) ||
                     fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_CONFIRM_OFERTA) ||
                             fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_REFUSED_OFERTA)){
-                builder.setStyle(NotificationCompat.BigPictureStyle()
-                        .bigPicture(bitmap).setSummaryText(fcmNotificationLocalBuilder.message))
+                if(bitmap!=null){
+                    builder.setStyle(NotificationCompat.BigPictureStyle()
+                            .bigPicture(bitmap).setSummaryText(fcmNotificationLocalBuilder.message))
+                }else{
+                    builder.setStyle( NotificationCompat.BigTextStyle()
+                            .bigText(fcmNotificationLocalBuilder.message))
+                }
+
             }
 
             //builder.setDefaults(NotificationLocal.DEFAULT_VIBRATE)
@@ -278,11 +284,16 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 notificationBuilder.setStyle( NotificationCompat.BigTextStyle()
                         .bigText(fcmNotificationLocalBuilder.message))
             }else if(fcmNotificationLocalBuilder.type_notification.equals(NotificationTypeResources.NOTIFICATION_TYPE_OFERTA)){
-                notificationBuilder.setStyle(NotificationCompat.BigPictureStyle()
-                        .bigPicture(bitmap).setSummaryText(fcmNotificationLocalBuilder.message))
-            }
 
-             val notification:Notification = notificationBuilder.build();
+                if(bitmap!=null){
+                    notificationBuilder.setStyle(NotificationCompat.BigPictureStyle()
+                            .bigPicture(bitmap).setSummaryText(fcmNotificationLocalBuilder.message))
+                }else{
+                    notificationBuilder.setStyle( NotificationCompat.BigTextStyle()
+                            .bigText(fcmNotificationLocalBuilder.message))
+                }
+            }
+            val notification:Notification = notificationBuilder.build();
             //val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager!!.notify(notificationId,notification)
 

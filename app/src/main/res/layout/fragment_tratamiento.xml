@@ -319,7 +319,7 @@
                                     android:secondaryProgressTint="@color/colorPrimary"
                                     />-->
 
-                                <RatingBar
+                               <!-- <RatingBar
                                     android:layout_marginTop="@dimen/margin_5"
                                     android:scaleX="1.2"
                                     android:scaleY="1.2"
@@ -334,7 +334,21 @@
                                     android:progressBackgroundTint="@color/colorPrimary"
                                     android:progressTint="@color/dark_green"
                                     android:secondaryProgressTint="@color/colorPrimary"
-                                    android:stepSize=".1" />
+                                    android:stepSize=".1" />-->
+
+                                <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                                    android:layout_marginTop="@dimen/margin_5"
+                                    android:id="@+id/ratingBar"
+                                    android:layout_below="@+id/contentTratamiento"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:scaleX="1.2"
+                                    android:scaleY="1.2"
+                                    android:isIndicator="true"
+                                    android:layout_centerHorizontal="true"
+                                    app:mrb_progressBackgroundTint="@color/grey_luiyi"
+                                    app:mrb_progressTint="@color/orange"
+                                    style="@style/Widget.MaterialRatingBar.RatingBar" />
 
                                 <TextView
                                     android:id="@+id/txtRatingTratamiento"

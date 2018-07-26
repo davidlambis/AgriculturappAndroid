@@ -37,6 +37,7 @@
                     android:visibility="gone"
                     android:id="@+id/contentIconUser"
                     android:layout_width="80dp"
+                    android:src="@drawable/default_avata"
                     android:layout_height="wrap_content"
                    />
 

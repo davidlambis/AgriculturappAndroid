@@ -23,13 +23,21 @@ import kotlinx.android.synthetic.main.activity_chat_message.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import com.bumptech.glide.RequestManager
+import android.R.attr.fragment
+import com.bumptech.glide.Glide
 
 
-class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
+
+
+
+
+class MessagesAdapter(val glideAc:RequestManager ,var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
+
 
 
     companion object {
-
+        var glide: RequestManager? = null
         val ITEM_TYPE_SENT = 0
         val ITEM_TYPE_RECEIVED = 1
         var eventBus: EventBus? = null
@@ -42,7 +50,7 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
     }
 
     init {
-
+        glide = glideAc;
         eventBus = GreenRobotEventBus()
     }
 
@@ -127,13 +135,22 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
                 val imageUser: CircleImageView = itemView.findViewById(R.id.imageView2)
 
                 if(!(context as ChatMessageActivity).fotoUserSelected.isEmpty()){
-                    Picasso.get()
+                    /*Picasso.get()
                             .load((context as ChatMessageActivity).fotoUserSelected)
                             .fit()
                             .centerCrop()
                             .placeholder(R.drawable.default_avata)
                             .error(R.drawable.default_avata)
-                            .into(imageUser)
+                            .into(imageUser)*/
+
+
+
+                    glide?.load((context as ChatMessageActivity).fotoUserSelected)?.into(imageUser)
+                    /*GlideApp.with(imageUser.context)
+                            .load((context as ChatMessageActivity).fotoUserSelected)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .productorPhoto()
+                            .into(imageUser);*/
                 }else{
                     imageUser.setImageResource(R.drawable.default_avata)
                 }
@@ -142,13 +159,26 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
                 //Events change image
                 Rx_Bus.listen(UserFirebase::class.java).subscribe({
                     if(!(context as ChatMessageActivity).fotoUserSelected.isEmpty()){
-                        Picasso.get()
+
+                        /*Picasso.get()
                                 .load((context as ChatMessageActivity).fotoUserSelected)
                                 .fit()
                                 .centerCrop()
                                 .placeholder(R.drawable.default_avata)
                                 .error(R.drawable.default_avata)
-                                .into(imageUser)
+                                .into(imageUser)*/
+                        glide?.load((context as ChatMessageActivity).fotoUserSelected)?.into(imageUser)
+
+                       // val requestManager = Glide.with(context!!)
+                      //  requestManager.load((context as ChatMessageActivity).fotoUserSelected)?.into(imageUser)
+
+                        /*GlideApp.with(imageUser.context)
+                                .load((context as ChatMessageActivity).fotoUserSelected)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .productorPhoto()
+                                .into(imageUser);*/
+                                //.diskCacheStrategy(DiskCacheStrategy.ALL)
+                               // .productorPhoto().into(imageUser);
                     }else{
                         imageUser.setImageResource(R.drawable.default_avata)
                     }
@@ -161,4 +191,6 @@ class MessagesAdapter(var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.
             }
         }
     }
+
+
 }

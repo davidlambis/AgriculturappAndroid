@@ -81,6 +81,7 @@ class Conversacion_Presenter (var mainView: IMainViewConversacion.MainView?): IM
             }
 
             RequestEventChatOnline.LIST_ROOM_EVENT_EMPTY -> {
+                mainView?.hideProgressHud()
                 mainView?.setResults(0)
             }
         }
