@@ -115,7 +115,7 @@
                                 android:layout_marginBottom="@dimen/margin_5"
                                 android:background="@color/grey_luiyi" />
 
-                            <android.support.v7.widget.AppCompatRatingBar
+                            <!--<android.support.v7.widget.AppCompatRatingBar
                                 android:id="@+id/ratingBar"
                                 android:numStars="5"
                                 android:stepSize=".1"
@@ -124,7 +124,19 @@
                                 android:progressBackgroundTint="@color/colorPrimary"
                                 android:progressTint="@color/dark_green"
                                 android:secondaryProgressTint="@color/colorPrimary"
-                                android:layout_height="match_parent" />
+                                android:layout_height="match_parent" />-->
+
+                            <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                                android:layout_marginTop="@dimen/margin_5"
+                                android:id="@+id/ratingBar"
+                                android:layout_below="@+id/contentTratamiento"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:isIndicator="true"
+                                android:layout_centerHorizontal="true"
+                                app:mrb_progressBackgroundTint="@color/grey_luiyi"
+                                app:mrb_progressTint="@color/orange"
+                                style="@style/Widget.MaterialRatingBar.RatingBar" />
 
                             <LinearLayout
                                 android:gravity="center|left"

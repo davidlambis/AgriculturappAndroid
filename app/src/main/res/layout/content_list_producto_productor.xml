@@ -46,16 +46,17 @@ app:cardUseCompatPadding="true"
                 android:textSize="@dimen/text_size_10"
                 android:text=""/>
 
-            <android.support.v7.widget.AppCompatRatingBar
+            <me.zhanghai.android.materialratingbar.MaterialRatingBar
                 android:id="@+id/ratingBar"
-                android:numStars="5"
-                android:stepSize=".1"
-                style="@style/RatingBar"
                 android:layout_width="wrap_content"
-                android:progressBackgroundTint="@color/colorPrimary"
-                android:progressTint="@color/dark_green"
-                android:secondaryProgressTint="@color/colorPrimary"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:stepSize=".1"
+                android:numStars="5"
+                android:scaleX=".9"
+                android:scaleY=".9"
+                app:mrb_progressBackgroundTint="@color/grey_luiyi"
+                app:mrb_progressTint="@color/orange"
+                style="@style/Widget.MaterialRatingBar.RatingBar.Indicator" />
 
         </LinearLayout>
         <LinearLayout
