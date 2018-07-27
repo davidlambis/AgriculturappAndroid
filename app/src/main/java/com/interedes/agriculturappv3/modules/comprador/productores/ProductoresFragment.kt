@@ -45,9 +45,13 @@ import java.math.MathContext
 
 
 import com.interedes.agriculturappv3.libs.widgets.MyRangeSeekbar
+import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleTipoProducto
+import com.interedes.agriculturappv3.modules.models.detalletipoproducto.DetalleTipoProducto_Table
 import com.interedes.agriculturappv3.modules.models.producto.RangePrice
 import com.interedes.agriculturappv3.services.listas.Listas
 import com.miguelcatalan.materialsearchview.MaterialSearchView
+import com.miguelcatalan.materialsearchview.SearchAdapter
+import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.dialog_filter_products.*
 import java.lang.reflect.Array
 
@@ -78,7 +82,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     var selectedCity:Ciudad?=null
 
 
-    //var arraySearch = arrayOf<String>("")
+    var arraySearch = arrayOf<String>("")
     //var arraySearch = arrayOf("Hola","Hola 2")
 
 
@@ -101,7 +105,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         return inflater.inflate(R.layout.fragment_productores, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -115,40 +118,52 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         imageViewFilter.setOnClickListener(this)
        // swipeRefreshLayout.setOnRefreshListener(this)
         setupInjection()
-
         setupSearch()
-
-
-
     }
 
     private fun setupSearch() {
+        val detalleTipoProducto=SQLite.select().from(DetalleTipoProducto::class.java).where(DetalleTipoProducto_Table.TipoProductoId.eq(tipoProductoIdGlobal)).queryList()
+        for (item in detalleTipoProducto){
+               arraySearch+= arrayOf(item.Nombre!!)
+        }
+
         (activity as MenuMainActivity).menuItemSearchGlobal?.isVisible=true
-        //(activity as MenuMainActivity).search_view.setCursorDrawable(R.drawable.custom_cursor);
-        //(activity as MenuMainActivity).search_view.setSuggestions(arraySearch)
-        //(activity as MenuMainActivity).search_view.setVoiceSearch(false)
-        //(activity as MenuMainActivity).search_view.setEllipsize(true)
+        (activity as MenuMainActivity).search_view.setCursorDrawable(R.drawable.custom_cursor);
+        (activity as MenuMainActivity).search_view.setSuggestions(arraySearch)
+        (activity as MenuMainActivity).search_view.setVoiceSearch(false)
+        (activity as MenuMainActivity).search_view.setEllipsize(true)
         (activity as MenuMainActivity).search_view.setOnQueryTextListener( object:MaterialSearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                Toast.makeText(context, "SUBTMIT: ", Toast.LENGTH_SHORT).show()
                 return false
             }
             override fun onQueryTextChange(newText: String?): Boolean {
-                if(newText?.length!!>2){
+                //if(newText?.length!!>2){
                     Toast.makeText(context, "QUERY: "+newText, Toast.LENGTH_SHORT).show()
-                }
+                //}
                 return false
             }
         });
 
         (activity as MenuMainActivity).search_view.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
             override fun onSearchViewShown() {
+
+
+
+                (activity as MenuMainActivity).search_view.dismissSuggestions();
+                //(activity as MenuMainActivity).search_view.setQuery("", false);
+                //(activity as MenuMainActivity).search_view.closeSearch();
                 //Do some magic
+                Toast.makeText(context, "CLICK: ", Toast.LENGTH_SHORT).show()
             }
             override fun onSearchViewClosed() {
                 //Do some magic
                 Toast.makeText(context, "CLOSED", Toast.LENGTH_SHORT).show()
             }
         })
+
+
+
     }
 
     private fun setupInjection() {
@@ -786,7 +801,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             R.id.imageViewFilter->{
                 showAlertDialogFilterProducts()
             }
-
         }
     }
 

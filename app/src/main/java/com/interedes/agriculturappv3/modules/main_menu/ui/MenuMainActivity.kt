@@ -889,6 +889,8 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         search_view.setMenuItem(menuItemSearchGlobal)
         menuItemSearchGlobal?.isVisible=false
 
+
+
         val menuItemNotification = menu?.findItem(R.id.action_cartNotification)
         menuItemNotificationsGlobal = menu?.findItem(R.id.action_cartNotification)?.getActionView()
         menuItemNotificationsGlobal?.setOnClickListener(object : View.OnClickListener {
