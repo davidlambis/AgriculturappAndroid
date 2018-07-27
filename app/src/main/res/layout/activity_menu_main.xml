@@ -32,6 +32,8 @@
 
 
 
+
+
         </android.support.design.widget.AppBarLayout>
 
 
@@ -112,12 +114,7 @@
 
         </LinearLayout>
 
-        <com.claudiodegio.msv.MaterialSearchView
-            android:id="@+id/mSearchView"
-            android:elevation="5dip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </com.claudiodegio.msv.MaterialSearchView>
+
     </android.support.design.widget.CoordinatorLayout>
 
     <!--
@@ -143,6 +140,11 @@
 
 
     -->
+
+    <com.miguelcatalan.materialsearchview.MaterialSearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigationView"

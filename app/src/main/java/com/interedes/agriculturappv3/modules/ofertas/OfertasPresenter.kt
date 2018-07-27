@@ -86,6 +86,7 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
         when (event?.eventType) {
 
             OfertasEvent.ERROR_EVENT -> {
+                view?.hideProgressHud()
                 onMessageError(event.mensajeError)
             }
 
@@ -118,7 +119,6 @@ class OfertasPresenter(var view: IOfertas.View?) : IOfertas.Presenter {
                 val producto = event.objectMutable as Producto
                 view?.setProducto(producto)
             }
-
 
             OfertasEvent.REQUEST_CONFIRM_ITEM_EVENT -> {
                 val oferta = event.objectMutable as Oferta

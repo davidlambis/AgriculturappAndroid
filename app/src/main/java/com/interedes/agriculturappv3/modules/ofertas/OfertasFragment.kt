@@ -99,12 +99,14 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         (activity as MenuMainActivity).toolbar.title = getString(R.string.title_ofertas)
-        ivBackButton.setOnClickListener(this)
-        ivBackButton2.setOnClickListener(this)
+
         swipeRefreshLayout.setOnRefreshListener(this)
         searchFilter.setOnClickListener(this)
         setupInitDesign()
         setupInjection()
+
+        ivBackButton.setOnClickListener(this)
+        ivBackButton2.setOnClickListener(this)
     }
 
     private fun setupInitDesign() {
@@ -143,7 +145,6 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
     private fun setupInjection() {
         showProgress()
         presenter?.getListOfertas(Producto_Id)
-
         if(presenter?.getUserLogued()?.RolNombre.equals(RolResources.COMPRADOR)){
             contentFilterProductor.visibility=View.GONE
             contentFilterComprador.visibility=View.VISIBLE
@@ -163,9 +164,8 @@ class OfertasFragment : Fragment(), IOfertas.View, SwipeRefreshLayout.OnRefreshL
                 ivBackButton?.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).onBackPressed()
             }
-
             R.id.ivBackButton2 -> {
-                ivBackButton?.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
+                ivBackButton2?.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).onBackPressed()
             }
             R.id.ivCloseButtonDialogFilter -> {

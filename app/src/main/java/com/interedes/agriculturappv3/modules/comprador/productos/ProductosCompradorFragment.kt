@@ -40,9 +40,6 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
     //Progress
     private var hud: KProgressHUD?=null
 
-    companion object {
-
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter =  ProductoCompradorPresenter(this)
@@ -64,10 +61,14 @@ class ProductosCompradorFragment : Fragment(),IMainViewProductoComprador.MainVie
 
         setupInit()
         setupInjection()
-
+        //(activity as MenuMainActivity).mSearchView.setMenuItem( (activity as MenuMainActivity).menuItemSearchGlobal)
+        //(activity as MenuMainActivity).menuItemSearchGlobal?.isVisible=true
+        //(activity as MenuMainActivity).mSearchView.setOnSearchViewListener(this)
     }
 
+
     private fun setupInit() {
+        (activity as MenuMainActivity).menuItemSearchGlobal?.isVisible=false
         (activity as MenuMainActivity).toolbar.title = getString(R.string.title_menu)
         val sdk = android.os.Build.VERSION.SDK_INT;
         if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {

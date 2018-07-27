@@ -47,7 +47,9 @@ import java.math.MathContext
 import com.interedes.agriculturappv3.libs.widgets.MyRangeSeekbar
 import com.interedes.agriculturappv3.modules.models.producto.RangePrice
 import com.interedes.agriculturappv3.services.listas.Listas
+import com.miguelcatalan.materialsearchview.MaterialSearchView
 import kotlinx.android.synthetic.main.dialog_filter_products.*
+import java.lang.reflect.Array
 
 
 class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.MainView, SwipeRefreshLayout.OnRefreshListener {
@@ -76,7 +78,8 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     var selectedCity:Ciudad?=null
 
 
-
+    //var arraySearch = arrayOf<String>("")
+    //var arraySearch = arrayOf("Hola","Hola 2")
 
 
     var priceFilterMin=0f
@@ -89,6 +92,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         super.onCreate(savedInstanceState)
         presenter =  ProductorPresenter(this)
         presenter?.onCreate()
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -111,6 +115,40 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         imageViewFilter.setOnClickListener(this)
        // swipeRefreshLayout.setOnRefreshListener(this)
         setupInjection()
+
+        setupSearch()
+
+
+
+    }
+
+    private fun setupSearch() {
+        (activity as MenuMainActivity).menuItemSearchGlobal?.isVisible=true
+        //(activity as MenuMainActivity).search_view.setCursorDrawable(R.drawable.custom_cursor);
+        //(activity as MenuMainActivity).search_view.setSuggestions(arraySearch)
+        //(activity as MenuMainActivity).search_view.setVoiceSearch(false)
+        //(activity as MenuMainActivity).search_view.setEllipsize(true)
+        (activity as MenuMainActivity).search_view.setOnQueryTextListener( object:MaterialSearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if(newText?.length!!>2){
+                    Toast.makeText(context, "QUERY: "+newText, Toast.LENGTH_SHORT).show()
+                }
+                return false
+            }
+        });
+
+        (activity as MenuMainActivity).search_view.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
+            override fun onSearchViewShown() {
+                //Do some magic
+            }
+            override fun onSearchViewClosed() {
+                //Do some magic
+                Toast.makeText(context, "CLOSED", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun setupInjection() {
@@ -147,10 +185,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             }
         }
     }
-
-
-
-
 
     //region ADAPTER
     private fun initAdapter() {
@@ -272,6 +306,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     }
 
     override fun setListProductoFirts(listProducto: List<Producto>) {
+        //arraySearch= arrayOf("")
         productosList?.clear()
         productosList?.addAll(listProducto)
         adapter?.notifyDataChanged()
@@ -285,10 +320,17 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         }else{
             pastVisiblesItems=0
         }
+
+        /*for (item in listProducto){
+            val verificate= arraySearch.filter {s -> s == item.Nombre }
+            if(verificate.isEmpty()){
+                arraySearch+= arrayOf(item.Nombre!!)
+            }
+        }*/
+        //(activity as MenuMainActivity).search_view.setSuggestions(arraySearch)
     }
 
     override fun setListProducto(listProducto: List<Producto>) {
-
             productosList?.removeAt(productosList?.size!! - 1)
             if (listProducto.size > 0) {
                 //add loaded data
@@ -301,9 +343,11 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             adapter?.notifyDataChanged()
             pastVisiblesItems=listProducto.size
             setResults(productosList?.size!!)
-
+        /*for (item in listProducto){
+            arraySearch+= arrayOf(item.Nombre!!)
+        }*/
         //productosList=listProducto
-       // setResults(listProducto.size)
+        //setResults(listProducto.size)
     }
 
     override fun setResults(listProduccion: Int) {
@@ -523,7 +567,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             ///Adapaters
         viewD.spinnerRangePrice.setAdapter(null)
             val uMedidaArrayAdapter = ArrayAdapter<RangePrice>(activity, android.R.layout.simple_list_item_activated_1, listRangePrice);
-        viewD.spinnerRangePrice.setAdapter(uMedidaArrayAdapter);
+        viewD.spinnerRangePrice?.setAdapter(uMedidaArrayAdapter);
         viewD.spinnerRangePrice.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
 
                 itemPriceRangeFilter= listRangePrice[position] as RangePrice
@@ -734,6 +778,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.ivBackButton -> {
+                (activity as MenuMainActivity).menuItemSearchGlobal?.isVisible=false
                 ivBackButton.setColorFilter(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
                 (activity as MenuMainActivity).onBackPressed()
             }
@@ -741,9 +786,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
             R.id.imageViewFilter->{
                 showAlertDialogFilterProducts()
             }
-
-
-
 
         }
     }
@@ -754,6 +796,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         val detalleproductosFragment: DetalleProductoFragment
         detalleproductosFragment = DetalleProductoFragment()
         detalleproductosFragment.arguments = bundle
+        (activity as MenuMainActivity).menuItemSearchGlobal?.isVisible=false
         (activity as MenuMainActivity).replaceFragment(detalleproductosFragment)
     }
 

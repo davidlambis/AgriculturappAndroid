@@ -141,7 +141,7 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
 
     private fun onMessageError(error: String?) {
         mainView?.hideProgress()
-        mainView?.hideProgress()
+        mainView?.hideProgressHud()
         mainView?.requestResponseError(error)
     }
 

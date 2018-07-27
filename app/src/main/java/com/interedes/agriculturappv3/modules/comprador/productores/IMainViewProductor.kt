@@ -68,17 +68,13 @@ interface IMainViewProductor {
 
     interface Interactor {
         fun getTipoProducto(tipoProducto:Long):TipoProducto?
-
         fun execute(filter: RequestFilter)
-
         fun getListDepartmentCities()
     }
 
     interface Repository {
         fun getTipoProducto(tipoProducto:Long):TipoProducto?
         fun getListTipoProductos(filter: RequestFilter)
-
         fun getListDepartmentCities()
     }
-
 }

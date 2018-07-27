@@ -139,7 +139,8 @@ dependencies {
     implementation 'com.github.kk121:File-Loader:1.2'
 
     ///Search
-    implementation "com.github.claudiodegio:MsvSearch:$rootProject.ext.searchView"
+    //implementation "com.github.claudiodegio:MsvSearch:$rootProject.ext.searchView"
+    implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 
     /*
     //Extenciones Kotlin (QUERYS LIST)

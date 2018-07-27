@@ -85,21 +85,21 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
 
 
             RequestEventProduccion.READ_EVENT -> {
-                var list = event.mutableList as List<Produccion>
+                val list = event.mutableList as List<Produccion>
                 mainView?.setListProduccion(list)
             }
             RequestEventProduccion.SAVE_EVENT -> {
-                var list = event.mutableList as List<Produccion>
+                val list = event.mutableList as List<Produccion>
                 mainView?.setListProduccion(list)
                 onSaveOk()
             }
             RequestEventProduccion.UPDATE_EVENT -> {
-                var list = event.mutableList as List<Produccion>
+                val list = event.mutableList as List<Produccion>
                 mainView?.setListProduccion(list)
                 onUpdateOk()
             }
             RequestEventProduccion.DELETE_EVENT -> {
-                var list = event.mutableList as List<Produccion>
+                val list = event.mutableList as List<Produccion>
                 mainView?.setListProduccion(list)
                 onDeleteOk()
             }
@@ -109,20 +109,20 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
 
            //EVENTS ONITEM CLICK
             RequestEventProduccion.ITEM_EVENT -> {
-                var proiduccion = event.objectMutable as Produccion
+                val proiduccion = event.objectMutable as Produccion
                 //loteMainView?.onMessageOk(R.color.colorPrimary,"Item: "+lote.Nombre)
             }
             RequestEventProduccion.ITEM_READ_EVENT -> {
-                var producccion = event.objectMutable as Produccion
+                val producccion = event.objectMutable as Produccion
                 //loteMainView?.onMessageOk(R.color.colorPrimary,"Leer: "+lote.Nombre)
                 ///  Toast.makeText(activity,"Leer: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
             RequestEventProduccion.ITEM_EDIT_EVENT -> {
-                var producccion = event.objectMutable as Produccion
+                val producccion = event.objectMutable as Produccion
                 mainView?.showAlertDialogAddProduccion(producccion)
             }
             RequestEventProduccion.ITEM_DELETE_EVENT -> {
-                var producccion = event.objectMutable as Produccion
+                val producccion = event.objectMutable as Produccion
                 mainView?.confirmDelete(producccion)
                 //// Toast.makeText(activity,"Eliminar: "+lote.Nombre,Toast.LENGTH_LONG).show()
             }
@@ -147,7 +147,7 @@ class ProduccionPresenter(var mainView: IMainProduccion.MainView?) : IMainProduc
 
             //Get Single
             RequestEventProduccion.GET_EVENT_CULTIVO -> {
-                var cultivo = event.objectMutable as Cultivo
+                val cultivo = event.objectMutable as Cultivo
                 mainView?.setCultivo(cultivo)
             }
 
