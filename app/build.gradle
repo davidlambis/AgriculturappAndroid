@@ -141,8 +141,8 @@ dependencies {
     ///Search
     //implementation "com.github.claudiodegio:MsvSearch:$rootProject.ext.searchView"
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
-    implementation 'br.com.mauker.materialsearchview:materialsearchview:1.2.3'
-    implementation 'com.github.arimorty:floatingsearchview:2.1.1'
+   // implementation 'br.com.mauker.materialsearchview:materialsearchview:1.2.3'
+    //implementation 'com.github.arimorty:floatingsearchview:2.1.1'
     /*
     //Extenciones Kotlin (QUERYS LIST)
     compile "com.github.vicpinm:krealmextensions:$krealmextensionsVersion"

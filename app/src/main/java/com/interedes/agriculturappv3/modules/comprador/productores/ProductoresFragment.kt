@@ -25,9 +25,11 @@ import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActi
 import android.view.ViewAnimationUtils
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context
 import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Handler
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter
@@ -130,16 +132,16 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         (activity as MenuMainActivity).menuItemSearchGlobal?.isVisible=true
         (activity as MenuMainActivity).search_view.setCursorDrawable(R.drawable.custom_cursor);
         (activity as MenuMainActivity).search_view.setSuggestions(arraySearch)
-        (activity as MenuMainActivity).search_view.setVoiceSearch(false)
-        (activity as MenuMainActivity).search_view.setEllipsize(true)
+        //(activity as MenuMainActivity).search_view.setVoiceSearch(false)
+        //(activity as MenuMainActivity).search_view.setEllipsize(true)
         (activity as MenuMainActivity).search_view.setOnQueryTextListener( object:MaterialSearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Toast.makeText(context, "SUBTMIT: ", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "SUBTMIT: ", Toast.LENGTH_SHORT).show()
                 return false
             }
             override fun onQueryTextChange(newText: String?): Boolean {
                 //if(newText?.length!!>2){
-                    Toast.makeText(context, "QUERY: "+newText, Toast.LENGTH_SHORT).show()
+                   // Toast.makeText(context, "QUERY: "+newText, Toast.LENGTH_SHORT).show()
                 //}
                 return false
             }
@@ -148,20 +150,43 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         (activity as MenuMainActivity).search_view.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
             override fun onSearchViewShown() {
 
-
-
                 (activity as MenuMainActivity).search_view.dismissSuggestions();
                 //(activity as MenuMainActivity).search_view.setQuery("", false);
                 //(activity as MenuMainActivity).search_view.closeSearch();
                 //Do some magic
-                Toast.makeText(context, "CLICK: ", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "CLICK: ", Toast.LENGTH_SHORT).show()
             }
             override fun onSearchViewClosed() {
                 //Do some magic
-                Toast.makeText(context, "CLOSED", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "CLOSED", Toast.LENGTH_SHORT).show()
             }
         })
 
+        (activity as MenuMainActivity).search_view.setOnItemClickListener(object :AdapterView.OnItemClickListener {
+            override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+
+                (activity as MenuMainActivity).search_view.dismissSuggestions();
+                (activity as MenuMainActivity).search_view.hideKeyboard(view)
+
+                (activity as MenuMainActivity).search_view.setQuery(parent?.getItemAtPosition(position).toString(), false);
+
+
+                (activity as MenuMainActivity).search_view.setSuggestions(null)
+                //(activity as MenuMainActivity).search_view.setQuery(parent?.getItemAtPosition(position).toString(),false)
+                //(activity as MenuMainActivity).search_view.setEllipsize(false)
+
+                //(activity as MenuMainActivity).search_view.closeSearch();
+
+                Toast.makeText(activity, parent?.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                //hideKeyboard()
+
+
+               // (activity as MenuMainActivity).search_view.setAdapter( SearchAdapter(activity, parent?.getItemAtPosition(position).toString()));
+
+            }
+
+        })
 
 
     }
@@ -318,6 +343,13 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         if(hud?.isShowing!!){
             hud?.dismiss()
         }
+    }
+
+    private fun hideKeyboard() {
+        val inputManager =
+                activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(activity?.getCurrentFocus()?.getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     override fun setListProductoFirts(listProducto: List<Producto>) {
