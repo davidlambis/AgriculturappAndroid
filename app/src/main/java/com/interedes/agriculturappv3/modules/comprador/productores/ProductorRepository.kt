@@ -84,14 +84,27 @@ class ProductorRepository:IMainViewProductor.Repository {
 
             var queryProductos=""
 
-            if(filter.ciudadId>0){
+            if(filter.ciudadId>0 && filter.filter.equals("")){
                 queryProductos = Listas.queryFilterProductsRangeAndCriterioCiudad("tipo_producto_id",filter.tipoProductoId,
                         "ciudad_id",filter.ciudadId,
                         "precio_producto ",filter.priceMin,
                         "precio_producto ",filter.priceMax
                 )
-            }else{
+            }else if(filter.ciudadId<=0 && filter.filter.equals("")){
                 queryProductos = Listas.queryFilterProductsRangeAndCriterioDepartamentoAll("tipo_producto_id",filter.tipoProductoId,
+                        "precio_producto ",filter.priceMin,
+                        "precio_producto ",filter.priceMax
+                )
+            }else if(filter.ciudadId>0 && !filter.filter.equals("")){
+                queryProductos = Listas.queryFilterProductsRangeAndCriterioCiudadContains("tipo_producto_id",filter.tipoProductoId,
+                        "ciudad_id",filter.ciudadId,
+                        "nombre_producto",filter.filter,
+                        "precio_producto ",filter.priceMin,
+                        "precio_producto ",filter.priceMax
+                )
+            }else{
+                queryProductos = Listas.queryFilterProductsRangeAndCriterioDepartamentoAllContains("tipo_producto_id",filter.tipoProductoId,
+                        "nombre_producto",filter.filter,
                         "precio_producto ",filter.priceMin,
                         "precio_producto ",filter.priceMax
                 )

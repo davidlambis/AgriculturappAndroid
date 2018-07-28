@@ -388,12 +388,17 @@ class Listas {
         }
 
 
-        fun queryFilterProductsRangeAndCriterioDepartamentoAllContains(criterio: String, valor: Long, criterio2:String,mayor:BigDecimal,criterio3:String, menor:BigDecimal): String {
-            val queryFilter = "$criterio eq $valor and $criterio2 gt $mayor and $criterio3 lt $menor"
-            ///http://18.233.87.16/odata/Agp2/ViewProductos?&$filter=tipo_producto_id eq 1 and precio_producto gt 0 and precio_producto lt 10000000&$top=20&$skip=0&$count=true
+        fun queryFilterProductsRangeAndCriterioDepartamentoAllContains(criterio: String, valor: Long,criterio2:String, valor2:String, criterio3:String,mayor:BigDecimal,criterio4:String, menor:BigDecimal): String {
+            val queryFilter = "$criterio eq $valor and $criterio3 gt $mayor and $criterio4 lt $menor and contains($criterio2,'$valor2')"
+            ///http://18.233.87.16/odata/Agp2/ViewProductos?&$filter=tipo_producto_id eq 4 and precio_producto gt 0 and precio_producto lt 10000000 and contains(nombre_producto,'prue')&$top=20&$skip=0&$count=true
             return queryFilter
         }
 
+        fun queryFilterProductsRangeAndCriterioCiudadContains(criterio: String, valor: Long, criterio2:String,valor2:Long,criterio3:String, valor3:String, criterio4:String,mayor:BigDecimal,criterio5:String, menor:BigDecimal): String {
+            val queryFilter = "$criterio eq $valor and $criterio2 eq $valor2 and contains($criterio3,'$valor3'), and $criterio4 gt $mayor and $criterio5 lt $menor"
+            ///http://18.233.87.16/odata/Agp2/ViewProductos?&$filter=tipo_producto_id eq 4 and precio_producto gt 0 and precio_producto lt 10000000 and contains(nombre_producto,'prue')&$top=20&$skip=0&$count=true
+            return queryFilter
+        }
 
 
 

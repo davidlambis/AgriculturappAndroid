@@ -155,8 +155,13 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, Conn
     //Login
     override fun ingresar() {
         if (presenter?.validarCampos() == true) {
-            val login = Login(edtCorreo?.text?.trim().toString(),
-                    edtContrasena?.text?.trim()?.toString())
+
+            val email=edtCorreo?.text.toString()
+            val password= edtContrasena?.text.toString()
+
+            val login = Login(email.trim(),
+                    password.trim())
+
             presenter?.ingresar(login,this)
             //progressBar.visibility = View.VISIBLE
             /*progressBar.visibility = View.VISIBLE

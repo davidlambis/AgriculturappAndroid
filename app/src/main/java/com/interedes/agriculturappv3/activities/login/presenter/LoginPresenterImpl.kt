@@ -42,8 +42,7 @@ class LoginPresenterImpl(var loginView: LoginView?) : LoginPresenter {
             }
             LoginEvent.SAVE_EVENT -> {
 
-                var usuario = event.objectMutable as Usuario
-
+                val usuario = event.objectMutable as Usuario
                 loginView?.hideProgress()
                 loginView?.navigateToMainActivity(usuario)
             }

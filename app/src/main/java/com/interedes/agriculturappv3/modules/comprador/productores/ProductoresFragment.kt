@@ -85,6 +85,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
 
     var arraySearch = arrayOf<String>("")
+    var stringSearch=""
     //var arraySearch = arrayOf("Hola","Hola 2")
 
 
@@ -118,7 +119,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         (activity as MenuMainActivity).toolbar.title=getString(R.string.tittle_productos)
         ivBackButton.setOnClickListener(this)
         imageViewFilter.setOnClickListener(this)
-       // swipeRefreshLayout.setOnRefreshListener(this)
+        swipeRefreshLayout.setOnRefreshListener(this)
         setupInjection()
         setupSearch()
     }
@@ -149,7 +150,6 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
         (activity as MenuMainActivity).search_view.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
             override fun onSearchViewShown() {
-
                 (activity as MenuMainActivity).search_view.dismissSuggestions();
                 //(activity as MenuMainActivity).search_view.setQuery("", false);
                 //(activity as MenuMainActivity).search_view.closeSearch();
@@ -157,6 +157,8 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
                 //Toast.makeText(context, "CLICK: ", Toast.LENGTH_SHORT).show()
             }
             override fun onSearchViewClosed() {
+                stringSearch=""
+                //loadFirstPageProducts()
                 //Do some magic
                 //Toast.makeText(context, "CLOSED", Toast.LENGTH_SHORT).show()
             }
@@ -165,36 +167,28 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         (activity as MenuMainActivity).search_view.setOnItemClickListener(object :AdapterView.OnItemClickListener {
             override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
-
                 (activity as MenuMainActivity).search_view.dismissSuggestions();
                 (activity as MenuMainActivity).search_view.hideKeyboard(view)
-
-                (activity as MenuMainActivity).search_view.setQuery(parent?.getItemAtPosition(position).toString(), false);
-
+                (activity as MenuMainActivity).search_view.setQuery("", false);
 
                 (activity as MenuMainActivity).search_view.setSuggestions(null)
                 //(activity as MenuMainActivity).search_view.setQuery(parent?.getItemAtPosition(position).toString(),false)
                 //(activity as MenuMainActivity).search_view.setEllipsize(false)
-
                 //(activity as MenuMainActivity).search_view.closeSearch();
+               // Toast.makeText(activity, parent?.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                stringSearch=parent?.getItemAtPosition(position).toString()
+                (activity as MenuMainActivity).search_view.setHint(stringSearch)
+                loadFirstPageProducts()
 
-                Toast.makeText(activity, parent?.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+
                 //hideKeyboard()
-
-
                // (activity as MenuMainActivity).search_view.setAdapter( SearchAdapter(activity, parent?.getItemAtPosition(position).toString()));
-
             }
-
         })
-
-
     }
 
     private fun setupInjection() {
         if(!loadedFragment){
-
-
             loadFirstPageProducts()
             loadedFragment=true
         }else{
@@ -279,7 +273,8 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
                 priceMaxBig,
                 false,
                 PAGE_SIZE,
-                index
+                index,
+                stringSearch
         )
 
         presenter?.getListProducto(filter)
@@ -287,6 +282,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
     fun loadFirstPageProducts() {
         showProgressHud()
+
         var ciudadId=0L
         if(selectedIndexCiudades>=0){
             ciudadId=selectedCity?.Id!!
@@ -306,7 +302,8 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
                 priceMaxBig,
           true,
                 PAGE_SIZE,
-           0
+           0,
+                stringSearch
         )
 
        presenter?.getListProducto(filter)
@@ -843,6 +840,7 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
         detalleproductosFragment = DetalleProductoFragment()
         detalleproductosFragment.arguments = bundle
         (activity as MenuMainActivity).menuItemSearchGlobal?.isVisible=false
+        (activity as MenuMainActivity).search_view.closeSearch();
         (activity as MenuMainActivity).replaceFragment(detalleproductosFragment)
     }
 
@@ -851,7 +849,8 @@ class ProductoresFragment : Fragment(),View.OnClickListener,IMainViewProductor.M
 
     //region OVERRIDES METHODS
     override fun onRefresh() {
-        hideProgress()
+        //hideProgress()
+        loadFirstPageProducts()
        // showProgress()
         //adapter?.clear()
         //productosList?.clear()

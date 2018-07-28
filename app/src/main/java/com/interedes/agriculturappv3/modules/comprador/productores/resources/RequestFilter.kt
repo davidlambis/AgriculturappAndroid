@@ -9,7 +9,8 @@ data class RequestFilter(var checkConection:Boolean,
                          var priceMax:BigDecimal,
                          var isFirst:Boolean,
                          var top:Int,
-                         var skip:Int
+                         var skip:Int,
+                         var filter:String
 
                          ) {
 }

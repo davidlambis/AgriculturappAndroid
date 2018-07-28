@@ -195,6 +195,7 @@ class MenuPresenterImpl(var mainView: MainViewMenu.MainView?): ConnectivityRecei
     }
 
     private fun onMessageError(error: String?) {
+        mainView?.hideProgressHud()
         mainView?.hideProgressBar()
         mainView?.requestResponseError(error)
     }

@@ -72,25 +72,33 @@
             android:layout_marginTop="1dp"
             android:background="@color/purple" />
 
-        <RelativeLayout
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
            >
-            <TextView
-                android:id="@+id/txtResults"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="textEnd"
-                android:text="@string/results_global_search"
-                android:textColor="@color/black" />
+                android:layout_height="match_parent"
+                >
+                <TextView
+                    android:id="@+id/txtResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="textEnd"
+                    android:text="@string/results_global_search"
+                    android:textColor="@color/black" />
 
-            <android.support.v7.widget.RecyclerView
-                android:layout_below="@+id/txtResults"
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
-        </RelativeLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:layout_below="@+id/txtResults"
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </android.support.v7.widget.RecyclerView>
+            </RelativeLayout>
+
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
 
     </LinearLayout>

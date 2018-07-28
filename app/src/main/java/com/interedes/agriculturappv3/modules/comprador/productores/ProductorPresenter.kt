@@ -83,7 +83,8 @@ class ProductorPresenter(var mainView: IMainViewProductor.MainView?):IMainViewPr
                 listTipoProducto=list
                 mainView?.setListProducto(list)
                 mainView?.hideProgress()
-               // mainView?.hideProgressHud()
+
+                mainView?.hideProgressHud()
 
             }
 
