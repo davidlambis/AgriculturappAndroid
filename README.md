@@ -21,8 +21,9 @@ Este aplicativo podra ser descargado en la siguiente direccion:https://rink.hock
 -Aplicacion soportada desde versiones 4.2.2 api 17 de android y superior
 
 ### Permisos de tiempo de ejecución
--Esta aplicacion requiere permisos específicos de tiempo de ejecución.
--Tenga en cuenta que para los dispositivos con API 23 (marshmallow) version 6 de android o superior se solicitan permisos en el tiempo de ejecución antes de iniciar el aplicativo. Se demuestra en la aplicación de muestra.
+Esta aplicacion requiere permisos específicos de tiempo de ejecución
+
+Tenga en cuenta que para los dispositivos con API 23 (marshmallow) version 6 de android o superior se solicitan permisos en el tiempo de ejecución antes de iniciar el aplicativo. Se demuestra en la aplicación de muestra.
 
 ### Caracteristicas  
 **1. Iniciar Sesion , Cerrar Sesion, Registrarse.**  
