@@ -4,12 +4,10 @@
 AgriculurApp una aplicacion integral que mejora la eficiencia de las unidades productivas agrícolas en lugares muy apartados 
 que no cuentan con asistencia técnica especializada y sufren de altos niveles de intermediación comercial en el sur de Tolima”, permite realizar 
 interaccion entre usuarios atravez de un chat que funciona en tiempo Real
-
-<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="200"/> [HaloMe Messenger app on Play Store][1].
-
+<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="200"/> 
 Prximamente la aplicaacion estara disponible en play store, 
 
-<img src="https://s3.amazonaws.com/agriculturapp/logo_agr_app.png" width="200"/>
+<img src="https://s3.amazonaws.com/agriculturapp/screenshots/ic_launcher.png" width="200"/>
 
 ### AgriculturApp
 <img src='https://s3.amazonaws.com/agriculturapp/screenshots/Screenshot_20180730-170552.jpg' width='300'/> 
