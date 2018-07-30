@@ -12,7 +12,17 @@ Prximamente la aplicaacion estara disponible en play store
 <img src="https://s3.amazonaws.com/agriculturapp/screenshots/ic_launcher.png" width="100"/>
 
 ### AgriculturApp
+Este aplicativo podra ser descargado en la siguiente direccion:https://rink.hockeyapp.net/apps/77f882ca6bfe40918b0e0f88f471beed
+
+
 <img src='https://s3.amazonaws.com/agriculturapp/screenshots/Screenshot_20180730-170552.jpg' width='300'/> 
+
+###  Requisitos
+-Aplicacion soportada desde versiones 4.2.2 api 17 de android y superior
+
+### Permisos de tiempo de ejecución
+-Esta aplicacion requiere permisos específicos de tiempo de ejecución.
+-Tenga en cuenta que para los dispositivos con API 23 (marshmallow) version 6 de android o superior se solicitan permisos en el tiempo de ejecución antes de iniciar el aplicativo. Se demuestra en la aplicación de muestra.
 
 ### Caracteristicas  
 **1. Iniciar Sesion , Cerrar Sesion, Registrarse.**  
