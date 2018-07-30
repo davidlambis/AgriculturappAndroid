@@ -4,9 +4,11 @@
 AgriculurApp una aplicacion integral que mejora la eficiencia de las unidades productivas agrícolas en lugares muy apartados 
 que no cuentan con asistencia técnica especializada y sufren de altos niveles de intermediación comercial en el sur de Tolima”, permite realizar interaccion entre usuarios atravez de un chat que funciona en tiempo Real
 
+
+
+Prximamente la aplicaacion estara disponible en play store
 <img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" width="200"/> 
 
-Prximamente la aplicaacion estara disponible en play store, 
 <img src="https://s3.amazonaws.com/agriculturapp/screenshots/ic_launcher.png" width="100"/>
 
 ### AgriculturApp
