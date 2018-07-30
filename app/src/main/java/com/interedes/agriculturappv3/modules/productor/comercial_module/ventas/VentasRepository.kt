@@ -11,7 +11,7 @@ import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 import com.interedes.agriculturappv3.modules.productor.comercial_module.ventas.events.VentasEvent
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
 
@@ -37,8 +37,8 @@ class VentasRepository : IVentas.Repository {
     }
 
     override fun getListVentas(productoId: Long?) {
-        val list_static_detalle_ventas = Listas.listaDetalleVentasProductor()
-        val list_static_ventas = Listas.listVentasProductor()
+        val list_static_detalle_ventas = ListasResources.listaDetalleVentasProductor()
+        val list_static_ventas = ListasResources.listVentasProductor()
         for (item in list_static_detalle_ventas) {
             if (item.ProductoId == productoId) {
                 for (i in list_static_ventas) {

@@ -19,7 +19,7 @@ import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.cultivos.Cultivo_Fragment
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.resources.Menu_Resources
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_general.*
 import android.view.WindowManager
@@ -114,7 +114,7 @@ class AsistenciaTecnicaFragment : Fragment(), View.OnClickListener {
 
     private fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
-        val lista = Listas.listaAsistenciaTecnicaProductor()
+        val lista = ListasResources.listaAsistenciaTecnicaProductor()
         val adapter = SingleAdapter(lista, Menu_Resources.MENU_MODULE_ASISTENCIA_TECNICA, activity) { position ->
 
             if (lista[position].Identificador.equals("mis_lotes")) {

@@ -26,7 +26,7 @@ import com.interedes.agriculturappv3.modules.main_menu.fragment.presenter.MainMe
 import com.interedes.agriculturappv3.modules.main_menu.fragment.presenter.MainMenuFragmentPresenterImpl
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.resources.Menu_Resources
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_main_menu.*
 
@@ -118,7 +118,7 @@ class MainMenuFragment : Fragment(), MainMenuFragmentView {
     //region Métodos Interfaz
     override fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
-        val lista = Listas.listaMenuProductor()
+        val lista = ListasResources.listaMenuProductor()
         val adapter = SingleAdapter(lista, Menu_Resources.MENU_MAIN, activity) { position ->
             if (lista[position].Identificador.equals("asistencia_tecnica")) {
                 (activity as MenuMainActivity).replaceFragment(AsistenciaTecnicaFragment())

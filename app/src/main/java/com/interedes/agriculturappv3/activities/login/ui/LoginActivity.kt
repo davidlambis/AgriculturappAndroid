@@ -1,6 +1,5 @@
 package com.interedes.agriculturappv3.activities.login.ui
 
-import android.app.Activity
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
@@ -10,12 +9,10 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 import com.google.android.gms.common.ConnectionResult
@@ -26,24 +23,16 @@ import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenter
 import com.interedes.agriculturappv3.activities.login.presenter.LoginPresenterImpl
 import com.interedes.agriculturappv3.activities.registration.register_rol.RegisterRolActivity
 import com.interedes.agriculturappv3.activities.reset_password.ResetPasswordActivity
-import com.interedes.agriculturappv3.modules.models.ResetPassword
 import com.interedes.agriculturappv3.modules.models.login.Login
 import com.interedes.agriculturappv3.modules.models.rol.Rol
-import com.interedes.agriculturappv3.modules.models.rol.RolResponse
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
-import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
+import com.interedes.agriculturappv3.services.preferences.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.internet_connection.ConnectivityReceiver
-import com.interedes.agriculturappv3.services.resources.RolResources
 import com.kaopiz.kprogresshud.KProgressHUD
-import com.raizlabs.android.dbflow.kotlinextensions.save
-import com.raizlabs.android.dbflow.sql.language.Delete
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import kotlinx.android.synthetic.main.activity_login.*
-import retrofit2.Call
-import retrofit2.Callback
 
 class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener, ConnectivityReceiver.connectivityReceiverListener {
 

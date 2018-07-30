@@ -1,23 +1,8 @@
 package com.interedes.agriculturappv3.activities;
 
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.Toast;
 /*
 import com.github.bkhezry.extramaputils.builder.ExtraMarkerBuilder;
 import com.github.bkhezry.extramaputils.builder.ExtraPolygonBuilder;
@@ -29,19 +14,7 @@ import com.github.bkhezry.mapdrawingtools.model.DataModel;
 import com.github.bkhezry.mapdrawingtools.model.DrawingOption;
 import com.github.bkhezry.mapdrawingtools.model.DrawingOptionBuilder;
 */
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
 import com.interedes.agriculturappv3.R;
-import com.interedes.agriculturappv3.modules.models.Coords;
-import com.interedes.agriculturappv3.modules.services.coords.CoordsService;
-import com.interedes.agriculturappv3.util.ConexionInternet;
-
-import java.util.ArrayList;
-import java.util.List;
 
 //import static com.github.bkhezry.mapdrawingtools.ui.MapsActivity.POINTS;
 

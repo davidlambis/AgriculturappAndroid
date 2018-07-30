@@ -54,16 +54,14 @@ import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.CategoriaP
 import com.interedes.agriculturappv3.modules.models.ventas.RequestApi.EstadoTransaccionResponse
 import com.interedes.agriculturappv3.services.resources.Const_Resources
 import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.raizlabs.android.dbflow.config.FlowManager
 import com.raizlabs.android.dbflow.data.Blob
-import com.raizlabs.android.dbflow.kotlinextensions.async
 import com.raizlabs.android.dbflow.kotlinextensions.delete
 import com.raizlabs.android.dbflow.kotlinextensions.save
-import com.raizlabs.android.dbflow.sql.language.Delete
 import com.raizlabs.android.dbflow.sql.language.SQLite
 import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction
 import retrofit2.Call
@@ -659,7 +657,7 @@ class MenuRepository: MainViewMenu.Repository {
             for (user in users){
                 user.delete()
             }
-            val query = Listas.queryGeneral("UsuarioId",usuario.Id.toString())
+            val query = ListasResources.queryGeneral("UsuarioId",usuario.Id.toString())
             val callInformacionSinronized = apiService?.getSyncInformacionUsuario(query)
             callInformacionSinronized?.enqueue(object : Callback<GetSincronizacionResponse> {
                 override fun onResponse(call: Call<GetSincronizacionResponse>?, response: Response<GetSincronizacionResponse>?) {
@@ -1266,7 +1264,7 @@ class MenuRepository: MainViewMenu.Repository {
 
     fun loadTransacciones(usuario: Usuario?) {
         //Sinc transacciones
-        val queryTransacciones = Listas.queryGeneral("userId",usuario?.Id.toString())
+        val queryTransacciones = ListasResources.queryGeneral("userId",usuario?.Id.toString())
         val callInformacionTransaccionesSinronized = apiService?.getSyncInformacionUsuarioTransacciones(queryTransacciones)
         callInformacionTransaccionesSinronized?.enqueue(object : Callback<GetSincronizacionTransacciones> {
             override fun onResponse(call: Call<GetSincronizacionTransacciones>?, response: Response<GetSincronizacionTransacciones>?) {
@@ -1372,7 +1370,7 @@ class MenuRepository: MainViewMenu.Repository {
 
     fun loadProductos(usuario:Usuario?){
         //Get Productos by user
-        val queryProductos = Listas.queryGeneral("userId",usuario?.Id.toString())
+        val queryProductos = ListasResources.queryGeneral("userId",usuario?.Id.toString())
         val callProductos = apiService?.getSyncProductos(queryProductos)
         callProductos?.enqueue(object : Callback<GetSynProductosUserResponse> {
             override fun onResponse(call: Call<GetSynProductosUserResponse>?, response: Response<GetSynProductosUserResponse>?) {
@@ -1463,12 +1461,12 @@ class MenuRepository: MainViewMenu.Repository {
     private fun loadOfertas(usuario: Usuario?) {
         var queryOfertas = ""
         var callOfertas: Call<OfertaResponse>? = null
-        val orderDEsc = Listas.queryOrderByDesc("Id")
+        val orderDEsc = ListasResources.queryOrderByDesc("Id")
         if (usuario?.RolNombre.equals(RolResources.COMPRADOR)) {
-            queryOfertas = Listas.queryGeneralWithContains("Oferta","UsuarioId", usuario?.Id.toString())
+            queryOfertas = ListasResources.queryGeneralWithContains("Oferta","UsuarioId", usuario?.Id.toString())
             callOfertas = apiService?.getOfertasComprador(queryOfertas, orderDEsc)
         } else {
-            queryOfertas = Listas.queryGeneralWithContains("Oferta","usuarioto", usuario?.Id.toString())
+            queryOfertas = ListasResources.queryGeneralWithContains("Oferta","usuarioto", usuario?.Id.toString())
             callOfertas = apiService?.getOfertasProductor(queryOfertas, orderDEsc)
         }
 

@@ -26,7 +26,7 @@ import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Pro
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import com.raizlabs.android.dbflow.kotlinextensions.and
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.kotlinextensions.update
@@ -187,7 +187,7 @@ class TratamientoRepository : ITratamiento.Repository {
 
         val usuarioLogued = SQLite.select().from(Usuario::class.java).where(Usuario_Table.UsuarioRemembered?.eq(true)).querySingle()
 
-        val query = Listas.queryGeneralMultipleLongAndString("TratamientoId",tratamiento?.Id,"userId", usuarioLogued?.Id.toString())
+        val query = ListasResources.queryGeneralMultipleLongAndString("TratamientoId",tratamiento?.Id,"userId", usuarioLogued?.Id.toString())
 
         val call_usuario = apiService?.getVerificateCalificationUser(query)
 

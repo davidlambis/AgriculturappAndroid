@@ -22,25 +22,21 @@ import android.support.v4.app.NavUtils
 import android.support.v4.app.TaskStackBuilder
 import android.support.v4.content.ContextCompat
 import android.view.MenuItem
-import android.widget.ImageView
 import android.widget.TextView
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.GravityEnum
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.github.thunder413.datetimeutils.DateTimeUtils
 import com.interedes.agriculturappv3.activities.chat.chat_sms.detail_sms_user.Chat_Sms_Activity
 import com.interedes.agriculturappv3.libs.GlideApp
 import com.interedes.agriculturappv3.libs.eventbus_rx.Rx_Bus
 import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import com.interedes.agriculturappv3.services.resources.*
 import com.kaopiz.kprogresshud.KProgressHUD
-import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
@@ -142,7 +138,7 @@ class ChatMessageActivity : AppCompatActivity(), IMainViewChatMessages.MainView 
     private fun listenerChangesUserSelected(receiverId: String?,userFirebase: UserFirebase?) {
 
         val apiService = ApiInterface.create()
-        val queryCustom = Listas.queryGeneral("Email",userFirebase?.Correo!!)
+        val queryCustom = ListasResources.queryGeneral("Email",userFirebase?.Correo!!)
         val callusuario = apiService.getUserByEmail(queryCustom)
         callusuario.delay(100, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
             //Log.d("search", searchString)

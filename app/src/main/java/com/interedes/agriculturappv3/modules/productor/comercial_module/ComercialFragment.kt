@@ -20,7 +20,7 @@ import com.interedes.agriculturappv3.modules.productor.comercial_module.producto
 import com.interedes.agriculturappv3.modules.productor.comercial_module.ventas.VentasFragment
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.resources.Menu_Resources
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_general.*
 
@@ -73,7 +73,7 @@ class ComercialFragment : Fragment(), View.OnClickListener {
 
     private fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
-        val lista = Listas.listaModuloComercialProductor()
+        val lista = ListasResources.listaModuloComercialProductor()
         val adapter = SingleAdapter(lista, Menu_Resources.MENU_MODULE_COMERCIAL, activity) { position ->
             if (lista[position].Identificador.equals("mis_productos")) {
                 (activity as MenuMainActivity).replaceFragment(ProductosFragment())

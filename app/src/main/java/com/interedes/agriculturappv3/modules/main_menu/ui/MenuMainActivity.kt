@@ -63,7 +63,7 @@ import com.interedes.agriculturappv3.activities.login.ui.LoginActivity
 import com.interedes.agriculturappv3.config.DataSource
 import com.interedes.agriculturappv3.libs.eventbus_rx.Rx_Bus
 import com.interedes.agriculturappv3.modules.account.AccountFragment
-import com.interedes.agriculturappv3.modules.comprador.productos.ProductosCompradorFragment
+import com.interedes.agriculturappv3.modules.comprador.tipo_productos.ProductosCompradorFragment
 import com.interedes.agriculturappv3.modules.credentials.CredentialsFragment
 import com.interedes.agriculturappv3.modules.main_menu.ui.events.RequestSendChat
 import com.interedes.agriculturappv3.modules.models.Notification.NotificationLocal
@@ -72,7 +72,7 @@ import com.interedes.agriculturappv3.modules.models.sms.Sms
 import com.interedes.agriculturappv3.modules.notification.NotificationActivity
 import com.interedes.agriculturappv3.modules.ofertas.OfertasFragment
 import com.interedes.agriculturappv3.modules.productor.asistencia_tecnica_module.AsistenciaTecnicaFragment
-import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
+import com.interedes.agriculturappv3.services.preferences.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.jobs.*
 import com.interedes.agriculturappv3.services.resources.*
 import com.interedes.agriculturappv3.services.sms.NotificationService
@@ -83,17 +83,12 @@ import com.nightonke.boommenu.Types.ButtonType
 import com.nightonke.boommenu.Types.PlaceType
 import com.nightonke.boommenu.Util
 import de.hdodenhof.circleimageview.CircleImageView
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.custom_message_toast.view.*
 import kotlinx.android.synthetic.main.dialog_confirm.view.*
 import kotlinx.android.synthetic.main.dialog_image_download_plaga.view.*
 import kotlinx.android.synthetic.main.dialog_sync_data.view.*
 import java.io.*
-import java.net.InetSocketAddress
-import java.net.Socket
 import java.text.Normalizer
 import java.util.*
 

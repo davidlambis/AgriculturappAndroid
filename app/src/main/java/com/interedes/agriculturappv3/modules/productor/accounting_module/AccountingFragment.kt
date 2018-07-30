@@ -18,7 +18,7 @@ import com.interedes.agriculturappv3.modules.productor.accounting_module.reporte
 import com.interedes.agriculturappv3.modules.productor.accounting_module.transacciones.Transaccion_Fragment
 import com.interedes.agriculturappv3.modules.productor.ui.main_menu.MenuMainActivity
 import com.interedes.agriculturappv3.services.resources.Menu_Resources
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import com.interedes.agriculturappv3.services.resources.CategoriaPukResources
 import kotlinx.android.synthetic.main.activity_menu_main.*
 import kotlinx.android.synthetic.main.fragment_general.*
@@ -75,7 +75,7 @@ class AccountingFragment : Fragment(), View.OnClickListener {
 
     private fun loadItems() {
         recyclerView?.layoutManager = GridLayoutManager(activity, 2)
-        val lista = Listas.listaModuloContableProductor()
+        val lista = ListasResources.listaModuloContableProductor()
         val adapter = SingleAdapter(lista, Menu_Resources.MENU_MODULE_ACCOUNTANT, activity) { position ->
 
             if (lista[position].Identificador.equals("ventas")) {

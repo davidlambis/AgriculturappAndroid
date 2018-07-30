@@ -5,7 +5,7 @@ import com.interedes.agriculturappv3.libs.EventBus
 import com.interedes.agriculturappv3.libs.GreenRobotEventBus
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.productor.comercial_module.clientes.events.ClientesEvent
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 
 
 class ClientesRepository : IClientes.Repository {
@@ -20,7 +20,7 @@ class ClientesRepository : IClientes.Repository {
     override fun getListClientes() {
         //TODO traer clientes por usuario productor(logueado)
         //val lista_clientes = SQLite.select().from(Usuario::class.java).queryList()
-        val lista_clientes = Listas.listUsuarios()
+        val lista_clientes = ListasResources.listUsuarios()
         postEventOk(ClientesEvent.READ_EVENT, lista_clientes, null)
     }
 

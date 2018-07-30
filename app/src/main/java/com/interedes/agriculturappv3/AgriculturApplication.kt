@@ -21,7 +21,7 @@ import com.raizlabs.android.dbflow.config.FlowManager
 
 
 import android.support.v4.app.NotificationCompat.Builder
-import com.interedes.agriculturappv3.services.services.JobSyncService
+import com.interedes.agriculturappv3.services.synchronization.JobSyncService
 import com.evernote.android.job.JobManager
 import com.interedes.agriculturappv3.services.jobs.creators.SyncJobCreator
 import com.raizlabs.android.dbflow.config.FlowLog

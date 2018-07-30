@@ -17,7 +17,7 @@ import com.interedes.agriculturappv3.modules.models.ventas.Transaccion_Table
 import com.interedes.agriculturappv3.modules.models.ventas.resports.BalanceContable
 import com.interedes.agriculturappv3.modules.models.ventas.resports.CountOfPost
 import com.interedes.agriculturappv3.modules.productor.accounting_module.reportes.events.RequestEventReporte
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import com.interedes.agriculturappv3.services.resources.CategoriaPukResources
 import com.raizlabs.android.dbflow.sql.language.Method
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -34,7 +34,7 @@ class ReporteRepository: IMainViewReportes.Repository {
     override fun getTotalTransacciones(cultivo_id: Long?,  dateStart: Date?, dateEnd: Date?) {
 
         val listCategoriaPuk=ArrayList<CategoriaPuk>()
-        val categoriaPukList=Listas.listCategoriaPuk()
+        val categoriaPukList= ListasResources.listCategoriaPuk()
 
         val usuario= getLastUserLogued()
 

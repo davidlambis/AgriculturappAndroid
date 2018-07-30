@@ -22,11 +22,10 @@ import com.interedes.agriculturappv3.modules.models.chat.Room
 import com.interedes.agriculturappv3.modules.models.chat.RoomConversation
 import com.interedes.agriculturappv3.modules.models.chat.UserFirebase
 import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.S3Resources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -202,7 +201,7 @@ class UsersAdapter(var lista: ArrayList<RoomConversation>) : RecyclerView.Adapte
             })
 
               val apiService = ApiInterface.create()
-              val queryCustom = Listas.queryGeneral("Email",data.UserFirebase?.Correo!!)
+              val queryCustom = ListasResources.queryGeneral("Email",data.UserFirebase?.Correo!!)
               val callusuario = apiService.getUserByEmail(queryCustom)
               callusuario.delay(100, TimeUnit.MILLISECONDS)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe({ searchResponse ->
                   //Log.d("search", searchString)

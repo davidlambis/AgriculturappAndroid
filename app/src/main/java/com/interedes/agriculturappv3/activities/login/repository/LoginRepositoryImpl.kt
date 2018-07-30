@@ -22,7 +22,7 @@ import com.interedes.agriculturappv3.modules.models.rol.Rol
 import com.interedes.agriculturappv3.modules.models.rol.Rol_Table
 import com.interedes.agriculturappv3.modules.productor.comercial_module.productos.events.ProductosEvent
 import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import com.interedes.agriculturappv3.services.resources.Status_Chat
 import com.raizlabs.android.dbflow.kotlinextensions.save
 import com.raizlabs.android.dbflow.sql.language.SQLite
@@ -43,16 +43,12 @@ import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Pro
 import com.interedes.agriculturappv3.modules.models.ventas.Tercero
 import com.interedes.agriculturappv3.modules.models.ventas.Transaccion
 import com.interedes.agriculturappv3.services.resources.Const_Resources
-import com.interedes.agriculturappv3.services.chat.SharedPreferenceHelper
+import com.interedes.agriculturappv3.services.preferences.SharedPreferenceHelper
 import com.interedes.agriculturappv3.services.resources.Chat_Resources
 import com.interedes.agriculturappv3.services.resources.RolResources
 import com.interedes.agriculturappv3.services.resources.Status_Sync_Data_Resources
 import java.io.IOException
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
-import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table.Nombre_Departamento
-import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva_Table.Nombre_Ciudad
-import com.interedes.agriculturappv3.modules.models.chat.UserFirebase_Table.Telefono
-import com.interedes.agriculturappv3.modules.models.chat.UserFirebase_Table.Cedula
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 
 
@@ -80,7 +76,7 @@ class LoginRepositoryImpl : LoginRepository {
             override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
                 if (response != null && response.code() == 200) {
                     val access_token: String = response.body()?.access_token!!
-                    val query = Listas.queryGeneral("Email", login.username!!)
+                    val query = ListasResources.queryGeneral("Email", login.username!!)
                     val call_usuario = apiService?.getAuthUserByCorreo("Bearer " + access_token, query)
 
 

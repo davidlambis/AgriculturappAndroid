@@ -17,7 +17,6 @@ import com.interedes.agriculturappv3.modules.models.cultivo.Cultivo_Table
 import com.interedes.agriculturappv3.modules.models.lote.Lote
 import com.interedes.agriculturappv3.modules.models.lote.Lote_Table
 import com.interedes.agriculturappv3.modules.models.ofertas.*
-import com.interedes.agriculturappv3.modules.models.produccion.Produccion_Table
 import com.interedes.agriculturappv3.modules.models.producto.Producto
 import com.interedes.agriculturappv3.modules.models.producto.Producto_Table
 import com.interedes.agriculturappv3.modules.models.unidad_productiva.Unidad_Productiva
@@ -26,7 +25,7 @@ import com.interedes.agriculturappv3.modules.models.usuario.Usuario
 import com.interedes.agriculturappv3.modules.models.usuario.Usuario_Table
 import com.interedes.agriculturappv3.modules.ofertas.events.OfertasEvent
 import com.interedes.agriculturappv3.services.api.ApiInterface
-import com.interedes.agriculturappv3.services.listas.Listas
+import com.interedes.agriculturappv3.services.resources.ListasResources
 import com.interedes.agriculturappv3.services.resources.*
 import com.raizlabs.android.dbflow.data.Blob
 import com.raizlabs.android.dbflow.kotlinextensions.delete
@@ -36,7 +35,6 @@ import com.raizlabs.android.dbflow.sql.language.SQLite
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.SimpleDateFormat
 import java.util.*
 
 class OfertasRepository : IOfertas.Repository {
@@ -183,12 +181,12 @@ class OfertasRepository : IOfertas.Repository {
 
             var queryOfertas = ""
             var callOfertas: Call<OfertaResponse>? = null
-            val orderDEsc = Listas.queryOrderByDesc("Id")
+            val orderDEsc = ListasResources.queryOrderByDesc("Id")
             if (usuario?.RolNombre.equals(RolResources.COMPRADOR)) {
-                queryOfertas = Listas.queryGeneralWithContains("Oferta","UsuarioId", usuario?.Id.toString())
+                queryOfertas = ListasResources.queryGeneralWithContains("Oferta","UsuarioId", usuario?.Id.toString())
                 callOfertas = apiService?.getOfertasComprador(queryOfertas, orderDEsc)
             } else {
-                queryOfertas = Listas.queryGeneralWithContains("Oferta","usuarioto", usuario?.Id.toString())
+                queryOfertas = ListasResources.queryGeneralWithContains("Oferta","usuarioto", usuario?.Id.toString())
                 callOfertas = apiService?.getOfertasProductor(queryOfertas, orderDEsc)
             }
 

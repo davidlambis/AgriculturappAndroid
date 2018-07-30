@@ -183,7 +183,7 @@
 
         <!-- JobSyncService -->
         <service
-            android:name=".services.services.JobSyncService"
+            android:name=".services.synchronization.JobSyncService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
