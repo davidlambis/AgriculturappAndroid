@@ -154,7 +154,6 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
         (activity as MenuMainActivity).toolbar.title = getString(R.string.title_productos)
 
 
-
         //EASY CAMERA
         if (savedInstanceState != null) {
             photos = savedInstanceState.getSerializable(PHOTOS_KEY) as File
@@ -247,7 +246,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                     } else {
                         val response = doPermissionGrantedStuffs()
                         if (response) {
-                            EasyImage.openChooserWithGallery(this, "Pick source", 0);
+                            EasyImage.openGallery(this, 0);
                             //choosePhotoFromGallery(this)
                             //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                         }
@@ -256,7 +255,8 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                     val response = doPermissionGrantedStuffs()
                     if (response) {
                         //choosePhotoFromGallery(this)
-                        EasyImage.openChooserWithGallery(this, "Pick source", 0);
+                        EasyImage.openGallery(this, 0);
+                        //EasyImage.openChooserWithGallery(this, "Pick source", 0);
                         //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                     }
                 }
@@ -302,7 +302,6 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
             viewDialogFilter?.spinnerUnidadProductiva?.setText(unidadProductivaGlobal?.nombre)
             viewDialogFilter?.spinnerLote?.setText(loteGlobal?.Nombre)
             viewDialogFilter?.spinnerCultivo?.setText(cultivoGlobal?.Nombre)
-
         }
 
         //Set Events
@@ -783,7 +782,7 @@ class ProductosFragment : Fragment(), IProductos.View, View.OnClickListener, Swi
                             .setCompressFormat(Bitmap.CompressFormat.WEBP)
                             .compressToFile(imageFile)
 
-                    Toast.makeText(activity, "Compressed image save in " + String.format("Size : %s", getReadableFileSize(compressedImage.length())), Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(activity, "Compressed image save in " + String.format("Size : %s", getReadableFileSize(compressedImage.length())), Toast.LENGTH_SHORT).show();
                     // Compress image using RxJava in background thread
 
 

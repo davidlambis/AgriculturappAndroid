@@ -27,13 +27,7 @@ import com.bumptech.glide.RequestManager
 import android.R.attr.fragment
 import com.bumptech.glide.Glide
 
-
-
-
-
-
 class MessagesAdapter(val glideAc:RequestManager ,var mMessagesList: ArrayList<ChatMessage>) : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
-
 
 
     companion object {
