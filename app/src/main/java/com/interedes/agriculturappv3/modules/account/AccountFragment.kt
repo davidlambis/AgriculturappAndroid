@@ -526,7 +526,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
             R.id.user_take_picture_gallery -> {
 
                 IS_ACCESS_CAMERA=false
-
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (!hasPermissions(activity, *PERMISSIONS)) {
                         requestPermission()
@@ -535,7 +534,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                         if (response) {
                             //choosePhotoFromGallery(this)
 
-                            EasyImage.openChooserWithGallery(this, "Pick source", 0);
+                            EasyImage.openGallery(this, 0);
                             //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                         }
                     }
@@ -543,7 +542,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                     val response = doPermissionGrantedStuffs()
                     if (response) {
                         //choosePhotoFromGallery(this)
-                        EasyImage.openChooserWithGallery(this, "Pick source", 0);
+                        EasyImage.openGallery(this, 0);
                         //startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), READ_REQUEST_CODE)
                     }
                 }
@@ -652,7 +651,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                             .setCompressFormat(Bitmap.CompressFormat.WEBP)
                             .compressToFile(imageFile)
 
-                    Toast.makeText(activity, "Compressed image save in " + String.format("Size : %s", getReadableFileSize(compressedImage.length())), Toast.LENGTH_SHORT).show();
+                   /// Toast.makeText(activity, "Compressed image save in " + String.format("Size : %s", getReadableFileSize(compressedImage.length())), Toast.LENGTH_SHORT).show();
                     // Compress image using RxJava in background thread
                     val compressedImagetwo = Compressor(activity)
                             .setMaxWidth(500)
@@ -660,13 +659,8 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                             .setQuality(100)
                             .setCompressFormat(Bitmap.CompressFormat.WEBP)
                             .compressToBitmap(compressedImage)
-
-
                     //Toast.makeText(activity, "Compressed image save in " + String.format("Size : %s", getReadableFileSize(compressedImagetwo.byteCount.toLong())), Toast.LENGTH_SHORT).show();
-
-
                     isFoto=true
-
                     imageBitmapAccountGlobal =compressedImagetwo
                     ///imageBitmapAccountGlobal = MediaStore.Images.Media.getBitmap(context?.contentResolver, contentURI)
                     imageAccountGlobal = convertBitmapToByte(imageBitmapAccountGlobal!!)
@@ -685,7 +679,6 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
             override fun onImagePickerError(e: java.lang.Exception?, source: EasyImage.ImageSource?, type: Int) {
                 super.onImagePickerError(e, source, type)
                 e?.printStackTrace();
-
             }
 
             override fun onCanceled(source: EasyImage.ImageSource?, type: Int) {
@@ -867,7 +860,7 @@ class AccountFragment : Fragment(),View.OnClickListener,IMainViewAccount.MainVie
                         EasyImage.openCamera(this, 0);
                     }else{
                         //choosePhotoFromGallery(this)
-                        EasyImage.openChooserWithGallery(this, "Pick source", 0);
+                        EasyImage.openGallery(this, 0);
                     }
                 }
             } else {

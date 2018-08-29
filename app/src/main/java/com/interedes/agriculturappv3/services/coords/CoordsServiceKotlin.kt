@@ -110,7 +110,6 @@ class CoordsServiceKotlin(): Service(), LocationListener {
 
     override fun onProviderDisabled(s: String) {
         Toast.makeText(applicationContext,"GPS Desactivado",Toast.LENGTH_SHORT).show();
-
         val is_enabled_gps=false
         val retIntent = Intent(Const_Resources.SERVICE_LOCATION)
         retIntent.setPackage(PACKAGE_NAME)

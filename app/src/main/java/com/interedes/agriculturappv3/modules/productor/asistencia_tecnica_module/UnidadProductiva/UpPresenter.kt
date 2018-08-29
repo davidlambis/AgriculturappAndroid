@@ -117,8 +117,8 @@ class UpPresenter(var IUpView: IUnidadProductiva.View?) : IUnidadProductiva.Pres
 
     fun startLocationGps(activity: Activity) {
         setStatusServiceCoords(true)
-        var intent =  Intent(activity, CoordsServiceKotlin::class.java);
-        activity!!.startService(intent)
+        val intent =  Intent(activity, CoordsServiceKotlin::class.java);
+        activity.startService(intent)
     }
     //endregion
 
