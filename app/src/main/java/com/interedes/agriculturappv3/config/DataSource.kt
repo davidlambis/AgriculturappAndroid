@@ -6,7 +6,7 @@ import com.raizlabs.android.dbflow.annotation.Database
 @Database(name = DataSource.NAME, version = DataSource.VERSION, generatedClassSeparator = "_")
 object DataSource {
     const val NAME: String = "db_agriculturapp"
-    const val VERSION: Int = 10
+    const val VERSION: Int = 11
 }
 
 

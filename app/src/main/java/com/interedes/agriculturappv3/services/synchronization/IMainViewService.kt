@@ -4,5 +4,4 @@ interface IMainViewService {
     interface RepositoryPost {
         fun syncData()
     }
-    
 }

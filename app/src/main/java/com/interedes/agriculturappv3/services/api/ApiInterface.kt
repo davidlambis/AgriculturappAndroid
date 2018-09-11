@@ -271,6 +271,8 @@ interface ApiInterface {
 
    // @GET("odata/Agp2/Tratamientos?\$expand=Insumo(\$expand=Laboratorio,TipoInsumo),Calificacions")
     @GET("odata/Agp2/Tratamientos?\$expand=Insumo(\$expand=Laboratorio,TipoInsumo),Calificacions")
+
+   //odata/Agp2/Cables?$expand=UbicacionEmpresa($expand=Empresa,Ubicacion)
     fun getTratamientos(): Call<TratamientoResponse>
     //endregion
 

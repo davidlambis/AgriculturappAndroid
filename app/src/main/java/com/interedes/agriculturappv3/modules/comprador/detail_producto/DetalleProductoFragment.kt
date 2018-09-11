@@ -601,8 +601,6 @@ class DetalleProductoFragment : Fragment(),IMainViewDetailProducto.MainView,View
         }
 
          ///ImagePlagaGlobal=enfermedad.RutaImagenEnfermedad
-
-
          val dialog = AlertDialog.Builder(context!!)
                  .setView(viewDialogImage!!)
                  .create()
