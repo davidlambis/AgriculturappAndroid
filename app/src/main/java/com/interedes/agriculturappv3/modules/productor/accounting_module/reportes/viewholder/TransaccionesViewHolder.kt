@@ -14,8 +14,6 @@ class TransaccionesViewHolder(itemView: View): ChildViewHolder(itemView) {
     init {
         transaccionpTextView =itemView.findViewById(R.id.list_item_transaccion_concep)
         transaccionpValorTextView =itemView.findViewById(R.id.list_item_transaccion_valor)
-
-
     }
 
     fun setArtistName(context:Context?,concep: String,valor: Double ) {
@@ -29,10 +27,6 @@ class TransaccionesViewHolder(itemView: View): ChildViewHolder(itemView) {
 
         transaccionpTextView?.setOnClickListener {
              Toast.makeText(context,"Hola",Toast.LENGTH_SHORT).show()
-
-
         }
-
-
     }
 }

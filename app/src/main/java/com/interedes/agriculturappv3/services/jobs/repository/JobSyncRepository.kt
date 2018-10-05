@@ -712,8 +712,6 @@ class JobSyncRepository: IMainViewJob.Repository {
 
     private fun getAllPlagasFoto(index: Int,context: Context) {
         if (index >= listFotoEnfermedad!!.size) {
-
-
             Log.d("SYNC DATA", "Plagas y Enfermedades Loaded" )
             getAllInsumoFoto(0,context)
         } else {

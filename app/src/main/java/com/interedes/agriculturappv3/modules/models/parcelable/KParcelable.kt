@@ -38,6 +38,8 @@ inline fun <reified T> parcelableClassLoaderCreator(
 
 inline fun Parcel.readBoolean() = readInt() != 0
 
+
+
 inline fun Parcel.writeBoolean(value: Boolean) = writeInt(if (value) 1 else 0)
 
 inline fun <reified T : Enum<T>> Parcel.readEnum() =

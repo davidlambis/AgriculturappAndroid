@@ -32,7 +32,6 @@ class CategoriaPukViewHolder(itemView: View): GroupViewHolder(itemView) {
             categoriaValor?.setText(String.format("$ %,.0f",categoriaPuk.Valor_Total))
           //  icon?.setBackgroundResource( R.drawable.ic_ic_ingreso_egreso)
         }
-
     }
 
     override fun expand() {

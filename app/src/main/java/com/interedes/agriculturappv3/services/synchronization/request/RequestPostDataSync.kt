@@ -624,6 +624,8 @@ class RequestPostDataSync : IMainViewService.RepositoryPost {
     }
 
     fun syncDataLotes() {
+
+
         val usuario=getLastUserLogued()
         val mLote= SQLite.select()
                 .from(Lote::class.java)

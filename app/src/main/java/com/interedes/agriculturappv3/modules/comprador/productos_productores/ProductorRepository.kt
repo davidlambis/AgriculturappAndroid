@@ -153,6 +153,7 @@ class ProductorRepository:IMainViewProductor.Repository {
                             unidaProductiva.Unidad_Productiva_Id = last_up.Unidad_Productiva_Id!! + 1
                         }
                     }
+
                     unidaProductiva.CiudadId=item.ciudad_id
                     unidaProductiva.UnidadMedidaId=item.unidadmedida_id_up
                     unidaProductiva.descripcion=item.descripcion_up
@@ -165,8 +166,6 @@ class ProductorRepository:IMainViewProductor.Repository {
                     unidaProductiva.Nombre_Departamento=item.nombre_departamento
 
                     //Localizacion UP
-
-
                     unidaProductiva.Estado_Sincronizacion=false
                     unidaProductiva.Estado_SincronizacionUpdate=false
                     unidaProductiva.save()

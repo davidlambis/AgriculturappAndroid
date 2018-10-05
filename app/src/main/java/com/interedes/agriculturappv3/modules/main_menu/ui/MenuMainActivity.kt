@@ -1317,8 +1317,6 @@ class MenuMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
 
-
-
     //endregion
 
     //region NAVIGATION FRAGMENTS
